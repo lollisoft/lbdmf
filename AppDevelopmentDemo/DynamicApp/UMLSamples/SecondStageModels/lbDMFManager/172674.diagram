@@ -1,0 +1,67 @@
+format 73
+
+classcanvas 128002 class_ref 128130 // Formulare
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 52 33 2000
+end
+classcanvas 128386 class_ref 130690 // anwendungen
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 559 507 2000
+end
+classcanvas 128514 class_ref 131970 // formulare
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 57 442 3005
+end
+classcanvas 128898 class_ref 133250 // users
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 580 24 3005
+end
+classcanvas 129154 class_ref 133122 // user_anwendungen
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 544 325 3011
+end
+classcanvas 129538 class_ref 184322 // FormularFilter
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 237 201 2000
+end
+relationcanvas 128642 relation_ref 131842 // <association>
+  from ref 128514 z 3006 stereotype "<<relationship>>" xyz 296 587 3006 to ref 128386
+  role_a_pos 452 601 3000 role_b_pos 167 527 3000
+  multiplicity_a_pos 539 635 3000 multiplicity_b_pos 167 561 3000
+end
+relationcanvas 128770 relation_ref 128898 // <dependency>
+  from ref 128002 z 3006 to ref 128514
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129282 relation_ref 131970 // <association>
+  from ref 129154 z 3012 stereotype "<<relationship>>" xyz 562 452 3012 to ref 128386
+  role_a_pos 632 481 3000 role_b_pos 634 408 3000
+  multiplicity_a_pos 603 481 3000 multiplicity_b_pos 607 408 3000
+end
+relationcanvas 129410 relation_ref 133506 // <association>
+  from ref 128898 z 3012 stereotype "<<relationship>>" xyz 559 252 3012 to ref 129154
+  role_a_pos 633 299 3000 role_b_pos 628 191 3000
+  multiplicity_a_pos 606 299 3000 multiplicity_b_pos 599 191 3000
+end
+relationcanvas 129922 relation_ref 207362 // <dependency>
+  from ref 129538 z 2001 to ref 128386
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130050 relation_ref 207490 // <dependency>
+  from ref 129538 z 3012 to ref 129154
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130178 relation_ref 207618 // <dependency>
+  from ref 129538 z 3006 stereotype "<<owner>>" xyz 444 159 3000 to ref 128898
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 130306 relation_ref 214146 // <dependency>
+  from ref 128514 z 3006 stereotype "<<filtered>>" xyz 182 367 3000 to ref 129538
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+end
+end

@@ -1,6 +1,6 @@
 format 73
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 61
+  revision 62
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1833,13 +1833,13 @@ ${inlines}
 	key "lbDMF:dropdown:table" value "anwendungen"
       end
 
-      classrelation 225282 // Parameter (Parameter)
-	relation 220930 ---> name "Parameter"
+      classrelation 225282 // TableParameter (TableParameter)
+	relation 220930 ---> name "TableParameter"
 	  stereotype "lbDMF:masterdetail_action"
-	  a role_name "Parameter" protected
+	  a role_name "TableParameter" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 225282 // Parameter (Parameter)
+	    classrelation_ref 225282 // TableParameter (TableParameter)
 	  b parent class_ref 197506 // TableParameter
 	ncouples 1
 	key "lbDMF:masterdetail_action:sourcecolumn" value "tablename"
@@ -2204,7 +2204,7 @@ ${inlines}
       end
 
       attribute 238978 "tableid"
-	protected explicit_type ""
+	protected explicit_type "int"
 	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
