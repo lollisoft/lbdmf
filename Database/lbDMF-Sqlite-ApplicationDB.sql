@@ -11,15 +11,15 @@ BEGIN TRANSACTION;
 --
 	
 
--- Class Benutzer of type FORM found.
-				
--- Class DBType of type FORM found.
-				
--- Class FormularFields of type FORM found.
+-- Class Anwendungen of type FORM found.
 				
 -- Class Formulare of type FORM found.
 				
--- Class Anwendungen of type FORM found.
+-- Class FormularFields of type FORM found.
+				
+-- Class Benutzer of type FORM found.
+				
+-- Class DBType of type FORM found.
 				
 -- Class Formular_Parameter of type FORM found.
 				
@@ -50,6 +50,8 @@ BEGIN TRANSACTION;
 -- Class PrimaryKeys of type FORM found.
 				
 -- Class ForeignKeys of type FORM found.
+				
+-- Class TableParameter of type FORM found.
 				
 -- Class action_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -157,7 +159,11 @@ CREATE TABLE "anwendungen" (
 	"titel" BPCHAR,
 	"modulename" BPCHAR,
 	"functor" BPCHAR,
-	"interface" BPCHAR
+	"interface" BPCHAR,
+	"requirements" BYTEA,
+	"background" BYTEA,
+	"model_complete" BOOLEAN,
+	"model_errors" TEXT
 );
 
 -- Class anwendungen_formulare of type ENTITY found.
@@ -561,15 +567,35 @@ CREATE TABLE "dbprimarykey" (
 	"dbtableid" INTEGER
 );
 
--- Class Benutzer of type FORM found.
-				
--- Class DBType of type FORM found.
-				
--- Class FormularFields of type FORM found.
+-- Unknown stereotype 'ownership_filter' for class FormularFilter.
+-- Create table via importApplicationTableAutoID
+
+-- Unknown stereotype 'filterdefinition' for class UserFilter.
+-- Create table via importApplicationTableAutoID
+
+-- Class dbtableparameter of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table dbtableparameter for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE dbtableparameter
+CREATE TABLE "dbtableparameter" (
+	"id" INTEGER PRIMARY KEY,
+	"parametername" BPCHAR,
+	"parametervalue" BPCHAR,
+	"tableid" INTEGER
+);
+
+-- Class Anwendungen of type FORM found.
 				
 -- Class Formulare of type FORM found.
 				
--- Class Anwendungen of type FORM found.
+-- Class FormularFields of type FORM found.
+				
+-- Class Benutzer of type FORM found.
+				
+-- Class DBType of type FORM found.
 				
 -- Class Formular_Parameter of type FORM found.
 				
@@ -600,6 +626,8 @@ CREATE TABLE "dbprimarykey" (
 -- Class PrimaryKeys of type FORM found.
 				
 -- Class ForeignKeys of type FORM found.
+				
+-- Class TableParameter of type FORM found.
 				
 -- Class action_parameters of type ENTITY found.
 
@@ -828,6 +856,13 @@ CREATE TABLE "dbprimarykey" (
 -- Class dbprimarykey of type ENTITY found.
 
 -- Generate application tables dbprimarykey for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class dbtableparameter of type ENTITY found.
+
+-- Generate application tables dbtableparameter for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
 -- Skipped, due to creation in template 'importApplicationTable'
@@ -1733,6 +1768,47 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbprimarykey', 'dbtableid');
+ 
+
+-- Unknown stereotype 'ownership_filter' for class FormularFilter.
+
+-- Generate application table FormularFilter for lbDMFManager_Entities
+-- Create table relations for FormularFilter with auto id
+	
+
+-- Unknown stereotype 'filterdefinition' for class UserFilter.
+
+-- Generate application table UserFilter for lbDMFManager_Entities
+-- Create table relations for UserFilter with auto id
+	
+
+-- Generate Sqlite application relations for table dbtableparameter for lbDMFManager_Entities
+-- Create table relations for dbtableparameter
+--ALTER TABLE "dbtableparameter" ADD CONSTRAINT "cst_dbtableparameter_dbtable_id" FOREIGN KEY ( "tableid" ) REFERENCES "dbtable" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "dbtableparameter" ADD CONSTRAINT "cst_dbtableparameter_dbtable_id" FOREIGN KEY ( "tableid" ) REFERENCES "dbtable" ( "id" );
+
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_dbtableparameter_tableid_ins" BEFORE INSERT ON dbtableparameter FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.tableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.tableid) IS NULL))
+                 THEN RAISE(ABORT, 'INSERT: tableid violates foreign key dbtable(id = SELECT new.tableid)')
+    END;
+END;
+CREATE TRIGGER "fk_dbtableparameter_tableid_upd" BEFORE UPDATE ON dbtableparameter FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.tableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.tableid) IS NULL))
+                 THEN RAISE(ABORT, 'UPDATE: tableid violates foreign key dbtable(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbtableparameter_tableid_del" BEFORE DELETE ON dbtable FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT tableid FROM dbtableparameter WHERE tableid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'DELETE: id violates foreign key dbtableparameter(tableid = old.id)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbtableparameter', 'tableid');
  
 
 -- Script ready.
