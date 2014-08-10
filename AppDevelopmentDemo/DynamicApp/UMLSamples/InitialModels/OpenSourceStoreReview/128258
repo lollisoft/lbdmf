@@ -1,6 +1,6 @@
 format 73
 "OpenSourceStoreReview" // OpenSourceStoreReview
-  revision 2
+  revision 3
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -140,6 +140,11 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      ncouples 4
+      key "owner_subquery" value "ApplicationProvider"
+      key "owner_match_field" value "email"
+      key "owner_match_source" value "email"
+      key "owner_match_method" value "claims"
       attribute 128642 "applicationname"
 	private explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};

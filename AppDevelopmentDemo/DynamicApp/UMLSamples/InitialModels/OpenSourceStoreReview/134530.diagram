@@ -17,12 +17,12 @@ classcanvas 128642 class_ref 128386 // PromotedArticles
   xyz 676 185 2012
 end
 relationcanvas 128258 relation_ref 128002 // userid
-  from ref 128002 z 2007 label "userid" italic xyz 136.5 212.5 2007 to ref 128130
+  from ref 128002 z 2007 label "userid" italic xyz 136 212 2007 to ref 128130
   role_a_pos 162 296 3000 role_b_pos 162 147 3000
   no_multiplicity_a no_multiplicity_b
 end
 relationcanvas 128514 relation_ref 128130 // applicationname
-  from ref 128130 z 3006 label "applicationname" italic xyz 440.5 414 3006 to ref 128386
+  from ref 128130 z 3006 label "applicationname" italic xyz 440 414 3006 to ref 128386
   role_a_pos 588 453 3000 role_b_pos 277 369 3000
   no_multiplicity_a no_multiplicity_b
 end
