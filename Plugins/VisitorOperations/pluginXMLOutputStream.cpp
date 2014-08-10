@@ -586,7 +586,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBTableParameter* dbtableparameter
 		"<parameter ID=\"" << dbtableparameter->getParameterID() << 
 		"\" name=\"" << dbtableparameter->getParameterName() << 
 		"\" value=\"" << dbtableparameter->getParameterValue() << 
-		"\" applicationid=\"" << dbtableparameter->getTableID() << "\"/>" << "\n";
+		"\" tableid=\"" << dbtableparameter->getTableID() << "\"/>" << "\n";
 	}
 	*oStream << "</dbtableparameter>" << "\n";
 }
