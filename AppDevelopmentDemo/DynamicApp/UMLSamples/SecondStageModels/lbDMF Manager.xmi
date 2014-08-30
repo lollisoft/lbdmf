@@ -1463,7 +1463,13 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="anwendungen" xmi:id="BOUML_0x1fe82_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="entity"/>
+							<taggedValue tag="owner_match_method" value="subquery_join"/>
+							<taggedValue tag="owner_match_outer" value="ID"/>
+							<taggedValue tag="owner_subquery" value="user_anwendungen"/>
+							<taggedValue tag="owner_match_inner" value="anwendungenid"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21602_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
@@ -1609,7 +1615,13 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="anwendungs_parameter" xmi:id="BOUML_0x1ff82_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="entity"/>
+							<taggedValue tag="owner_match_method" value="subquery_join"/>
+							<taggedValue tag="owner_match_outer" value="anwendungid"/>
+							<taggedValue tag="owner_subquery" value="anwendungen"/>
+							<taggedValue tag="owner_match_inner" value="ID"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x21982_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
@@ -1767,7 +1779,13 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formular_parameters" xmi:id="BOUML_0x20302_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="entity"/>
+							<taggedValue tag="owner_match_method" value="subquery_join"/>
+							<taggedValue tag="owner_match_outer" value="formularid"/>
+							<taggedValue tag="owner_subquery" value="formulare"/>
+							<taggedValue tag="owner_match_inner" value="ID"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x22602_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
@@ -1791,7 +1809,15 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formulare" xmi:id="BOUML_0x20382_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="entity"/>
+							<taggedValue tag="owner_match_method" value="subquery_join"/>
+							<taggedValue tag="owner_match_field" value="null"/>
+							<taggedValue tag="owner_match_outer" value="anwendungid"/>
+							<taggedValue tag="owner_subquery" value="anwendungen"/>
+							<taggedValue tag="owner_match_inner" value="ID"/>
+							<taggedValue tag="owner_match_value" value="null"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x22782_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
@@ -1894,7 +1920,13 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="formularfields" xmi:id="BOUML_0x24a02_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="entity"/>
+							<taggedValue tag="owner_match_method" value="subquery_join"/>
+							<taggedValue tag="owner_match_outer" value="formularid"/>
+							<taggedValue tag="owner_subquery" value="formulare"/>
+							<taggedValue tag="owner_match_inner" value="ID"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x27b82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
@@ -2174,7 +2206,13 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="user_anwendungen" xmi:id="BOUML_0x20802_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="entity"/>
+							<taggedValue tag="owner_match_method" value="subquery_join"/>
+							<taggedValue tag="owner_match_outer" value="anwendungenid"/>
+							<taggedValue tag="owner_subquery" value="users"/>
+							<taggedValue tag="owner_match_inner" value="ID"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23b82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
@@ -2203,7 +2241,15 @@
 						</ownedAttribute>
 					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="users" xmi:id="BOUML_0x20882_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="entity"/></xmi:Extension>
+						<xmi:Extension extender="Bouml">
+							<stereotype name="entity"/>
+							<taggedValue tag="owner_match_method" value="subquery_filter"/>
+							<taggedValue tag="owner_match_field" value="userid"/>
+							<taggedValue tag="owner_match_outer" value="ID"/>
+							<taggedValue tag="owner_subquery" value="user_anwendungen"/>
+							<taggedValue tag="owner_match_inner" value="userid"/>
+							<taggedValue tag="owner_match_value" value="1"/>
+						</xmi:Extension>
 						<ownedAttribute xmi:type="uml:Property" name="id" xmi:id="BOUML_0x23c02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml"><stereotype name="lbDMF:pk"/></xmi:Extension>
@@ -2480,9 +2526,6 @@
 							</xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
-					<packagedElement xmi:type="uml:Class" name="FormularFilter" xmi:id="BOUML_0x2d002_4" visibility="package">
-						<xmi:Extension extender="Bouml"><stereotype name="ownership_filter"/></xmi:Extension>
-					</packagedElement>
 					<packagedElement xmi:type="uml:Class" name="UserFilter" xmi:id="BOUML_0x2e982_4" visibility="package">
 						<xmi:Extension extender="Bouml"><stereotype name="filterdefinition"/></xmi:Extension>
 					</packagedElement>
@@ -2574,9 +2617,6 @@
 						<memberEnd xmi:idref="BOUML_0x20e02_0"/>
 						<memberEnd xmi:idref="BOUML_0x20e82_0"/>
 					</packagedElement>
-					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x35502_0" client="BOUML_0x20382_4" supplier="BOUML_0x2d002_4">
-						<xmi:Extension extender="Bouml"><stereotype name="filtered"/></xmi:Extension>
-					</packagedElement>
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x25b82_0" visibility="protected">
 						<memberEnd xmi:idref="BOUML_0x25b82_0"/>
 						<memberEnd xmi:idref="BOUML_0x25c02_0"/>
@@ -2640,13 +2680,6 @@
 					<packagedElement xmi:type="uml:Association" xmi:id="BOUML_ASSOC_0x36e82_0" visibility="protected">
 						<memberEnd xmi:idref="BOUML_0x36e82_0"/>
 						<memberEnd xmi:idref="BOUML_0x36f02_0"/>
-					</packagedElement>
-					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x33a82_0" client="BOUML_0x2d002_4" supplier="BOUML_0x1fe82_4">
-					</packagedElement>
-					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x33b02_0" client="BOUML_0x2d002_4" supplier="BOUML_0x20802_4">
-					</packagedElement>
-					<packagedElement xmi:type="uml:Dependency" xmi:id="BOUML_0x33b82_0" client="BOUML_0x2d002_4" supplier="BOUML_0x20882_4">
-						<xmi:Extension extender="Bouml"><stereotype name="owner"/></xmi:Extension>
 					</packagedElement>
 				</packagedElement>
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1fa02_22" name ="Reports">

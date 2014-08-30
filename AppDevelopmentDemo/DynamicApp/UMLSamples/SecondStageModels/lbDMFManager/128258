@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 36
+  revision 37
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -661,6 +661,11 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      ncouples 4
+      key "owner_match_method" value "subquery_join"
+      key "owner_subquery" value "user_anwendungen"
+      key "owner_match_inner" value "anwendungenid"
+      key "owner_match_outer" value "ID"
       attribute 136706 "id"
 	protected explicit_type "int"
 	stereotype "lbDMF:pk"
@@ -893,6 +898,11 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      ncouples 4
+      key "owner_match_method" value "subquery_join"
+      key "owner_subquery" value "anwendungen"
+      key "owner_match_inner" value "ID"
+      key "owner_match_outer" value "anwendungid"
       attribute 137602 "id"
 	protected explicit_type "int"
 	stereotype "lbDMF:pk"
@@ -1299,6 +1309,11 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      ncouples 4
+      key "owner_match_method" value "subquery_join"
+      key "owner_subquery" value "formulare"
+      key "owner_match_inner" value "ID"
+      key "owner_match_outer" value "formularid"
       attribute 140802 "id"
 	protected explicit_type "int"
 	stereotype "lbDMF:pk"
@@ -1351,6 +1366,13 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      ncouples 6
+      key "owner_match_method" value "subquery_join"
+      key "owner_subquery" value "anwendungen"
+      key "owner_match_inner" value "ID"
+      key "owner_match_outer" value "anwendungid"
+      key "owner_match_field" value "null"
+      key "owner_match_value" value "null"
       attribute 141186 "id"
 	protected explicit_type "int"
 	stereotype "lbDMF:pk"
@@ -1524,14 +1546,6 @@ ${inlines}
 	key "lbDMF:relationship:order" value ""
       end
 
-      classrelation 218370 // <dependency>
-	relation 214146 -_->
-	  stereotype "filtered"
-	  a package
-	    cpp default "#include in source"
-	    classrelation_ref 218370 // <dependency>
-	  b parent class_ref 184322 // FormularFilter
-      end
     end
 
     class 150018 "formularfields"
@@ -1546,6 +1560,11 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      ncouples 4
+      key "owner_match_method" value "subquery_join"
+      key "owner_subquery" value "formulare"
+      key "owner_match_inner" value "ID"
+      key "owner_match_outer" value "formularid"
       attribute 162690 "id"
 	protected explicit_type "int"
 	stereotype "lbDMF:pk"
@@ -2217,6 +2236,11 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      ncouples 4
+      key "owner_match_method" value "subquery_join"
+      key "owner_subquery" value "users"
+      key "owner_match_inner" value "ID"
+      key "owner_match_outer" value "anwendungenid"
       attribute 146306 "id"
 	protected explicit_type "int"
 	stereotype "lbDMF:pk"
@@ -2266,6 +2290,13 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      ncouples 6
+      key "owner_match_method" value "subquery_filter"
+      key "owner_subquery" value "user_anwendungen"
+      key "owner_match_inner" value "userid"
+      key "owner_match_outer" value "ID"
+      key "owner_match_field" value "userid"
+      key "owner_match_value" value "1"
       attribute 146434 "id"
 	protected explicit_type "int"
 	stereotype "lbDMF:pk"
@@ -2914,44 +2945,6 @@ ${inlines}
 	key "lbDMF:relationship:sourcecolumn" value ""
 	key "lbDMF:relationship:table" value ""
 	key "lbDMF:relationship:order" value ""
-      end
-    end
-
-    class 184322 "FormularFilter"
-      visibility package stereotype "ownership_filter"
-      cpp_decl "${comment}${template}class ${name}${inherit} {
-${members}};
-${inlines}
-"
-      java_decl ""
-      php_decl ""
-      python_2_2 python_decl ""
-      idl_decl ""
-      explicit_switch_type ""
-      
-      classrelation 211586 // <dependency>
-	relation 207362 -_->
-	  a default
-	    cpp default "#include in source"
-	    classrelation_ref 211586 // <dependency>
-	  b parent class_ref 130690 // anwendungen
-      end
-
-      classrelation 211714 // <dependency>
-	relation 207490 -_->
-	  a package
-	    cpp default "#include in source"
-	    classrelation_ref 211714 // <dependency>
-	  b parent class_ref 133122 // user_anwendungen
-      end
-
-      classrelation 211842 // <dependency>
-	relation 207618 -_->
-	  stereotype "owner"
-	  a package
-	    cpp default "#include in source"
-	    classrelation_ref 211842 // <dependency>
-	  b parent class_ref 133250 // users
       end
     end
 
