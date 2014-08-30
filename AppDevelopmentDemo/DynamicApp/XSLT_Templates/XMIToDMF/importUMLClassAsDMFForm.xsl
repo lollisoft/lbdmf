@@ -121,7 +121,7 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 
 	  <xsl:for-each select="./xmi:Extension/taggedValue">
 <xsl:if test="$TargetDBType = 'Sqlite'">
-insert into dbtableparameter (parametername, parametervalue, tableid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', 
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', 
 (select id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' and tableremarks = '<xsl:value-of select="$ClassId"/>'));
 </xsl:if>
       </xsl:for-each>
