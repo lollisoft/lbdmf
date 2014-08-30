@@ -191,7 +191,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
     <xsl:param name="ClassName"/><!-- The Id for the current class to create schema information -->
 	  <xsl:for-each select="./UML:ModelElement.taggedValue/UML:TaggedValue">
 <xsl:if test="$TargetDBType = 'Sqlite'">
-insert into dbtableparameter (parametername, parametervalue, tableid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', 
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', 
 (select id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' and tableremarks = '<xsl:value-of select="$ClassId"/>'));
 </xsl:if>
       </xsl:for-each>

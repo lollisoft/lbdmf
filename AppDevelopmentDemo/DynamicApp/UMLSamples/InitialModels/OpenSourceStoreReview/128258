@@ -1,6 +1,6 @@
 format 73
 "OpenSourceStoreReview" // OpenSourceStoreReview
-  revision 3
+  revision 4
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -142,9 +142,9 @@ ${inlines}
       
       ncouples 4
       key "owner_subquery" value "ApplicationProvider"
-      key "owner_match_field" value "email"
-      key "owner_match_source" value "email"
-      key "owner_match_method" value "claims"
+      key "owner_match_outer" value "email"
+      key "owner_match_inner" value "email"
+      key "owner_match_method" value "subquery_join"
       attribute 128642 "applicationname"
 	private explicit_type "string"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};

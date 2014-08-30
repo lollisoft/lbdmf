@@ -23,11 +23,11 @@
 			<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f402_22" name ="DMFToUML">
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f482_22" name ="lbDMF Manager">
 					<xmi:Extension extender="Bouml">
-						<taggedValue tag="ProductVersion" value="1.0.4.0"/>
+						<taggedValue tag="ProductVersion" value="1.0.6.0"/>
 						<taggedValue tag="DataStoreBaseAddress" value="net.tcp://cloud.lollisoft.de:49381"/>
 						<taggedValue tag="UpgradeCode" value="48dc066c-97cc-4512-8fa3-52bbe195e075"/>
 						<taggedValue tag="StsBaseAddress" value="net.tcp://cloud.lollisoft.de:8000"/>
-						<taggedValue tag="ProductCode" value="0BB62EC4-D53A-4AF8-B226-C24ABC2E409F"/>
+						<taggedValue tag="ProductCode" value="ECDCC18A-BE39-40DA-8369-B360B1F0BD86"/>
 					</xmi:Extension>
 					<packagedElement xmi:type="uml:Class" name="Anwendungen" xmi:id="BOUML_0x1f682_4" visibility="package">
 						<xmi:Extension extender="Bouml">
@@ -2541,7 +2541,7 @@
 						<ownedAttribute xmi:type="uml:Property" name="parametervalue" xmi:id="BOUML_0x3a402_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="tableid" xmi:id="BOUML_0x36f02_0" visibility="protected" association="BOUML_ASSOC_0x36e82_0" aggregation="none">
+						<ownedAttribute xmi:type="uml:Property" name="dbtableid" xmi:id="BOUML_0x36f02_0" visibility="protected" association="BOUML_ASSOC_0x36e82_0" aggregation="none">
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x27e82_4"/>
 							<lowerValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_L_0x36f02_0" value="1"/>
 							<upperValue xmi:type="uml:LiteralString" xmi:id="BOUML_MULTIPLICITY_U_0x36f02_0" value="1"/>
