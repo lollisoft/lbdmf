@@ -974,7 +974,7 @@ void LB_STDCALL lbDatabaseInputStream::visit(lb_I_DBTableParameter* dbtableparam
 	
 	q->skipFKCollecting();
 	
-	if (q->query("select id, parametername, parametervalue, tableid from dbtableparameter") != ERR_NONE) {
+	if (q->query("select id, parametername, parametervalue, dbtableid from dbtableparameter") != ERR_NONE) {
 		_LOG << "Error: Access to DBTableParameter table failed. Read DBTableParameter would be skipped." LOG_
 		return;
 	}

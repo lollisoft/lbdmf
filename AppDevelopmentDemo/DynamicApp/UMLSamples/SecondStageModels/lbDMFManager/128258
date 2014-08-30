@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 37
+  revision 38
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1545,7 +1545,6 @@ ${inlines}
 	key "lbDMF:relationship:table" value ""
 	key "lbDMF:relationship:order" value ""
       end
-
     end
 
     class 150018 "formularfields"
@@ -2611,10 +2610,10 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 224898 // <association>
-	  b role_name "tableid" multiplicity "1" protected
+	  b role_name "dbtableid" multiplicity "1" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 225026 // tableid (<association>)
+	    classrelation_ref 225026 // dbtableid (<association>)
 	ncouples 3
 	key "lbDMF:relationship:sourcecolumn" value "id"
 	key "lbDMF:relationship:table" value "dbtable"
@@ -3005,7 +3004,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 225026 // tableid (<association>)
+      classrelation 225026 // dbtableid (<association>)
 	relation_ref 220674 // <association>
 	ncouples 3
 	key "lbDMF:relationship:sourcecolumn" value ""
