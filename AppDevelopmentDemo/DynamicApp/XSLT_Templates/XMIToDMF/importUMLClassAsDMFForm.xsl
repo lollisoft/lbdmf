@@ -88,6 +88,11 @@ INSERT INTO "formular_actions" (formular, action, event) VALUES ((select id from
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', '<xsl:value-of select="@name"/>', '', '<xsl:value-of select="@xmi:id"/>', id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
 
+<xsl:call-template name="fillTableParameters">
+<xsl:with-param name="ClassId" select="@xmi:id"/>
+<xsl:with-param name="ClassName" select="@name"/>
+</xsl:call-template>
+
 <xsl:call-template name="fillTableColumns">
 <xsl:with-param name="ClassId" select="@xmi:id"/>
 <xsl:with-param name="ClassName" select="@name"/>
@@ -108,6 +113,19 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 				</xsl:when>
 			</xsl:choose>
 
+</xsl:template>
+
+<xsl:template name="fillTableParameters">
+	<xsl:param name="ClassId"/> <!-- XMI ID of the class -->
+	<xsl:param name="ClassName"/> <!-- XMI ID of the class -->
+
+	  <xsl:for-each select="./xmi:Extension/taggedValue">
+<xsl:if test="$TargetDBType = 'Sqlite'">
+insert into dbtableparameter (parametername, parametervalue, tableid) values('<xsl:value-of select="@tag"/>', '<xsl:value-of select="@value"/>', 
+(select id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' and tableremarks = '<xsl:value-of select="$ClassId"/>'));
+</xsl:if>
+      </xsl:for-each>
+	
 </xsl:template>
 
 <xsl:template name="fillTableColumns">

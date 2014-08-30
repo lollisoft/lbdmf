@@ -128,10 +128,12 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 			<xsl:choose>
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
+<!--
 <xsl:call-template name="log_message">
 		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type FORM found.</xsl:with-param>
 		<xsl:with-param name="ApplicationName" select="$AppName"/>
 </xsl:call-template>
+-->
 					<xsl:call-template name="importDMFForm">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -140,11 +142,13 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
-		-- Class <xsl:value-of select="@name"/> of type FORM found.
+		-- Class <xsl:value-of select="@name"/> of type ENTITY found.
+<!--
 <xsl:call-template name="log_message">
 		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type ENTITY found.</xsl:with-param>
 		<xsl:with-param name="ApplicationName" select="$AppName"/>
 </xsl:call-template>
+-->
 					<xsl:call-template name="importDMFEntity">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="$AppName"/>
@@ -153,11 +157,13 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='report']">
-		-- Class <xsl:value-of select="@name"/> of type FORM found.
+		-- Class <xsl:value-of select="@name"/> of type REPORT found.
+<!--		
 <xsl:call-template name="log_message">
 		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type REPORT found.</xsl:with-param>
 		<xsl:with-param name="ApplicationName" select="$AppName"/>
 </xsl:call-template>
+-->
 					<xsl:call-template name="importDMFReport">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -168,10 +174,12 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
+<!--
 <xsl:call-template name="log_message">
 		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type FORM found.</xsl:with-param>
 		<xsl:with-param name="ApplicationName" select="$AppName"/>
 </xsl:call-template>
+-->
 					<xsl:call-template name="importDMFForm">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -180,11 +188,13 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 					</xsl:call-template>
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:report']">
-		-- Class <xsl:value-of select="@name"/> of type FORM found.
+		-- Class <xsl:value-of select="@name"/> of type REPORT found.
+<!--
 <xsl:call-template name="log_message">
 		<xsl:with-param name="Message">Class <xsl:value-of select="@name"/> of type REPORT found.</xsl:with-param>
 		<xsl:with-param name="ApplicationName" select="$AppName"/>
 </xsl:call-template>
+-->
 					<xsl:call-template name="importDMFReport">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
