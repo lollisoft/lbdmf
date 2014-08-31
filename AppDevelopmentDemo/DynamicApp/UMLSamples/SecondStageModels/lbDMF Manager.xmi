@@ -1466,7 +1466,11 @@
 						<xmi:Extension extender="Bouml">
 							<stereotype name="entity"/>
 							<taggedValue tag="owner_match_method" value="subquery_join"/>
+							<taggedValue tag="action_link_to_owner" value="user_anwendungen"/>
+							<taggedValue tag="action_link_to_owner_link_field" value="anwendungenid"/>
+							<taggedValue tag="action_link_to_owner_parentvalue" value="1"/>
 							<taggedValue tag="owner_match_outer" value="ID"/>
+							<taggedValue tag="action_link_to_owner_link_parentfield" value="userid"/>
 							<taggedValue tag="owner_subquery" value="user_anwendungen"/>
 							<taggedValue tag="owner_match_inner" value="anwendungenid"/>
 						</xmi:Extension>
