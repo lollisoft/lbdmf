@@ -1,6 +1,6 @@
 format 73
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 38
+  revision 39
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -661,11 +661,15 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      ncouples 4
+      ncouples 8
       key "owner_match_method" value "subquery_join"
       key "owner_subquery" value "user_anwendungen"
       key "owner_match_inner" value "anwendungenid"
       key "owner_match_outer" value "ID"
+      key "action_link_to_owner" value "user_anwendungen"
+      key "action_link_to_owner_link_field" value "anwendungenid"
+      key "action_link_to_owner_link_parentfield" value "userid"
+      key "action_link_to_owner_parentvalue" value "1"
       attribute 136706 "id"
 	protected explicit_type "int"
 	stereotype "lbDMF:pk"
