@@ -109,7 +109,7 @@ Don't use the association name here. If one has two or more associations between
 DELETE FROM dbcolumn WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbforeignkey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbprimarykey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
-DELETE FROM dbtableparameter WHERE tableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+DELETE FROM dbtableparameter WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbtable WHERE anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>');
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select="$ClassId"/>', id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
