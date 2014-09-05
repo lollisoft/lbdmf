@@ -1,6 +1,6 @@
 format 73
 "StsManagement" // StsManagement
-  revision 8
+  revision 9
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -100,6 +100,7 @@ ${inlines}
 
       attribute 128386 "passwort"
 	private explicit_type "string"
+	stereotype "password"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	java_decl ""
@@ -119,6 +120,50 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
 	    classrelation_ref 128386 // SecurityUsers (name)
+      end
+
+      attribute 155010 "secret"
+	private explicit_type "string"
+	stereotype "salt"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155138 "email"
+	private explicit_type "string"
+	stereotype "claim"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155266 "passwordreset"
+	private explicit_type "date"
+	stereotype "timeout"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 155394 "passwordresettoken"
+	private explicit_type "string"
+	stereotype "onetimetoken"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
       end
     end
 

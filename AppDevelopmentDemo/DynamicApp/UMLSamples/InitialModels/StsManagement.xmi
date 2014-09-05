@@ -57,6 +57,56 @@
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="password"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="password"/>
+								</UML:ModelElement.taggedValue>
+							</UML:Attribute>
+							<UML:Attribute name="secret" xmi.id="BOUML_0x49b1bd0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="salt"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="salt"/>
+								</UML:ModelElement.taggedValue>
+							</UML:Attribute>
+							<UML:Attribute name="email" xmi.id="BOUML_0x49b1b20" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="claim"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="claim"/>
+								</UML:ModelElement.taggedValue>
+							</UML:Attribute>
+							<UML:Attribute name="passwordreset" xmi.id="BOUML_0x49b1a70" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="timeout"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="timeout"/>
+								</UML:ModelElement.taggedValue>
+							</UML:Attribute>
+							<UML:Attribute name="passwordresettoken" xmi.id="BOUML_0x49b19c0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="onetimetoken"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="onetimetoken"/>
+								</UML:ModelElement.taggedValue>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
@@ -88,39 +138,39 @@
 					</UML:Association>
 					<UML:Class name="ApprovedAudiences" xmi.id="BOUML_0x49b0110" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="uri" xmi.id="BOUML_0x49b1ae0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="uri" xmi.id="BOUML_0x49b17f0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="description" xmi.id="BOUML_0x49b1a30" visibility="private" ownerScope="instance">
+							<UML:Attribute name="description" xmi.id="BOUML_0x49b1740" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="certificate_store_name" xmi.id="BOUML_0x49b18c0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="certificate_store_name" xmi.id="BOUML_0x49b15d0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="certificate_store_location" xmi.id="BOUML_0x49b1810" visibility="private" ownerScope="instance">
+							<UML:Attribute name="certificate_store_location" xmi.id="BOUML_0x49b1520" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="certificate_find_type" xmi.id="BOUML_0x49b1760" visibility="private" ownerScope="instance">
+							<UML:Attribute name="certificate_find_type" xmi.id="BOUML_0x49b1470" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="certificate_find_value" xmi.id="BOUML_0x49b16b0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="certificate_find_value" xmi.id="BOUML_0x49b13c0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="(uri)" xmi.id="BOUML_0x49b1970">
+					<UML:Association name="(uri)" xmi.id="BOUML_0x49b1680">
 						<UML:Association.connection>
 							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x49b0070">
 								<UML:AssociationEnd.participant>
@@ -148,7 +198,7 @@
 					</UML:Association>
 					<UML:Class name="SecurityUsers_ApprovedAudiences" xmi.id="BOUML_0x49b0070" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="name" xmi.id="BOUML_0x49b1540" visibility="private" ownerScope="instance">
+							<UML:Attribute name="name" xmi.id="BOUML_0x49b1250" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
@@ -158,6 +208,7 @@
 				<!-- for pack StsManagement-->
 				</UML:Namespace.ownedElement>
 			</UML:Package>
+			<UML:DataType xmi.id="BOUML_datatype_1" name = "date" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 			<UML:DataType xmi.id="BOUML_datatype_0" name = "string" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 		</UML:Namespace.ownedElement>
 	</UML:Model>

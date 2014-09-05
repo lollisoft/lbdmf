@@ -43,14 +43,18 @@
 <!-- Mapped to internal type representation. This is not a backend type. -->
 <xsl:variable name="MappedDataType">
 <xsl:choose>
-<xsl:when test="$DataType='float'">Float</xsl:when>
-<xsl:when test="$DataType='string'">String</xsl:when>
-<xsl:when test="$DataType='phonenumber'">PhoneNumber</xsl:when>
-<xsl:when test="$DataType='bigstring'">String</xsl:when>
-<xsl:when test="$DataType='date'">String</xsl:when>
-<xsl:when test="$DataType='int'">Integer</xsl:when>
-<xsl:when test="$DataType='bool'">Bit</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='float'">Float</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='string'">String</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='phonenumber'">PhoneNumber</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='bigstring'">String</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='date'">String</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='int'">Integer</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='bool'">Bit</xsl:when>
 <!-- Forward the types into the model. They are later used in code generation and probably mapped there (finally) -->
+<xsl:when test="$StereoType='password'">PasswordField</xsl:when>
+<xsl:when test="$StereoType='salt'">HiddenField</xsl:when>
+<xsl:when test="$StereoType='timeout'">HiddenField</xsl:when>
+<xsl:when test="$StereoType='onetimetoken'">HiddenField</xsl:when>
 <xsl:when test="$StereoType='custombinaryfield'"><xsl:value-of select="$DataType"/></xsl:when>
 <xsl:when test="$StereoType='customstringfield'"><xsl:value-of select="$DataType"/></xsl:when>
 <xsl:when test="$StereoType='custombigstringfield'"><xsl:value-of select="$DataType"/></xsl:when>
