@@ -1,6 +1,6 @@
 format 73
 "OpenSourceStoreReview" // OpenSourceStoreReview
-  revision 4
+  revision 5
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -117,6 +117,7 @@ ${inlines}
 
       classrelation 128002 // ApplicationProvider_ApplicationRelease (userid)
 	relation 128002 o--- name "userid"
+	  stereotype "masterdetail_action"
 	  a role_name "ApplicationProvider_ApplicationRelease" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
@@ -191,6 +192,7 @@ ${inlines}
 
       classrelation 128258 // ApplicationRelease (applicationname)
 	relation 128130 o--- name "applicationname"
+	  stereotype "masterdetail_action"
 	  a role_name "ApplicationRelease" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
@@ -203,6 +205,7 @@ ${inlines}
 
       classrelation 128514 // PromotedArticles (applicationname)
 	relation 128258 o--- name "applicationname"
+	  stereotype "masterdetail_action"
 	  a role_name "PromotedArticles" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
