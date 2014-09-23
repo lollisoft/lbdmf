@@ -62,26 +62,38 @@
 								<UML:AssociationEnd.participant>
 									<UML:Class xmi.idref="BOUML_0x49b0140"/>
 								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
 							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b01e0">
 								<UML:AssociationEnd.participant>
 									<UML:Class xmi.idref="BOUML_0x49b01e0"/>
 								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
 					<UML:Class name="ApplicationProvider_ApplicationRelease" xmi.id="BOUML_0x49b0140" visibility="public" isAbstract="false" isActive="false" >
 						<UML:ModelElement.taggedValue>
-							<UML:TaggedValue tag="owner_match_field" value="email"/>
+							<UML:TaggedValue tag="owner_match_method" value="subquery_join"/>
 						</UML:ModelElement.taggedValue>
 						<UML:ModelElement.taggedValue>
-							<UML:TaggedValue tag="owner_match_method" value="claims"/>
+							<UML:TaggedValue tag="owner_match_outer" value="email"/>
 						</UML:ModelElement.taggedValue>
 						<UML:ModelElement.taggedValue>
 							<UML:TaggedValue tag="owner_subquery" value="ApplicationProvider"/>
 						</UML:ModelElement.taggedValue>
 						<UML:ModelElement.taggedValue>
-							<UML:TaggedValue tag="owner_match_source" value="email"/>
+							<UML:TaggedValue tag="owner_match_inner" value="email"/>
 						</UML:ModelElement.taggedValue>
 						<UML:Classifier.feature>
 							<UML:Attribute name="applicationname" xmi.id="BOUML_0x49b1940" visibility="private" ownerScope="instance">
@@ -112,11 +124,23 @@
 								<UML:AssociationEnd.participant>
 									<UML:Class xmi.idref="BOUML_0x49b00a0"/>
 								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
 							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider_ApplicationRelease" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b0140">
 								<UML:AssociationEnd.participant>
 									<UML:Class xmi.idref="BOUML_0x49b0140"/>
 								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
@@ -126,11 +150,23 @@
 								<UML:AssociationEnd.participant>
 									<UML:Class xmi.idref="BOUML_0x49b1f60"/>
 								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
 							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider_ApplicationRelease" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b0140">
 								<UML:AssociationEnd.participant>
 									<UML:Class xmi.idref="BOUML_0x49b0140"/>
 								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
