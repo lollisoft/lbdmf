@@ -47,6 +47,7 @@
 #endif
 #ifdef LINUX
 #include <dlfcn.h>
+#include <unistd.h>
 #include <signal.h>
 #ifdef __cplusplus
 extern "C" {
