@@ -47,6 +47,7 @@
 #endif
 #ifdef LINUX
 #include <dlfcn.h>
+#include <unistd.h>
 #include <signal.h>
 #ifdef __cplusplus
 extern "C" {
@@ -1172,16 +1173,6 @@ DLLEXPORT char* LB_CDECL translateText(const char* text) {
 	if (locale == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Locale, locale)
 
-		if (locale == NULL) {
-			if (translated != NULL)
-			{
-				free(translated);
-				translated = NULL;
-			}
-			if (translated == NULL) translated = (char*) strdup(text);
-			return translated;
-		}
-		
 		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 		UAP(lb_I_Plugin, pl)
 		UAP(lb_I_Unknown, ukPl)
@@ -1382,12 +1373,11 @@ DLLEXPORT lbErrCodes LB_CDECL lbUnloadModule(const char* name) {
 				}
 				printf("Unload module %s with %d references.\n", name, delMod->libreferences);
 				while (dlclose(delMod->lib) == 0) {
-					if (isVerbose())
-						printf("Unloaded module %s.\n", name);
+					//if (isVerbose())
+					printf("Unloaded module %s.\n", name);
 				}
 
 				free(delMod->name);
-				delMod->name = NULL;
 				delete delMod;
 			} else {
 				lastMod = temp;
