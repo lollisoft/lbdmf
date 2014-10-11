@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.3 $
+ * $Revision: 1.114.2.4 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.3 2013/10/26 04:39:12 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.4 2014/10/11 06:46:46 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.4  2014/10/11 06:46:46  lollisoft
+ * Fixed issues with soname parameter.
+ *
  * Revision 1.114.2.3  2013/10/26 04:39:12  lollisoft
  * Fixes on Linux related to socket and transfer classes.
  *
@@ -1685,7 +1688,7 @@ void write_so_Target(char* modulename) {
 #endif
 #ifdef UNIX
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
-  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) $(LDFLAGS) -shared -Wl,-soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
 #ifdef OSX
@@ -1734,7 +1737,7 @@ void write_so_bundleTarget(char* modulename) {
 #endif
 #ifdef UNIX
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
-  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) $(LDFLAGS) -shared -Wl,-soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
 #ifdef OSX
@@ -1783,7 +1786,7 @@ void write_wx_so_Target(char* modulename) {
 #endif
 #ifdef UNIX
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
-  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) $(LDFLAGS) -shared -Wl,-soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1831,7 +1834,7 @@ void write_wx_shared_Target(char* modulename) {
 #endif
 #ifdef UNIX
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
-  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) $(LDFLAGS) -shared -Wl,-soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) `wx-config --libs` $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -1936,7 +1939,7 @@ void write_wx_framework_Target(char* modulename) {
 #endif
 #ifdef UNIX
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
-  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) $(LDFLAGS) -shared -Wl,-soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -2143,7 +2146,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.3 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.4 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
