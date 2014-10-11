@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.4 $
+ * $Revision: 1.114.2.5 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.4 2014/10/11 06:46:46 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.5 2014/10/11 10:29:39 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.5  2014/10/11 10:29:39  lollisoft
+ * Some remaining -WL in unix targets.
+ *
  * Revision 1.114.2.4  2014/10/11 06:46:46  lollisoft
  * Fixed issues with soname parameter.
  *
@@ -2033,7 +2036,7 @@ void write_framework_Target(char* modulename) {
 #endif
 #ifdef UNIX
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
-  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) $(LDFLAGS) -shared -Wl,-soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 #ifdef OSX
 #define UNIX
@@ -2069,7 +2072,7 @@ void write_soPlugin_Target(char* modulename) {
 
 #ifndef OSX
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
-  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) $(LDFLAGS) -shared -Wl,-soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(LIBS) $(VENDORLIBS)\n");
 #endif
 
   printf("\n");
@@ -2113,7 +2116,7 @@ void write_wx_soPlugin_Target(char* modulename) {
 
 #ifndef OSX
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
-  printf("\t\t$(CC) $(LDFLAGS) -shared -WL,soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(VENDORLIBS)\n");
+  printf("\t\t$(CC) $(LDFLAGS) -shared -Wl,-soname,$(PROGRAM).$(MAJOR) -o $(PROGRAM).$(MAJOR).$(MINOR).$(MICRO) $(OBJS) $(OBJDEP) $(VENDORLIBS)\n");
 #endif
 
   printf("\n");
@@ -2146,7 +2149,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.4 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.5 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
