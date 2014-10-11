@@ -36,6 +36,7 @@
 #include <windows.h>
 #endif
 #ifdef UNIX
+#include <unistd.h>
 #endif
 
 #ifndef LBDMF_PREC
@@ -55,8 +56,6 @@
 #include <direct.h>
 #endif
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDMFXslt.h>
 
 // Includes for the libxml / libxslt libraries
@@ -206,29 +205,6 @@ bool LB_STDCALL lbDMFXslt::fileFromAction(lb_I_InputStream* stream) {
 	return false;
 }
 
-lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const char* name) {
-	applications->finishIteration();
-	
-	while (applications->hasMoreElements()) {
-		applications->setNextElement();
-		if (strcmp(applications->get_name(), name) == 0)
-			return ERR_NONE;
-	}
-	
-	return ERR_ENTITY_NOT_FOUND;
-}
-
-char* LB_STDCALL lookupParameter(lb_I_ApplicationParameter* from, const char* name, long ApplicationID) {
-	from->finishIteration();
-	
-	while (from->hasMoreElements()) {
-		from->setNextElement();
-		if (from->get_anwendungid() == ApplicationID && strcmp(from->get_parametername(), name) == 0)
-			return from->get_parametervalue();
-	}
-
-	return NULL;
-}
 
 /**
  * \brief Perform XSLT transformation as action step.
@@ -331,9 +307,9 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 	metaapp->load();
 	metaapp->setLoadFromDatabase(b);
 
-	UAP(lb_I_SecurityProvider, securityManager)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+	UAP(lb_I_Applications, applications)
+	applications = metaapp->getApplicationModel();
+	applications->selectApplication(ApplicationName->charrep());
 	
 	if (activeDocument != NULL) {
 		UAP(lb_I_KeyBase, key)
@@ -346,16 +322,16 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		QI(name, lb_I_KeyBase, key)
 		uk = document->getElement(&key);
 		QI(uk, lb_I_ApplicationParameter, appParams)
-		AppID->setData(securityManager->getApplicationID());
+		AppID->setData(applications->getApplicationID());
 		
 		id = (long) AppID->getData();
 		
-        _CL_LOG << "Change to new output directory: " << lookupParameter(*&appParams, "codegenbasedir", id) LOG_
+        _CL_LOG << "Change to new output directory: " << appParams->getParameter("codegenbasedir", id) LOG_
 		
-		if (strcmp(lookupParameter(*&appParams, "codegenbasedir", id), "") == 0) {
+		if (strcmp(appParams->getParameter("codegenbasedir", id), "") == 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_DirLocation, dirloc)
 			if (metaapp->askForDirectory(*&dirloc)) {
-				appParams->add("codegenbasedir", dirloc->charrep(), id);
+				appParams->addParameter("codegenbasedir", dirloc->charrep(), id);
 				
 				UAP(lb_I_Database, database)
 				
@@ -466,7 +442,7 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 	metaapp->setStatusText("Info", "Read XML data ...");
 	// *********************************************************
 
-	if (do_chdir) chdir(lookupParameter(*&appParams, "codegenbasedir", id));
+	if (do_chdir) chdir(appParams->getParameter("codegenbasedir", id));
 
 	exsltRegisterAll();
 	xsltSecurityPrefsPtr sec = NULL;
@@ -624,8 +600,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
