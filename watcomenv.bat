@@ -240,7 +240,7 @@ exit
 :CCBUILD_END
 
 REM Real installation of mingw may change
-SET PATH=%PATH%;%DEVLW%\Q\develop\Tools\mingw\bin
+SET PATH=%PATH%;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\bin
 
 cd %DEVROOT%\BaseDevelopment
 
