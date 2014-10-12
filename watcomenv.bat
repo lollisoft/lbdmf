@@ -89,8 +89,8 @@ set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 :JENKINSBUILD
 
 set DEVLW=%CD:~0,2%
-set BASE=%DEVLW%\projects\CPP
-set BASE_MAKE=%DEVLW:\=/%/projects/CPP
+set BASE=projects\CPP
+set BASE_MAKE=projects/CPP
 
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
@@ -238,4 +238,5 @@ rem wdw ..\..\bin\%1
 start %1
 exit
 :CCBUILD_END
+cd %DEVROOT%\BaseDevelopment
 mingw32-make
