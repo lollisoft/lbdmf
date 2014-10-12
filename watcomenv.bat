@@ -97,12 +97,13 @@ set DEVLW=%CD%
 
 CD %BACKUPCD%
 
-set BASE=\projects\lbDMF\develop
-set BASE_MAKE=/projects/lbDMF/develop
+set BASE=\projects\CPP
+set BASE_MAKE=/projects/CPP
 
 
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
 
 @rem ----------------------------------------------------------------
 @rem *                          End config                          *
