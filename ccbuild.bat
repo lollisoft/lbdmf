@@ -29,7 +29,7 @@ echo * Using a properly set up ODBC database (tested is PostgreSQL), no problems
 echo * known.                                                                        * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 
-call Projects\CPP\watcomenv.bat none CC
+call Projects\CPP\watcomenv.bat none JENKINS
 
 cd %DEVROOT%
 
