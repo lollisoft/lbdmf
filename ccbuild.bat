@@ -35,7 +35,7 @@ call Projects\CPP\watcomenv.bat none JENKINS
 cd %DEVROOT%
 echo %CD%
 
-cd Basedevelopment
+cd Projects\CPP\Basedevelopment
 
 SET PATH=%PATH%;C:\Q\develop\Tools\mingw\bin;C:\Q\develop\Projects\bin
 
