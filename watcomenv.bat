@@ -125,7 +125,7 @@ rem set CVSBIN=%DEVROOT%\Tools\cvs
 set WATBIN=%DEVLW%\%BASE%\Tools\WATCOM\BINNT;%DEVROOT%\Tools\WATCOM\BINW
 set DEVBIN=%DEVLW%\%BASE%\bin
 
-set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin
+set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;
 
 rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
@@ -238,5 +238,10 @@ rem wdw ..\..\bin\%1
 start %1
 exit
 :CCBUILD_END
+
+REM Real installation of mingw may change
+SET PATH=%PATH%;%DEVLW%\Q\develop\Tools\mingw\bin
+
 cd %DEVROOT%\BaseDevelopment
+
 mingw32-make
