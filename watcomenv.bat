@@ -42,6 +42,8 @@ set CONSOLE_DETACH=yes
 rem set lbDMFPasswd=
 rem set lbDMFUser=
 
+if "%2"=="JENKINS" goto JENKINSBUILD:
+
 if "%COMPUTERNAME%"=="ANAKIN" goto NODIST:
 if "%COMPUTERNAME%"=="T43" goto NODIST:
 
@@ -86,6 +88,15 @@ set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
 :BEGINENVIRONMENT
 
+:JENKINSBUILD
+
+set DEVLW=.
+set BASE=\projects\lbDMF\develop
+set BASE_MAKE=/projects/lbDMF/develop
+
+
+set DEVROOT=%DEVLW%\%BASE%
+set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
 @rem ----------------------------------------------------------------
 @rem *                          End config                          *
@@ -212,6 +223,7 @@ REM MSYS Path
 REM -------------------
 
 set PATH=%PATH%;"%DEVROOT%\Tools\MinGW\msys\1.0\bin"
+
 REM -------------------
 REM Prepend my cvs path
 REM -------------------
