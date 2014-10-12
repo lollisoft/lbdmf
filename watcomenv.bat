@@ -90,7 +90,13 @@ set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
 :JENKINSBUILD
 
-set DEVLW=.
+SET BACKUPCD=%CD%
+CD \
+
+set DEVLW=%CD%
+
+CD %BACKUPCD%
+
 set BASE=\projects\lbDMF\develop
 set BASE_MAKE=/projects/lbDMF/develop
 
