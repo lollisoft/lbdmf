@@ -244,7 +244,6 @@ SET PATH=%PATH%;%DEVLW%\Q\develop\Tools\mingw\bin
 
 cd %DEVROOT%\BaseDevelopment
 
-CRUISECONTROL=yes
-export CRUISECONTROL
+SET CRUISECONTROL=yes
 
 mingw32-make
