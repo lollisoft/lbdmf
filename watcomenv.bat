@@ -86,20 +86,11 @@ set BASE_MAKE=Programme/CruiseControl/projects/lbDMF/develop
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
-:BEGINENVIRONMENT
-
 :JENKINSBUILD
 
-SET BACKUPCD=%CD%
-CD \
-
-set DEVLW=%CD%
-
-CD %BACKUPCD%
-
-set BASE=\projects\CPP
-set BASE_MAKE=/projects/CPP
-
+set DEVLW=%CD:~0,-1%
+set BASE=%CD%\projects\CPP
+set BASE_MAKE=%CD:\=/%/projects/CPP
 
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
@@ -108,6 +99,8 @@ set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
 @rem ----------------------------------------------------------------
 @rem *                          End config                          *
 @rem ----------------------------------------------------------------
+
+:BEGINENVIRONMENT
 
 rem WXWIN stuff
 
