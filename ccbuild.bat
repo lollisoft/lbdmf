@@ -1,3 +1,4 @@
+
 @REM Simulate first startup
 
 echo --------------------------------------------------------------------------------- > readme.txt
@@ -32,7 +33,10 @@ echo ---------------------------------------------------------------------------
 call Projects\CPP\watcomenv.bat none JENKINS
 
 cd %DEVROOT%
+echo %CD%
 
-cd Projects\CPP\Basedevelopment
+cd Basedevelopment
 
-make
+SET PATH=%PATH%;C:\Q\develop\Tools\mingw\bin;C:\Q\develop\Projects\bin
+
+mingw32-make
