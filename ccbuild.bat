@@ -31,12 +31,3 @@ echo * known.                                                                   
 echo --------------------------------------------------------------------------------- >> readme.txt 
 
 call Projects\CPP\watcomenv.bat none JENKINS
-
-cd %DEVROOT%
-echo %CD%
-
-cd Projects\CPP\Basedevelopment
-
-SET PATH=%PATH%;C:\Q\develop\Tools\bin;C:\Q\develop\Tools\mingw\bin;C:\Q\develop\Projects\bin
-
-mingw32-make
