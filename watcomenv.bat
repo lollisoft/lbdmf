@@ -88,9 +88,9 @@ set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
 :JENKINSBUILD
 
-set DEVLW=%CD:~0,-1%
-set BASE=%CD%\projects\CPP
-set BASE_MAKE=%CD:\=/%/projects/CPP
+set DEVLW=%CD:~0,2%
+set BASE=%DEVLW%\projects\CPP
+set BASE_MAKE=%DEVLW:\=/%/projects/CPP
 
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
@@ -236,5 +236,6 @@ if "%2"=="CC" goto CCBUILD_END:
 rem set CONSOLE_DETACH=no
 rem wdw ..\..\bin\%1
 start %1
-
+exit
 :CCBUILD_END
+mingw32-make
