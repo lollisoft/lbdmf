@@ -1,6 +1,6 @@
 @REM Simulate first startup
 
-echo --------------------------------------------------------------------------------- >> readme.txt
+echo --------------------------------------------------------------------------------- > readme.txt
 echo *                        Basic development settings                             * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt
 echo * You have started lbDMF Develop the first time. Wait until wxWidgets           * >> readme.txt
