@@ -37,6 +37,6 @@ echo %CD%
 
 cd Projects\CPP\Basedevelopment
 
-SET PATH=%PATH%;C:\Q\develop\Tools\mingw\bin;C:\Q\develop\Projects\bin
+SET PATH=%PATH%;C:\Q\develop\Tools\bin;C:\Q\develop\Tools\mingw\bin;C:\Q\develop\Projects\bin
 
 mingw32-make
