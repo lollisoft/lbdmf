@@ -3,34 +3,57 @@ all: makefile
 
 STDDEP=.,$(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir,$(DEVROOT_MAKE)$(RELPATH)/include,$(DEVROOT_MAKE)$(RELPATH)/interfaces$(CUSTOM_DEP)
 
+ifndef RPMBUILD
+ifeq ($(OSTYPE), solaris)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/CPP
 else
 RELPATH=/Projects/CPP
 endif
-
-
-ifndef RPMBUILD
-ifeq ($(OSTYPE), solaris)
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=mkmk
 endif
 ifeq ($(OSTYPE), linux-debian-ppc)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=mkmk
 endif
 ifeq ($(OSTYPE), linux)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=mkmk
 endif
 ifeq ($(OSTYPE), osx)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=~/bin/mkmk
 endif
 ifeq ($(OSTYPE), Windows_NT)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 MKMK=mkmk
 endif
 ifeq ($(OSTYPE), Cross_OW)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 MKMK=mkmk
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -38,25 +61,55 @@ endif
 
 ifdef RPMBUILD
 ifeq ($(OSTYPE), solaris)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=$(prefix)/bin/mkmk
 endif
 ifeq ($(OSTYPE), linux-debian-ppc)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=$(prefix)/bin/mkmk
 endif
 ifeq ($(OSTYPE), linux)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=$(prefix)/bin/mkmk
 endif
 ifeq ($(OSTYPE), osx)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 DEVROOT_MAKE=$(DEVROOT)
 MKMK=$(prefix)/bin/mkmk
 endif
 ifeq ($(OSTYPE), Windows_NT)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 MKMK=mkmk
 endif
 ifeq ($(OSTYPE), Cross_OW)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/CPP
+else
+RELPATH=/Projects/CPP
+endif
 MKMK=mkmk
 DEVROOT_MAKE=$(DEVROOT)
 endif
