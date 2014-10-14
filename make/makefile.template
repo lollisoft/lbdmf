@@ -14,8 +14,8 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
-RELPATH_MAKE=
+RELPATH_MAKE=\Projects\CPP
+RELPATH=//Projects//CPP
 else
 RELPATH_MAKE=\Projects\CPP
 RELPATH=//Projects//CPP
