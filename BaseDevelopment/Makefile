@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.21 $
+# * $Revision: 1.229.2.22 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.21 2014/10/14 05:01:58 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.22 2014/10/14 06:04:43 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.22  2014/10/14 06:04:43  lollisoft
+# * Added rule to first create dll directory.
+# *
 # * Revision 1.229.2.21  2014/10/14 05:01:58  lollisoft
 # * Corrected RELPATH for Windows.
 # *
@@ -1693,6 +1696,9 @@ test-ldd:
 
 ../../lib:
 	-mkdir ../../lib
+
+../../dll:
+	-mkdir ../../dll
 
 ../../dll/libs:
 	-mkdir ../../dll/libs
