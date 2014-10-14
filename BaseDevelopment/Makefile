@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.20 $
+# * $Revision: 1.229.2.21 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.20 2014/03/15 06:30:31 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.21 2014/10/14 05:01:58 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.21  2014/10/14 05:01:58  lollisoft
+# * Corrected RELPATH for Windows.
+# *
 # * Revision 1.229.2.20  2014/03/15 06:30:31  lollisoft
 # * Some new features.
 # *
@@ -807,7 +810,7 @@
 #.PHONY: dummy
 
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/CPP
 else
 RELPATH=/Projects/CPP
 endif
