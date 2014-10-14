@@ -242,7 +242,7 @@ exit
 REM Real installation of mingw may change
 SET PATH=%PATH%;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin
 
-cd %DEVROOT%\BaseDevelopment
+cd %DEVROOT%\Projects\CPP\BaseDevelopment
 
 SET CRUISECONTROL=yes
 
