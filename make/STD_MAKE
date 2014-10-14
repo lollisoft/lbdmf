@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.17 $
+# * $Revision: 1.148.2.18 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.17 2013/11/03 20:25:26 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.18 2014/10/14 05:31:50 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.18  2014/10/14 05:31:50  lollisoft
+# * Added RELPATH definition for windows
+# *
 # * Revision 1.148.2.17  2013/11/03 20:25:26  lollisoft
 # * Fixed source code deployment version issues with actual MinGW.
 # * Stick on older compiler and w32api. Also removed a warning pragma.
@@ -593,7 +596,8 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH_MAKE=/Projects/CPP
+RELPATH=\\Projects\\CPP
 else
 RELPATH_MAKE=/Projects/CPP
 RELPATH=\\Projects\\CPP
@@ -664,13 +668,13 @@ WATCOM_SLASH=/
 
 STD_INCL_WATCOM_CPP =-i=.   -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)WATCOM$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)interfaces \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)cpp$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)$(RELPATH_MAKE)$(WATCOM_SLASH)interfaces \
+			-i=$(DEVROOT_MAKE)$(RELPATH_MAKE)$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
 
 ifeq ($(DEBUG_MEMORY_TYPE), trmem)	
-  STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
+  STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(RELPATH_MAKE)$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
 endif
 ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
   STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)tools$(WATCOM_SLASH)mpatrol$(WATCOM_SLASH)src
@@ -840,13 +844,13 @@ ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
 endif			
 
 STD_INCL_MINGW_CPP =-I. -I$(DEVROOT_MINGW)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)mingw$(WATCOM_SLASH)include \
-			-I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)interfaces \
-			-I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)include \
+			-I$(DEVROOT_MINGW)$(RELPATH_MAKE)$(WATCOM_SLASH)interfaces \
+			-I$(DEVROOT_MINGW)$(RELPATH_MAKE)$(WATCOM_SLASH)include \
 			-I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
 			-I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
 
 ifeq ($(DEBUG_MEMORY_TYPE), trmem)	
-  STD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
+  STD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)$(RELPATH_MAKE)$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
 endif
 ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
   STD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)$(WATCOM_SLASH)Tools$(WATCOM_SLASH)mpatrol$(WATCOM_SLASH)src
@@ -1006,13 +1010,13 @@ STD_INCL_WATCOM_CPP =-i=.   \
 			-i=$(WATCOM_HOME)$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
 			-i=$(WATCOM_WIN32_HOME)$(WATCOM_SLASH)h \
 			-i=$(WATCOM_WIN32_HOME)$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)interfaces \
-			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)include \
+			-i=$(DEVROOT_MAKE)$(RELPATH_MAKE)$(WATCOM_SLASH)interfaces \
+			-i=$(DEVROOT_MAKE)$(RELPATH_MAKE)$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)dll$(WATCOM_SLASH)include \
 			-i=$(DEVROOT_MAKE)$(WATCOM_SLASH)Projects$(WATCOM_SLASH)lib$(WATCOM_SLASH)include
 
 ifeq ($(DEBUG_MEMORY_TYPE), trmem)	
-  STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)projects$(WATCOM_SLASH)CPP$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
+  STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(RELPATH_MAKE)$(WATCOM_SLASH)vendor$(WATCOM_SLASH)trmem
 endif
 ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
   STD_INCL_WATCOM_CPP += -i=$(DEVROOT_MAKE)$(WATCOM_SLASH)tools$(WATCOM_SLASH)mpatrol$(WATCOM_SLASH)src
