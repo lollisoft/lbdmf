@@ -59,6 +59,8 @@ set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 set DEVROOT_MAKE_BASE=/cygdrive/q/%BASE_MAKE%
 
+set WXWIN=%DEVLW%\%BASE%\wxwin\wx
+
 goto BEGINENVIRONMENT:
 
 :DISTMODE
@@ -74,6 +76,8 @@ set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 set DEVROOT_MAKE_BASE=/cygdrive/c/%BASE_MAKE%
 
+set WXWIN=%DEVLW%\%BASE%\wxwin\wx
+
 goto BEGINENVIRONMENT:
 
 :CCBUILD
@@ -86,6 +90,10 @@ set BASE_MAKE=Programme/CruiseControl/projects/lbDMF/develop
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 
+set WXWIN=%DEVLW%\%BASE%\wxwin\wx
+
+goto BEGINENVIRONMENT:
+
 :JENKINSBUILD
 
 set DEVLW=%CD:~0,2%
@@ -96,6 +104,8 @@ set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
 
+set WXWIN=C:\Q\develop\wxwin\wx
+
 @rem ----------------------------------------------------------------
 @rem *                          End config                          *
 @rem ----------------------------------------------------------------
@@ -104,7 +114,6 @@ set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
 
 rem WXWIN stuff
 
-set WXWIN=%DEVLW%\%BASE%\wxwin\wx
 set WXDIR=%WXWIN%
 
 set PLUGIN_DIR=%DEVLW%\%BASE%\Projects\plugins
