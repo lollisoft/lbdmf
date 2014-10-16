@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.5 $
+ * $Revision: 1.114.2.6 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.5 2014/10/11 10:29:39 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.6 2014/10/16 04:28:24 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.6  2014/10/16 04:28:24  lollisoft
+ * Corrected some buffer overflow issues when the path is too long.
+ *
  * Revision 1.114.2.5  2014/10/11 10:29:39  lollisoft
  * Some remaining -WL in unix targets.
  *
@@ -2149,7 +2152,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.5 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.6 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2223,7 +2226,7 @@ void WriteHeader(FILE *f, char *ExeName)
 /*...svoid ListFiles\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
 void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
-  char s[120],FName[PATH_MAX];
+  char s[PATH_MAX],FName[PATH_MAX];
   int i;
   TDepItem *d;
 
@@ -2252,7 +2255,7 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 /*...svoid ListFilesWithComma\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
 void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
-  char s[120],FName[PATH_MAX];
+  char s[PATH_MAX],FName[PATH_MAX];
   int i;
   TDepItem *d;
 
@@ -2387,8 +2390,12 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   replace(ObjNameC, "/", "\\\\");
 
+  //fprintf(stderr, "List files.\n");
+
   ListFiles(f,Line,&p->l);
   int len;
+
+  //fprintf(stderr, "Decide target type.\n");
 
   switch (targettype) {
         case IDL_TARGET:
@@ -2716,17 +2723,20 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
   TIncludeParser p;
   char FileName[256];
 
+  //fprintf(stderr, "Prepare filename.\n");
   strcpy(FileName,d->Path);
   strcat(FileName,d->Name);
 
   p.setIncludes(iPathList, count);
 
+  //fprintf(stderr, "Parse.\n");
   p.Parse(FileName);
 
   char fullName[1000] = "";
 
   strcpy(fullName, d->Path);
   strcat(fullName, d->Name);
+  //fprintf(stderr, "Write dep.\n");
   WriteDep(f,fullName,&p);
 #ifdef VERBOSE
   printf("Warning: Using hardcoded char array.\n");
