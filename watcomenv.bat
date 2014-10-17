@@ -106,7 +106,7 @@ set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
 
 REM Current location for the dependent wx library (subst Q: C:\Q - thus C:\Q ...)
 set WXWIN=C:\Q\develop\wxwin\wx
-set wxBase_Win=C:\Q\develop\wxwin\lib
+set wxBase_Win=%WXWIN%\lib
 set wxBase=%wxBase_Win:\=/%
 
 @rem ----------------------------------------------------------------
