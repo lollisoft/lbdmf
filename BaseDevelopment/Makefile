@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.26 $
+# * $Revision: 1.229.2.27 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.26 2014/10/18 05:11:03 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.27 2014/10/18 06:30:23 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.27  2014/10/18 06:30:23  lollisoft
+# * Moved definitions for wget and tar
+# *
 # * Revision 1.229.2.26  2014/10/18 05:11:03  lollisoft
 # * Added rule to download libxml in the currently used version.
 # *
@@ -918,6 +921,8 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 DEVROOT_MAKE=$(DEVROOT_MAKE_BASE)
+WGET=wget
+TAR=tar
 endif
 
 ifeq ($(OSTYPE), Cross_OW)
