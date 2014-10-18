@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.29 $
+# * $Revision: 1.229.2.30 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.29 2014/10/18 07:45:08 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.30 2014/10/18 10:11:45 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.30  2014/10/18 10:11:45  lollisoft
+# * Tell me where tar is.
+# *
 # * Revision 1.229.2.29  2014/10/18 07:45:08  lollisoft
 # * Adding z to tar command parameter.
 # *
@@ -1838,6 +1841,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxml2-2.8.0:
 	$(WGET) ftp://xmlsoft.org/libxml2/libxml2-2.8.0.tar.gz
+	which $(TAR)
 	$(TAR) -zxf libxml2-2.8.0.tar.gz --directory ../vendor
 endif
 
