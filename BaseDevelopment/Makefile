@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.25 $
+# * $Revision: 1.229.2.26 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.25 2014/10/18 03:45:08 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.26 2014/10/18 05:11:03 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.26  2014/10/18 05:11:03  lollisoft
+# * Added rule to download libxml in the currently used version.
+# *
 # * Revision 1.229.2.25  2014/10/18 03:45:08  lollisoft
 # * Added bin rule and dependency
 # *
@@ -1821,7 +1824,13 @@ endif
 	$(MAKE) -s -C $@ -e MODULE=gold -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-../vendor/libxml2-2.8.0/win32/makefile.mingw: dummy
+ifeq ($(OSTYPE), Windows_NT)
+../vendor/libxml2-2.8.0:
+	$(WGET) ftp://xmlsoft.org/libxml2/libxml2-2.8.0.tar.gz
+	$(TAR) -xf libxml2-2.8.0.tar.gz ../vendor
+endif
+
+../vendor/libxml2-2.8.0/win32/makefile.mingw: ../vendor/libxml2-2.8.0
 	../vendor/libxml2-2.8.0/win32/autoconfigure.bat
 
 ../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll: dummy ../vendor/libxml2-2.8.0/win32/makefile.mingw
