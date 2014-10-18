@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.24 $
+# * $Revision: 1.229.2.25 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.24 2014/10/18 02:53:02 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.25 2014/10/18 03:45:08 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.25  2014/10/18 03:45:08  lollisoft
+# * Added bin rule and dependency
+# *
 # * Revision 1.229.2.24  2014/10/18 02:53:02  lollisoft
 # * Added rule to copy bison.simple file. This is not ideal.
 # *
@@ -1700,6 +1703,9 @@ endif
 test-ldd:
 	./copy-wxGTK-libs.sh $(prefix)
 
+../../bin:
+	-mkdir ../../bin
+	
 ../../lib:
 	-mkdir ../../lib
 
@@ -1761,7 +1767,7 @@ dummy:
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-../../bin/bison.simple:
+../../bin/bison.simple: ../../bin
 	-cp ../vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/bison.simple ../../bin/bison.simple
 	
 ifneq ($(OSTYPE), Windows_NT)
