@@ -251,8 +251,8 @@ start %1
 exit
 :CCBUILD_END
 
-REM Real installation of mingw may change
-SET PATH=%PATH%;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin
+REM Tools used but are prerequisites and may be located anywhere.
+SET PATH=%PATH%;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin;%DEVLW%\Q\develop\Tools\WGet\bin
 
 cd %DEVROOT%\Projects\CPP\BaseDevelopment
 
