@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.27 $
+# * $Revision: 1.229.2.28 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.27 2014/10/18 06:30:23 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.28 2014/10/18 06:55:33 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.28  2014/10/18 06:55:33  lollisoft
+# * Specifying directory corrected.
+# *
 # * Revision 1.229.2.27  2014/10/18 06:30:23  lollisoft
 # * Moved definitions for wget and tar
 # *
@@ -1832,7 +1835,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxml2-2.8.0:
 	$(WGET) ftp://xmlsoft.org/libxml2/libxml2-2.8.0.tar.gz
-	$(TAR) -xf libxml2-2.8.0.tar.gz ../vendor
+	$(TAR) -xf libxml2-2.8.0.tar.gz --directory ../vendor
 endif
 
 ../vendor/libxml2-2.8.0/win32/makefile.mingw: ../vendor/libxml2-2.8.0
