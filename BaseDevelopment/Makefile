@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.23 $
+# * $Revision: 1.229.2.24 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.23 2014/10/14 06:17:05 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.24 2014/10/18 02:53:02 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.24  2014/10/18 02:53:02  lollisoft
+# * Added rule to copy bison.simple file. This is not ideal.
+# *
 # * Revision 1.229.2.23  2014/10/14 06:17:05  lollisoft
 # * Added dependency
 # *
@@ -1758,6 +1761,9 @@ dummy:
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
+../../bin/bison.simple:
+	-cp ../vendor/databaselayer/src/Implementations/Sqllite/sqlitefk/src/bison.simple ../../bin/bison.simple
+	
 ifneq ($(OSTYPE), Windows_NT)
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
 	@echo Build Grammar makefile
@@ -1775,7 +1781,7 @@ ifneq ($(OSTYPE), Windows_NT)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-../vendor/databaselayer/src/Implementations/Sqllite: dummy
+../vendor/databaselayer/src/Implementations/Sqllite: ../../bin/bison.simple
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
