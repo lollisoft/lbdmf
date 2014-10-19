@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.30 $
+# * $Revision: 1.229.2.31 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.30 2014/10/18 10:11:45 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.31 2014/10/19 06:08:40 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.31  2014/10/19 06:08:40  lollisoft
+# * Changed how to build libxml.
+# *
 # * Revision 1.229.2.30  2014/10/18 10:11:45  lollisoft
 # * Tell me where tar is.
 # *
@@ -1841,12 +1844,13 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxml2-2.8.0:
 	$(WGET) ftp://xmlsoft.org/libxml2/libxml2-2.8.0.tar.gz
-	which $(TAR)
 	$(TAR) -zxf libxml2-2.8.0.tar.gz --directory ../vendor
 endif
 
 ../vendor/libxml2-2.8.0/win32/makefile.mingw: ../vendor/libxml2-2.8.0
-	../vendor/libxml2-2.8.0/win32/autoconfigure.bat
+	cd ..\\vendor\\libxml2-2.8.0\\win32
+	cscript configure.js compiler=mingw prefix=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0 include=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0/include lib=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0/lib debug=no include=$(DEVROOT_MAKE)$(RELPATH)/vendor/libiconv-1.9.1/include iconv=no
+	cd ..\\..\\..\\BaseDevelopment
 
 ../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll: dummy ../vendor/libxml2-2.8.0/win32/makefile.mingw
 	$(MAKE) -s -C ../vendor/libxml2-2.8.0/win32 -f makefile.mingw dep libxml
