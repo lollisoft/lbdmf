@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.34 $
+# * $Revision: 1.229.2.35 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.34 2014/10/19 07:40:33 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.35 2014/10/19 07:57:18 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.35  2014/10/19 07:57:18  lollisoft
+# * Splitted cd command
+# *
 # * Revision 1.229.2.34  2014/10/19 07:40:33  lollisoft
 # * Try using shell
 # *
@@ -1861,9 +1864,11 @@ PATHSEP2=\\
 PATHSEP=$(strip $(PATHSEP2))
 
 ../vendor/libxml2-2.8.0/win32/makefile.mingw: ../vendor/libxml2-2.8.0
-	$(shell cd ..$(PATHSEP)vendor$(PATHSEP)libxml2-2.8.0$(PATHSEP)win32)
+	cd .. \
+	cd vendor \
+	cd libxml2-2.8.0 \
+	cd win32 \
 	cscript configure.js compiler=mingw prefix=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0 include=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0/include lib=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0/lib debug=no include=$(DEVROOT_MAKE)$(RELPATH)/vendor/libiconv-1.9.1/include iconv=no
-	$(shell cd ..$(PATHSEP)..$(PATHSEP)..$(PATHSEP)BaseDevelopment)
 
 endif
 
