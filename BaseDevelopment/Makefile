@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.32 $
+# * $Revision: 1.229.2.33 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.32 2014/10/19 06:35:44 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.33 2014/10/19 07:10:27 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.33  2014/10/19 07:10:27  lollisoft
+# * Using pathsep creation with stip.
+# *
 # * Revision 1.229.2.32  2014/10/19 06:35:44  lollisoft
 # * Switched to forward slashes.
 # *
@@ -1850,10 +1853,16 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(TAR) -zxf libxml2-2.8.0.tar.gz --directory ../vendor
 endif
 
+ifeq ($(OSTYPE), Windows_NT)
+PATHSEP2=\\
+PATHSEP=$(strip $(PATHSEP2))
+
 ../vendor/libxml2-2.8.0/win32/makefile.mingw: ../vendor/libxml2-2.8.0
-	cd ../vendor/libxml2-2.8.0/win32
+	cd ..$(PATHSEP)vendor$(PATHSEP)libxml2-2.8.0$(PATHSEP)win32
 	cscript configure.js compiler=mingw prefix=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0 include=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0/include lib=$(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0/lib debug=no include=$(DEVROOT_MAKE)$(RELPATH)/vendor/libiconv-1.9.1/include iconv=no
-	cd ../../../BaseDevelopment
+	cd ..$(PATHSEP)..$(PATHSEP)..$(PATHSEP)BaseDevelopment
+
+endif
 
 ../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll: dummy ../vendor/libxml2-2.8.0/win32/makefile.mingw
 	$(MAKE) -s -C ../vendor/libxml2-2.8.0/win32 -f makefile.mingw dep libxml
