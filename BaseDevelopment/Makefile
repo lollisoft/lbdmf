@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.38 $
+# * $Revision: 1.229.2.39 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.38 2014/10/19 10:02:58 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.39 2014/10/19 11:47:35 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.39  2014/10/19 11:47:35  lollisoft
+# * Preparing config.h file.
+# *
 # * Revision 1.229.2.38  2014/10/19 10:02:58  lollisoft
 # * Fixed typo.
 # *
@@ -1904,6 +1907,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(WGET) ftp://xmlsoft.org/libxml2/libxslt-1.1.21.tar.gz
 	$(TAR) -zxf libxslt-1.1.21.tar.gz --directory ../vendor
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
+	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
 endif
 
 
