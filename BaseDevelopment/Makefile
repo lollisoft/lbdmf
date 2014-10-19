@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.36 $
+# * $Revision: 1.229.2.37 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.36 2014/10/19 09:12:26 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.37 2014/10/19 09:44:02 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.37  2014/10/19 09:44:02  lollisoft
+# * Added new rule to download libxslt and prepare makefile.module for it.
+# *
 # * Revision 1.229.2.36  2014/10/19 09:12:26  lollisoft
 # * Adding semicolons.
 # *
@@ -1893,7 +1896,15 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -s -C $@
 endif
 
-../vendor/libxslt-1.1.21/libxslt: dummy
+ifeq ($(OSTYPE), Windows_NT)
+../vendor/libxslt-1.1.21:
+	$(WGET) ftp://xmlsoft.org/libxml2/libxslt-1.1.21.tar.gz
+	$(TAR) -zxf libxslt-1.1.21.tar.gz --directory ../vendor
+	cp ../vendor/makefile.module.libexslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
+endif
+
+
+../vendor/libxslt-1.1.21/libxslt: ../vendor/libxslt-1.1.21
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
