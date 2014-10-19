@@ -27,8 +27,8 @@
 #			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MINGW)/wxwin/wx/include
-MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MINGW)/wxwin/wx/include
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(WXDIR)/include
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(WXDIR)/include
 
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include
@@ -36,7 +36,7 @@ MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+#wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
