@@ -9,7 +9,7 @@
 #.PHONY: dummy
 
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/CPP
 endif
 
 ifneq ($(CRUISECONTROL), yes)
