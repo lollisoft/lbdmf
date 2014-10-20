@@ -32,7 +32,7 @@ MOD_INCL_CPP=$(STD_INCL_CPP)
 OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
-wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+#wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
@@ -43,7 +43,7 @@ MINGWLIBS += -lwxShapeFramework
 MINGWLIBS += -llbHook
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/wxwin/wx/include -I $(DEVROOT_MINGW)/Projects/CPP/vendor/wxShapeFramework/include
+MOD_INCL_MINGW_CPP += -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/CPP/vendor/wxShapeFramework/include
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
