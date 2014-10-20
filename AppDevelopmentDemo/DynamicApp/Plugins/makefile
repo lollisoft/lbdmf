@@ -46,7 +46,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/CPP
 else
 RELPATH=/Projects/CPP
 endif
@@ -63,7 +63,6 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -77,7 +76,6 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -91,7 +89,6 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -105,10 +102,7 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
-	ExtensionObjects_Generated/lbDMFManager \
-	lbDynamicAppStorage_Generated/lbDMFManager_v2_0 \
 	lbDynamicAppStorage
 endif
 
@@ -125,10 +119,7 @@ TARGETWXPLUGIN=wxplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
-	ExtensionObjects_Generated/lbDMFManager \
-	lbDynamicAppStorage_Generated/lbDMFManager_v2_0 \
 	lbDynamicAppStorage
 endif
 
@@ -150,23 +141,11 @@ mkrelease:
 
 dummy:
 
-ExtensionObjects_Generated/lbDMFManager: dummy
-	$(MAKE) -C $@ -e MODULE=lbDMFManagerExtensionObjects -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-
-lbDynamicAppStorage_Generated/lbDMFManager_v2_0: dummy
-	$(MAKE) -C $@ -e MODULE=lbDynamicAppStorage_v2_0 -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-
 lbDynamicAppStorage: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 lbDMFXslt: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-
-lbDMFSimpleSecurityProvider: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
