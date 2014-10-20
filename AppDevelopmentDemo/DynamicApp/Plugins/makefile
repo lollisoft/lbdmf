@@ -46,7 +46,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/CPP
 else
 RELPATH=/Projects/CPP
 endif
@@ -63,7 +63,6 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -77,7 +76,6 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -91,7 +89,6 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -105,7 +102,6 @@ TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -123,7 +119,6 @@ TARGETWXPLUGIN=wxplugin
 
 ALLTARGETS = \
 	lbDMFXslt \
-	lbDMFSimpleSecurityProvider \
 	lbDMFBasicActionSteps \
 	lbDynamicAppStorage
 endif
@@ -151,10 +146,6 @@ lbDynamicAppStorage: dummy
 	$(MAKE) -C $@
 
 lbDMFXslt: dummy
-	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
-
-lbDMFSimpleSecurityProvider: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
