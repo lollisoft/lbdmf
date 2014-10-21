@@ -100,7 +100,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/CPP
 else
 RELPATH=\\Projects\\CPP
 endif
