@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.20 $
+# * $Revision: 1.148.2.21 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.20 2014/10/18 06:30:23 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.21 2014/10/22 05:48:37 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.21  2014/10/22 05:48:37  lollisoft
+# * Fixed RELPATH in STD_MAKE for OSTYPE=linux for now.
+# *
 # * Revision 1.148.2.20  2014/10/18 06:30:23  lollisoft
 # * Moved definitions for wget and tar
 # *
@@ -621,7 +624,7 @@ endif
 
 ifeq ($(OSTYPE), linux)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/CPP
 else
 RELPATH_MAKE=/Projects/CPP
 RELPATH=/Projects/CPP
