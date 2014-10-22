@@ -1,17 +1,5 @@
 # Standard template
 
-ifeq ($(OSTYPE), Cross_OW)
-ifeq ($(CRUISECONTROL), yes)
-RELPATH=
-RELPATH_MAKE=
-else
-RELPATH_MAKE=/Projects/CPP
-RELPATH=/Projects/CPP
-endif
-DEVROOT_MAKE=$(DEVROOT)
-include $(DEVROOT)$(RELPATH)/make/STD_MAKE
-endif
-
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH_MAKE=\Projects\CPP
@@ -20,6 +8,17 @@ else
 RELPATH_MAKE=\Projects\CPP
 RELPATH=//Projects//CPP
 endif
+
+ifneq ($(OSTYPE), Windows_NT)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH_MAKE=/Projects/CPP
+RELPATH=/Projects/CPP
+else
+RELPATH_MAKE=/Projects/CPP
+RELPATH=/Projects/CPP
+endif
+
+
 include $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/STD_MAKE
 
 # Rule to overcome the possible override of path with recursive make
