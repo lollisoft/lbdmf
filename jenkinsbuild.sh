@@ -18,6 +18,8 @@ echo export LBMODULEFUNCTOR=getlb_ModuleInstance >> makefile
 echo export LD_LIBRARY_PATH=`pwd`/lib: >> makefile
 echo export OSTYPE=linux >> makefile
 
+echo $DEVROOT
+
 i=0
 while [ $# -gt 0 ]
 do
