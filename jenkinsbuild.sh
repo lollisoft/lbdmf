@@ -1,48 +1,44 @@
 #!/bin/sh
 
-cd Projects/CPP
-
 echo Hudson build started at: `pwd`
-echo all: BaseDevelopment > makefile
-echo \# >> makefile
+echo all: BaseDevelopment > Projects/CPP/makefile
+echo \# >> Projects/CPP/makefile
 
 #echo Updating full source tree to be save
 #cvs update -d
 
-echo export DEVROOT=`pwd` >> makefile
-echo export prefix=`pwd` >> makefile
-echo export PATH=`pwd`/bin:/usr/bin:/usr/local/bin:$PATH >> makefile
-echo export MODULELIB=lbModule.so >> makefile
-echo export LBXMLFUNCTOR=getlbDOMConfigInstance >> makefile
-echo export LBMODULEFUNCTOR=getlb_ModuleInstance >> makefile
-echo export LD_LIBRARY_PATH=`pwd`/lib: >> makefile
-echo export OSTYPE=linux >> makefile
-
-echo $DEVROOT
+echo export DEVROOT=`pwd` >> Projects/CPP/makefile
+echo export prefix=`pwd` >> Projects/CPP/makefile
+echo export PATH=`pwd`/bin:/usr/bin:/usr/local/bin:$PATH >> Projects/CPP/makefile
+echo export MODULELIB=lbModule.so >> Projects/CPP/makefile
+echo export LBXMLFUNCTOR=getlbDOMConfigInstance >> Projects/CPP/makefile
+echo export LBMODULEFUNCTOR=getlb_ModuleInstance >> Projects/CPP/makefile
+echo export LD_LIBRARY_PATH=`pwd`/lib: >> Projects/CPP/makefile
+echo export OSTYPE=linux >> Projects/CPP/makefile
 
 i=0
 while [ $# -gt 0 ]
 do
   case $1 in
   "--prefix"*) 
-	echo all: BaseDevelopment > makefile
-	echo \# >> makefile
-	echo DEVROOT=`pwd` >> makefile
-	echo export prefix=`echo $1 | awk -F = '{ print $2; }'` >> makefile;;
+	echo all: BaseDevelopment > Projects/CPP/makefile
+	echo \# >> Projects/CPP/makefile
+	echo DEVROOT=`pwd` >> Projects/CPP/makefile
+	echo export prefix=`echo $1 | awk -F = '{ print $2; }'` >> Projects/CPP/makefile;;
   esac
   shift
 done
 
-echo dummy: >> makefile
-echo \ >> makefile
-echo BaseDevelopment: dummy >> makefile
-echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\) >> makefile
+echo dummy: >> Projects/CPP/makefile
+echo \ >> Projects/CPP/makefile
+echo BaseDevelopment: dummy >> Projects/CPP/makefile
+echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\) >> Projects/CPP/makefile
 
-echo \ >> makefile
-echo install: dummy >> makefile
-echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) install >> makefile
+echo \ >> Projects/CPP/makefile
+echo install: dummy >> Projects/CPP/makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) install >> Projects/CPP/makefile
 OSTYPE=linux
 export OSTYPE
 CRUISECONTROL=yes
 export CRUISECONTROL
-make
+make -C Projects/CPP -f makefile
