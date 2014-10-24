@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.39 $
+# * $Revision: 1.229.2.40 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.39 2014/10/19 11:47:35 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.40 2014/10/24 05:05:40 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.40  2014/10/24 05:05:40  lollisoft
+# * Added Mac OSX jenkins build script and corrected first set of makefiles for it.
+# *
 # * Revision 1.229.2.39  2014/10/19 11:47:35  lollisoft
 # * Preparing config.h file.
 # *

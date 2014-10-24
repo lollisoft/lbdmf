@@ -28,7 +28,7 @@ endif
 
 ifeq ($(OSTYPE), osx)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/CPP
 else
 RELPATH=/Projects/CPP
 endif
