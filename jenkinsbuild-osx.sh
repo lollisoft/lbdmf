@@ -15,6 +15,8 @@ echo export LBXMLFUNCTOR=getlbDOMConfigInstance >> Projects/CPP/makefile
 echo export LBMODULEFUNCTOR=getlb_ModuleInstance >> Projects/CPP/makefile
 echo export LD_LIBRARY_PATH=`pwd`/lib: >> Projects/CPP/makefile
 echo export OSTYPE=osx >> Projects/CPP/makefile
+echo export OSVERSION=`uname -r` >> Projects/CPP/makefile
+echo export OSPLATFORM=`uname -p` >> Projects/CPP/makefile
 
 i=0
 while [ $# -gt 0 ]
@@ -39,6 +41,10 @@ echo install: dummy >> Projects/CPP/makefile
 echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) install >> Projects/CPP/makefile
 OSTYPE=osx
 export OSTYPE
+OSVERSION=`uname -r`
+export OSVERSION
+OSPLATFORM=`uname -p`
+export OSPLATFORM
 CRUISECONTROL=yes
 export CRUISECONTROL
 make -C Projects/CPP -f makefile
