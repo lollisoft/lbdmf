@@ -9,7 +9,7 @@ call Projects\CPP\watcomenv.bat none JENKINS
 
 if "%1" == "release" (
 
-cd Projects\CPP
+cd ..
 make_src_dist.bat
 
 )
