@@ -1,3 +1,7 @@
+@REM Expecting cwd in the CPP root folder of the project when this script is called.
+
+set PACKAGINGROOT=%CD%
+set TOOLSFOLDER=C:\Q\develop\Tools
 set DEVROOT=dist\Develop\Projects\CPP
 
 del /Q /S dist
@@ -57,9 +61,12 @@ copy COPYING %DEVROOT%
 copy doxygen.conf %DEVROOT%
 copy BaseDevelopment\makefile %DEVROOT%\BaseDevelopment
 copy BaseDevelopment\make.bat %DEVROOT%\BaseDevelopment
-copy q:\develop\Projects\CPP\watcomenv.bat %DEVROOT%
-copy q:\develop\Projects\CPP\watcomenv.bat.lnk dist
-copy q:\develop\ide.bat %DEVROOT%
+copy %PACKAGINGROOT%\watcomenv.bat %DEVROOT%
+copy %PACKAGINGROOT%\watcomenv.bat.lnk dist
+
+@REM Does not exist in jenkins build
+@REM copy %PACKAGINGROOT%\..\ide.bat %DEVROOT%
+
 del *.idb
 del %DEVROOT%\vendor\libxml2-2.6.29\bakefile\watcom\*.obj
 del %DEVROOT%\AppDevelopmentDemo\DynamicApp\Doc\*.tiff
@@ -72,8 +79,10 @@ touch %DEVROOT%\BaseDevelopment\Makefile
 @REM Make any available XMISettings.xsl configuration files writeable, or simply all.
 attrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*
 
-"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\dist.iss
-"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bindist.iss
-"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\docdist.iss
-"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\bin-buildtools-dist.iss
-"Q:\develop\Tools\Inno Setup 3\iscc" q:\develop\Projects\CPP\templatedist.iss
+@REM Dependency to tools
+
+"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\dist.iss
+"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\bindist.iss
+"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\docdist.iss
+"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\bin-buildtools-dist.iss
+"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\templatedist.iss
