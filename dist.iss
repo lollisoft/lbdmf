@@ -20,36 +20,36 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 
 [Files]
 ; WGet tool
-Source: "Q:\develop\Tools\WGet\bin\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "dist\dist_iss\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
 ; MinGW Get tool
-Source: "Q:\develop\Tools\MinGW_Get\*.*"; DestDir: "{app}\Develop\Tools\MinGW"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "dist\dist_iss\MinGW_Get\*.*"; DestDir: "{app}\Develop\Tools\MinGW"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
 ; wxWidgets configuration update
-Source: "Q:\Develop\Projects\CPP\wxWidgets-config.gcc"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "wxWidgets-config.gcc"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
-;Source: "c:\log\*.*"; DestDir: "c:\log"; CopyMode: alwaysoverwrite
-Source: "Q:\Develop\Projects\CPP\Database\*.*"; DestDir: "{app}\Database"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
-Source: "Q:\Develop\Projects\CPP\watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
-Source: "Q:\Develop\Projects\CPP\dist\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
-Source: "Q:\Develop\Projects\dll\psqlodbc.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\buildwxWidgets_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\installMinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment\toolbarimages"; CopyMode: alwaysoverwrite;
+; Special binary files
+Source: "dist\dist_iss_psqlodbc\psqlodbc.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\dist_iss_BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
-Source: "Q:\develop\Projects\CPP\Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Database\*.*"; DestDir: "{app}\Database"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "buildwxWidgets_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "installMinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment"; CopyMode: alwaysoverwrite;
+Source: "Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment\toolbarimages"; CopyMode: alwaysoverwrite;
 
-Source: "Q:\Develop\Projects\CPP\activateACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\InstallACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Q:\develop\Tools\BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+
+Source: "activateACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "InstallACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 ; Patches
-Source: "Q:\Develop\Projects\CPP\TAO.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\commctrl-wxWidgets-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Q:\Develop\Projects\CPP\w32api-Wcpp-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "TAO.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "commctrl-wxWidgets-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "w32api-Wcpp-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 [Icons]
 Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
