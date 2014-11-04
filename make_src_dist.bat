@@ -7,16 +7,30 @@ set DEVROOT=dist\Develop\Projects\CPP
 del /Q /S dist
 
 if not EXIST "dist" mkdir dist
-if not EXIST "dist\Develop" mkdir dist\Develop
-if not EXIST "dist\Develop\Projects" mkdir dist\Develop\Projects
-if not EXIST "dist\Develop\Projects\dll" mkdir dist\Develop\Projects\dll
-if not EXIST "dist\Develop\Projects\dll\libs" mkdir dist\Develop\Projects\dll\libs
-if not EXIST "dist\Develop\Projects\Plugins" mkdir dist\Develop\Projects\Plugins
-if not EXIST "dist\Develop\Projects\Plugins\libs" mkdir dist\Develop\Projects\Plugins\libs
-if not EXIST "dist\Develop\Projects\bin" mkdir dist\Develop\Projects\bin
-if not EXIST "dist\Develop\Projects\lib" mkdir dist\Develop\Projects\lib
-if not EXIST "dist\Develop\Projects\dll\include" mkdir dist\Develop\Projects\dll\include
-if not EXIST "dist\Develop\Projects\lib\include" mkdir dist\Develop\Projects\lib\include
+if not EXIST "dist\dist_iss" mkdir dist\dist_iss
+if not EXIST "dist\dist_iss\Develop" mkdir dist\Develop
+if not EXIST "dist\dist_iss\Develop\Projects" mkdir dist\Develop\Projects
+if not EXIST "dist\dist_iss\Develop\Projects\dll" mkdir dist\Develop\Projects\dll
+if not EXIST "dist\dist_iss\Develop\Projects\dll\libs" mkdir dist\Develop\Projects\dll\libs
+if not EXIST "dist\dist_iss\Develop\Projects\Plugins" mkdir dist\Develop\Projects\Plugins
+if not EXIST "dist\dist_iss\Develop\Projects\Plugins\libs" mkdir dist\Develop\Projects\Plugins\libs
+if not EXIST "dist\dist_iss\Develop\Projects\bin" mkdir dist\Develop\Projects\bin
+if not EXIST "dist\dist_iss\Develop\Projects\lib" mkdir dist\Develop\Projects\lib
+if not EXIST "dist\dist_iss\Develop\Projects\dll\include" mkdir dist\Develop\Projects\dll\include
+if not EXIST "dist\dist_iss\Develop\Projects\lib\include" mkdir dist\Develop\Projects\lib\include
+
+@REM Prepare files for relative packaging mechanism
+if not EXIST "dist\dist_iss_MinGW_Get" mkdir dist\dist_iss_MinGW_Get
+if not EXIST "dist\dist_iss_psqlodbc" mkdir dist\dist_iss_psqlodbc
+if not EXIST "dist\dist_iss_BinBuildTools" mkdir dist\dist_iss_BinBuildTools
+if not EXIST "dist\bindist_iss" mkdir dist\bindist_iss
+
+copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
+copy %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
+@REM DEPENDENCY
+copy C:\Q\develop\Projects\dll\psqlodbc.dll dist\dist_iss_psqlodbc
+copy C:\Q\develop\Tools\BinBuildTools\test.exe dist\dist_iss_BinBuildTools
+
 
 call make_dist_base.bat AppDevelopmentDemo
 call make_dist_base.bat AppDevelopmentDemo\App
