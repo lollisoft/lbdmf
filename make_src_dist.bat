@@ -31,6 +31,7 @@ copy %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
 copy C:\Q\develop\Projects\dll\psqlodbc.dll dist\dist_iss_psqlodbc
 copy C:\Q\develop\Tools\BinBuildTools\test.exe dist\dist_iss_BinBuildTools
 
+echo CVS\ > XCopyIgnores.txt
 
 call make_dist_base.bat AppDevelopmentDemo
 call make_dist_base.bat AppDevelopmentDemo\App
