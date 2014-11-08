@@ -1,7 +1,6 @@
 
-xcopy /E /I /Y %1 %DEVROOT%\%1
+xcopy /exclude:XCopyIgnores.txt /E /I /Y %1 %DEVROOT%\%1
 cd %DEVROOT%\%1
-del /Y /S CVS
 del /S *.o
 del /S *.a
 del /S *.mbr
@@ -30,4 +29,4 @@ del /S *.exp
 del /S *.idb
 del /S *.$$$
 del /S null
-cd Q:\develop\Projects\CPP
+cd %PACKAGINGROOT%
