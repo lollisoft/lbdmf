@@ -26,7 +26,7 @@ if not EXIST "dist\dist_iss_BinBuildTools" mkdir dist\dist_iss_BinBuildTools
 if not EXIST "dist\bindist_iss" mkdir dist\bindist_iss
 
 copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
-copy %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
+xcopy %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
 @REM DEPENDENCY
 copy C:\Q\develop\Projects\dll\psqlodbc.dll dist\dist_iss_psqlodbc
 copy C:\Q\develop\Tools\BinBuildTools\test.exe dist\dist_iss_BinBuildTools
