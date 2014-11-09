@@ -96,8 +96,8 @@ attrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*
 
 @REM Dependency to tools
 
-"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\dist.iss
-"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\bindist.iss
-"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\docdist.iss
-"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\bin-buildtools-dist.iss
-"%TOOLSFOLDER%\Inno Setup 3\iscc" %PACKAGINGROOT%\templatedist.iss
+"%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\dist.iss
+"%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\bindist.iss
+"%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\docdist.iss
+"%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\bin-buildtools-dist.iss
+"%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\templatedist.iss

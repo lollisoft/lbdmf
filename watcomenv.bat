@@ -59,7 +59,8 @@ set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 set DEVROOT_MAKE_BASE=/cygdrive/q/%BASE_MAKE%
 
-set WXWIN=%DEVLW%\%BASE%\wxwin\wx
+set WXWIN=%DEVLW%/%BASE%/wxwin/wx
+set wxBase=%WXWIN%/lib
 
 goto BEGINENVIRONMENT:
 
