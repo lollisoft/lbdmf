@@ -23,7 +23,7 @@ Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "A
 Source: "dist\dist_iss\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
 ; MinGW Get tool
-Source: "dist\dist_iss\MinGW_Get\*.*"; DestDir: "{app}\Develop\Tools\MinGW"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "dist\dist_iss_MinGW_Get\*.*"; DestDir: "{app}\Develop\Tools\MinGW"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
 ; wxWidgets configuration update
 Source: "wxWidgets-config.gcc"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
