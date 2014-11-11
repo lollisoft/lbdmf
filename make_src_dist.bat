@@ -2,22 +2,24 @@
 
 set PACKAGINGROOT=%CD%
 set TOOLSFOLDER=C:\Q\develop\Tools
-set DEVROOT=dist\Develop\Projects\CPP
+set DEVROOT=dist\dist_iss_src\Develop\Projects\CPP
 
 del /Q /S dist
 
 if not EXIST "dist" mkdir dist
 if not EXIST "dist\dist_iss" mkdir dist\dist_iss
-if not EXIST "dist\dist_iss\Develop" mkdir dist\Develop
-if not EXIST "dist\dist_iss\Develop\Projects" mkdir dist\Develop\Projects
-if not EXIST "dist\dist_iss\Develop\Projects\dll" mkdir dist\Develop\Projects\dll
-if not EXIST "dist\dist_iss\Develop\Projects\dll\libs" mkdir dist\Develop\Projects\dll\libs
-if not EXIST "dist\dist_iss\Develop\Projects\Plugins" mkdir dist\Develop\Projects\Plugins
-if not EXIST "dist\dist_iss\Develop\Projects\Plugins\libs" mkdir dist\Develop\Projects\Plugins\libs
-if not EXIST "dist\dist_iss\Develop\Projects\bin" mkdir dist\Develop\Projects\bin
-if not EXIST "dist\dist_iss\Develop\Projects\lib" mkdir dist\Develop\Projects\lib
-if not EXIST "dist\dist_iss\Develop\Projects\dll\include" mkdir dist\Develop\Projects\dll\include
-if not EXIST "dist\dist_iss\Develop\Projects\lib\include" mkdir dist\Develop\Projects\lib\include
+if not EXIST "dist\dist_iss_src" mkdir dist\dist_iss_src
+
+if not EXIST "dist\dist_iss_src\Develop" mkdir dist\dist_iss_src\Develop
+if not EXIST "dist\dist_iss_src\Develop\Projects" mkdir dist\dist_iss_src\Develop\Projects
+if not EXIST "dist\dist_iss_src\Develop\Projects\dll" mkdir dist\dist_iss_src\Develop\Projects\dll
+if not EXIST "dist\dist_iss_src\Develop\Projects\dll\libs" mkdir dist\dist_iss_src\Develop\Projects\dll\libs
+if not EXIST "dist\dist_iss_src\Develop\Projects\Plugins" mkdir dist\dist_iss_src\Develop\Projects\Plugins
+if not EXIST "dist\dist_iss_src\Develop\Projects\Plugins\libs" mkdir dist\dist_iss_src\Develop\Projects\Plugins\libs
+if not EXIST "dist\dist_iss_src\Develop\Projects\bin" mkdir dist\dist_iss_src\Develop\Projects\bin
+if not EXIST "dist\dist_iss_src\Develop\Projects\lib" mkdir dist\dist_iss_src\Develop\Projects\lib
+if not EXIST "dist\dist_iss_src\Develop\Projects\dll\include" mkdir dist\dist_iss_src\Develop\Projects\dll\include
+if not EXIST "dist\dist_iss_src\Develop\Projects\lib\include" mkdir dist\dist_iss_src\Develop\Projects\lib\include
 
 @REM Prepare files for relative packaging mechanism
 if not EXIST "dist\dist_iss_MinGW_Get" mkdir dist\dist_iss_MinGW_Get

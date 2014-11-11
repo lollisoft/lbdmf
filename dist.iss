@@ -19,6 +19,9 @@ LicenseFile=license.txt
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
+; Source code
+Source: "dist\dist_iss_src\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+
 ; WGet tool
 Source: "dist\dist_iss\*.*"; DestDir: "{app}"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
