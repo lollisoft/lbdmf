@@ -48,7 +48,8 @@ Source: "InstallACE.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 ; Patches
 Source: "TAO.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "commctrl-wxWidgets-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+; MinGW patches
+;Source: "commctrl-wxWidgets-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "w32api-Wcpp-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 [Icons]
