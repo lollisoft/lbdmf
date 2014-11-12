@@ -1,6 +1,7 @@
 @REM Expecting cwd in the CPP root folder of the project when this script is called.
 
 set PACKAGINGROOT=%CD%
+set BINARIESROOT=%CD%\..
 set TOOLSFOLDER=C:\Q\develop\Tools
 set DEVROOT=dist\dist_iss_src\Develop\Projects\CPP
 
@@ -25,13 +26,34 @@ if not EXIST "dist\dist_iss_src\Develop\Projects\lib\include" mkdir dist\dist_is
 if not EXIST "dist\dist_iss_MinGW_Get" mkdir dist\dist_iss_MinGW_Get
 if not EXIST "dist\dist_iss_psqlodbc" mkdir dist\dist_iss_psqlodbc
 if not EXIST "dist\dist_iss_BinBuildTools" mkdir dist\dist_iss_BinBuildTools
+
 if not EXIST "dist\bindist_iss" mkdir dist\bindist_iss
+if not EXIST "dist\bindist_iss\bin" mkdir dist\bindist_iss\bin
+if not EXIST "dist\bindist_iss\dll" mkdir dist\bindist_iss\dll
+if not EXIST "dist\bindist_iss\plugins" mkdir dist\bindist_iss\plugins
+
+if not EXIST "dist\bindist_iss_MinGW_Libraries" mkdir dist\bindist_iss_MinGW_Libraries
+if not EXIST "dist\bindist_iss_Watcom_Libraries" mkdir dist\bindist_iss_Watcom_Libraries
+
+copy %TOOLSFOLDER%\mingw\bin\mingwm10.dll dist\bindist_iss_MinGW_Libraries
+copy %TOOLSFOLDER%\mingw\bin\libgcc_s_dw2-1.dll dist\bindist_iss_MinGW_Libraries
+copy %TOOLSFOLDER%\mingw\bin\libstdc++-6.dll dist\bindist_iss_MinGW_Libraries
+
+copy %TOOLSFOLDER%\watcom\binnt\mt7r17.dll dist\bindist_iss_Watcom_Libraries
+copy %TOOLSFOLDER%\watcom\binnt\clbr17.dll dist\bindist_iss_Watcom_Libraries
+copy %TOOLSFOLDER%\watcom\binnt\plbr17.dll dist\bindist_iss_Watcom_Libraries
+
 
 copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
 xcopy /S /E %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
 @REM DEPENDENCY
 copy C:\Q\develop\Projects\dll\psqlodbc.dll dist\dist_iss_psqlodbc
 copy C:\Q\develop\Tools\BinBuildTools\test.exe dist\dist_iss_BinBuildTools
+
+@REM Copy binary files
+copy %BINARIESROOT%\bin dist\bindist_iss\bin
+copy %BINARIESROOT%\dll dist\bindist_iss\dll
+copy %BINARIESROOT%\plugins dist\bindist_iss\plugins
 
 echo CVS\ > XCopyIgnores.txt
 
