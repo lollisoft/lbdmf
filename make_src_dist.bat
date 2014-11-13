@@ -43,10 +43,10 @@ copy %TOOLSFOLDER%\watcom\binnt\mt7r17.dll dist\bindist_iss_Watcom_Libraries
 copy %TOOLSFOLDER%\watcom\binnt\clbr17.dll dist\bindist_iss_Watcom_Libraries
 copy %TOOLSFOLDER%\watcom\binnt\plbr17.dll dist\bindist_iss_Watcom_Libraries
 
-
 copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
 xcopy /S /E %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
 @REM DEPENDENCY
+copy C:\Q\develop\Projects\bin\xsltproc.exe dist\bindist_iss\bin
 copy C:\Q\develop\Projects\dll\psqlodbc.dll dist\dist_iss_psqlodbc
 copy C:\Q\develop\Tools\BinBuildTools\test.exe dist\dist_iss_BinBuildTools
 
