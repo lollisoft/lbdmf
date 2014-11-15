@@ -49,6 +49,8 @@ xcopy /S /E %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
 @REM DEPENDENCY
 copy C:\Q\develop\Projects\bin\xsltproc.exe dist\bindist_iss\bin
 copy C:\Q\develop\Projects\dll\zlib1.dll dist\bindist_iss\dll
+copy C:\Q\develop\Projects\dll\libxslt.dll dist\bindist_iss\dll
+copy C:\Q\develop\Projects\dll\libexslt.dll dist\bindist_iss\dll
 copy C:\Q\develop\Projects\dll\psqlodbc.dll dist\dist_iss_psqlodbc
 copy C:\Q\develop\Tools\BinBuildTools\test.exe dist\dist_iss_BinBuildTools
 
