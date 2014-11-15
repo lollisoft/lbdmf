@@ -117,7 +117,7 @@ Source: "dist\bindist_iss\dll\libxml2.dll"; DestDir: "{app}\Develop\Projects\dll
 Source: "dist\bindist_iss\dll\libxslt.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "dist\bindist_iss\dll\libexslt.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
-Source: "dist\bindist_iss\Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 [Icons]
 Name: "{group}\lbDMF"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\binsample.bat"; WorkingDir: "{app}"
