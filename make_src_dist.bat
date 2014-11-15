@@ -26,6 +26,7 @@ if not EXIST "dist\dist_iss_src\Develop\Projects\lib\include" mkdir dist\dist_is
 if not EXIST "dist\dist_iss_MinGW_Get" mkdir dist\dist_iss_MinGW_Get
 if not EXIST "dist\dist_iss_psqlodbc" mkdir dist\dist_iss_psqlodbc
 if not EXIST "dist\dist_iss_BinBuildTools" mkdir dist\dist_iss_BinBuildTools
+if not EXIST "dist\dist_iss_wxLua_dist" mkdir dist\dist_iss_wxLua_dist
 
 if not EXIST "dist\bindist_iss" mkdir dist\bindist_iss
 if not EXIST "dist\bindist_iss\bin" mkdir dist\bindist_iss\bin
@@ -56,7 +57,7 @@ copy C:\Q\develop\wxwin\wx\lib\gcc_dll\*.dll dist\bindist_iss\dll
 copy %BINARIESROOT%\bin dist\bindist_iss\bin
 copy %BINARIESROOT%\dll dist\bindist_iss\dll
 copy %BINARIESROOT%\plugins dist\bindist_iss\plugins
-
+copy %TOOLSFOLDER%\wxLua-dist\*.* dist\dist_iss_wxLua_dist 
 echo CVS\ > XCopyIgnores.txt
 
 call make_dist_base.bat AppDevelopmentDemo

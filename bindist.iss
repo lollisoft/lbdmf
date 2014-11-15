@@ -88,9 +88,9 @@ Source: "AppDevelopmentDemo\DynamicApp\XSLT_Templates\include\XMISettingsTemplat
 
 
 ; --- wxLua Runtime to demonstrate code generation for it.
-Source: "vendor\wxLua-dist\*.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "vendor\wxLua-dist\*.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "vendor\wxLua-dist\*.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\dist_iss_wxLua_dist\*.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "dist\dist_iss_wxLua_dist\*.exe"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "dist\dist_iss_wxLua_dist\*.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
 ; --- MinGW Library needed to run my applications.
 Source: "dist\bindist_iss_MinGW_Libraries\mingwm10.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
