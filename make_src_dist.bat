@@ -38,7 +38,7 @@ if not EXIST "dist\bindist_iss_Watcom_Libraries" mkdir dist\bindist_iss_Watcom_L
 
 copy %TOOLSFOLDER%\mingw\bin\mingwm10.dll dist\bindist_iss_MinGW_Libraries
 copy %TOOLSFOLDER%\mingw\bin\libgcc_s_dw2-1.dll dist\bindist_iss_MinGW_Libraries
-copy %TOOLSFOLDER%\mingw\bin\libstdc++-6.dll dist\bindist_iss_MinGW_Libraries
+copy "%TOOLSFOLDER%\mingw\bin\libstdc++-6.dll" dist\bindist_iss_MinGW_Libraries
 
 copy %TOOLSFOLDER%\watcom\binnt\mt7r17.dll dist\bindist_iss_Watcom_Libraries
 copy %TOOLSFOLDER%\watcom\binnt\clbr17.dll dist\bindist_iss_Watcom_Libraries
