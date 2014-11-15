@@ -50,6 +50,8 @@ copy C:\Q\develop\Projects\bin\xsltproc.exe dist\bindist_iss\bin
 copy C:\Q\develop\Projects\dll\psqlodbc.dll dist\dist_iss_psqlodbc
 copy C:\Q\develop\Tools\BinBuildTools\test.exe dist\dist_iss_BinBuildTools
 
+copy C:\Q\develop\wxwin\wx\lib\gcc_dll\*.dll dist\bindist_iss\dll
+
 @REM Copy binary files
 copy %BINARIESROOT%\bin dist\bindist_iss\bin
 copy %BINARIESROOT%\dll dist\bindist_iss\dll
