@@ -19,7 +19,7 @@ LicenseFile=license-doc.txt
 Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
-Source: "Q:\Develop\Projects\CPP\Doc\*.*"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "Doc\*.*"; DestDir: "{app}\Doc"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
 [Icons]
 Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
