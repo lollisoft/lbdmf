@@ -23,7 +23,7 @@ Source: "installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "dist\bindist_iss\bin\wxwrapper.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "dist\bindist_iss\bin\xsltproc.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 ;Source: "dist\bindist_iss\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
-Source: "dist\bindist_iss\dll\psqlodbc.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\dist_iss_psqlodbc\psqlodbc.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
 Source: "dist\bindist_iss\plugins\lbCryptoStream.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "dist\bindist_iss\plugins\lbDMFBasicActionSteps.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
