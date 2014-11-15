@@ -19,36 +19,38 @@ LicenseFile=license.txt
 ;Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
-Source: "Q:\develop\Tools\BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\flex.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\bison.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\bison.simple"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\gawk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\sh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\ssh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cp.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cat.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\echo.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\rm.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\mkdir.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Projects\bin\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\unixfind.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\grep.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygcrypto-1.0.0.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygintl-8.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygpcre-0.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygwin1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygz.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygiconv-2.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygreadline7.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\make.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cygncursesw-10.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\cyggcc_s-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\dist_iss_BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\flex.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\bison.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\bison.simple"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\gawk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\sh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\ssh.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cp.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cat.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\echo.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\rm.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\mkdir.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\unixfind.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\grep.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygcrypto-1.0.0.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygintl-8.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygpcre-0.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygwin1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygz.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygiconv-2.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygreadline7.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\make.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygncursesw-10.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cyggcc_s-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+;Source: "Q:\Develop\Projects\dll\mspdb60.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
-Source: "Q:\develop\Tools\BinBuildTools\cygattr-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\ls.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
-Source: "Q:\develop\Tools\BinBuildTools\pwd.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\cygattr-1.dll"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\ls.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_BinBuildTools\pwd.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+
+;Dependency (Watcom Build)
+Source: "C:\Q\develop\Projects\bin\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
 
 [Icons]
