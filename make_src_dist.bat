@@ -52,7 +52,7 @@ copy C:\Q\develop\Projects\dll\zlib1.dll dist\bindist_iss\dll
 copy C:\Q\develop\Projects\dll\libxslt.dll dist\bindist_iss\dll
 copy C:\Q\develop\Projects\dll\libexslt.dll dist\bindist_iss\dll
 copy C:\Q\develop\Projects\dll\psqlodbc.dll dist\dist_iss_psqlodbc
-copy C:\Q\develop\Tools\BinBuildTools\test.exe dist\dist_iss_BinBuildTools
+copy C:\Q\develop\Tools\BinBuildTools\*.* dist\dist_iss_BinBuildTools
 
 copy C:\Q\develop\wxwin\wx\lib\gcc_dll\*.dll dist\bindist_iss\dll
 
