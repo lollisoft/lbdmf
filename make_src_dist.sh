@@ -55,7 +55,19 @@ mkdir -p lbdmf-$1/Projects
 mv CPP lbdmf-$1/Projects
 cp lbdmf-$1/Projects/CPP/configure lbdmf-$1
 tar cvzf lbdmf-$1.tgz lbdmf-$1/
-cp lbdmf-$1.tgz /usr/src/packages/SOURCES
+
+if [ "$2" == "" ]; then
+	cp lbdmf-$1.tgz /usr/src/packages/SOURCES
+fi
+
+if [ "$2" == "debug" ]; then
+	cp lbdmf-$1.tgz /usr/src/packages/SOURCES
+fi
+
+if [ "$2" == "jenkins" ]; then
+#cp lbdmf-$1.tgz /usr/src/packages/SOURCES
+fi
+
 cd ..
 
 if [ "$2" == "" ]; then
@@ -64,4 +76,8 @@ fi
 
 if [ "$2" == "debug" ]; then
 	rpmbuild --nodeps -ba lbdmf-debug.spec
+fi
+
+if [ "$2" == "jenkins" ]; then
+	rpmbuild --nodeps -ba lbdmf-jenkins.spec
 fi
