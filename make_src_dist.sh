@@ -81,7 +81,9 @@ fi
 # Building branch revision
 if [ "$2" == "jenkins" ]; then
 	mkdir Release
-	cvs -d:pserver:anonymous:jenkinsbuild@lbdmf.cvs.sourceforge.net:/cvsroot/lbdmf export -r Release_1_0_4_stable_rc1_branch Release/CPP
+	cd Release
+	cvs -d:pserver:anonymous:@lbdmf.cvs.sourceforge.net:/cvsroot/lbdmf export -r Release_1_0_4_stable_rc1_branch CPP
+	cd ..
 
 	# Remove some vendor packages, I do not use yet.
 
