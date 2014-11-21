@@ -13,6 +13,8 @@ Url: http://www.lollisoft.de
 Autoreqprov: on
 Provides: lbdmf
 
+%define _rpmdir .
+
 %if %suse_version <= 910
 BuildRequires: bison flex wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.11 update-desktop-files gcc-c++
 Requires: unixODBC >= 2.2.11 desktop-file-utils
