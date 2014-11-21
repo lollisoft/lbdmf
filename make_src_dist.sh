@@ -126,6 +126,8 @@ fi
 
 cd ..
 
+echo Start building RPM
+
 if [ "$2" == "" ]; then
 	rpmbuild --nodeps -ba lbdmf.spec
 fi
