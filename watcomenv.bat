@@ -265,7 +265,7 @@ set MINGW_STICKON_VERSION=4.7.*
 set MINGW_STICKON_WIN32_VERSION=4.0.3-*
 
 IF NOT EXIST %DEVLW%\q\develop\Tools\MinGW\bin\gcc.exe (
-cd ..
+cd %DEVLW%\q 
 call installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION%
 cd %DEVROOT%\Projects\CPP\BaseDevelopment
 )
