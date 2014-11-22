@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.40 $
+# * $Revision: 1.229.2.41 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.40 2014/10/24 05:05:40 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.41 2014/11/22 08:11:07 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.41  2014/11/22 08:11:07  lollisoft
+# * No longer use foreign key Lex&Yacc code on Windows, because I create the semantic in XSLT instead.
+# *
 # * Revision 1.229.2.40  2014/10/24 05:05:40  lollisoft
 # * Added Mac OSX jenkins build script and corrected first set of makefiles for it.
 # *
@@ -1819,16 +1822,16 @@ dummy:
 	
 ifneq ($(OSTYPE), Windows_NT)
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
-	@echo Build Grammar makefile
-	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
-	@echo Build Lexer makefile
-	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
-	@echo Build Grammar file
-	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
-	@echo Build Lexer make
-	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
+	#@echo Build Grammar makefile
+	#$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
+	#@echo Build Lexer makefile
+	#$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
+	#@echo Build Grammar file
+	#$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
+	#@echo Build Lexer make
+	#$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	@echo Build Main makefile
-	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
 endif
