@@ -257,6 +257,7 @@ SET PATH=%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\MkMk;%DEVLW%\
 
 cd %DEVROOT%\Projects\CPP\BaseDevelopment
 
+SET OSType=Windows_NT
 SET CRUISECONTROL=yes
 
 mingw32-make
