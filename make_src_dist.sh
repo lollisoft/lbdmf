@@ -129,13 +129,17 @@ cd ..
 echo Start building RPM
 
 if [ "$2" == "" ]; then
+	echo Start building RPM
 	rpmbuild --nodeps -ba lbdmf.spec
 fi
 
 if [ "$2" == "debug" ]; then
+	echo Start building RPM debug
 	rpmbuild --nodeps -ba lbdmf-debug.spec
 fi
 
 if [ "$2" == "jenkins" ]; then
-	rpmbuild --nodeps -ba lbdmf-jenkins.spec
+	echo Start building RPM jenkins
+	cat lbdmf-jenkins.spec
+	rpmbuild --nodeps -ba lbdmf-jenkins.spec --define="_rpmdir $(WORKSPACE)/Projects/CPP/Release"
 fi
