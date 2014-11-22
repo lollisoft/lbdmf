@@ -264,8 +264,10 @@ SET CRUISECONTROL=yes
 set MINGW_STICKON_VERSION=4.7.*
 set MINGW_STICKON_WIN32_VERSION=4.0.3-*
 
-IF NOT EXIST %DEVLW%\develop\Tools\MinGW\bin\gcc.exe (
-call Projects\CPP\installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION%
+IF NOT EXIST %DEVLW%\q\develop\Tools\MinGW\bin\gcc.exe (
+cd ..
+call installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION%
+cd %DEVROOT%\Projects\CPP\BaseDevelopment
 )
 
 mingw32-make
