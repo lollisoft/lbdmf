@@ -257,7 +257,15 @@ SET PATH=c:\q\develop\tools\cygwin\bin_nouse;%DEVLW%\Q\develop\Tools\mingw\bin;%
 
 cd %DEVROOT%\Projects\CPP\BaseDevelopment
 
-SET OSNAME=Windows_NT
+REM SET OSNAME=Windows_NT
 SET CRUISECONTROL=yes
+
+@rem Get an explicite version that always ensures to build the code
+set MINGW_STICKON_VERSION=4.7.*
+set MINGW_STICKON_WIN32_VERSION=4.0.3-*
+
+IF NOT EXIST %DEVLW%\develop\Tools\MinGW\bin\gcc.exe (
+call Projects\CPP\installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION%
+)
 
 mingw32-make
