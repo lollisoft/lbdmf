@@ -253,7 +253,7 @@ exit
 :CCBUILD_END
 
 REM Tools used but are prerequisites and may be located anywhere.
-SET PATH=%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\MkMk;%DEVLW%\Q\develop\Tools\BinBuildTools;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin;%DEVLW%\Q\develop\Tools\WGet\bin;%PATH%
+SET PATH=c:\q\develop\tools\cygwin\bin;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\MkMk;%DEVLW%\Q\develop\Tools\BinBuildTools;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin;%DEVLW%\Q\develop\Tools\WGet\bin;%PATH%
 
 cd %DEVROOT%\Projects\CPP\BaseDevelopment
 
