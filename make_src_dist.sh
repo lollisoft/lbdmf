@@ -124,6 +124,7 @@ fi
 
 if [ "$2" == "jenkins" ]; then
 	pwd
+	mkdir -p rpmbuild/SOURCES
 	cp lbdmf-$1.tgz `pwd`/rpmbuild/SOURCES/
 fi
 
@@ -145,5 +146,5 @@ fi
 if [ "$2" == "jenkins" ]; then
 	echo Start building RPM jenkins
 	cat lbdmf-jenkins.spec
-	rpmbuild --nodeps -ba lbdmf-jenkins.spec rpmbuild --define '_topdir '`pwd`
+	rpmbuild --nodeps -ba lbdmf-jenkins.spec rpmbuild --define '_topdir '`pwd`/dist
 fi
