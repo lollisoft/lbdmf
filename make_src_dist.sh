@@ -138,6 +138,7 @@ if [ "$2" == "debug" ]; then
 	rpmbuild --nodeps -ba lbdmf-debug.spec
 fi
 
+# http://stackoverflow.com/questions/2232921/using-hudson-to-build-rpm-packages
 if [ "$2" == "jenkins" ]; then
 	echo Start building RPM jenkins
 	cat lbdmf-jenkins.spec
