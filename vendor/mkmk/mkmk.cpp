@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.7 $
+ * $Revision: 1.114.2.8 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.7 2014/11/23 10:11:07 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.8 2014/11/23 11:02:26 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.8  2014/11/23 11:02:26  lollisoft
+ * Fixed a possible buffer overrun in TIncludeParser.
+ *
  * Revision 1.114.2.7  2014/11/23 10:11:07  lollisoft
  * Activated some debug output.
  *
@@ -695,7 +698,7 @@ void TIncludeParser::setIncludes(char** iPathList, int _count) {
 /*...svoid TIncludeParser\58\\58\AddInclude\40\char \42\IncName\41\:0:*/
 void TIncludeParser::AddInclude(char *IncName)
 {
-  char s[160];
+  char s[1000];
   char* Found;
   char Path[PATH_MAX] = "";
   char realfile[1000] = "";
@@ -2155,7 +2158,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.7 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.8 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
