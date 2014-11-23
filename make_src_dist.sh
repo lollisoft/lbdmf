@@ -122,7 +122,10 @@ if [ "$2" == "debug" ]; then
 	cp lbdmf-$1.tgz /usr/src/packages/SOURCES
 fi
 
-# Leave jenkins parameter here unhandled as no copy action is required.
+if [ "$2" == "jenkins" ]; then
+	pwd
+	cp lbdmf-$1.tgz `pwd`/rpmbuild/SOURCES/
+fi
 
 cd ..
 
