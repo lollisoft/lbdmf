@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.6 $
+ * $Revision: 1.114.2.7 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.6 2014/10/16 04:28:24 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.7 2014/11/23 10:11:07 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.7  2014/11/23 10:11:07  lollisoft
+ * Activated some debug output.
+ *
  * Revision 1.114.2.6  2014/10/16 04:28:24  lollisoft
  * Corrected some buffer overflow issues when the path is too long.
  *
@@ -2152,7 +2155,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.6 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.7 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2390,12 +2393,12 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   replace(ObjNameC, "/", "\\\\");
 
-  //fprintf(stderr, "List files.\n");
+  fprintf(stderr, "List files.\n");
 
   ListFiles(f,Line,&p->l);
   int len;
 
-  //fprintf(stderr, "Decide target type.\n");
+  fprintf(stderr, "Decide target type.\n");
 
   switch (targettype) {
         case IDL_TARGET:
@@ -2723,20 +2726,20 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
   TIncludeParser p;
   char FileName[256];
 
-  //fprintf(stderr, "Prepare filename.\n");
+  fprintf(stderr, "Prepare filename.\n");
   strcpy(FileName,d->Path);
   strcat(FileName,d->Name);
 
   p.setIncludes(iPathList, count);
 
-  //fprintf(stderr, "Parse.\n");
+  fprintf(stderr, "Parse.\n");
   p.Parse(FileName);
 
   char fullName[1000] = "";
 
   strcpy(fullName, d->Path);
   strcat(fullName, d->Name);
-  //fprintf(stderr, "Write dep.\n");
+  fprintf(stderr, "Write dep.\n");
   WriteDep(f,fullName,&p);
 #ifdef VERBOSE
   printf("Warning: Using hardcoded char array.\n");
