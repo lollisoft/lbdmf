@@ -124,8 +124,8 @@ fi
 
 if [ "$2" == "jenkins" ]; then
 	pwd
-	mkdir -p rpmbuild/SOURCES
-	cp lbdmf-$1.tgz `pwd`/rpmbuild/SOURCES/
+	mkdir -p SOURCES
+	mv lbdmf-$1.tgz SOURCES
 fi
 
 cd ..
