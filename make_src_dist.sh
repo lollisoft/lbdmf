@@ -141,5 +141,5 @@ fi
 if [ "$2" == "jenkins" ]; then
 	echo Start building RPM jenkins
 	cat lbdmf-jenkins.spec
-	rpmbuild --nodeps -ba lbdmf-jenkins.spec --define="_rpmdir ./Projects/CPP/Release"
+	rpmbuild --nodeps -ba lbdmf-jenkins.spec rpmbuild --define '_topdir '`pwd`
 fi
