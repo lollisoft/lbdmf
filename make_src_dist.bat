@@ -47,11 +47,11 @@ copy %TOOLSFOLDER%\watcom\binnt\plbr17.dll dist\bindist_iss_Watcom_Libraries
 copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
 xcopy /S /E %TOOLSFOLDER%\WGet\*.* dist\dist_iss_MinGW_Get
 @REM DEPENDENCY
-copy %BINARIESROOT%\bin\xsltproc.exe dist\bindist_iss\bin
-copy %BINARIESROOT%\dll\zlib1.dll dist\bindist_iss\dll
-copy %BINARIESROOT%\dll\libxslt.dll dist\bindist_iss\dll
-copy %BINARIESROOT%\dll\libexslt.dll dist\bindist_iss\dll
-copy %BINARIESROOT%\dll\psqlodbc.dll dist\dist_iss_psqlodbc
+copy %TOOLSFOLDER%\XSLTProc\xsltproc.exe dist\bindist_iss\bin
+copy %TOOLSFOLDER%\XSLTProc\zlib1.dll dist\bindist_iss\dll
+copy %TOOLSFOLDER%\XSLTProc\libxslt.dll dist\bindist_iss\dll
+copy %TOOLSFOLDER%\XSLTProc\libexslt.dll dist\bindist_iss\dll
+copy %TOOLSFOLDER%\PostgreSQL\psqlodbc.dll dist\dist_iss_psqlodbc
 copy %TOOLSFOLDER%\BinBuildTools\*.* dist\dist_iss_BinBuildTools
 
 copy C:\Q\develop\wxwin\wx\lib\gcc_dll\*.dll dist\bindist_iss\dll
