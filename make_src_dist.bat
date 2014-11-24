@@ -45,7 +45,7 @@ copy %TOOLSFOLDER%\watcom\binnt\clbr17.dll dist\bindist_iss_Watcom_Libraries
 copy %TOOLSFOLDER%\watcom\binnt\plbr17.dll dist\bindist_iss_Watcom_Libraries
 
 copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
-xcopy /S /E %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
+xcopy /S /E %TOOLSFOLDER%\WGet\*.* dist\dist_iss_MinGW_Get
 @REM DEPENDENCY
 copy %BINARIESROOT%\bin\xsltproc.exe dist\bindist_iss\bin
 copy %BINARIESROOT%\dll\zlib1.dll dist\bindist_iss\dll
