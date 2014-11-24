@@ -127,7 +127,11 @@ attrib /S -R %DEVROOT%\AppDevelopmentDemo\DynamicApp\XSLT_Templates\*.*
 @REM Dependency to tools
 
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\dist.iss
+if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\bindist.iss
+if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\docdist.iss
+if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\bin-buildtools-dist.iss
+if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\templatedist.iss
