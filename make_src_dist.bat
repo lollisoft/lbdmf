@@ -40,9 +40,9 @@ copy %TOOLSFOLDER%\mingw\bin\mingwm10.dll dist\bindist_iss_MinGW_Libraries
 copy %TOOLSFOLDER%\mingw\bin\libgcc_s_dw2-1.dll dist\bindist_iss_MinGW_Libraries
 copy "%TOOLSFOLDER%\mingw\bin\libstdc++-6.dll" dist\bindist_iss_MinGW_Libraries
 
-copy %TOOLSFOLDER%\WatcomLibs\binnt\mt7r17.dll dist\bindist_iss_Watcom_Libraries
-copy %TOOLSFOLDER%\WatcomLibs\binnt\clbr17.dll dist\bindist_iss_Watcom_Libraries
-copy %TOOLSFOLDER%\WatcomLibs\binnt\plbr17.dll dist\bindist_iss_Watcom_Libraries
+copy %TOOLSFOLDER%\WatcomLibs\mt7r17.dll dist\bindist_iss_Watcom_Libraries
+copy %TOOLSFOLDER%\WatcomLibs\clbr17.dll dist\bindist_iss_Watcom_Libraries
+copy %TOOLSFOLDER%\WatcomLibs\plbr17.dll dist\bindist_iss_Watcom_Libraries
 
 copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
 xcopy /S /E %TOOLSFOLDER%\WGet\*.* dist\dist_iss_MinGW_Get
