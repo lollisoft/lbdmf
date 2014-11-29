@@ -50,7 +50,7 @@ Source: "dist\dist_iss_BinBuildTools\ls.exe"; DestDir: "{app}\Develop\Projects\b
 Source: "dist\dist_iss_BinBuildTools\pwd.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
 ;Dependency (Watcom Build)
-Source: "C:\Q\develop\Projects\bin\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
+Source: "dist\dist_iss_MkMk\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
 
 [Icons]

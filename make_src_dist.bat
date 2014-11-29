@@ -27,6 +27,7 @@ if not EXIST "dist\dist_iss_MinGW_Get" mkdir dist\dist_iss_MinGW_Get
 if not EXIST "dist\dist_iss_psqlodbc" mkdir dist\dist_iss_psqlodbc
 if not EXIST "dist\dist_iss_BinBuildTools" mkdir dist\dist_iss_BinBuildTools
 if not EXIST "dist\dist_iss_wxLua_dist" mkdir dist\dist_iss_wxLua_dist
+if not EXIST "dist\dist_iss_MkMk" mkdir dist\dist_iss_MkMk
 
 if not EXIST "dist\bindist_iss" mkdir dist\bindist_iss
 if not EXIST "dist\bindist_iss\bin" mkdir dist\bindist_iss\bin
@@ -43,6 +44,8 @@ copy "%TOOLSFOLDER%\mingw\bin\libstdc++-6.dll" dist\bindist_iss_MinGW_Libraries
 copy %TOOLSFOLDER%\WatcomLibs\mt7r17.dll dist\bindist_iss_Watcom_Libraries
 copy %TOOLSFOLDER%\WatcomLibs\clbr17.dll dist\bindist_iss_Watcom_Libraries
 copy %TOOLSFOLDER%\WatcomLibs\plbr17.dll dist\bindist_iss_Watcom_Libraries
+
+copy %TOOLSFOLDER%\MkMk\MkMk.exe dist\dist_iss_MkMk
 
 copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
 xcopy /S /E %TOOLSFOLDER%\WGet\*.* dist\dist_iss_MinGW_Get
