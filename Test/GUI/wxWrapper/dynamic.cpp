@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.10 2014/12/12 05:57:04 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.11 2014/12/12 06:49:52 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.10 $
+ * $Revision: 1.174.2.11 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.10 2014/12/12 05:57:04 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.11 2014/12/12 06:49:52 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.11  2014/12/12 06:49:52  lollisoft
+ * Added new VERBOSE_LOGGING switch to enable verbose logs at startup.
+ *
  * Revision 1.174.2.10  2014/12/12 05:57:04  lollisoft
  * Added new VERBOSE_LOGGING switch to enable verbose logs at startup.
  *
@@ -1969,7 +1972,7 @@ int PASCAL WinMain(HINSTANCE hInstance,
 
 	char* CONSOLE_DETACH = getenv("CONSOLE_DETACH");
 	char* LOGGING = getenv("LOGGING");
-	char* LOGGING = getenv("VERBOSE_LOGGING");
+	char* VERBOSE_LOGGING = getenv("VERBOSE_LOGGING");
 
 	// Default
 	if (VERBOSE_LOGGING != NULL) {
