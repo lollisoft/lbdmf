@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.11 2014/12/12 06:49:52 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.12 2014/12/12 07:21:38 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.11 $
+ * $Revision: 1.174.2.12 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.11 2014/12/12 06:49:52 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.12 2014/12/12 07:21:38 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.12  2014/12/12 07:21:38  lollisoft
+ * Added new VERBOSE_LOGGING switch to enable verbose logs at startup.
+ *
  * Revision 1.174.2.11  2014/12/12 06:49:52  lollisoft
  * Added new VERBOSE_LOGGING switch to enable verbose logs at startup.
  *
@@ -1979,9 +1982,10 @@ int PASCAL WinMain(HINSTANCE hInstance,
 		if ((strcmp(VERBOSE_LOGGING, "no") != 0) && (strcmp(VERBOSE_LOGGING, "NO") != 0) && (strcmp(VERBOSE_LOGGING, "No") != 0) && (strcmp(VERBOSE_LOGGING, "nO") != 0))
 		{
 			setVerbose(true);
-			_LOG_ALWAYS << "WinMain starts application in verbose mode ..." LOG_
 		}
 	}
+
+	_LOG_VERBOSE << "WinMain starts application in verbose mode ..." LOG_
 
 	setLogActivated(false);
 	if (LOGGING != NULL) {
