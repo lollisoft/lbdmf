@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.9 2013/11/15 04:40:10 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.10 2014/12/12 05:57:04 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.9 $
+ * $Revision: 1.174.2.10 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.9 2013/11/15 04:40:10 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.10 2014/12/12 05:57:04 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.10  2014/12/12 05:57:04  lollisoft
+ * Added new VERBOSE_LOGGING switch to enable verbose logs at startup.
+ *
  * Revision 1.174.2.9  2013/11/15 04:40:10  lollisoft
  * Added error handling when modules or classes are not found while first application load.
  *
@@ -1966,8 +1969,17 @@ int PASCAL WinMain(HINSTANCE hInstance,
 
 	char* CONSOLE_DETACH = getenv("CONSOLE_DETACH");
 	char* LOGGING = getenv("LOGGING");
+	char* LOGGING = getenv("VERBOSE_LOGGING");
 
 	// Default
+	if (VERBOSE_LOGGING != NULL) {
+		if ((strcmp(VERBOSE_LOGGING, "no") != 0) && (strcmp(VERBOSE_LOGGING, "NO") != 0) && (strcmp(VERBOSE_LOGGING, "No") != 0) && (strcmp(VERBOSE_LOGGING, "nO") != 0))
+		{
+			setVerbose(true);
+			_LOG_ALWAYS << "WinMain starts application in verbose mode ..." LOG_
+		}
+	}
+
 	setLogActivated(false);
 	if (LOGGING != NULL) {
 		if ((strcmp(LOGGING, "no") != 0) && (strcmp(LOGGING, "NO") != 0) && (strcmp(LOGGING, "No") != 0) && (strcmp(LOGGING, "nO") != 0)) 
@@ -1976,7 +1988,12 @@ int PASCAL WinMain(HINSTANCE hInstance,
 		else
 			setLogActivated(false);
 	}
-	
+
+	if (VERBOSE_LOGGING != NULL) {
+		if ((strcmp(VERBOSE_LOGGING, "no") != 0) && (strcmp(VERBOSE_LOGGING, "NO") != 0) && (strcmp(VERBOSE_LOGGING, "No") != 0) && (strcmp(VERBOSE_LOGGING, "nO") != 0))
+			setVerbose(true);
+	}
+
 	if (CONSOLE_DETACH == NULL) FreeConsole();
 	if ((CONSOLE_DETACH != NULL) &&
 	    (strcmp(CONSOLE_DETACH, "no") != 0) &&
