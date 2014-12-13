@@ -48,3 +48,6 @@ export OSPLATFORM
 CRUISECONTROL=yes
 export CRUISECONTROL
 make -C Projects/CPP -f makefile
+make -C Projects/CPP -f makefile install
+
+
