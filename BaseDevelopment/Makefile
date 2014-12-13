@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.42 $
+# * $Revision: 1.229.2.43 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.42 2014/11/22 08:54:16 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.43 2014/12/13 09:15:53 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.43  2014/12/13 09:15:53  lollisoft
+# * Made installation of AppDevelopment folder optional.
+# *
 # * Revision 1.229.2.42  2014/11/22 08:54:16  lollisoft
 # * Changed OSType to OSName.
 # *
@@ -1651,7 +1654,7 @@ install:
 	for sub_target in $(ALLDIRS); do \
 		$(MAKE) -C $$sub_target install; \
 	done
-	$(MAKE) -C ../AppDevelopment install
+	-$(MAKE) -C ../AppDevelopment install
 
 
 install-strip:
