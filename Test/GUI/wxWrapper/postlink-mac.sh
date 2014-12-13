@@ -71,4 +71,5 @@ rm -rf `find /Volumes/lbDMF-$VERSION -name CVS -print`
 
 hdiutil detach /Volumes/lbDMF-$VERSION
 rm lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg.zip
-zip lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg.zip lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg
+zip lbDMF.dmg.zip lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg
+mv lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`.dmg.zip
