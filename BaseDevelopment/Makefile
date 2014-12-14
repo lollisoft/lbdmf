@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.43 $
+# * $Revision: 1.229.2.44 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.43 2014/12/13 09:15:53 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.44 2014/12/14 11:43:13 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.44  2014/12/14 11:43:13  lollisoft
+# * Added a comment to test jenkins join plugin.
+# *
 # * Revision 1.229.2.43  2014/12/13 09:15:53  lollisoft
 # * Made installation of AppDevelopment folder optional.
 # *
@@ -869,6 +872,8 @@
 # * Initial
 # *
 # **************************************************************
+
+# Change to see join triggers are working as expected.
 
 #
 # False targets
