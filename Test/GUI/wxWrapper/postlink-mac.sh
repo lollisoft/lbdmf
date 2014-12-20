@@ -1,7 +1,7 @@
 #!/bin/sh
 # Copies together files for the Mac OS X application bundle and created a disk image
 
-export VERSION=1.0.4.2_final
+export VERSION=1.0.4.3_final
 
 cp ../../../Database/*.sql wxWrapper.app/Contents/Resources
 cp splash.png wxWrapper.app/Contents/Resources
@@ -18,6 +18,11 @@ cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua              w
 
 cp ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/XMISettingsTemplate.xsl wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/XMISettings.xsl
 cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples wxWrapper.app/Contents/Resources
+
+# Copying templates to an accessable place
+
+cp -R wxWrapper.app/Contents/Resources/XSLT XSLT
+cp -R wxWrapper.app/Contents/Resources/UMLSamples UMLSamples
 
 mkdir wxWrapper.app/Contents/Resources/toolbarimages
 cp -R $HOME/lib wxWrapper.app/Contents
