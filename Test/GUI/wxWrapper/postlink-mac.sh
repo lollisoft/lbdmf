@@ -19,11 +19,6 @@ cp -R ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/wxLua              w
 cp ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/XMISettingsTemplate.xsl wxWrapper.app/Contents/Resources/XSLT/XMIToDMF/XMISettings.xsl
 cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples wxWrapper.app/Contents/Resources
 
-# Copying templates to an accessable place
-
-cp -R wxWrapper.app/Contents/Resources/XSLT XSLT
-cp -R wxWrapper.app/Contents/Resources/UMLSamples UMLSamples
-
 mkdir wxWrapper.app/Contents/Resources/toolbarimages
 cp -R $HOME/lib wxWrapper.app/Contents
 cp -R $HOME/plugins wxWrapper.app/Contents/Resources
@@ -56,6 +51,11 @@ cp ../../../COPYING /Volumes/lbDMF-$VERSION
 cp ../../../license-bindist.txt /Volumes/lbDMF-$VERSION
 
 cp ../../../AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf /Volumes/lbDMF-$VERSION/
+
+# Copying templates to an accessable place
+
+cp -R wxWrapper.app/Contents/Resources/XSLT /Volumes/lbDMF-$VERSION/
+cp -R wxWrapper.app/Contents/Resources/UMLSamples /Volumes/lbDMF-$VERSION/
 
 cat <<EOF >> /Volumes/lbDMF-$VERSION/Readme.txt
 Dear Mac user!
