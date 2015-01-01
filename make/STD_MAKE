@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.22 $
+# * $Revision: 1.148.2.23 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.22 2014/10/25 04:32:53 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.23 2015/01/01 22:56:03 lollisoft Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.23  2015/01/01 22:56:03  lollisoft
+# * Added network library.
+# *
 # * Revision 1.148.2.22  2014/10/25 04:32:53  lollisoft
 # * Fixed RELPATH
 # *
@@ -733,7 +736,7 @@ endif
 
 MINGWLIBS = -L$(DEVLW)/$(BASE_MAKE)/projects/dll -llbHook
 
-MINGWLIBS_WXGUI = -L$(wxBase)$(SLASH)gcc_dll -lwxbase$(WX_VERSION)$(WX_DEBUG) -lwxmsw$(WX_VERSION)$(WX_DEBUG)_core -lwxbase$(WX_VERSION)$(WX_DEBUG)_xml -lwxmsw$(WX_VERSION)$(WX_DEBUG)_adv -lwxmsw$(WX_VERSION)$(WX_DEBUG)_xrc
+MINGWLIBS_WXGUI = -L$(wxBase)$(SLASH)gcc_dll -lwxbase$(WX_VERSION)$(WX_DEBUG) -lwxmsw$(WX_VERSION)$(WX_DEBUG)_core -lwxbase$(WX_VERSION)$(WX_DEBUG)_net -lwxbase$(WX_VERSION)$(WX_DEBUG)_xml -lwxmsw$(WX_VERSION)$(WX_DEBUG)_adv -lwxmsw$(WX_VERSION)$(WX_DEBUG)_xrc
 
 ifeq ($(DEBUG_MEMORY), no)
 BASE_LIBS =
