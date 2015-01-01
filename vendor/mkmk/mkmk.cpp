@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.8 $
+ * $Revision: 1.114.2.9 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.8 2014/11/23 11:02:26 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.9 2015/01/01 19:06:52 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.9  2015/01/01 19:06:52  lollisoft
+ * Added initial json based update check plugin.
+ *
  * Revision 1.114.2.8  2014/11/23 11:02:26  lollisoft
  * Fixed a possible buffer overrun in TIncludeParser.
  *
@@ -1035,6 +1038,7 @@ void writeBundleTarget(char* modulename) {
         /// \todo Create module specific framework list to be copied instead.
         
         printf("\t\trm -Rf %s.app/Contents/Frameworks/lbHook.framework\n", modulename);
+        printf("\t\trm -Rf %s.app/Contents/Frameworks/wxJson.framework\n", modulename);
         printf("\t\trm -Rf %s.app/Contents/Frameworks/wxWrapperDLL.framework\n", modulename);
 #ifdef OSNAME_Panther
         printf("\t\t-rm -Rf %s.app/Contents/Frameworks/wxAUI.framework\n", modulename);
@@ -1042,6 +1046,7 @@ void writeBundleTarget(char* modulename) {
         printf("\t\trm -Rf %s.app/Contents/Frameworks/wxPropgrid.framework\n", modulename);
         
         printf("\t\tcp -R $(prefix)/Library/Frameworks/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
+        printf("\t\tcp -R $(prefix)/Library/Frameworks/wxJson.framework %s.app/Contents/Frameworks\n", modulename);
         printf("\t\tcp -R $(prefix)/Library/Frameworks/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
 #ifdef OSNAME_Panther
         printf("\t\t-cp -R $(prefix)/Library/Frameworks/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
@@ -2158,7 +2163,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.8 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.9 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");

@@ -352,6 +352,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_FileLocation, f)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, l)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, ii)
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
 
@@ -388,6 +389,13 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 			*iStream >> _l;
 			l->setData(_l);
 			params->setUAPLong(*&paramname, *&l);
+		}
+		else
+		if (strcmp(ParameterClassName, ii->getClassName()) == 0) {
+			int _i;
+			*iStream >> _i;
+			ii->setData(_i);
+			params->setUAPInteger(*&paramname, *&ii);
 		}
 		else
 		if (strcmp(ParameterClassName, b->getClassName()) == 0) {

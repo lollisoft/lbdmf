@@ -28,11 +28,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77.2.2 $
+ * $Revision: 1.77.2.3 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.77.2.2 2012/11/18 08:38:19 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.77.2.3 2015/01/01 19:06:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.77.2.3  2015/01/01 19:06:51  lollisoft
+ * Added initial json based update check plugin.
+ *
  * Revision 1.77.2.2  2012/11/18 08:38:19  lollisoft
  * Many changes that help improving unit tests. They mainly include application
  * reload capabilities, but that didn't yet work in GUI. Some menu entries are
@@ -471,6 +474,10 @@ public:
 	lbErrCodes				LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
 	void					LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
 	lbErrCodes				LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
+	
+	/// \brief New Timed events handling
+	lbErrCodes				LB_STDCALL timerEvent(lb_I_Unknown* uk);
+	lbErrCodes				LB_STDCALL timerEventConfiguration(lb_I_Unknown* uk);
 	
 	/// \brief My handler for changed properties.
 	lbErrCodes				LB_STDCALL propertyChanged(lb_I_Unknown* uk);

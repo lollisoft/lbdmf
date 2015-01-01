@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.11 $
+ * $Revision: 1.188.2.12 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.11 2013/11/15 04:40:10 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.12 2015/01/01 19:06:51 lollisoft Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.12  2015/01/01 19:06:51  lollisoft
+ * Added initial json based update check plugin.
+ *
  * Revision 1.188.2.11  2013/11/15 04:40:10  lollisoft
  * Added error handling when modules or classes are not found while first application load.
  *
@@ -929,6 +932,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::registerEventHandler(lb_I_Dispatcher* 
 
 	// Register a general login functionality
 	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::getLoginData, "getLoginData");
+	
+	disp->addEventHandlerFn(this, (lbEvHandler) &lb_MetaApplication::timerEvent, "timerEvent");
 
 	return ERR_NONE;
 }
@@ -1002,6 +1007,17 @@ lbErrCodes LB_STDCALL lb_MetaApplication::doLog(lb_I_Unknown* uk) {
 
 	return ERR_NONE;
 }
+
+lbErrCodes				LB_STDCALL lb_MetaApplication::timerEvent(lb_I_Unknown* uk) {
+	_CL_VERBOSE << "lb_MetaApplication::timerEvent() called." LOG_
+	return ERR_NONE;
+}
+
+lbErrCodes				LB_STDCALL lb_MetaApplication::timerEventConfiguration(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+
+
 /*...e*/
 
 
@@ -1433,6 +1449,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	int getLoginData;
 	int doAutoload;
 	int doLog;
+	int timerEvent;
 /*...e*/
 
 /*...sget the event manager:8:*/
@@ -1449,6 +1466,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	eman->registerEvent("getBasicApplicationInfo", getBasicApplicationInfo);
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 	eman->registerEvent("Button Test pressed", testPressed);
+	eman->registerEvent("timerEvent", timerEvent);
 
 	if (getenv("TARGET_APPLICATION") == NULL) {
 		// Need a database configuration based authentication
@@ -4267,6 +4285,10 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* ev
 	*new_interceptor = EvName;
 	QI(new_interceptor, lb_I_KeyBase, key)
 
+	
+	// The event that should be intercepted may be existing
+	UAP(lb_I_EvHandler, evExistingHandler)
+
 	if (interceptorevents->exists(&key) != 0) {
 		// Replace existing
 		_LOG << "Replacing an existing interceptor." LOG_
@@ -4274,7 +4296,26 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* ev
 		QI(uk, lb_I_EvHandler, evH)
 	} else {
 		_LOG << "Adding a new interceptor." LOG_
+
+		int id = 0;
+		lbErrCodes err = ERR_NONE;
+		
+		evManager->resolveEvent(EvName, id);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+		i->setData(id);
+		
+		UAP(lb_I_KeyBase, ik)
+		QI(i, lb_I_KeyBase, ik)
+
+		uk = dispatcher->getElement(&ik);
+
+		if (uk != NULL) {
+			QI(uk, lb_I_EvHandler, evExistingHandler)
+		}
+
 		REQUEST(getModuleInstance(), lb_I_EvHandler, evH)
+
 		QI(evH, lb_I_Unknown, uk)
 		interceptorevents->insert(&uk, &key);
 		uk = interceptorevents->getElement(&key);
@@ -4283,6 +4324,8 @@ lbErrCodes LB_STDCALL lb_Dispatcher::setInterceptor(lb_I_DispatchInterceptor* ev
 
 	evH->setInterceptor(evHandlerInstance, evHandler_Before, evHandler_After);
 
+	if (evExistingHandler != NULL) activateInterceptor(*&new_interceptor, *&evExistingHandler);
+	
 	return ERR_NONE;
 }
 

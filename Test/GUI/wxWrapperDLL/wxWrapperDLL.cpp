@@ -1888,13 +1888,43 @@ void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 	m_timer.Stop();
 	// Do timer stuff
 
+	if (eman == NULL) {
+		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	}
+	
 	if (dispatcher == NULL) {
 		// Create, but check if application didn't shutdown.
 		_LOG << "Error: Dispatcher is not initialized. Assume an initialized dispatcher. Initialize it now." LOG_
 		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	}
 
-
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+	
+	parameter->setData("msg");
+	value->setData("lb_wxFrame::OnTimer");
+	param->setUAPString(*&parameter, *&value);
+	parameter->setData("title");
+	value->setData("Timer triggered");
+	param->setUAPString(*&parameter, *&value);
+	
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	int event = 0;
+	
+	eman->resolveEvent("timerEvent", event);
+	
+	dispatcher->dispatch("timerEvent", uk.getPtr(), &uk_result);
+	
 	// Let OnIdle restart the timer...
 	timerrunning = false;
 }
