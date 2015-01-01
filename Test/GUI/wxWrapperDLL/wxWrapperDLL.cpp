@@ -81,8 +81,6 @@
 #include <lbConfigHook.h>
 #endif
 
-#include <lbInterfaces-sub-security.h>
-
 #include "wx/wizard.h"
 #include "wx/splitter.h"
 #include "wx/imaglist.h"
@@ -270,10 +268,7 @@ void wxAppSelectPage::setLoggedOnUser(const char* user) {
 
                 meta->setUserName(userid);
 
-				UAP(lb_I_SecurityProvider, securityManager)
-				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-                apps = securityManager->getApplications();
+                apps = meta->getApplications();
 
                 box->Clear();
 
@@ -446,25 +441,17 @@ bool wxLogonPage::TransferDataFromWindow() {
         const char* pass = strdup(getTextValue("Passwort:"));
         const char* user = strdup(getTextValue("Benutzer:"));
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-        if (securityManager != NULL && securityManager->login(user, pass)) {
+        if (meta->login(user, pass)) {
                 appselect->setLoggedOnUser(user);
                 if (pass) free((void*)pass);
                 if (user) free((void*)user);
 
                 return TRUE;
         } else {
-                char* buf = NULL;
+                char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
                 char* buf1 = strdup(_trans("Error"));
-
-				if (securityManager != NULL)
-					buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
-				else
-					buf = strdup(_trans("No security provider found.\n\nLogin feature not available without a security provider."));
-				
                 wxMessageDialog dialog(NULL, buf, buf1, wxOK);
 
                 dialog.ShowModal();
@@ -891,7 +878,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 						closeCurrentPage();
                 }
         }
-
+		
 		if (openedDialogs != NULL) {
 			while (openedDialogs->hasMoreElements() == 1) {
 				UAP(lb_I_Unknown, uk)
@@ -936,6 +923,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 			forms->detachAll();
 			forms->deleteAll();
 		}
+
         return ERR_NONE;
 }
 /*...e*/
@@ -972,8 +960,62 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
             wxICON_INFORMATION | wxOK);
         }
 
+//      wxString app = page3->getSelectedApp();
+
         wizard->Destroy();
 
+
+#ifdef bla
+/*...s:0:*/
+
+        lbErrCodes err = ERR_NONE;
+
+        // Locate the form instance in the container
+
+        lbLoginDialog* _dialog = NULL;
+
+        if (forms == NULL) {
+                REQUEST(getModuleInstance(), lb_I_Container, forms)
+        }
+
+        UAP(lb_I_Unknown, uk)
+        UAP(lb_I_KeyBase, key)
+
+        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
+        fName->setData("LoginForm");
+
+        QI(fName, lb_I_KeyBase, key)
+
+        uk = forms->getElement(&key);
+
+        if (uk != NULL) {
+                _dialog = (lbLoginDialog*) *&uk;
+        }
+
+        if (_dialog) {
+                _dialog->Show(TRUE);
+        } else {
+                _dialog = new lbLoginDialog();
+                
+
+                QI(_dialog, lb_I_Unknown, uk)
+
+                forms->insert(&uk, &key);
+
+                delete _dialog;
+                _dialog = NULL;
+
+                uk = forms->getElement(&key);
+
+                if (uk != NULL) {
+                        _dialog = (lbLoginDialog*) *&uk;
+                }
+
+                _dialog->init(frame);
+                _dialog->Show();
+        }
+/*...e*/
+#endif
         return NULL;
 }
 /*...e*/
@@ -1342,7 +1384,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
 						if (openedDialogs->exists(&key) == 0) {
 							openedDialogs->insert(&nuk, &key);
 						}
-                }
+				}
 
                 _LOG << "Set formname to " << formName LOG_
                 _dialog->setName(formName);
@@ -1846,13 +1888,43 @@ void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 	m_timer.Stop();
 	// Do timer stuff
 
+	if (eman == NULL) {
+		REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+	}
+	
 	if (dispatcher == NULL) {
 		// Create, but check if application didn't shutdown.
 		_LOG << "Error: Dispatcher is not initialized. Assume an initialized dispatcher. Initialize it now." LOG_
 		REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	}
 
-
+	lbErrCodes err = ERR_NONE;
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
+	
+	parameter->setData("msg");
+	value->setData("lb_wxFrame::OnTimer");
+	param->setUAPString(*&parameter, *&value);
+	parameter->setData("title");
+	value->setData("Timer triggered");
+	param->setUAPString(*&parameter, *&value);
+	
+	UAP(lb_I_Unknown, uk)
+	QI(param, lb_I_Unknown, uk)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
+	UAP(lb_I_Unknown, uk_result)
+	QI(result, lb_I_Unknown, uk_result)
+	
+	int event = 0;
+	
+	eman->resolveEvent("timerEvent", event);
+	
+	dispatcher->dispatch("timerEvent", uk.getPtr(), &uk_result);
+	
 	// Let OnIdle restart the timer...
 	timerrunning = false;
 }
@@ -2385,7 +2457,7 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 					}
 				}
 
-        }
+		}
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateBoolean\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
