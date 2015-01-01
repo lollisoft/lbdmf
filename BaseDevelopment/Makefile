@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.45 $
+# * $Revision: 1.229.2.46 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.45 2015/01/01 19:06:50 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.46 2015/01/01 23:10:13 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.46  2015/01/01 23:10:13  lollisoft
+# * Added wxJSON target for all platforms.
+# *
 # * Revision 1.229.2.45  2015/01/01 19:06:50  lollisoft
 # * Added initial json based update check plugin.
 # *
@@ -1245,6 +1248,7 @@ ALLDIRS = \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
+	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
@@ -1275,6 +1279,7 @@ ALLDIRS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
+	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -1329,6 +1334,7 @@ ALLDIRS = \
 	../vendor/propgrid \
 	../vendor/sqlite \
 	../vendor/wxaui-0.9.1/src \
+	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
@@ -1359,6 +1365,7 @@ ALLDIRS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
+	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -1413,6 +1420,7 @@ ALLDIRS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
+	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
@@ -1446,6 +1454,7 @@ ALLDIRS = \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
+	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -1514,6 +1523,7 @@ ALLTARGETS = \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
 	../vendor/libxslt-1.1.21/libxslt \
+	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -1604,6 +1614,7 @@ ALLTARGETS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
+	../vendor/wxJSON-1.2.1/src \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
 	../vendor/libxslt-1.1.21/libxslt \
 	../AppDevelopmentDemo/App \
