@@ -57,8 +57,8 @@ class lbTimerEventInterceptor :
                 lbErrCodes LB_STDCALL addInterceptedInstance(lb_I_Unknown* intercepted);
                 lbErrCodes LB_STDCALL removeInterceptedInstance(lb_I_Unknown* interceptedInstance);
                 
-                lbErrCodes OnBeforeTimerEvent(lb_I_Unknown* uk_unused);
-                lbErrCodes OnAfterTimerEvent(lb_I_Unknown* uk);
+                lbErrCodes LB_STDCALL OnBeforeTimerEvent(lb_I_Unknown* uk_unused);
+                lbErrCodes LB_STDCALL OnAfterTimerEvent(lb_I_Unknown* uk);
 
                 DECLARE_LB_UNKNOWN()
                 
