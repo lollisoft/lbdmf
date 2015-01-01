@@ -43,6 +43,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	TestPlugin \
@@ -64,6 +65,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	TestPlugin \
@@ -85,6 +87,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	TestPlugin \
@@ -106,6 +109,7 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	TestPlugin \
@@ -131,6 +135,7 @@ TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 
 ALLTARGETS = \
+	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
 	VisitorOperations \
@@ -161,6 +166,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+wxWidgets/wxUpdateChecker: dummy
+	$(MAKE) -C $@ -e MODULE=lbwxUpdateChecker -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 wxWidgets/wxSFDesigner: dummy
 	$(MAKE) -C $@ -e MODULE=lbwxSFDesigner -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure

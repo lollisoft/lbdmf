@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.44 $
+# * $Revision: 1.229.2.45 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.44 2014/12/14 11:43:13 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.45 2015/01/01 19:06:50 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.45  2015/01/01 19:06:50  lollisoft
+# * Added initial json based update check plugin.
+# *
 # * Revision 1.229.2.44  2014/12/14 11:43:13  lollisoft
 # * Added a comment to test jenkins join plugin.
 # *
@@ -1158,6 +1161,7 @@ ALLTARGETS = \
 	lbtransfer \
 	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
+	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/GUI/wxWrapperDLL \
@@ -2040,6 +2044,10 @@ ifeq ($(OSNAME), Panther)
 	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 endif
+
+../vendor/wxJSON-1.2.1/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../vendor/wxShapeFramework/samples/wxSFDemo: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
