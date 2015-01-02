@@ -1886,7 +1886,10 @@ lb_wxFrame::~lb_wxFrame() {
 
 void LB_STDCALL lb_wxFrame::enableTimer(bool enable) {
 	timerenabled = enable;
-	if (!enable) m_timer.Stop();
+	if (!enable) {
+		m_timer.Stop();
+		timerrunning = false;
+	}
 }
 
 void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
