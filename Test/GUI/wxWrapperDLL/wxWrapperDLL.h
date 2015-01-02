@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.4 $
+ * $Revision: 1.43.2.5 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.4 2013/03/01 07:04:25 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.5 2015/01/02 17:43:59 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.5  2015/01/02 17:43:59  lollisoft
+ * Added a new method to control timer.
+ *
  * Revision 1.43.2.4  2013/03/01 07:04:25  lollisoft
  * Fixed the close dialogs issue.
  *
@@ -368,6 +371,8 @@ public:
 	
 	bool LB_STDCALL isTableUsage() { return tableUsage; }
 	
+	void LB_STDCALL enableTimer(bool enable);
+	
 #ifdef USE_WXAUI
 	wxAuiManager& getAUIManager() { return m_mgr; }
 #endif		
@@ -470,6 +475,7 @@ public:
 	
 	wxTimer m_timer;
 	bool timerrunning;
+	bool timerenabled;
 
 	bool _isSplitted;            
 	bool panelUsage;
