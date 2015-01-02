@@ -1516,7 +1516,7 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(const char* entry) {
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\msgBox\40\char\42\ windowTitle\44\ char\42\ msg\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::msgBox(const char* windowTitle, const char* msg) {
         if (!splashOpened) {
-        wxMessageDialog dialog(NULL, msg, windowTitle, wxOK);
+        wxMessageDialog dialog(frame, msg, windowTitle, wxOK);
 
         dialog.ShowModal();
         } else {
