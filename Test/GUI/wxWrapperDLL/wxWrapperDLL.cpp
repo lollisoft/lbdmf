@@ -1516,9 +1516,11 @@ lbErrCodes LB_STDCALL lb_wxGUI::gotoMenuEntry(const char* entry) {
 /*...slbErrCodes LB_STDCALL lb_wxGUI\58\\58\msgBox\40\char\42\ windowTitle\44\ char\42\ msg\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxGUI::msgBox(const char* windowTitle, const char* msg) {
         if (!splashOpened) {
-        wxMessageDialog dialog(frame, msg, windowTitle, wxOK);
+			wxMessageDialog dialog(frame, msg, windowTitle, wxOK);
 
-        dialog.ShowModal();
+			frame->enableTimer(false);
+			dialog.ShowModal();
+			frame->enableTimer(true);
         } else {
                 if (pendingMessages == NULL) {
                         REQUEST(getModuleInstance(), lb_I_String, pendingMessages)
@@ -1884,6 +1886,7 @@ lb_wxFrame::~lb_wxFrame() {
 
 void LB_STDCALL lb_wxFrame::enableTimer(bool enable) {
 	timerenabled = enable;
+	if (!enable) m_timer.Stop();
 }
 
 void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
