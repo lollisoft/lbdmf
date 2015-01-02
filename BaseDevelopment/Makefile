@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.46 $
+# * $Revision: 1.229.2.47 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.46 2015/01/01 23:10:13 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.47 2015/01/02 06:48:37 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.47  2015/01/02 06:48:37  lollisoft
+# * Moved JSON target to another location.
+# *
 # * Revision 1.229.2.46  2015/01/01 23:10:13  lollisoft
 # * Added wxJSON target for all platforms.
 # *
@@ -2028,6 +2031,10 @@ ifeq ($(OSTYPE), linux)
 	cd ../BaseDevelopment
 endif
 
+../vendor/wxJSON-1.2.1/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+
 ifeq ($(OSTYPE), osx)
 ../vendor/dosdir: dummy
 	$@/make-osx.sh $@
@@ -2055,10 +2062,6 @@ ifeq ($(OSNAME), Panther)
 	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 endif
-
-../vendor/wxJSON-1.2.1/src: dummy
-	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
 
 ../vendor/wxShapeFramework/samples/wxSFDemo: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
