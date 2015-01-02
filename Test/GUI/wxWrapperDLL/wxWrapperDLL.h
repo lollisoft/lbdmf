@@ -33,19 +33,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.45 $
+ * $Revision: 1.43.2.5 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.45 2013/08/11 18:12:38 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.5 2015/01/02 17:43:59 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
- * Revision 1.45  2013/08/11 18:12:38  lollisoft
- * Added drop down definitions and other missing stuff.
- * Have version issues with ordering of attributes and
- * classes that is not yet solved.
+ * Revision 1.43.2.5  2015/01/02 17:43:59  lollisoft
+ * Added a new method to control timer.
  *
- * Revision 1.44  2013/02/16 10:36:27  lollisoft
- * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
- * Several files were conflicting and resolved in this checkin.
+ * Revision 1.43.2.4  2013/03/01 07:04:25  lollisoft
+ * Fixed the close dialogs issue.
  *
  * Revision 1.43.2.3  2012/11/18 08:38:19  lollisoft
  * Many changes that help improving unit tests. They mainly include application
@@ -374,6 +371,8 @@ public:
 	
 	bool LB_STDCALL isTableUsage() { return tableUsage; }
 	
+	void LB_STDCALL enableTimer(bool enable);
+	
 #ifdef USE_WXAUI
 	wxAuiManager& getAUIManager() { return m_mgr; }
 #endif		
@@ -476,6 +475,7 @@ public:
 	
 	wxTimer m_timer;
 	bool timerrunning;
+	bool timerenabled;
 
 	bool _isSplitted;            
 	bool panelUsage;

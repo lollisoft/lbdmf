@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.13 2014/12/12 19:40:53 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.14 2015/01/02 17:43:58 lollisoft Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.13 $
+ * $Revision: 1.174.2.14 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.13 2014/12/12 19:40:53 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.14 2015/01/02 17:43:58 lollisoft Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.14  2015/01/02 17:43:58  lollisoft
+ * Added a new method to control timer.
+ *
  * Revision 1.174.2.13  2014/12/12 19:40:53  lollisoft
  * Added new VERBOSE_LOGGING switch to enable verbose logs at startup.
  *
@@ -1233,6 +1236,8 @@ bool MyApp::OnInit(void)
 	
     if (metaApp != NULL) metaApp->run();
 
+	frame->enableTimer(true);
+	
     return TRUE;
 }
 /*...e*/

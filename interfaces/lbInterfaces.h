@@ -2948,6 +2948,7 @@ public lb_I_Unknown
 {
 public:
 //	virtual lb_I_Unknown* LB_STDCALL createFrame() = 0;
+	virtual void LB_STDCALL enableTimer(bool enable) = 0;
 };
 /*...e*/
 /*...sclass lb_I_Application:0:*/

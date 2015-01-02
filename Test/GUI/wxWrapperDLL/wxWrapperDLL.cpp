@@ -576,6 +576,7 @@ lb_wxFrame::lb_wxFrame() :
         m_replacewindow = NULL;
         stb_areas = 1;
 		timerrunning = false;
+	timerenabled = false;
 
 #ifdef SOLARIS
         skipfirstResizeEvent = true;
@@ -1881,6 +1882,10 @@ lb_wxFrame::~lb_wxFrame() {
         }
 }
 
+void LB_STDCALL lb_wxFrame::enableTimer(bool enable) {
+	timerenabled = enable;
+}
+
 void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	// Don't tell too much useless stuff :-)
@@ -1931,10 +1936,11 @@ void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 
 void lb_wxFrame::OnIdle(wxIdleEvent& WXUNUSED(event))
 {
-	if (!timerrunning) {
+	if (!timerrunning && timerenabled) {
 		timerrunning = true;
 		m_timer.Start(500);
 	}
+	
 	if (!gelangweilt) {
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		meta->setStatusText("Info", _trans("Gelangweilt ..."));
