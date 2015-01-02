@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.47 $
+# * $Revision: 1.229.2.48 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.47 2015/01/02 06:48:37 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.48 2015/01/02 07:38:31 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.48  2015/01/02 07:38:31  lollisoft
+# * Separated JSON target per platform due to build type selection.
+# *
 # * Revision 1.229.2.47  2015/01/02 06:48:37  lollisoft
 # * Moved JSON target to another location.
 # *
@@ -2031,10 +2034,6 @@ ifeq ($(OSTYPE), linux)
 	cd ../BaseDevelopment
 endif
 
-../vendor/wxJSON-1.2.1/src: dummy
-	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
-
 ifeq ($(OSTYPE), osx)
 ../vendor/dosdir: dummy
 	$@/make-osx.sh $@
@@ -2091,6 +2090,10 @@ endif
 	-$(MAKE) -s -C $@ -e MODULE=wxShapeFrameworkExample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	-$(MAKE) -s -C $@
 
+../vendor/wxJSON-1.2.1/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
@@ -2110,6 +2113,10 @@ ifeq ($(OSTYPE), solaris)
 ../vendor/wxaui-0.9.1/sample: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+
+../vendor/wxJSON-1.2.1/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
@@ -2157,6 +2164,10 @@ ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
+../vendor/wxJSON-1.2.1/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
@@ -2194,6 +2205,10 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 ../vendor/wxaui-0.9.1/sample: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+
+../vendor/wxJSON-1.2.1/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
@@ -2233,6 +2248,10 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 ../vendor/wxaui-0.9.1/sample: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUISample -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+
+../vendor/wxJSON-1.2.1/src: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSHARED) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
