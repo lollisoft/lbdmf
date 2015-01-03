@@ -153,6 +153,17 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(UpdateCheckerHandler)
 	ADD_INTERFACE(lb_I_EventHandler)
 END_IMPLEMENT_LB_UNKNOWN()
 
+UpdateCheckerHandler::UpdateCheckerHandler() {
+	_CL_VERBOSE << "UpdateCheckerHandler::UpdateCheckerHandler() called." LOG_
+	silentRan = false;
+	updateDetected = false;
+	silent = false;
+}
+
+UpdateCheckerHandler::~UpdateCheckerHandler() {
+	_CL_VERBOSE << "UpdateCheckerHandler::~UpdateCheckerHandler() called." LOG_
+}
+
 lbErrCodes LB_STDCALL UpdateCheckerHandler::setData(lb_I_Unknown* uk) {
         _CL_VERBOSE << "UpdateCheckerHandler::setData(...) not implemented yet" LOG_
 
@@ -184,12 +195,16 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunSilentUpdateCheck(lb_I_Unknown* u
 }
 
 lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
 	wxHTTP get;
 	get.SetHeader(_T("Content-type"), _T("text/html; charset=utf-8"));
 	get.SetTimeout(10); // 10 seconds of timeout instead of 10 minutes ...
 	
+	int retry = 5;
+	
 	// this will wait until the user connects to the internet. It is important in case of dialup (or ADSL) connections
-	while (!get.Connect(_T("www.lollisoft.de")))  // only the server, no pages here yet ...
+	while (retry-->0 && !get.Connect(_T("www.lollisoft.de")))  // only the server, no pages here yet ...
 		wxSleep(5);
 	
 	wxApp::IsMainLoopRunning(); // should return true
@@ -204,6 +219,13 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	
 	httpStream = get.GetInputStream(_T(uri->charrep()));
 	
+	UAP(lb_I_Parameter, UpdateSettings)
+/*	
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, KnownVersions)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	*name = "KnownVersions";
+*/
+	
 	if (get.GetError() == wxPROTO_NOERR)
 	{
 		wxString res;
@@ -214,8 +236,10 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 		wxJSONReader reader;
 
 		bool updateAvailable = false;
+		bool possibleUpdateAvailable = false;
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg_version)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, possible_msg_versions)
 		
 		int numErrors = reader.Parse( res, &lastReleaseInfo );
 		
@@ -229,18 +253,13 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 			
 			bool isArray = releases.IsArray();
 			
-			UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-			UAP(lb_I_Parameter, UpdateSettings)
 			UpdateSettings = meta->getPropertySet("UpdateSettings");
-			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-			UAP_REQUEST(getModuleInstance(), lb_I_Container, KnownVersions)
-			*name = "KnownVersions";
-			UpdateSettings->getUAPContainer(*&name, *&KnownVersions);
+			//UpdateSettings->getUAPContainer(*&name, *&KnownVersions);
 			
 			*msg = "There are new versions available. Go to the product page and download the following version: ";
 			
 			if (isArray) {
-				for ( int i = releases.Size() - 1; i >= 0; i-- ) {
+				for ( int i = 0; i < releases.Size(); i++ ) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, version)
 					wxString release = releases[i]["version"].AsString();
 					
@@ -251,21 +270,47 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 					QI(version, lb_I_KeyBase, key)
 					QI(version, lb_I_Unknown, uk)
 					
-					if (KnownVersions->exists(&key) == 0) {
-						
+					// Save version check at position 0
+					if (i == 0 && release != VERSIONINFO) {
 						updateAvailable = true;
-						if (i >= 0 && version->strpos(VERSIONINFO) != 0) KnownVersions->insert(&uk, &key);
-						
-						*msg_version = version->charrep();
+					
+						if (!(*msg_version == ""))
+							*msg_version += ", ";
+						*msg_version += version->charrep();
 					}
+
+					// There is a missing visitor implementation for containers. Feature not yet possible.
+					
+					// Only detect any changes when silent is false. Thus sync only at first run, or when storage has been gone.
+					/*
+					if (KnownVersions->exists(&key) == 0 && !silent) {
+						// Any new entry indicates possible version change
+						possibleUpdateAvailable = true;
+						
+						_LOG << "Insert known version " << version->charrep() << " at position " << i LOG_
+						KnownVersions->insert(&uk, &key);
+						
+						if (!(*possible_msg_versions == ""))
+							*possible_msg_versions += ", ";
+						*possible_msg_versions += version->charrep();
+					}
+					*/
 				}
 				//UpdateSettings->setUAPContainer(*&name, *&KnownVersions);
-			}			
+			}
 		}
 		
-		if (updateAvailable) {
-			*msg += msg_version->charrep();
-
+		if (updateAvailable || possibleUpdateAvailable) {
+			meta->addPropertySet(*&UpdateSettings, "UpdateSettings");
+	
+			if (possibleUpdateAvailable) {
+				*msg = "The version information has been changed or is initially synchronized. Go to the product page and download the most recent version. Available are: ";
+				*msg += possible_msg_versions->charrep();
+			}
+			else {
+				*msg += msg_version->charrep();
+			}
+			
 			if (!silent) wxMessageBox(_T(msg->charrep()));
 
 			if (!updateDetected) {
@@ -276,18 +321,29 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 				eman->registerEvent("openReleasePage", temp);
 				disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::openReleasePage, "openReleasePage");
 	
-				UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+				char* updatemenu = strdup(_trans("Updates available"));
+				
+				UAP_REQUEST(getModuleInstance(), lb_I_String, menText)
+				
+				*menText = _trans("This version (");
+				*menText += VERSIONINFO;
+				*menText += _trans(") is old. Check out for new releases. Detected version: ");
+				*menText += msg_version->charrep();
+				
+				char* menutext = strdup(menText->charrep());
 
-				char* help = strdup(_trans("Updates available"));
-				char* negativeentry = strdup(_trans("A new release is available. Go to the release page..."));
-
-				meta->addMenuEntry(help, negativeentry, "openReleasePage", "");
+				if (possibleUpdateAvailable) {
+					free(menutext);
+					menutext = strdup(_trans("A version change has been detected. Please check your version against found ones..."));
+				}
+				
+				meta->addMenuEntry(updatemenu, "Go to release page...", "openReleasePage", "");
 
 				meta->addToolBar("Update Toolbar");
-				meta->addToolBarButton("Update Toolbar", "A new release is available. Go to the release page...", "openReleasePage", "bell.png");
+				meta->addToolBarButton("Update Toolbar", menutext, "openReleasePage", "bell.png");
 	
-				free(help);
-				free(negativeentry);
+				free(updatemenu);
+				free(menutext);
 			}
 		}
 	}
@@ -330,15 +386,6 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::openReleasePage(lb_I_Unknown* uk) {
 	gui->openWebPage("New product release", releaseUri->charrep());
 	return ERR_NONE;
 }
-
-UpdateCheckerHandler::UpdateCheckerHandler() {
-	_CL_VERBOSE << "UpdateCheckerHandler::UpdateCheckerHandler() called." LOG_
-}
-
-UpdateCheckerHandler::~UpdateCheckerHandler() {
-	_CL_VERBOSE << "UpdateCheckerHandler::~UpdateCheckerHandler() called." LOG_
-}
-
 
 /** \brief Implements a wizard based login plugin.
  *
