@@ -107,7 +107,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxJSON-1.2.1/include
 OBJDEP=
 C_SOOPS_WX = -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxJson 
 LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
@@ -117,7 +117,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxJSON-1.2.1/include
 OBJDEP=
 C_SOOPS_WX = -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxJson
 LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 
@@ -126,7 +126,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxJSON-1.2.1/include
 OBJDEP=
 C_SOOPS_WX = -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
-VENDORLIBS=-L$(prefix)/lib -llbHook 
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxJson
 LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif    
 

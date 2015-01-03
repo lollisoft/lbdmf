@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.48 $
+# * $Revision: 1.229.2.49 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.48 2015/01/02 07:38:31 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.49 2015/01/03 10:38:51 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.49  2015/01/03 10:38:51  lollisoft
+# * Added enhanced update mechanism with a silent recheck to create download toolbar and menu entries.
+# *
 # * Revision 1.229.2.48  2015/01/02 07:38:31  lollisoft
 # * Separated JSON target per platform due to build type selection.
 # *
@@ -2093,6 +2096,7 @@ endif
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	-$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
@@ -2115,8 +2119,9 @@ ifeq ($(OSTYPE), solaris)
 	$(MAKE) -s -C $@
 
 ../vendor/wxJSON-1.2.1/src: dummy
-	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	-$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
@@ -2165,8 +2170,9 @@ ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@
 
 ../vendor/wxJSON-1.2.1/src: dummy
-	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	-$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
@@ -2207,8 +2213,9 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 	$(MAKE) -s -C $@
 
 ../vendor/wxJSON-1.2.1/src: dummy
-	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	-$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)

@@ -355,6 +355,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, ii)
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
 
 	for (int i = 0; i < count; i++) {
 		char* ParameterName = NULL;
@@ -365,6 +366,11 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 		
 		*paramname = ParameterName;
 		
+		if (strcmp(ParameterClassName, c->getClassName()) == 0) {
+			visit(*&c);
+			params->setUAPContainer(*&paramname, *&c);
+		}
+		else
 		if (strcmp(ParameterClassName, p->getClassName()) == 0) {
 			visit(*&p);
 			params->setUAPParameter(*&paramname, *&p);
