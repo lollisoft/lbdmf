@@ -385,6 +385,7 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, p)
+	UAP_REQUEST(getModuleInstance(), lb_I_Container, c)
 	
 	while (container->hasMoreElements()) {
 		UAP(lb_I_Unknown, uk)
@@ -397,6 +398,10 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 
 		_LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_ 
 
+		if (strcmp(uk->getClassName(), c->getClassName()) == 0) {
+			c->setData(*&uk);
+			visit(*&c);
+		}
 		if (strcmp(uk->getClassName(), p->getClassName()) == 0) {
 			p->setData(*&uk);
 			visit(*&p);
