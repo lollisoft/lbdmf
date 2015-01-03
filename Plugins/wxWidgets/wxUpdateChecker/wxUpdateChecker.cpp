@@ -144,7 +144,6 @@ public:
 
 protected:
 	wxJSONValue  lastReleaseInfo;
-        wxString currentRelease;
 	bool silentRan;
 	bool updateDetected;
 	bool silent;
@@ -255,7 +254,7 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 					if (KnownVersions->exists(&key) == 0) {
 						
 						updateAvailable = true;
-						if (i >= 0) KnownVersions->insert(&uk, &key);
+						if (i >= 0 && version->strpos(VERSIONINFO) != 0) KnownVersions->insert(&uk, &key);
 						
 						*msg_version = version->charrep();
 					}
@@ -334,7 +333,6 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::openReleasePage(lb_I_Unknown* uk) {
 
 UpdateCheckerHandler::UpdateCheckerHandler() {
 	_CL_VERBOSE << "UpdateCheckerHandler::UpdateCheckerHandler() called." LOG_
-	currentRelease = "1.0.4.2-final";
 }
 
 UpdateCheckerHandler::~UpdateCheckerHandler() {

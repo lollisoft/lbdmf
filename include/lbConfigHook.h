@@ -130,6 +130,7 @@
 #define ltoa lb_ltoa
 #define ptoa lb_ptoa
 
+#include <lbVersionInfo.h>
 #include <lbInterfaces.h>
 
 #ifndef OSX
