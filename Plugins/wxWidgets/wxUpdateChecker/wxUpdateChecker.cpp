@@ -137,6 +137,17 @@ public:
 		lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 		lb_I_Unknown* LB_STDCALL getUnknown();
 		lbErrCodes LB_STDCALL RunUpdateCheck(lb_I_Unknown* uk);
+		lbErrCodes LB_STDCALL RunSilentUpdateCheck(lb_I_Unknown* uk);
+		lbErrCodes LB_STDCALL openReleasePage(lb_I_Unknown* uk);
+
+		lb_I_String* LB_STDCALL getReleaseUri();
+
+protected:
+	wxJSONValue  lastReleaseInfo;
+        wxString currentRelease;
+	bool silentRan;
+	bool updateDetected;
+	bool silent;
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(UpdateCheckerHandler)
@@ -158,8 +169,19 @@ lb_I_Unknown* LB_STDCALL UpdateCheckerHandler::getUnknown() {
 
 lbErrCodes LB_STDCALL UpdateCheckerHandler::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::RunUpdateCheck, "RunUpdateCheck");
+	disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::RunSilentUpdateCheck, "RunSilentUpdateCheck");
+	disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::openReleasePage, "openReleasePage");
 
 	return ERR_NONE;
+}
+
+lbErrCodes LB_STDCALL UpdateCheckerHandler::RunSilentUpdateCheck(lb_I_Unknown* uk) {
+	if (!silentRan) {
+		silentRan = true;
+		silent = true;
+		RunUpdateCheck(NULL);
+		silent = false;
+	}
 }
 
 lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
@@ -189,16 +211,14 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 		wxStringOutputStream out_stream(&res);
 		httpStream->Read(out_stream);
 		
-		// construct the JSON root object
-		wxJSONValue  root;
-		
 		// construct a JSON parser
 		wxJSONReader reader;
 
 		bool updateAvailable = false;
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg_version)
 		
-		int numErrors = reader.Parse( res, &root );
+		int numErrors = reader.Parse( res, &lastReleaseInfo );
 		
 		if (numErrors > 0) {
 			wxMessageBox(_T("Unable to read update information!"));
@@ -206,11 +226,9 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 			//wxMessageBox(res);
 			
 			// now retrive the array of supported languages
-			wxJSONValue releases = root["releases"];
+			wxJSONValue releases = lastReleaseInfo["releases"];
 			
 			bool isArray = releases.IsArray();
-			
-			wxString currentRelease = "1.0.4.2-final";
 			
 			UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 			UAP(lb_I_Parameter, UpdateSettings)
@@ -223,7 +241,7 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 			*msg = "There are new versions available. Go to the product page and download the following version: ";
 			
 			if (isArray) {
-				for ( int i = 0; i < releases.Size(); i++ ) {
+				for ( int i = releases.Size() - 1; i >= 0; i-- ) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, version)
 					wxString release = releases[i]["version"].AsString();
 					
@@ -236,19 +254,43 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 					
 					if (KnownVersions->exists(&key) == 0) {
 						
-						if (release <= currentRelease)
-							break;
-
 						updateAvailable = true;
-						KnownVersions->insert(&uk, &key);
+						if (i >= 0) KnownVersions->insert(&uk, &key);
 						
-						*msg += version->charrep();
+						*msg_version = version->charrep();
 					}
 				}
+				//UpdateSettings->setUAPContainer(*&name, *&KnownVersions);
 			}			
 		}
 		
-		if (updateAvailable) wxMessageBox(_T(msg->charrep()));
+		if (updateAvailable) {
+			*msg += msg_version->charrep();
+
+			if (!silent) wxMessageBox(_T(msg->charrep()));
+
+			if (!updateDetected) {
+				int temp;
+				updateDetected = true;
+				UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+				UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+				eman->registerEvent("openReleasePage", temp);
+				disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::openReleasePage, "openReleasePage");
+	
+				UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
+				char* help = strdup(_trans("Updates available"));
+				char* negativeentry = strdup(_trans("A new release is available. Go to the release page..."));
+
+				meta->addMenuEntry(help, negativeentry, "openReleasePage", "");
+
+				meta->addToolBar("Update Toolbar");
+				meta->addToolBarButton("Update Toolbar", "A new release is available. Go to the release page...", "openReleasePage", "bell.png");
+	
+				free(help);
+				free(negativeentry);
+			}
+		}
 	}
 	else
 	{
@@ -261,8 +303,38 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	return ERR_NONE;
 }
 
+lb_I_String* LB_STDCALL UpdateCheckerHandler::getReleaseUri() {
+	UAP_REQUEST(getModuleInstance(), lb_I_String, releaseUri)
+
+	wxJSONValue releases = lastReleaseInfo["releases"];
+
+        bool isArray = releases.IsArray();
+
+        if (isArray) {
+               	wxString release_uri = releases[0]["download"].AsString();
+               	*releaseUri = release_uri.c_str();
+	}
+
+	releaseUri++;
+
+	return *&releaseUri;
+}
+
+lbErrCodes LB_STDCALL UpdateCheckerHandler::openReleasePage(lb_I_Unknown* uk) {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, releaseUri)
+	lb_I_GUI* gui;
+	meta->getGUI(&gui);
+
+	releaseUri = getReleaseUri();
+
+	gui->openWebPage("New product release", releaseUri->charrep());
+	return ERR_NONE;
+}
+
 UpdateCheckerHandler::UpdateCheckerHandler() {
 	_CL_VERBOSE << "UpdateCheckerHandler::UpdateCheckerHandler() called." LOG_
+	currentRelease = "1.0.4.2-final";
 }
 
 UpdateCheckerHandler::~UpdateCheckerHandler() {
@@ -346,6 +418,7 @@ lbErrCodes LB_STDCALL wxUpdateChecker::autorun() {
 	int lEvent;
 
 	ev->registerEvent("RunUpdateCheck", lEvent);
+	ev->registerEvent("RunSilentUpdateCheck", lEvent);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
 

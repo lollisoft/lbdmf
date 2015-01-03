@@ -257,12 +257,7 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 		}
 	}
 	
-	if (!doCheck) return ERR_NONE;
-	
-	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
-	
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
-	
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
@@ -281,10 +276,10 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
+
+	dispatcher->dispatch("RunSilentUpdateCheck", uk.getPtr(), &uk_result);
 	
-	int event = 0;
-	
-	eman->resolveEvent("RunUpdateCheck", event);
+	if (!doCheck) return ERR_NONE;
 	
 	dispatcher->dispatch("RunUpdateCheck", uk.getPtr(), &uk_result);
 
