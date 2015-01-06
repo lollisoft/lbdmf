@@ -20,8 +20,9 @@ cp ../../../AppDevelopmentDemo/DynamicApp/XSLT_Templates/include/XMISettingsTemp
 cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples wxWrapper.app/Contents/Resources
 
 mkdir wxWrapper.app/Contents/Resources/toolbarimages
-cp -R $HOME/lib wxWrapper.app/Contents
-cp -R $HOME/plugins wxWrapper.app/Contents/Resources
+# UGLY! Using environment that also is properly defined while jenkins build is better
+cp -R ../../../../../../lib wxWrapper.app/Contents
+cp -R ../../../../../../plugins wxWrapper.app/Contents/Resources
 # How to access them?
 cp toolbarimages/*.xpm wxWrapper.app/Contents/Resources/toolbarimages
 cp toolbarimages/*.png wxWrapper.app/Contents/Resources/toolbarimages
