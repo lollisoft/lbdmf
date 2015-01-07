@@ -1,6 +1,8 @@
 #!/bin/sh
 # Copies together files for the Mac OS X application bundle and created a disk image
 
+export prefix=$1
+
 export VERSION=1.0.4.3_final
 
 cp ../../../Database/*.sql wxWrapper.app/Contents/Resources
@@ -21,8 +23,8 @@ cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples wxWrapper.app/Contents/R
 
 mkdir wxWrapper.app/Contents/Resources/toolbarimages
 # UGLY! Using environment that also is properly defined while jenkins build is better
-cp -R ../../../../../../lib wxWrapper.app/Contents
-cp -R ../../../../../../plugins wxWrapper.app/Contents/Resources
+cp -R $prefix/lib wxWrapper.app/Contents
+cp -R $prefix/plugins wxWrapper.app/Contents/Resources
 # How to access them?
 cp toolbarimages/*.xpm wxWrapper.app/Contents/Resources/toolbarimages
 cp toolbarimages/*.png wxWrapper.app/Contents/Resources/toolbarimages

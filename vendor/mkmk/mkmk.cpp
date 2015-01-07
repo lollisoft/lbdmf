@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.9 $
+ * $Revision: 1.114.2.10 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.9 2015/01/01 19:06:52 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.10 2015/01/07 03:15:41 lollisoft Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.10  2015/01/07 03:15:41  lollisoft
+ * Fixed prefix issue in postlink step.
+ *
  * Revision 1.114.2.9  2015/01/01 19:06:52  lollisoft
  * Added initial json based update check plugin.
  *
@@ -1060,7 +1063,7 @@ void writeBundleTarget(char* modulename) {
 
         change_install_names(false);
 
-        printf("\t\t-./postlink-mac.sh\n");
+        printf("\t\t-./postlink-mac.sh $(prefix)\n");
         //  printf("\t\t\n", modulename);
 #endif
         
@@ -2163,7 +2166,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.9 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.10 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
