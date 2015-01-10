@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.49 $
+# * $Revision: 1.229.2.50 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.49 2015/01/03 10:38:51 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.50 2015/01/10 05:07:08 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.50  2015/01/10 05:07:08  lollisoft
+# * Added required parameter.
+# *
 # * Revision 1.229.2.49  2015/01/03 10:38:51  lollisoft
 # * Added enhanced update mechanism with a silent recheck to create download toolbar and menu entries.
 # *
@@ -2077,7 +2080,7 @@ endif
 
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ -e prefix=$(prefix)
 	cp ../Test/GUI/wxWrapper/wxWrapper $(prefix)/bin
 
 ../vendor/wxARG/src: dummy
