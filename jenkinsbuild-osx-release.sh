@@ -46,8 +46,8 @@ echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) clean >> Projec
 
 echo \ >> Projects/CPP/makefile
 echo wxWrapper: dummy >> Projects/CPP/makefile
-echo \	\$\(MAKE\) -s -C Projects/CPP/Test/GUI/wxWrapper -e DEVROOT=\$\(DEVROOT\) clean >> Projects/CPP/makefile
-echo \	\$\(MAKE\) -s -C Projects/CPP/Test/GUI/wxWrapper -e DEVROOT=\$\(DEVROOT\) >> Projects/CPP/makefile
+echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e DEVROOT=\$\(DEVROOT\) clean >> Projects/CPP/makefile
+echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e DEVROOT=\$\(DEVROOT\) >> Projects/CPP/makefile
 OSTYPE=osx
 export OSTYPE
 OSVERSION=`uname -r`
