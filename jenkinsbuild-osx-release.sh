@@ -56,5 +56,5 @@ make -C Projects/CPP -f makefile
 make -C Projects/CPP -f makefile install
 
 cd Projects/CPP/Test/GUI/wxWrapper
-make clean
-make
+make -e DEVROOT=\$\(DEVROOT\) clean
+make -e DEVROOT=\$\(DEVROOT\)
