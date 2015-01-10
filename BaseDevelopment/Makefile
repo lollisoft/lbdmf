@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.50 $
+# * $Revision: 1.229.2.51 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.50 2015/01/10 05:07:08 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.51 2015/01/10 12:27:02 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.51  2015/01/10 12:27:02  lollisoft
+# * Added separate install rules for Jenkins build versus manual build. The manual build fails at missing AppDevelopment install step, but that could be ignored. In Jenkins build this should be excluded.
+# *
 # * Revision 1.229.2.50  2015/01/10 05:07:08  lollisoft
 # * Added required parameter.
 # *
@@ -1682,12 +1685,24 @@ all_targets: $(ALLTARGETS)
 
 ifndef RPMBUILD
 
+ifeq ($(CRUISECONTROL), yes)
+
 install:
 	for sub_target in $(ALLDIRS); do \
+		echo Install CRUISECONTROL $$sub_target; \
+		$(MAKE) -C $$sub_target install; \
+	done
+
+else
+
+install:
+	for sub_target in $(ALLDIRS); do \
+		echo Install $$sub_target; \
 		$(MAKE) -C $$sub_target install; \
 	done
 	-$(MAKE) -C ../AppDevelopment install
 
+endif
 
 install-strip:
 	for sub_target in $(ALLDIRS); do \
