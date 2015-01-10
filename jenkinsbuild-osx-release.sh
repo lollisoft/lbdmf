@@ -47,7 +47,10 @@ OSPLATFORM=`uname -p`
 export OSPLATFORM
 CRUISECONTROL=yes
 export CRUISECONTROL
-make -C Projects/CPP/Test/GUI/wxWrapper -f makefile clean
-make -C Projects/CPP/Test/GUI/wxWrapper -f makefile
+make -C Projects/CPP -f makefile clean
+make -C Projects/CPP -f makefile
+make -C Projects/CPP -f makefile install
 
-cd Projects/CPP/Test/GUI/
+cd Projects/CPP/Test/GUI/wxWrapper
+make clean
+make
