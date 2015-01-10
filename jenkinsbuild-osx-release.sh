@@ -43,6 +43,11 @@ echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) install >> Proj
 echo \ >> Projects/CPP/makefile
 echo clean: dummy >> Projects/CPP/makefile
 echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) clean >> Projects/CPP/makefile
+
+echo \ >> Projects/CPP/makefile
+echo wxWrapper: dummy >> Projects/CPP/makefile
+echo \	\$\(MAKE\) -s -C Projects/CPP/Test/GUI/wxWrapper -e DEVROOT=\$\(DEVROOT\) clean >> Projects/CPP/makefile
+echo \	\$\(MAKE\) -s -C Projects/CPP/Test/GUI/wxWrapper -e DEVROOT=\$\(DEVROOT\) >> Projects/CPP/makefile
 OSTYPE=osx
 export OSTYPE
 OSVERSION=`uname -r`
@@ -54,7 +59,4 @@ export CRUISECONTROL
 make -C Projects/CPP -f makefile clean
 make -C Projects/CPP -f makefile
 make -C Projects/CPP -f makefile install
-
-cd Projects/CPP/Test/GUI/wxWrapper
-make -e DEVROOT=\$\(DEVROOT\) clean
-make -e DEVROOT=\$\(DEVROOT\)
+make -C Projects/CPP -f makefile wxWrapper 
