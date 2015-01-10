@@ -39,6 +39,10 @@ echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\) >> Projects/CPP/makefile
 echo \ >> Projects/CPP/makefile
 echo install: dummy >> Projects/CPP/makefile
 echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) install >> Projects/CPP/makefile
+
+echo \ >> Projects/CPP/makefile
+echo clean: dummy >> Projects/CPP/makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) clean >> Projects/CPP/makefile
 OSTYPE=osx
 export OSTYPE
 OSVERSION=`uname -r`
