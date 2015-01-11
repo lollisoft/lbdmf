@@ -2933,10 +2933,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 
                         _LOG << "Toolbar size is " << (long) tb->GetToolsCount() << "." LOG_
 
-                        wxSize s = wxSize(tb->GetSize().GetHeight()*tb->GetToolsCount(), tb->GetSize().GetHeight());
-                        tb->SetSize(s);
-                        tb->Fit();
-                        //tb->SetMinSize(s);
+                        //wxSize s = wxSize(tb->GetSize().GetHeight()*tb->GetToolsCount(), tb->GetSize().GetHeight());
+						tb->Fit();
+                        tb->SetMinSize(wxSize(tb->GetSize().GetWidth()+5, tb->GetSize().GetHeight()));
 
 #ifdef USE_WXAUI
                         m_mgr.DetachPane(tb);
