@@ -2935,7 +2935,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 
                         //wxSize s = wxSize(tb->GetSize().GetHeight()*tb->GetToolsCount(), tb->GetSize().GetHeight());
 						tb->Fit();
-                        tb->SetMinSize(wxSize(tb->GetSize().GetWidth()+5, tb->GetSize().GetHeight()));
+                        tb->SetSize(wxSize(tb->GetSize().GetWidth()+5, tb->GetSize().GetHeight()+5));
+						tb->Fit();
 
 #ifdef USE_WXAUI
                         m_mgr.DetachPane(tb);
