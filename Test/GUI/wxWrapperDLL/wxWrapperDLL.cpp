@@ -1402,15 +1402,18 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
                         notebook->AddPage(w, formName, true);
 
                         if (!frame->IsMaximized()) {
+								_LOG << "Frame is not maximized" LOG_
                                 notebook->SetSizeHints(frame->FindWindowById(_dialog->getId())->GetSize());
                                 notebook->Fit();
-                        }
+                        } else {
+							_LOG << "Frame is maximized" LOG_
+						}
 
                         if (frame->isSplitted()) {
                                 if (!frame->IsMaximized()) frame->Fit();
                         } else {
                                 if (!frame->IsMaximized()) {
-
+									_LOG << "Frame is not maximized and centers to screen" LOG_
                                         frame->SetSizeHints(notebook->GetSize());
                                         frame->Fit();
                                         frame->Centre();
