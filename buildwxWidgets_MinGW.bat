@@ -27,8 +27,8 @@ rem echo copy /Y %DEVLW%\lbDMF\commctrl-wxWidgets-patch.h Develop\Tools\MinGW\in
 echo copy /Y %DEVLW%\lbDMF\w32api-Wcpp-patch.h Develop\Tools\MinGW\include\w32api.h >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\bin\bison.exe ( >> doBuildWx.bat
-echo wget http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4-final/lbDMF-BinbuildTools-1.0.4-final.exe/download >> doBuildWx.bat
-echo lbDMF-BinbuildTools-1.0.4-final.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
+echo wget http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4.4-final/lbDMF-BinbuildTools-1.0.4.4-final.exe/download >> doBuildWx.bat
+echo lbDMF-BinbuildTools-1.0.4.4-final.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %WXDIR%\build\msw ( >> doBuildWx.bat
 echo wget http://sourceforge.net/projects/wxwindows/files/2.8.12/wxMSW-2.8.12-Setup.exe/download >> doBuildWx.bat

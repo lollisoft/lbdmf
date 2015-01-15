@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.51 $
+# * $Revision: 1.229.2.52 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.51 2015/01/10 12:27:02 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.52 2015/01/15 18:54:15 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.52  2015/01/15 18:54:15  lollisoft
+# * Changed version information.
+# *
 # * Revision 1.229.2.51  2015/01/10 12:27:02  lollisoft
 # * Added separate install rules for Jenkins build versus manual build. The manual build fails at missing AppDevelopment install step, but that could be ignored. In Jenkins build this should be excluded.
 # *
