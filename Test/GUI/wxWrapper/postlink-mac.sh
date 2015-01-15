@@ -3,7 +3,7 @@
 
 export prefix=$1
 
-export VERSION=1.0.4.3_final
+export VERSION=1.0.4.4_final
 
 cp ../../../Database/*.sql wxWrapper.app/Contents/Resources
 cp splash.png wxWrapper.app/Contents/Resources
