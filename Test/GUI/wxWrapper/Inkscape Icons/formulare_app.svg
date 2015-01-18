@@ -129,8 +129,8 @@
      inkscape:cy="654.12781"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     inkscape:window-width="1920"
-     inkscape:window-height="1058"
+     inkscape:window-width="1778"
+     inkscape:window-height="1001"
      inkscape:window-x="0"
      inkscape:window-y="778"
      showgrid="false"
@@ -305,5 +305,31 @@
        inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_field_connect.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
+    <image
+       y="383.97354"
+       x="130.2207"
+       id="image3664"
+       height="32"
+       width="32"
+       sodipodi:absref="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kpersonalizer.png"
+       xlink:href="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/kpersonalizer.png"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_field.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/toolbarimages/formular_field.png"
+       transform="scale(0.89520584,1.1170615)"
+       sodipodi:linespacing="125%"
+       id="text3666"
+       y="370.28329"
+       x="144.10951"
+       style="font-size:16.34469795px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       xml:space="preserve"><tspan
+         y="370.28329"
+         x="144.10951"
+         id="tspan3668"
+         sodipodi:role="line">Field</tspan></text>
   </g>
 </svg>
