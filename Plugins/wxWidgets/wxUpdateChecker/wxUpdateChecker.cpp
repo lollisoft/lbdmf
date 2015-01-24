@@ -199,14 +199,17 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 
 	wxHTTP get;
 	get.SetHeader(_T("Content-type"), _T("text/html; charset=utf-8"));
-	get.SetTimeout(10); // 10 seconds of timeout instead of 10 minutes ...
+	int timeout = 1;
+	get.SetTimeout(timeout);
 	
 	int retry = 5;
 	
+	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds ..."));
+	
 	// this will wait until the user connects to the internet. It is important in case of dialup (or ADSL) connections
 	while (retry-->0 && !get.Connect(_T("www.lollisoft.de")))  // only the server, no pages here yet ...
-		wxSleep(5);
-	
+		return ERR_NONE;
+		
 	wxApp::IsMainLoopRunning(); // should return true
 	
 	// use _T("/") for index.html, index.php, default.asp, etc.
