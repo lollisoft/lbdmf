@@ -147,6 +147,7 @@ protected:
 	bool silentRan;
 	bool updateDetected;
 	bool silent;
+	int silent_retry;
 };
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(UpdateCheckerHandler)
@@ -158,6 +159,7 @@ UpdateCheckerHandler::UpdateCheckerHandler() {
 	silentRan = false;
 	updateDetected = false;
 	silent = false;
+	silent_retry = 5;
 }
 
 UpdateCheckerHandler::~UpdateCheckerHandler() {
@@ -185,15 +187,21 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::registerEventHandler(lb_I_Dispatcher
 	return ERR_NONE;
 }
 
+/// Run update checks at application start.
 lbErrCodes LB_STDCALL UpdateCheckerHandler::RunSilentUpdateCheck(lb_I_Unknown* uk) {
 	if (!silentRan) {
-		silentRan = true;
 		silent = true;
-		RunUpdateCheck(NULL);
+		
+		if (silent_retry > 0 && RunUpdateCheck(NULL) != ERR_NONE) 
+			silent_retry--;
+		else
+			silentRan = true;
+		
 		silent = false;
 	}
 }
 
+/// Run update check per week.
 lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
@@ -207,9 +215,13 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds ..."));
 	
 	// this will wait until the user connects to the internet. It is important in case of dialup (or ADSL) connections
-	while (retry-->0 && !get.Connect(_T("www.lollisoft.de")))  // only the server, no pages here yet ...
-		return ERR_NONE;
-		
+	while (!get.Connect(_T("www.lollisoft.de")))  // only the server, no pages here yet ...
+	{
+		timeout++;
+		if (retry-- == 0)
+			return ERR_WEBSITE_UNREACHABLE;
+	}
+	
 	wxApp::IsMainLoopRunning(); // should return true
 	
 	// use _T("/") for index.html, index.php, default.asp, etc.
@@ -349,11 +361,12 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 				free(menutext);
 			}
 		}
+	} else {
+		wxDELETE(httpStream);
+		get.Close();
+		return ERR_WEBSITE_UNREACHABLE;
 	}
-	else
-	{
-		wxMessageBox(_T("Unable to connect to check for updates!"));
-	}
+
 	
 	wxDELETE(httpStream);
 	get.Close();
