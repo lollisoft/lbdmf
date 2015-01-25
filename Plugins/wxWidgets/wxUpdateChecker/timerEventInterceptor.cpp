@@ -276,10 +276,11 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, result)
 	UAP(lb_I_Unknown, uk_result)
 	QI(result, lb_I_Unknown, uk_result)
-
-	dispatcher->dispatch("RunSilentUpdateCheck", uk.getPtr(), &uk_result);
 	
-	if (!doCheck) return ERR_NONE;
+	if (!doCheck) {
+		dispatcher->dispatch("RunSilentUpdateCheck", uk.getPtr(), &uk_result);
+		return ERR_NONE;
+	}
 	
 	dispatcher->dispatch("RunUpdateCheck", uk.getPtr(), &uk_result);
 
