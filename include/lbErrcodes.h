@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46.2.2 $
+ * $Revision: 1.46.2.3 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.46.2.2 2013/10/13 08:57:06 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.46.2.3 2015/01/25 07:17:46 lollisoft Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.46.2.3  2015/01/25 07:17:46  lollisoft
+ * Added new error code for website error handling stuff.
+ *
  * Revision 1.46.2.2  2013/10/13 08:57:06  lollisoft
  * Absolute method bug in DatabaseLayer wrapper: Moving behind first page did not work. Wrote an unit test and fixed it. Other minor changes.
  *
@@ -379,7 +382,10 @@ enum lbErrCodes {
 	ERR_DOCUMENTELEMENT_MISSING,
 
 	ERR_NOT_CONNECTED,
-	
+
+/* General web access errors */
+	ERR_WEBSITE_UNREACHABLE,
+
 /* Different compilers may generate different size of the enum type. That causes the failures in my tests. Thanks to Michal Necasek. */
 	ERR_LAST_ENUM = 0x7fffffff
 };
