@@ -137,6 +137,7 @@ public:
 		lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 		lb_I_Unknown* LB_STDCALL getUnknown();
 		lbErrCodes LB_STDCALL RunUpdateCheck(lb_I_Unknown* uk);
+		lbErrCodes LB_STDCALL RunManualUpdateCheck(lb_I_Unknown* uk);
 		lbErrCodes LB_STDCALL RunSilentUpdateCheck(lb_I_Unknown* uk);
 		lbErrCodes LB_STDCALL openReleasePage(lb_I_Unknown* uk);
 
@@ -145,6 +146,8 @@ public:
 protected:
 	wxJSONValue  lastReleaseInfo;
 	bool silentRan;
+	bool updateCheckRan;
+
 	bool updateDetected;
 	bool silent;
 	int silent_retry;
@@ -160,6 +163,7 @@ UpdateCheckerHandler::UpdateCheckerHandler() {
 	updateDetected = false;
 	silent = false;
 	silent_retry = 5;
+	updateCheckRan = false;
 }
 
 UpdateCheckerHandler::~UpdateCheckerHandler() {
@@ -181,11 +185,19 @@ lb_I_Unknown* LB_STDCALL UpdateCheckerHandler::getUnknown() {
 
 lbErrCodes LB_STDCALL UpdateCheckerHandler::registerEventHandler(lb_I_Dispatcher* disp) {
 	disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::RunUpdateCheck, "RunUpdateCheck");
+	disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::RunManualUpdateCheck, "RunManualUpdateCheck");	
 	disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::RunSilentUpdateCheck, "RunSilentUpdateCheck");
 	disp->addEventHandlerFn(this, (lbEvHandler) &UpdateCheckerHandler::openReleasePage, "openReleasePage");
 
 	return ERR_NONE;
 }
+
+/// Run update checks at application start.
+lbErrCodes LB_STDCALL UpdateCheckerHandler::RunManualUpdateCheck(lb_I_Unknown* uk) {
+	updateCheckRan = false;
+	RunUpdateCheck(NULL);
+}
+
 
 /// Run update checks at application start.
 lbErrCodes LB_STDCALL UpdateCheckerHandler::RunSilentUpdateCheck(lb_I_Unknown* uk) {
@@ -205,22 +217,38 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunSilentUpdateCheck(lb_I_Unknown* u
 lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
+	// Do not check twice per application start.
+	if (updateCheckRan) return ERR_NONE;
+	updateCheckRan = true;
+	
 	wxHTTP get;
 	get.SetHeader(_T("Content-type"), _T("text/html; charset=utf-8"));
-	int timeout = 1;
+	int timeout = 10;
 	get.SetTimeout(timeout);
 	
 	int retry = 5;
 	
-	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds ..."));
+	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds ."));
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, durationPoints)
+
+	*durationPoints = "Checking for software update. Connection failed. Do a retry ";
 	
 	// this will wait until the user connects to the internet. It is important in case of dialup (or ADSL) connections
 	while (!get.Connect(_T("www.lollisoft.de")))  // only the server, no pages here yet ...
 	{
 		timeout++;
+
+		meta->setStatusText("Info", _trans(durationPoints->charrep()));
+		*durationPoints += ".";
+		if (!silent) wxSleep(1);
+		
 		if (retry-- == 0)
 			return ERR_WEBSITE_UNREACHABLE;
 	}
+
+	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds .."));
+
 	
 	wxApp::IsMainLoopRunning(); // should return true
 	
@@ -241,6 +269,8 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	*name = "KnownVersions";
 */
 	
+	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds ..."));
+
 	if (get.GetError() == wxPROTO_NOERR)
 	{
 		wxString res;
@@ -262,6 +292,8 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 			wxMessageBox(_T("Unable to read update information!"));
 		} else {
 			//wxMessageBox(res);
+			
+			meta->setStatusText("Info", _trans("Got release information. Parsing ..."));
 			
 			// now retrive the array of supported languages
 			wxJSONValue releases = lastReleaseInfo["releases"];
@@ -360,6 +392,9 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 				free(updatemenu);
 				free(menutext);
 			}
+		} else {
+			meta->setStatusText("Info", _trans("Your software is up to date."));
+			wxSleep(1);
 		}
 	} else {
 		wxDELETE(httpStream);
@@ -479,6 +514,7 @@ lbErrCodes LB_STDCALL wxUpdateChecker::autorun() {
 	int lEvent;
 
 	ev->registerEvent("RunUpdateCheck", lEvent);
+	ev->registerEvent("RunManualUpdateCheck", lEvent);
 	ev->registerEvent("RunSilentUpdateCheck", lEvent);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
@@ -495,7 +531,7 @@ lbErrCodes LB_STDCALL wxUpdateChecker::autorun() {
 	char* file = strdup(_trans("&File"));
 	char* entry = strdup(_trans("Check for &Updates\tCtrl-U"));
 
-	meta->addMenuEntry(file, entry, "RunUpdateCheck", "");
+	meta->addMenuEntry(file, entry, "RunManualUpdateCheck", "");
 
 	free(file);
 	free(entry);
