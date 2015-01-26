@@ -1,3 +1,37 @@
+2015-01-25 14:47  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Added new chapter for
+	  listing features per version.
+
+2015-01-25 11:45  lollisoft
+
+	* Plugins/wxWidgets/wxUpdateChecker/: timerEventInterceptor.cpp,
+	  wxUpdateChecker.cpp: Changed update check behaviour. Manual
+	  update checks can take a bit longer to give user feedback. Silent
+	  update checks try to be as fast as possible. Tested against a GSM
+	  network.
+
+2015-01-25 08:17  lollisoft
+
+	* include/lbErrcodes.h: Added new error code for website error
+	  handling stuff.
+
+2015-01-25 07:23  lollisoft
+
+	* Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Added
+	  retry at silent update check.
+
+2015-01-24 14:31  lollisoft
+
+	* Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Fixed
+	  update check, if the client is offline.
+
+2015-01-21 07:15  lollisoft
+
+	* ChangeLog-basic.txt: Updated changelog file.
+
 2015-01-18 07:58  lollisoft
 
 	* Test/GUI/wxWrapper/Inkscape Icons/formulare_app.svg: Mofified
@@ -196,10 +230,4 @@
 2014-12-20 10:33  lollisoft
 
 	* ChangeLog-basic.txt: New release 1.0.4.3.
-
-2014-12-20 08:03  lollisoft
-
-	* Test/GUI/wxWrapper/postlink-mac.sh: Added extra copy commands to
-	  make templates and UML models accessible within the dmg. Changed
-	  version.
 
