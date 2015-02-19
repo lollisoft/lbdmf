@@ -1159,9 +1159,9 @@ public:
 
 
 
-DECLARE_FIXTURE( TestMainUseCases )
+//DECLARE_FIXTURE( TestMainUseCases )
 
 __attribute__ ((constructor)) void ct() {
-	USE_FIXTURE( TestMainUseCases )
+//	USE_FIXTURE( TestMainUseCases )
 }
 
