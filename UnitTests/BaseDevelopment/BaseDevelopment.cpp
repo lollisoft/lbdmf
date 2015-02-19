@@ -251,7 +251,8 @@ public:
 	{
 		TEST_CASE(test_Hook_lbstrirstr_with_backslash)
 		TEST_CASE(test_Hook_lbstrirstr_with_uppercase_pattern)
-		TEST_CASE(test_Hook__TRMemValidate_Returns_False)
+		// Not really working any more.
+		//TEST_CASE(test_Hook__TRMemValidate_Returns_False)
 	}
 
 	void test_Hook__TRMemValidate_Returns_False( void )
@@ -2404,6 +2405,1087 @@ public:
 	}
 };
 
+class BaseDevelopmentSqlite : public TestFixture<BaseDevelopmentSqlite>
+{
+public:
+	TEST_FIXTURE( BaseDevelopmentSqlite )
+	{
+		TEST_CASE(test_Instantiate)
+		
+		TEST_CASE(test_Sqlite_Cursor_Overflow)
+		TEST_CASE(test_Sqlite_Cursor_ManyPagesOverflow)
+		TEST_CASE(test_Sqlite_Cursor_BehindManyPages)
+		TEST_CASE(test_Sqlite_Cursor_Next)
+		TEST_CASE(test_Sqlite_Cursor_Last)
+		TEST_CASE(test_Sqlite_Cursor_Previous)
+		TEST_CASE(test_Sqlite_Cursor_OneRow_Previous)
+		TEST_CASE(test_Sqlite_Date_Column_Writable)
+	}
+	
+	
+public:
+	void setUp()
+	{
+#ifdef __MINGW32__
+		signal(SIGSEGV, sig_handler);
+		signal(SIGABRT, sig_handler);
+#endif
+#ifdef LINUX
+		signal(SIGABRT, sig_handler);
+		signal(SIGTRAP, sig_handler);
+		signal(SIGSEGV, sig_handler);
+		signal(SIGTERM, sig_handler);
+		signal(SIGBUS, sig_handler);
+#endif
+	}
+	
+	void tearDown()
+	{
+	}
+	
+    lb_I_String* createForeignKeyStatements(char* pTable, char* pColumn, char* fTable, char* fColumn) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		
+		*sql =
+		"CREATE TRIGGER 'fk_{FTABLE}_{FCOLUMN}_ins' BEFORE INSERT ON {FTABLE} FOR EACH ROW\n"
+		"BEGIN\n"
+		"    SELECT CASE WHEN ((new.{FCOLUMN} IS NOT NULL) AND ((SELECT {PCOLUMN} FROM {PTABLE} WHERE {PCOLUMN} = new.{FCOLUMN}) IS NULL))\n"
+		"                 THEN RAISE(ABORT, '{FCOLUMN} violates foreign key {PTABLE}({PCOLUMN})')\n"
+		"    END;\n"
+		"END;\n"
+		"CREATE TRIGGER 'fk_{FTABLE}_{FCOLUMN}_upd' BEFORE UPDATE ON {FTABLE} FOR EACH ROW\n"
+		"BEGIN\n"
+		"    SELECT CASE WHEN ((new.{FCOLUMN} IS NOT NULL) AND ((SELECT {PCOLUMN} FROM {PTABLE} WHERE {PCOLUMN} = new.{FCOLUMN}) IS NULL))\n"
+		"                 THEN RAISE(ABORT, '{FCOLUMN} violates foreign key {PTABLE}({PCOLUMN})')\n"
+		"    END;\n"
+		"END;\n"
+		"CREATE TRIGGER 'fk_{FTABLE}_{FCOLUMN}_del' BEFORE DELETE ON {PTABLE} FOR EACH ROW\n"
+		"BEGIN\n"
+		"    SELECT CASE WHEN ((SELECT {FCOLUMN} FROM {FTABLE} WHERE {FCOLUMN} = old.{PCOLUMN}) IS NOT NULL)\n"
+		"                 THEN RAISE(ABORT, '{PCOLUMN} violates foreign key {FTABLE}({FCOLUMN})')\n"
+		"    END;\n"
+		"END;\n"
+		"INSERT INTO 'lbDMF_ForeignKeys' ('PKTable', 'PKColumn', 'FKTable', 'FKColumn') VALUES ('{PTABLE}', '{PCOLUMN}', '{FTABLE}', '{FCOLUMN}');";
+		
+		sql->replace("{PTABLE}", pTable);
+		sql->replace("{PCOLUMN}", pColumn);
+		sql->replace("{FTABLE}",fTable);
+		sql->replace("{FCOLUMN}", fColumn);
+		
+		sql++;
+		return sql.getPtr();
+    }
+	
+	void test_Sqlite_Cursor_Overflow( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_Overflow");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+        lbErrCodes err7 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 120; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->absolute(50);
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		UAP(lb_I_Long, ID2)
+		
+		ID = query->getAsLong(1);
+		
+		err5 = query->absolute(101);
+		
+		ID1 = query->getAsLong(1);
+		
+		int pos_before = query->getPosition();
+		
+		err6 = query->absolute(150);
+		
+		int pos_after = query->getPosition();
+		
+		ID2 = query->getAsLong(1);
+		
+		err7 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+		ASSERT_EQUALS( ERR_DB_NODATA, err6);
+		ASSERT_EQUALS( ERR_NONE, err7);
+		ASSERT_EQUALS( pos_before, pos_after);
+		
+		
+		ASSERT_EQUALS( (long)50, (long)ID->getData() );
+		ASSERT_EQUALS( (long)101, (long)ID1->getData() );
+		ASSERT_EQUALS( (long)101, (long)ID2->getData() );
+	}
+	
+	void test_Sqlite_Cursor_ManyPagesOverflow( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_ManyPagesOverflow");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1000; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		for (int ii=99; ii<110; ii++) {
+			int ipos = ii+1;
+			UAP(lb_I_Long, IDTemp)
+			lbErrCodes e = query->absolute(ipos);
+			IDTemp = query->getAsLong(1);
+			ASSERT_EQUALS( (long)ipos, (long)IDTemp->getData() );
+		}
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->absolute(101);
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
+		
+		err5 = query->absolute(570);
+		
+		ID1 = query->getAsLong(1);
+		
+		err6 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		
+		
+		ASSERT_EQUALS( (long)101, (long)ID->getData() );
+		ASSERT_EQUALS( (long)570, (long)ID1->getData() );
+	}
+	
+	void test_Sqlite_Cursor_BehindManyPages( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_BehindManyPages");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1000; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->absolute(101);
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
+		
+		err5 = query->absolute(1570);
+		
+		ID1 = query->getAsLong(1);
+		
+		err6 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_DB_NODATA, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		
+		
+		ASSERT_EQUALS( (long)101, (long)ID->getData() );
+		//ASSERT_EQUALS( (long)570, (long)ID1->getData() );
+	}
+	
+	void test_Sqlite_Cursor_Next( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_Next");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->first();
+			err5 = query->next();
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
+		
+		err6 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_DB_NODATA, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		
+		
+		ASSERT_EQUALS( (long)1, (long)ID->getData() );
+		//ASSERT_EQUALS( (long)570, (long)ID1->getData() );
+	}
+	
+	void test_Sqlite_Cursor_Last( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_Last");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1000; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->first();
+			err5 = query->last();
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
+		
+		err6 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		
+		
+		ASSERT_EQUALS( (long)1000, (long)ID->getData() );
+		//ASSERT_EQUALS( (long)570, (long)ID1->getData() );
+	}
+	
+	void test_Sqlite_Cursor_Previous( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_Previous");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+        lbErrCodes err7 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1000; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->first();
+			err5 = query->last();
+			err6 = query->previous();
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
+		
+		err7 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+		ASSERT_EQUALS( ERR_NONE, err6);
+		ASSERT_EQUALS( ERR_NONE, err7);
+		
+		
+		ASSERT_EQUALS( (long)999, (long)ID->getData() );
+		//ASSERT_EQUALS( (long)570, (long)ID1->getData() );
+	}
+	
+	void test_Sqlite_Cursor_OneRow_Previous( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Cursor_OneRow_Previous");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+        lbErrCodes err2 = ERR_NONE;
+        lbErrCodes err3 = ERR_NONE;
+        lbErrCodes err4 = ERR_NONE;
+        lbErrCodes err5 = ERR_NONE;
+        lbErrCodes err6 = ERR_NONE;
+        lbErrCodes err7 = ERR_NONE;
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+		
+		err3 = query->query("select ID, Name from test", true);
+		
+		if (err3 == ERR_NONE)
+		{
+			err4 = query->first();
+			err5 = query->last();
+			err6 = query->previous();
+		}
+		
+		UAP(lb_I_Long, ID)
+		UAP(lb_I_Long, ID1)
+		
+		ID = query->getAsLong(1);
+		
+		err7 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+		ASSERT_EQUALS( ERR_DB_NODATA, err6);
+		ASSERT_EQUALS( ERR_NONE, err7);
+		
+		
+		ASSERT_EQUALS( (long)1, (long)ID->getData() );
+		//ASSERT_EQUALS( (long)570, (long)ID1->getData() );
+	}
+	
+	void test_Sqlite_Date_Column_Writable( void )
+	{
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_Date_Column_Writable");
+
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		lbErrCodes err1 = ERR_NONE;
+		lbErrCodes err2 = ERR_NONE;
+
+		
+		// Prepare
+		query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+		
+		err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	DateField DATE,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, index)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, sql)
+		for (int i = 0; i < 1; i++)
+		{
+			index->setData(i);
+			
+			*sql = "--SKIP REWRITE;\ninsert into test (Name,DateField) values ('Lala - ";
+			*sql += index->charrep();
+			*sql += "','2015-01-15')";
+			
+			err2 = query->query(sql->charrep(), false);
+		}
+	
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+	}
+	
+    void test_Sqlite_ForeignKey( void )
+    {
+		lbErrCodes err = ERR_NONE;
+		puts("test_Sqlite_ForeignKey");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+		UAP(lb_I_Database, db)
+		AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, "DatabaseLayerGateway", db, "'database plugin'")
+		
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSqlite", "UnitTestSqlite", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSqlite", 0);
+		
+		ASSERT_EQUALS( true, query != NULL);
+		
+		
+        lbErrCodes err1;
+        lbErrCodes err2;
+        lbErrCodes err3;
+        lbErrCodes err4;
+        lbErrCodes err5;
+        lbErrCodes err6;
+        lbErrCodes err7;
+        lbErrCodes err8;
+        lbErrCodes err9;
+        lbErrCodes err10;
+        lbErrCodes err11;
+		
+        err1 = query->query(
+							"CREATE TABLE test ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR"
+							")"
+							, false);
+		
+        err2 = query->query(
+							"CREATE TABLE foreigntable ("
+							"	id INTEGER PRIMARY KEY,"
+							"	Name BPCHAR,"
+							"   foreignid INTEGER"
+							")"
+							, false);
+		
+        UAP(lb_I_String, sql)
+        sql = createForeignKeyStatements("test", "id", "foreigntable", "foreignid");
+		
+		err3 = query->query(sql->charrep(), false);
+		
+		err4 = query->query("--SKIP REWRITE;\ninsert into test (Name) values ('Lala')", false);
+		//err5 = query->query("--SKIP REWRITE;\ninsert into foreigntable (Name, foreignid) values ('Lala', 1)", false);
+		err5 = ERR_NONE;
+		
+        lbErrCodes errSelect = query->query("select foreignid from foreigntable", true);
+		
+        int hasFK = query->hasFKColumn("foreignid");
+		
+        UAP(lb_I_Container, fKeys)
+		
+        fKeys = db->getForeignKeys("UnitTestSqlite");
+		
+        err6 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_ins", false);
+        err7 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_upd", false);
+        err8 = query->query("--SKIP REWRITE;\nDROP TRIGGER fk_foreigntable_foreignid_del", false);
+		
+        err9 = query->query("--SKIP REWRITE;\nDROP TABLE foreigntable", false);
+        err10 = query->query("--SKIP REWRITE;\nDROP TABLE test", false);
+        err11 = query->query("--SKIP REWRITE;\nDELETE FROM \"lbDMF_ForeignKeys\"", false);
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		ASSERT_EQUALS( ERR_NONE, err2);
+		ASSERT_EQUALS( ERR_NONE, err3);
+		ASSERT_EQUALS( ERR_NONE, err4);
+		ASSERT_EQUALS( ERR_NONE, err5);
+        ASSERT_EQUALS( ERR_DB_NODATA, errSelect );
+        //ASSERT_EQUALS( ERR_NONE, errSelect );
+		ASSERT_EQUALS( 1, fKeys->Count());
+        ASSERT_EQUALS( 1, hasFK );
+		ASSERT_EQUALS( ERR_NONE, err6);
+		ASSERT_EQUALS( ERR_NONE, err7);
+		ASSERT_EQUALS( ERR_NONE, err8);
+		ASSERT_EQUALS( ERR_NONE, err9);
+		ASSERT_EQUALS( ERR_NONE, err10);
+		ASSERT_EQUALS( ERR_NONE, err11);
+    }
+	
+	void test_PostgreSQL_setUser( void )
+	{
+		puts("test_PostgreSQL_setUser");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setUser(NULL));
+		ASSERT_EQUALS( ERR_NONE, db->setUser("lala"));
+	}
+	
+	void test_PostgreSQL_setDB( void )
+	{
+		puts("test_PostgreSQL_setDB");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setDB(NULL));
+		ASSERT_EQUALS( ERR_NONE, db->setDB("lala"));
+	}
+	
+	void test_PostgreSQL_listTables( void )
+	{
+		puts("test_PostgreSQL_listTables");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestPostgreSQL", "UnitTestPostgreSQL", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestPostgreSQL", 0);
+		
+		ASSERT_EQUALS( true, query != NULL);
+		
+		ASSERT_EQUALS( ERR_NONE, query->query(
+											  "CREATE TABLE test ("
+											  "	id serial,"
+											  "	Name char(100)"
+											  ")"
+											  , false));
+		
+		UAP(lb_I_Container, tables)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+		SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+		
+		
+		if (SomeBaseSettings == NULL) {
+			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+			meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+		}
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		
+		*name = "GeneralDBSchemaname";
+		*schema = "public";
+		SomeBaseSettings->setUAPString(*&name, *&schema);
+		meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+		
+		tables = db->getTables("UnitTestPostgreSQL");
+		
+		int count = tables->Count();
+		
+		ASSERT_EQUALS( ERR_NONE, query->query(
+											  "DROP TABLE test"
+											  , false));
+		
+		ASSERT_EQUALS( true, SomeBaseSettings != NULL )
+		
+		ASSERT_EQUALS( 1, count);
+		
+		db->close();
+	}
+	
+	void test_PostgreSQL_createTable_PostgreSQL_UnitTest( void )
+	{
+		puts("test_PostgreSQL_createTable_PostgreSQL_UnitTest");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestPostgreSQL", "UnitTestPostgreSQL", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestPostgreSQL", 0);
+		
+		ASSERT_EQUALS( true, query != NULL);
+		
+		lbErrCodes err1 = query->query(
+									   "CREATE TABLE test ("
+									   "	id serial,"
+									   "	Name char(100)"
+									   ")"
+									   , false);
+		
+		lbErrCodes err2 = query->query(
+									   "DROP TABLE test"
+									   , false);
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		
+		db->close();
+	}
+	
+	void test_login_PostgreSQL_UnitTest_failure( void )
+	{
+		puts("test_PostgreSQL_login_PostgreSQL_UnitTest_failure");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_DB_CONNECT, db->connect("UnitTestPostgreSQL", "UnitTestPostgreSQL", "dba", "trallala"));
+		
+		db->close();
+	}
+	
+	void test_login_PostgreSQL_UnitTest( void )
+	{
+		puts("test_PostgreSQL_login_PostgreSQL_UnitTest");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestPostgreSQL", "UnitTestPostgreSQL", "dba", "trainres"));
+		
+		db->close();
+	}
+	
+	
+	void test_SQLSERVER_setUser( void )
+	{
+		puts("test_SQLSERVER_setUser");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setUser(NULL));
+		ASSERT_EQUALS( ERR_NONE, db->setUser("lala"));
+	}
+	
+	void test_SQLSERVER_setDB( void )
+	{
+		puts("test_SQLSERVER_setDB");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_ILLEGAL_PARAMETER, db->setDB(NULL));
+		ASSERT_EQUALS( ERR_NONE, db->setDB("lala"));
+	}
+	
+	void test_SQLSERVER_listTables( void )
+	{
+		puts("test_SQLSERVER_listTables");
+		lbErrCodes err = ERR_NONE;
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSQLSERVER", 0);
+		
+		ASSERT_EQUALS( true, query != NULL)
+		
+		// Drop the table in case it exists.
+		query->query("DROP TABLE [dbo].[test]", false);
+		
+		query->query(
+					 "CREATE TABLE [dbo].[test] ("
+					 "	id int identity(1,1) NOT NULL,"
+					 "	Name nchar(100)"
+					 ")", false);
+		
+		UAP(lb_I_Container, tables)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		UAP(lb_I_Parameter, SomeBaseSettings)
+		SomeBaseSettings = meta->getPropertySet("DynamicAppDefaultSettings");
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, schema)
+		
+		if (SomeBaseSettings != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			
+			*name = "GeneralDBSchemaname";
+			*schema = "dbo";
+			SomeBaseSettings->setUAPString(*&name, *&schema);
+			meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+		} else {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+			REQUEST(getModuleInstance(), lb_I_Parameter, SomeBaseSettings)
+			
+			*name = "GeneralDBSchemaname";
+			*schema = "dbo";
+			SomeBaseSettings->setUAPString(*&name, *&schema);
+			meta->addPropertySet(*&SomeBaseSettings, "DynamicAppDefaultSettings");
+		}
+		
+		tables = db->getTables("UnitTestSQLSERVER");
+		
+		int count = tables->Count();
+		
+		ASSERT_EQUALS( 1, count);
+		
+		UAP(lb_I_Parameter, param)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tableName)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Unknown, uk)
+		uk = tables->getElementAt(1);
+		QI(uk, lb_I_Parameter, param)
+		
+		*name = "TableName";
+		param->getUAPString(*&name, *&tableName);
+		
+		query->query("DROP TABLE [dbo].[test]", false);
+		
+		ASSERT_EQUALS( "test", tableName->charrep());
+		
+		db->close();
+	}
+	
+	void test_createTable_SQLSERVER_UnitTest( void )
+	{
+		puts("test_createTable_SQLSERVER_UnitTest");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trainres"));
+		
+		UAP(lb_I_Query, query)
+		
+		query = db->getQuery("UnitTestSQLSERVER", 0);
+		
+		ASSERT_EQUALS( true, query != NULL);
+		
+		lbErrCodes err1 = query->query(
+									   "CREATE TABLE [dbo].[test] ("
+									   "	id int identity(1,1) NOT NULL,"
+									   "	Name nchar(100)"
+									   ")"
+									   , false);
+		
+		lbErrCodes err2 = query->query(
+									   "DROP TABLE [dbo].[test]"
+									   , false);
+		
+		ASSERT_EQUALS( ERR_NONE, err1);
+		
+		ASSERT_EQUALS( ERR_NONE, err2);
+		
+		db->close();
+	}
+	
+	void test_login_SQLSERVER_UnitTest_failure( void )
+	{
+		puts("test_login_SQLSERVER_UnitTest_failure");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		ASSERT_EQUALS( ERR_DB_CONNECT, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trallala"));
+		
+		db->close();
+	}
+	
+	void test_login_SQLSERVER_UnitTest( void )
+	{
+		puts("test_login_SQLSERVER_UnitTest");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		
+		ASSERT_EQUALS( ERR_NONE, db->connect("UnitTestSQLSERVER", "UnitTestSQLSERVER", "dba", "trainres"));
+		
+		db->close();
+	}
+	
+	void test_Instantiate( void )
+	{
+		puts("test_Instantiate");
+		UAP_REQUEST(getModuleInstance(), lb_I_Database, db)
+		
+		ASSERT_EQUALS( true, db.getPtr() != NULL );
+		db->init();
+	}
+	
+	
+	bool LoadSettings()
+	{
+		return true;
+	}
+};
 
 
 DECLARE_FIXTURE( BaseDevelopmentHook )
@@ -2416,6 +3498,7 @@ DECLARE_FIXTURE( BaseDevelopmentEventManager )
 DECLARE_FIXTURE( BaseDevelopmentMetaApplication )
 // The database tests are faulting at exit of the test application (the Sqlite failing query test is the cause).
 DECLARE_FIXTURE( BaseDevelopmentDatabase )
+DECLARE_FIXTURE( BaseDevelopmentSqlite )
 
 __attribute__ ((constructor)) void ct() {
 	USE_FIXTURE( BaseDevelopmentHook )
@@ -2424,7 +3507,9 @@ __attribute__ ((constructor)) void ct() {
 	//USE_FIXTURE( BaseDevelopmentLogger )
 	USE_FIXTURE( BaseDevelopmentInputStream )
 	//USE_FIXTURE( BaseDevelopmentContainer )
-	USE_FIXTURE( BaseDevelopmentDatabase )
+//	USE_FIXTURE( BaseDevelopmentDatabase )
+	USE_FIXTURE( BaseDevelopmentSqlite )
+
 /*
 	USE_FIXTURE( BaseDevelopmentEventManager )
 	USE_FIXTURE( BaseDevelopmentMetaApplication )

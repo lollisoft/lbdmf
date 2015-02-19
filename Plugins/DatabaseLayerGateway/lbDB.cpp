@@ -4164,14 +4164,17 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		strSQL += tables[0];
 		strSQL += " SET ";
 		for (int i = 0; i < queryColumns.Count(); i++) {
-			if (getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnChar) {
+			
+			bool isCharOrDate = getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnChar || getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnDate;
+			
+			if (isCharOrDate) {
 				if (i > 0) strSQL += ", ";
 				strSQL += queryColumns[i];
 				if (isNull(i+1)) {
 					strSQL += " = NULL";
 				} else {
-          wxString temp = queryValues[i];
-          temp.Replace("'", "''");
+					wxString temp = queryValues[i];
+					temp.Replace("'", "''");
 					strSQL += " = '";
   				strSQL += temp;
 					strSQL += "'";
