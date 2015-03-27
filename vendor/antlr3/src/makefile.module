@@ -27,7 +27,7 @@
 #			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -I ../include
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I ../include -I ../config/windows
 MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP)
 
 MOD_INCL=$(STD_INCL) -I ../include
@@ -106,7 +106,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL) -I ../include
+MOD_INCL=$(STD_INCL) -I ../include -I ../config/linux
 OBJDEP=
 C_SOOPS_WX = $(C_OPS) `wx-config --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include -I $(HOME)/gtk+-2.10.0
 C_SOOPS= $(C_SOOPS_WX)
@@ -115,7 +115,7 @@ LIBS=$(L_SOOPS) `wx-config --inplace --libs`
 endif    
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I ../include
+MOD_INCL=$(STD_INCL) -I ../include -I ../config/linux
 OBJDEP=
 C_SOOPS_WX = `wx-config --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include -I /opt/gnome/include/gtk-2.0 -I /opt/gnome/include/glib-2.0 -I /opt/gnome/lib/glib-2.0/include -I /opt/gnome/include/pango-1.0 -I /opt/gnome/lib/gtk-2.0/include -I /opt/gnome/include/atk-1.0
 C_SOOPS= $(C_SOOPS_WX)
@@ -124,7 +124,7 @@ LIBS=$(L_SOOPS) `wx-config --inplace --libs`
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
-MOD_INCL=$(STD_INCL) -I ../include
+MOD_INCL=$(STD_INCL) -I ../include -I ../config/linux
 OBJDEP=
 C_SOOPS_WX = `wx-config --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include -I /opt/gnome/include/gtk-2.0 -I /opt/gnome/include/glib-2.0 -I /opt/gnome/lib/glib-2.0/include -I /opt/gnome/include/pango-1.0 -I /opt/gnome/lib/gtk-2.0/include -I /opt/gnome/include/atk-1.0
 C_SOOPS= $(C_SOOPS_WX)
@@ -137,7 +137,7 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
 CC=gcc
-MOD_INCL=$(STD_INCL) -I ../include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
+MOD_INCL=$(STD_INCL) -I ../include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include -I ../config/mac
 OBJDEP=
 C_SOOPS_WX =-DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
 C_SOOPS= $(OSX_ARCH) $(C_SOOPS_WX)
