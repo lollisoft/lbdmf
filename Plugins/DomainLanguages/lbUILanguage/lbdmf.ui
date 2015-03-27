@@ -1,0 +1,46 @@
+// Simply a technical name and a title
+ui lbdmf "lbDMF Manager"
+
+declare data
+// Includes a predefined data model that must match used field references
+//use lbdmf.dd
+// Creates data model wich is marked as todo using a review over the data model
+//infer todo
+// Creates data model without further actions from any development process (for sample by a single developer creating a prototype)
+infer yes
+end data
+
+declare forms
+
+// Avoid repeatedly using common definitions
+default fieldtype text
+
+form anwendungen "Anwendungen"
+
+// Avoid referencing data if the source for it is clear
+use data.anwendungen a default
+use data.anwendungentype at
+
+field title "Name" shows a
+
+// Enable renaming using explicit referencing
+field name "Name" shows a.form_name
+
+field interface "Interface"
+field functor "Functor"
+field modulename "Modulename"
+// Enable definition of type
+field requirements "requirements" as richtext
+field background "Background" as richtext
+field model_complete "Model complete"
+// Declaring a longer text by the form field tyoe and infer corresponding data type
+field model_errors "Model errors" as multiline
+
+// Declare a foreign relation using a field to be shown instead the referred key
+field application_type "Type" refers at using type_name over at.id
+
+end form
+
+end forms
+
+end ui

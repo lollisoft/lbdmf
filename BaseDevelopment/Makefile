@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.52 $
+# * $Revision: 1.229.2.53 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.52 2015/01/15 18:54:15 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.53 2015/03/27 04:23:11 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.53  2015/03/27 04:23:11  lollisoft
+# * Added new plugins to start developing domain languages.
+# *
 # * Revision 1.229.2.52  2015/01/15 18:54:15  lollisoft
 # * Changed version information.
 # *
@@ -1191,10 +1194,14 @@ ALLTARGETS = \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/databaselayer/tests \
+	../vendor/antlr3/src \
 	../Test/Console/XML \
 	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper \
+	../vendor/goldparserengine/src \
+	../vendor/goldparserengine/samples/engine \
+	../vendor/goldparserengine/samples/gptest \
 	../AppDevelopmentDemo/MkBs \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
@@ -1265,6 +1272,7 @@ ALLDIRS = \
 	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/antlr3/src \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
@@ -1295,6 +1303,7 @@ ALLDIRS = \
 	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
@@ -1351,6 +1360,7 @@ ALLDIRS = \
 	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/antlr3/src \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
@@ -1381,6 +1391,7 @@ ALLDIRS = \
 	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
@@ -1436,6 +1447,7 @@ ALLDIRS = \
 	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
@@ -1469,6 +1481,7 @@ ALLDIRS = \
 	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
@@ -1538,6 +1551,7 @@ ALLTARGETS = \
 	../vendor/propgrid \
 	../Test/GUI/wxWrapperDLL \
 	../vendor/sqlite \
+	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
 	../vendor/libxslt-1.1.21/libxslt \
@@ -1630,6 +1644,7 @@ ALLTARGETS = \
 	lbtransfer \
 	../vendor/propgrid \
 	../vendor/sqlite \
+	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
@@ -1956,11 +1971,22 @@ ifneq ($(OSTYPE), Windows_NT)
 	$(MAKE) -s -C $@ -e MODULE=liblbsqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
+
+# My own antlr3 due to using my build system. (Should be thought of for my other vendor stuff)
+../vendor/antlr3/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=liblbantlr3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ install
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/sqlite: dummy
 	$(MAKE) -s -C $@ -e MODULE=sqlite3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+# My own antlr3 due to using my build system.
+../vendor/antlr3/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=liblbantlr3 -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 endif
 
@@ -2122,6 +2148,22 @@ endif
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+	
+../vendor/goldparserengine/src: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxGoldParser -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../vendor/goldparserengine/samples/engine: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxGoldParserEngineTest -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e prefix=$(prefix)
+	cp ../vendor/goldparserengine/samples/engine/wxGoldParserEngineTest $(prefix)/bin
+
+../vendor/goldparserengine/samples/gptest: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxGoldParserGPTest -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e prefix=$(prefix)
+	cp ../vendor/goldparserengine/samples/engine/wxGoldParserGPTest $(prefix)/bin
+
+
 endif
 
 ifeq ($(OSTYPE), solaris)

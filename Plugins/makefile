@@ -43,6 +43,8 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	lbANTLR3 \
+	DomainLanguages/lbUILanguage \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -65,6 +67,8 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	lbANTLR3 \
+	DomainLanguages/lbUILanguage \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -87,6 +91,8 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	lbANTLR3 \
+	DomainLanguages/lbUILanguage \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -109,6 +115,8 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	lbANTLR3 \
+	DomainLanguages/lbUILanguage \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -135,6 +143,8 @@ TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 
 ALLTARGETS = \
+	lbANTLR3 \
+	DomainLanguages/lbUILanguage \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -189,6 +199,14 @@ lbFileOperationsPlugin: dummy
 
 lbXSLTTransformer: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+lbANTLR3: dummy
+	$(MAKE) -C $@ -e MODULE=lbANTLR3 -e TARGET=$(TARGETPLUGIN) -e CUSTOM_FILES='*.c' -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
+DomainLanguages/lbUILanguage: dummy
+	$(MAKE) -C $@ -e MODULE=lbUILanguage -e TARGET=$(TARGETPLUGIN) -e CUSTOM_FILES='output/*.c' -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
 TestPlugin: dummy

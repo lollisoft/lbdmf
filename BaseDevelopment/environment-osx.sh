@@ -10,8 +10,11 @@ PLUGIN_DIR=~/plugins
 OSTYPE=osx
 OSVERSION=`uname -r`
 OSPLATFORM=`uname -p`
-PATH="/sw/bin:/sw/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:~/bin:/usr/local/bin:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/lib:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/TAO/tao:"
+PATH="/sw/bin:/sw/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:~/bin:/usr/local/bin:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/lib:/Users/lothar/develop/Projects/CPP/vendor/ACE_wrappers/TAO/tao:/Applications/quex"
 
+QUEX_PATH=/Applications/quex/quex-0.65.2
+
+export QUEX_PATH
 export CVS_RSH
 export MODULELIB
 export LBXMLFUNCTOR
