@@ -1036,6 +1036,9 @@ PRIMARY KEY (id),
 	class lb_I_Applications;
 	class lb_I_PluginManager;
 	class lb_I_Plugin;
+	class lb_I_AbstractSyntaxTree;
+	class lb_I_ExecutionContext;
+	class lb_I_ParserImplementation;
 
 	/*...e*/
 
@@ -5069,6 +5072,37 @@ public:
 	virtual bool update() = 0;
 };
 
+class lb_I_ParserImplementation : public lb_I_VisitableHelper {
+public:
+		virtual void LB_STDCALL init(const char* sourceCode) = 0;	
+
+		virtual lb_I_AbstractSyntaxTree* LB_STDCALL parse(lb_I_ExecutionContext* parentContext = NULL) = 0;
+};
+
+class lb_I_ExecutionContext : public lb_I_VisitableHelper {
+public:
+
+};
+
+class lb_I_AbstractSyntaxTree : public lb_I_VisitableHelper {
+public:
+	/** \brief An abstraction of a reduced rule to it's name and tokens.
+	 *
+	 */
+	virtual void LB_STDCALL init(const char* reductionName, lb_I_Parameter* tokens) = 0;	
+	
+	/** \brief Get the rule name, this element contains.
+	 *
+	 */
+	virtual char* LB_STDCALL getReductionName() = 0;
+	
+	virtual int LB_STDCALL getTokenCount() = 0;
+	
+	virtual char* LB_STDCALL getToken(int index) = 0;
+	
+	virtual bool LB_STDCALL evaluate(lb_I_ExecutionContext* context) = 0;
+};
+
 #include <lbInterfaces-sub-transfer.h>
 #include <lbInterfaces-sub-xml.h>
 #include <lbInterfaces-sub-classes.h>
@@ -5421,5 +5455,8 @@ UAPDECL(lb_I_InputStream)
 UAPDECL(lb_I_Applications)
 UAPDECL(lb_I_PluginManager)
 UAPDECL(lb_I_Plugin)
+UAPDECL(lb_I_AbstractSyntaxTree)
+UAPDECL(lb_I_ExecutionContext)
+UAPDECL(lb_I_ParserImplementation)
 
 #endif // __LB_INTERFACES__

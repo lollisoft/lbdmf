@@ -119,6 +119,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	ANTLR3 \
 	TestMainUseCases \
 	Actions \
 	TestRunner
@@ -136,6 +137,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	ANTLR3 \
 	TestMainUseCases \
 	Actions \
 	TestRunner
@@ -153,6 +155,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	ANTLR3 \
 	TestMainUseCases \
 	Actions \
 	TestRunner
@@ -171,6 +174,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	ANTLR3 \
 	TestMainUseCases \
 	Actions \
 	TestRunner
@@ -189,6 +193,7 @@ ALLTARGETS = \
 	UIWrapper \
 	MiniCppUnit \
 	BaseDevelopment \
+	ANTLR3 \
 	TestMainUseCases \
 	Actions \
 	TestRunner
@@ -227,6 +232,10 @@ BaseDevelopment: dummy
 	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
+ANTLR3: dummy
+	$(MAKE) -C $@ -e MODULE=testsANTLR3 -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+
 Actions: dummy
 	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
@@ -256,6 +265,11 @@ UIWrapper: dummy
 
 BaseDevelopment: dummy
 	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
+ANTLR3: dummy
+	$(MAKE) -C $@ -e MODULE=testsANTLR3 -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 	$(MAKE) -C $@ install
 
@@ -294,6 +308,11 @@ BaseDevelopment: dummy
 	$(MAKE) -C $@
 	$(MAKE) -C $@ install
 
+ANTLR3: dummy
+	$(MAKE) -C $@ -e MODULE=testsANTLR3 -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
+
 Actions: dummy
 	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
@@ -325,6 +344,11 @@ UIWrapper: dummy
 BaseDevelopment: dummy
 	$(MAKE) -C $@ -e MODULE=testsBaseDevelopment -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+
+ANTLR3: dummy
+	$(MAKE) -C $@ -e MODULE=testsANTLR3 -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
+	$(MAKE) -C $@ install
 
 Actions: dummy
 	$(MAKE) -C $@ -e MODULE=testsActions -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
