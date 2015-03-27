@@ -24,7 +24,7 @@
 #    p-Mail: See my current address on http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=6
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP) -I $(DEVROOT_MAKE)/Projects/CPP/vendor/antlr3/include -I $(DEVROOT_MAKE)/Projects/CPP/vendor/antlr3/config/windows
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP) -I $(DEVROOT_MAKE)/Projects/CPP/vendor/antlr3/include -I $(DEVROOT_MAKE)/Projects/CPP/vendor/antlr3/config/windows -I output
 
 MOD_INCL=$(STD_INCL)
 MOD_INCL_CPP=$(STD_INCL_CPP)
@@ -101,7 +101,7 @@ endif
 endif
 
 ifeq ($(OSTYPE),solaris) 
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/antlr3/include -I $(DEVROOT)/Projects/CPP/vendor/antlr3/config/linux
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/antlr3/include -I $(DEVROOT)/Projects/CPP/vendor/antlr3/config/linux -I output
 OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -110,7 +110,7 @@ LDFLAGS=$(L_SOOPS) `wx-config --libs`
 endif    
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/antlr3/include -I $(DEVROOT)/Projects/CPP/vendor/antlr3/config/linux
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/antlr3/include -I $(DEVROOT)/Projects/CPP/vendor/antlr3/config/linux -I output
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -119,7 +119,7 @@ LDFLAGS=$(L_SOOPS) `wx-config --libs`
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/antlr3/include -I $(DEVROOT)/Projects/CPP/vendor/antlr3/config/linux
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/antlr3/include -I $(DEVROOT)/Projects/CPP/vendor/antlr3/config/linux -I output
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
