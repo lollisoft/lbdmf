@@ -3,7 +3,7 @@
 
 /* Define if ANTLR debugger not required */
 #define ANTLR3_NODEBUGGER 1
-
+.
 /* Define if 64 bit mode required */
 /* #undef ANTLR3_USE_64BIT */
 
