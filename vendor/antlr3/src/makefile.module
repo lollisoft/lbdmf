@@ -27,7 +27,8 @@
 #			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -I ../include -I ../config/windows
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I ../include -DANTLR3_NODEBUGGER
+#-I ../config/windows
 MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP)
 
 MOD_INCL=$(STD_INCL) -I ../include
