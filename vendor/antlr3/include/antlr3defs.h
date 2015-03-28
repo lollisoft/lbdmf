@@ -129,6 +129,11 @@
 
 #ifdef	ANTLR3_WINDOWS 
 
+// I don't like socket usage.
+#ifndef ANTLR3_NODEBUGGER
+#define ANTLR3_NODEBUGGER 1
+#endif
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define	WIN32_LEAN_AND_MEAN
 #endif
