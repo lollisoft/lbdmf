@@ -2,7 +2,7 @@
 /* antlr3config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define if ANTLR debugger not required */
-/* #undef ANTLR3_NODEBUGGER */
+#define ANTLR3_NODEBUGGER
 
 /* Define if 64 bit mode required */
 /* #undef ANTLR3_USE_64BIT */
