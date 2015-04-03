@@ -3,7 +3,7 @@ ui lbdmf "lbDMF Manager"
 
 declare data
 // Includes a predefined data model that must match used field references
-//use lbdmf.dd
+//use "lbdmf.dd"
 // Creates data model wich is marked as todo using a review over the data model
 //infer todo
 // Creates data model without further actions from any development process (for sample by a single developer creating a prototype)
