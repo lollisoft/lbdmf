@@ -47,6 +47,7 @@ public:
 	lb_I_AbstractSyntaxTree* LB_STDCALL parse(lb_I_ExecutionContext* parentContext = NULL);
 	
 private:
+	
 	UAP(lb_I_String, source)	
 };
 
