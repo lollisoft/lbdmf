@@ -118,16 +118,14 @@ lb_I_AbstractSyntaxTree* LB_STDCALL lbUIDsl::parse(lb_I_ExecutionContext* parent
     tokens = antlr3CommonTokenStreamSourceNew  (ANTLR3_SIZE_HINT, TOKENSOURCE(lex));
     parser = uiParserNew		               (tokens);
  
-    uiParser_expr_return retval = parser  ->expr(parser);
+    uiParser_ui_return retval = parser  ->ui(parser);
  
- 	pANTLR3_STRING treestring = retval.tree->toStringTree(retval.tree);
- 
- 	int	nCount;
- 	
- 	nCount = retval.tree->getChildCount(retval.tree);
- 	
- 	pANTLR3_STRING text = retval.tree->getText(retval.tree);
- 
+	for (int i = 0; i < retval.tree->getChildCount(retval.tree); i++) {
+        pANTLR3_BASE_TREE stat = (pANTLR3_BASE_TREE)retval.tree->getChild(retval.tree, i);
+
+		
+    }
+	
     // Must manually clean up
     //
     parser ->free(parser);
@@ -138,7 +136,6 @@ lb_I_AbstractSyntaxTree* LB_STDCALL lbUIDsl::parse(lb_I_ExecutionContext* parent
 	
 	return NULL;
 }
-
 
 class lbPluginUIDsl : public lb_I_PluginImpl {
 public:

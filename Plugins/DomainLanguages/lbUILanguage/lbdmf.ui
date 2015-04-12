@@ -44,3 +44,35 @@ end form
 end forms
 
 end ui
+
+
+Sample ui developed yet:
+
+ui lbdmf "lbDMF Manager"
+
+declare data
+
+infer todo
+
+end data
+
+declare forms
+
+default fieldtype text
+
+form anwendungen "Anwendungen"
+
+use data.anwendungen a default
+
+field title "Titel"
+field name "Name" shows a
+field desc "Description" shows a.description
+field requirement "Rquirement" as richtext
+
+field application_type "Type" refers at using type_name over at.id
+
+end form
+
+end forms
+
+end ui
