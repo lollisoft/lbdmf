@@ -87,7 +87,23 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_String, paramResult) // Parameter name
 
 		*language = "UILanguage";
-		*sourcecode = "2 + 4 * 5";
+		*sourcecode = 
+"ui lbdmf \"lbDMF Manager\"" "\n"
+"declare data" "\n"
+"infer todo" "\n"
+"end data" "\n"
+"declare forms" "\n"
+"default fieldtype text" "\n"
+"form anwendungen \"Anwendungen\"" "\n"
+"use data.anwendungen a default" "\n"
+"field title \"Titel\"" "\n"
+"field name \"Name\" shows a" "\n"
+"field desc \"Description\" shows a.description" "\n"
+"field requirement \"Rquirement\" as richtext" "\n"
+"field application_type \"Type\" refers at using type_name over at.id" "\n"
+"end form" "\n"
+"end forms" "\n"
+"end ui";
 	
 		*paramName = "language";
 		parseparameters->setUAPString(*&paramName, *&language);
