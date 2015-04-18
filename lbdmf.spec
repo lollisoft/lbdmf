@@ -1,6 +1,6 @@
 Name: lbdmf
 Summary: Distributed Multiplatform Framework
-Version: 1.0.4.4_final
+Version: 1.1.0
 Release: 1
 License: LGPL
 Group: Development/Tools
