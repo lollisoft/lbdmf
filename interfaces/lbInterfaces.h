@@ -21,7 +21,7 @@
  
  The author of this work will be reached by e-Mail or paper mail.
  e-Mail: lothar.behrens@lollisoft.de
- p-Mail: See my current address on http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=6
+ p-Mail: See my current address on http://lollisoft.de/impressum.html
  
  */
 /*...e*/
@@ -34,7 +34,7 @@
  */
 
 /*...sMain page documentation:0:*/
-/** \mainpage Distributed Multiplatform Framework (1.0.4-final)
+/** \mainpage Distributed Multiplatform Framework (1.1.0)
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
@@ -47,7 +47,7 @@
  *
  * Prerequirements:
  *
- * My latest version of binary build tools. <a href="http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4-stable-rc3/lbDMF-BinbuildTools-1.0.4-stable-rc3.exe/download">Binary Build Tools</a>
+ * My latest version of binary build tools. <a href="http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4.4-final/lbDMF-BinbuildTools-1.0.4.4-final.exe/download">Binary Build Tools</a>
  *
  * Latest MinGW compiler (tested version as of release day). <a href="http://www.mingw.org">MinGW</a>
  *
@@ -55,6 +55,8 @@
  *
  * Supported databases: <a href="http://www.postgresql.org">PostgreSQL</a> or <a href="http://www.sqlite.org">Sqlite</a>.
  * Other databases may be possible, but there is not yet a SQL script to setup the database. The Sqlite database is included in the source tree.
+ *
+ * Currently Sqlite is preffered for ease of use reasons. The PostgreSQL version may be outdated and thus contributors are needed.
  *
  * \note To get ODBC stuff work properly under Linux you should at least on SuSE Linux 9.1 download unixODBC version 2.2.11,
  * compile and install it. After that, reinstall ODBC driver version 07.03.0200 for UPDATEABLE CURSORS.
