@@ -1,233 +1,122 @@
+2015-04-19 12:11  lollisoft
+
+	* interfaces/lbInterfaces.h: Changed version and small changes in
+	  documentation.
+
+2015-04-18 21:43  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.odt,
+	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf,
+	  BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
+	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Changed
+	  document, splash screen.
+
+2015-04-18 19:19  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Added new release
+	  information into the ODT and PDF file.
+
+2015-04-18 13:32  lollisoft
+
+	* lbdmf-jenkins.spec: Fixed version in spec.
+
+2015-04-18 11:57  lollisoft
+
+	* bindist.iss, dist.iss, docdist.iss, jenkinsrelease.sh,
+	  lbdmf.spec, include/lbVersionInfo.h,
+	  Test/GUI/wxWrapper/postlink-mac.sh: Changed minor version.
+
+2015-04-18 06:34  lollisoft
+
+	* bindist.iss, dist.iss, docdist.iss: Changed version.
+
+2015-04-12 15:16  lollisoft
+
+	* Plugins/DomainLanguages/lbUILanguage/lbPluginUIDsl.cpp,
+	  Plugins/DomainLanguages/lbUILanguage/lbPluginUIDsl.h,
+	  Plugins/DomainLanguages/lbUILanguage/lbdmf.ui,
+	  Plugins/DomainLanguages/lbUILanguage/ui.g,
+	  Plugins/DomainLanguages/lbUILanguage/output/ui.tokens,
+	  Plugins/DomainLanguages/lbUILanguage/output/uiLexer.c,
+	  Plugins/DomainLanguages/lbUILanguage/output/uiLexer.h,
+	  Plugins/DomainLanguages/lbUILanguage/output/uiParser.c,
+	  Plugins/DomainLanguages/lbUILanguage/output/uiParser.h,
+	  UnitTests/ANTLR3/TestANTLR3.cpp: First attempt of ui language can
+	  be basically parsed.
+
+2015-04-03 06:58  lollisoft
+
+	* Plugins/DomainLanguages/lbUILanguage/: lbdmf.ui, ui.g: First
+	  partial language attempt.
+
+2015-03-29 10:31  lollisoft
+
+	* UnitTests/ANTLR3/: TestANTLR3.cpp, makefile.module: Initial.
+
+2015-03-28 10:11  lollisoft
+
+	* Plugins/DomainLanguages/lbUILanguage/makefile.module: Fixed
+	  include definition usage.
+
+2015-03-28 09:37  lollisoft
+
+	* Plugins/DomainLanguages/lbUILanguage/makefile.module: Fixed
+	  include path.
+
+2015-03-27 07:10  lollisoft
+
+	* Plugins/DomainLanguages/lbUILanguage/makefile.module: Missing
+	  include path to generated parser.
+
+2015-03-27 06:45  lollisoft
+
+	* Plugins/DomainLanguages/lbUILanguage/output/: ui.tokens,
+	  uiLexer.c, uiLexer.h, uiParser.c, uiParser.h: Added missing
+	  generated files.
+
+2015-03-27 06:26  lollisoft
+
+	* Plugins/DomainLanguages/lbUILanguage/makefile.module: Fixed
+	  include path issue for Mac.
+
+2015-03-27 05:23  lollisoft
+
+	* BaseDevelopment/Makefile, BaseDevelopment/environment-osx.sh,
+	  Plugins/makefile,
+	  Plugins/DomainLanguages/lbUILanguage/lbPluginUIDsl.cpp,
+	  Plugins/DomainLanguages/lbUILanguage/lbPluginUIDsl.h,
+	  Plugins/DomainLanguages/lbUILanguage/lbdmf.ui,
+	  Plugins/DomainLanguages/lbUILanguage/makefile.module,
+	  interfaces/lbInterfaces.h,
+	  Plugins/DomainLanguages/lbUILanguage/plugin.cpp,
+	  Plugins/DomainLanguages/lbUILanguage/ui.g,
+	  Plugins/lbANTLR3/lbPluginAntlr3.cpp,
+	  Plugins/lbANTLR3/lbPluginAntlr3.h,
+	  Plugins/lbANTLR3/makefile.module, Plugins/lbANTLR3/plugin.cpp,
+	  UnitTests/makefile: Added new plugins to start developing domain
+	  languages.
+
+2015-02-19 19:09  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.CreateDBSchema.Sqlite.xsl,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  UnitTests/BaseDevelopment/BaseDevelopment.cpp,
+	  UnitTests/TestMainUseCases/TestMainUseCases.cpp: Fixed Date
+	  column type bug. Fixed trigger creation template code.
+
+2015-01-26 21:35  lollisoft
+
+	* ChangeLog-basic.txt: Updated changelog due to wxUpdateCheck
+	  fixes.
+
 2015-01-25 14:47  lollisoft
 
 	* AppDevelopmentDemo/DynamicApp/Doc/:
 	  ApplicationprototypingDokumentation.odt,
 	  ApplicationprototypingDokumentation.pdf: Added new chapter for
 	  listing features per version.
-
-2015-01-25 11:45  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/: timerEventInterceptor.cpp,
-	  wxUpdateChecker.cpp: Changed update check behaviour. Manual
-	  update checks can take a bit longer to give user feedback. Silent
-	  update checks try to be as fast as possible. Tested against a GSM
-	  network.
-
-2015-01-25 08:17  lollisoft
-
-	* include/lbErrcodes.h: Added new error code for website error
-	  handling stuff.
-
-2015-01-25 07:23  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Added
-	  retry at silent update check.
-
-2015-01-24 14:31  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Fixed
-	  update check, if the client is offline.
-
-2015-01-21 07:15  lollisoft
-
-	* ChangeLog-basic.txt: Updated changelog file.
-
-2015-01-18 07:58  lollisoft
-
-	* Test/GUI/wxWrapper/Inkscape Icons/formulare_app.svg: Mofified
-	  inkskape file to avoid white background.
-
-2015-01-17 09:29  lollisoft
-
-	* cvs_root_replacer.sh: Added cvs replacer.
-
-2015-01-16 05:51  lollisoft
-
-	* lbdmf-jenkins.spec: Changed version
-
-2015-01-15 19:54  lollisoft
-
-	* bin-buildtools-dist.iss, bindist.iss, buildwxWidgets_MinGW.bat,
-	  dist.iss, docdist.iss, jenkinsrelease.sh, lbdmf.spec,
-	  BaseDevelopment/Makefile, Test/GUI/wxWrapper/postlink-mac.sh,
-	  include/lbVersionInfo.h,
-	  Test/GUI/wxWrapper/toolbarimages/formular_field.png: Changed
-	  version information.
-
-2015-01-13 07:16  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added some logging to get
-	  maximized state out of the application.
-
-2015-01-12 07:26  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Changed order how to set
-	  the size and call to fit. Thats now correctly displayed on Mac OS X.
-
-2015-01-11 16:27  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Trials with the toolbar
-	  sizing.
-
-2015-01-10 17:04  lollisoft
-
-	* jenkinsbuild-osx-release.sh: Removed part of the path.
-
-2015-01-10 15:26  lollisoft
-
-	* jenkinsbuild-osx-release.sh: Added parameter for DEVROOT as this
-	  seems not propagate correctly.
-
-2015-01-10 15:21  lollisoft
-
-	* jenkinsbuild-osx-release.sh: Added parameter for DEVROOT as this
-	  seems not propagate correctly.
-
-2015-01-10 13:27  lollisoft
-
-	* BaseDevelopment/Makefile: Added separate install rules for
-	  Jenkins build versus manual build. The manual build fails at missing
-	  AppDevelopment install step, but that could be ignored. In Jenkins
-	  build this should be excluded.
-
-2015-01-10 08:50  lollisoft
-
-	* jenkinsbuild-osx-release.sh: Corrected release build for OSX.
-
-2015-01-10 07:37  lollisoft
-
-	* jenkinsbuild-osx-release.sh: Corrected release build for OSX.
-
-2015-01-10 06:07  lollisoft
-
-	* BaseDevelopment/Makefile: Added required parameter.
-
-2015-01-07 04:15  lollisoft
-
-	* Test/GUI/wxWrapper/postlink-mac.sh, vendor/mkmk/mkmk.cpp: Fixed
-	  prefix issue in postlink step.
-
-2015-01-06 06:36  lollisoft
-
-	* Test/GUI/wxWrapper/postlink-mac.sh: Fixed build. Taking liby and
-	  plugins from relative path.
-
-2015-01-03 23:58  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Reverted
-	  to a more simple update check without sync of known releases. This
-	  is due to unimplemented container serialization.
-
-2015-01-03 12:40  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp,
-	  include/lbConfigHook.h, include/lbVersionInfo.h: Added extra
-	  version header and moved current version information there.
-
-2015-01-03 11:38  lollisoft
-
-	* BaseDevelopment/Makefile,
-	  Plugins/VisitorOperations/pluginInputStream.cpp,
-	  Plugins/VisitorOperations/pluginOutputStream.cpp,
-	  Plugins/wxWidgets/wxUpdateChecker/makefile.module,
-	  Plugins/wxWidgets/wxUpdateChecker/timerEventInterceptor.cpp,
-	  Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Added
-	  enhanced update mechanism with a silent recheck to create download
-	  toolbar and menu entries.
-
-2015-01-03 09:57  lollisoft
-
-	* Test/GUI/wxWrapper/toolbarimages/bell.png: Initial icon to
-	  indicate some actions have to be taken.
-
-2015-01-02 23:44  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added setting
-	  timerrunning flag.
-
-2015-01-02 22:35  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Using timer enable flag
-	  to mitigate modality issue.
-
-2015-01-02 21:19  lollisoft
-
-	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added frame parameter to
-	  try to fix modal issue on Windows.
-
-2015-01-02 18:43  lollisoft
-
-	* Test/GUI/wxWrapper/dynamic.cpp, interfaces/lbInterfaces.h,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h: Added a new method to
-	  control timer.
-
-2015-01-02 12:30  lollisoft
-
-	* bindist.iss: Corrected dlls.
-
-2015-01-02 11:18  lollisoft
-
-	* bindist.iss: Added missing dlls.
-
-2015-01-02 08:38  lollisoft
-
-	* BaseDevelopment/Makefile: Separated JSON target per platform due
-	  to build type selection.
-
-2015-01-02 07:48  lollisoft
-
-	* BaseDevelopment/Makefile: Moved JSON target to another location.
-
-2015-01-02 00:10  lollisoft
-
-	* BaseDevelopment/Makefile: Added wxJSON target for all platforms.
-
-2015-01-02 00:00  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/makefile.module: Added wxJson
-	  library.
-
-2015-01-01 23:56  lollisoft
-
-	* make/STD_MAKE: Added network library.
-
-2015-01-01 23:02  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/timerEventInterceptor.cpp:
-	  Fixed calling convention.
-
-2015-01-01 22:16  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/: timerEventInterceptor.h,
-	  wxUpdateChecker.h: Added initial json based update check plugin.
-
-2015-01-01 21:50  lollisoft
-
-	* include/wxUpdateChecker-module.h: Added initial json based update
-	  check plugin.
-
-2015-01-01 20:06  lollisoft
-
-	* BaseDevelopment/Makefile,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
-	  BaseDevelopment/lbMetaApplication/lbMetaApplication.h,
-	  Plugins/makefile,
-	  Plugins/VisitorOperations/pluginInputStream.cpp,
-	  Plugins/VisitorOperations/pluginOutputStream.cpp,
-	  Plugins/wxWidgets/wxUpdateChecker/makefile.module,
-	  Plugins/wxWidgets/wxUpdateChecker/mondrian.xpm,
-	  Plugins/wxWidgets/wxUpdateChecker/timerEventInterceptor.cpp,
-	  Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp, vendor/mkmk/mkmk.cpp:
-	  Added initial json based update check plugin.
-
-2014-12-30 06:47  lollisoft
-
-	* Test/GUI/wxWrapper/postlink-mac.sh: Moved XSLT and UMLSamples
-	  creation to the correct place.
-
-2014-12-20 10:33  lollisoft
-
-	* ChangeLog-basic.txt: New release 1.0.4.3.
 
