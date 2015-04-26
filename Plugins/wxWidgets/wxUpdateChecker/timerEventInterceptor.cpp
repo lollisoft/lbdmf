@@ -231,6 +231,9 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 	bool doCheck = false;
 	
 	UpdateSettings = meta->getPropertySet("UpdateSettings");
+	
+	if (*&UpdateSettings == NULL) return ERR_NONE;
+	
 	UpdateSettings->getUAPInteger(*&name, *&LastCheckWeek);
 
 	wxDateTime dt;
