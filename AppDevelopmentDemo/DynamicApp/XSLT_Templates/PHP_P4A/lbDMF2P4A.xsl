@@ -37,8 +37,12 @@ Create <xsl:value-of select="$ApplicationName"/>/index.php
 /*
  *  <xsl:value-of select="$ApplicationName"/>
  */
+ 
+<xsl:variable name="DBName" select="//lbDMF/applicationparameter/parameter[@name='DBName'][@applicationid=$ApplicationID]/@value"/>
+ 
 define("P4A_LOCALE", 'en_US');
-define("P4A_DSN", 'pgsql://dba:trainres@vmhost/<xsl:value-of select="$ApplicationName"/>');                                                   
+//define("P4A_DSN", 'pgsql://dba:trainres@vmhost/<xsl:value-of select="$ApplicationName"/>');                                                   
+define("P4A_DSN", 'sqlite:/<xsl:value-of select="$DBName"/>.db3');                                                   
 //define("P4A_EXTENDED_ERRORS", true);                                                                                 
 //define("P4A_AJAX_DEBUG", "/tmp/p4a_ajax_debug.txt");                                                                 
                                                                                                                        
@@ -181,7 +185,33 @@ class <xsl:value-of select="$ApplicationName"/> extends P4A
  
 		if ($username == "p4a" and $password == md5("p4a")) {
 			$this->messageInfo("Login successful");         
-			$this->openMask("Kunde");
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+		<xsl:if test="position()=1">
+			$this->openMask("<xsl:value-of select="$FormularName"/>");
+		</xsl:if>
+</xsl:for-each>
 		} else {
 			$this->messageError("Login failed");
 			$this->loginInfo();                       
@@ -239,7 +269,7 @@ class <xsl:value-of select="$FormularName"/> extends P4A_Base_Mask
 	    $this->setSource($p4a-><xsl:value-of select="$FormularName"/>);                                                                                                                                                                                  
 	    $this->firstRow();                                                                                                                                                                                               
                                                                                                                                                                                          
-	    $this->fields->ID->disable();                                                                                                                                                                              
+	    $this->fields->id->disable();                                                                                                                                                                              
 
 
 	    $this->build("p4a_full_toolbar", "toolbar");                                                                                                                                                                 
@@ -255,13 +285,13 @@ class <xsl:value-of select="$FormularName"/> extends P4A_Base_Mask
 	    $this->sheet->anchorCenter($this->message);                                                                                                                                                                      
 	    $this->sheet->anchor($this->table);                                                                                                                                                                              
                                                                                                                                                                                                                  
-	    $this->fields->ID->setLabel("<xsl:value-of select="$FormularName"/> ID");                                                                                                                                                                   
-	    $this->table->cols->ID->setLabel("<xsl:value-of select="$FormularName"/> ID");                                                                                                                                                              
+	    $this->fields->id->setLabel("<xsl:value-of select="$FormularName"/> ID");                                                                                                                                                                   
+	    $this->table->cols->id->setLabel("<xsl:value-of select="$FormularName"/> ID");                                                                                                                                                              
 	    $this->table->showNavigationBar();                                                                                                                                                                               
                                                                                                                                                                                                                  
 	    $this->build("p4a_fieldset", "fields_sheet");                                                                                                                                                                    
 	    $this->fields_sheet->setLabel("<xsl:value-of select="$FormularName"/> detail");                                                                                                                                                                   
-	    $this->fields_sheet->anchor($this->fields->ID);                                                                                                                                         
+	    $this->fields_sheet->anchor($this->fields->id);                                                                                                                                         
 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularID]">
 <xsl:variable name="FieldName" select="@name"/> 
