@@ -2346,14 +2346,38 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(int column) {
 }
 
 lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getAsString(const char* column) {
-	UAP_REQUEST(getModuleInstance(), lb_I_String, string)
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_KeyBase, key)
+	QI(name, lb_I_KeyBase, key)
+	
+	*name = column;
+	
 
-	// Caller get's an owner
-	string++;
+	cachedColumnNames->finishIteration();
+	while (cachedColumnNames->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_KeyBase, key)
+		UAP(lb_I_String, _column)
+		UAP(lb_I_Integer, index)
+		
+		uk = cachedColumnNames->nextElement();
+		QI(uk, lb_I_String, _column)
+		
+		if (*_column == column) {
+			key = cachedColumnNames->currentKey();
+			QI(key, lb_I_Integer, index)
+			cachedColumnNames->finishIteration();
+			return getAsString((int)index->getData());
+		}
+	}
+	
+	cachedColumnNames->finishIteration();
 
-	///\todo Implement this.
-
-	return string.getPtr();
+	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
+	*value = "";
+	value++;
+	return value.getPtr();
 }
 
 lb_I_Long* LB_STDCALL lbDatabaseLayerQuery::getAsLong(int column) {
