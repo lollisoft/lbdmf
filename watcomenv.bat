@@ -249,7 +249,8 @@ if "%2"=="CC" goto CCBUILD_END:
 rem set CONSOLE_DETACH=no
 rem wdw ..\..\bin\%1
 start %1
-exit
+goto EXIT:
+
 :CCBUILD_END
 
 REM Tools used but are prerequisites and may be located anywhere.
@@ -271,3 +272,8 @@ cd %DEVROOT%\Projects\CPP\BaseDevelopment
 )
 
 mingw32-make
+
+
+@REM Bailout with goto instead of exit. This is because source code installer (breaking post installation process).
+:EXIT
+
