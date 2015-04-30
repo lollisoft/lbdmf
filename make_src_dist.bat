@@ -48,7 +48,7 @@ copy %TOOLSFOLDER%\WatcomLibs\plbr17.dll dist\bindist_iss_Watcom_Libraries
 copy %TOOLSFOLDER%\MkMk\MkMk.exe dist\dist_iss_MkMk
 
 copy %TOOLSFOLDER%\WGet\bin\*.* dist\dist_iss
-xcopy /S /E %TOOLSFOLDER%\WGet\*.* dist\dist_iss_MinGW_Get
+xcopy /S /E %TOOLSFOLDER%\MinGW_Get\*.* dist\dist_iss_MinGW_Get
 @REM DEPENDENCY
 copy %TOOLSFOLDER%\XSLTProc\xsltproc.exe dist\bindist_iss\bin
 copy %TOOLSFOLDER%\XSLTProc\zlib1.dll dist\bindist_iss\dll
