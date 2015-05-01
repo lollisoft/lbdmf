@@ -77,7 +77,10 @@ set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
 set DEVROOT_MAKE_BASE=/cygdrive/c/%BASE_MAKE%
 
-set WXWIN=%DEVLW%\%BASE%\wxwin\wx
+REM set WXWIN=%DEVLW%\%BASE%\wxwin\wx
+REM To get distribution build correctly (wx is built separately at setup)
+set WXWIN=%DEVLW%/%BASE%/wxwin/wx
+set wxBase=%WXWIN%/lib
 
 goto BEGINENVIRONMENT:
 
