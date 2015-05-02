@@ -84,6 +84,7 @@ call make_dist_base.bat BaseDevelopment\lbtransfer
 call make_dist_base.bat BaseDevelopment\lbXMLConfig\lbDOMConfig 
 call make_dist_base.bat Plugins
 call make_dist_base.bat vendor\mkmk
+call make_dist_base.bat vendor\antlr3
 call make_dist_base.bat vendor\sqlite
 call make_dist_base.bat vendor\databaselayer
 call make_dist_base.bat vendor\dosdir
