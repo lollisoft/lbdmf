@@ -27,8 +27,8 @@
 #			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(WXDIR)/include -I $(DEVROOT_MAKE)/Projects/CPP/vendor/wxJSON-1.2.1/include
-MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(WXDIR)/include -I $(DEVROOT_MAKE)/Projects/CPP/vendor/wxJSON-1.2.1/include
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/CPP/vendor/wxJSON-1.2.1/include
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/CPP/vendor/wxJSON-1.2.1/include
 
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include
