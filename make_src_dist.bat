@@ -93,6 +93,7 @@ call make_dist_base.bat vendor\wxShapeFramework
 call make_dist_base.bat vendor\wxaui-0.9.1
 call make_dist_base.bat vendor\libxml2-2.8.0
 call make_dist_base.bat vendor\libxslt-1.1.21
+call make_dist_base.bat vendor\wxJSON-1.2.1
 call make_dist_base.bat include 
 call make_dist_base.bat interfaces 
 call make_dist_base.bat make
