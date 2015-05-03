@@ -14,10 +14,10 @@ Autoreqprov: on
 Provides: lbdmf
 
 %if %suse_version <= 910
-BuildRequires: bison flex wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.11 update-desktop-files gcc-c++
+BuildRequires: libxslt-devel libxml2-devel bison flex wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.11 update-desktop-files gcc-c++
 Requires: unixODBC >= 2.2.11 desktop-file-utils
 %else
-BuildRequires: bison flex wxGTK-devel >= 2.8.8 desktop-file-utils unixODBC-devel >= 2.2.11 gcc-c++
+BuildRequires: libxslt-devel libxml2-devel bison flex wxGTK-devel >= 2.8.8 desktop-file-utils unixODBC-devel >= 2.2.11 gcc-c++
 Requires: unixODBC >= 2.2.11 desktop-file-utils
 %endif
 
