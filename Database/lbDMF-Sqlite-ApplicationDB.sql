@@ -567,9 +567,6 @@ CREATE TABLE "dbprimarykey" (
 	"dbtableid" INTEGER
 );
 
--- Unknown stereotype 'ownership_filter' for class FormularFilter.
--- Create table via importApplicationTableAutoID
-
 -- Unknown stereotype 'filterdefinition' for class UserFilter.
 -- Create table via importApplicationTableAutoID
 
@@ -584,7 +581,7 @@ CREATE TABLE "dbtableparameter" (
 	"id" INTEGER PRIMARY KEY,
 	"parametername" BPCHAR,
 	"parametervalue" BPCHAR,
-	"tableid" INTEGER
+	"dbtableid" INTEGER
 );
 
 -- Class Anwendungen of type FORM found.
@@ -1770,12 +1767,6 @@ END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbprimarykey', 'dbtableid');
  
 
--- Unknown stereotype 'ownership_filter' for class FormularFilter.
-
--- Generate application table FormularFilter for lbDMFManager_Entities
--- Create table relations for FormularFilter with auto id
-	
-
 -- Unknown stereotype 'filterdefinition' for class UserFilter.
 
 -- Generate application table UserFilter for lbDMFManager_Entities
@@ -1784,31 +1775,31 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 
 -- Generate Sqlite application relations for table dbtableparameter for lbDMFManager_Entities
 -- Create table relations for dbtableparameter
---ALTER TABLE "dbtableparameter" ADD CONSTRAINT "cst_dbtableparameter_dbtable_id" FOREIGN KEY ( "tableid" ) REFERENCES "dbtable" ( "id" );
+--ALTER TABLE "dbtableparameter" ADD CONSTRAINT "cst_dbtableparameter_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
 -- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
---ALTER TABLE "dbtableparameter" ADD CONSTRAINT "cst_dbtableparameter_dbtable_id" FOREIGN KEY ( "tableid" ) REFERENCES "dbtable" ( "id" );
+--ALTER TABLE "dbtableparameter" ADD CONSTRAINT "cst_dbtableparameter_dbtable_id" FOREIGN KEY ( "dbtableid" ) REFERENCES "dbtable" ( "id" );
 
 -- Build trigger manually. (Todo: add support for nullable and not nullable)
 
-CREATE TRIGGER "fk_dbtableparameter_tableid_ins" BEFORE INSERT ON dbtableparameter FOR EACH ROW
+CREATE TRIGGER "fk_dbtableparameter_dbtableid_ins" BEFORE INSERT ON dbtableparameter FOR EACH ROW
 BEGIN
-    SELECT CASE WHEN ((new.tableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.tableid) IS NULL))
-                 THEN RAISE(ABORT, 'INSERT: tableid violates foreign key dbtable(id = SELECT new.tableid)')
+    SELECT CASE WHEN ((new.dbtableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.dbtableid) IS NULL))
+                 THEN RAISE(ABORT, 'INSERT: dbtableid violates foreign key dbtable(id = SELECT new.dbtableid)')
     END;
 END;
-CREATE TRIGGER "fk_dbtableparameter_tableid_upd" BEFORE UPDATE ON dbtableparameter FOR EACH ROW
+CREATE TRIGGER "fk_dbtableparameter_dbtableid_upd" BEFORE UPDATE ON dbtableparameter FOR EACH ROW
 BEGIN
-    SELECT CASE WHEN ((new.tableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.tableid) IS NULL))
-                 THEN RAISE(ABORT, 'UPDATE: tableid violates foreign key dbtable(id)')
+    SELECT CASE WHEN ((new.dbtableid IS NOT NULL) AND ((SELECT id FROM dbtable WHERE id = new.dbtableid) IS NULL))
+                 THEN RAISE(ABORT, 'UPDATE: dbtableid violates foreign key dbtable(id)')
     END;
 END;
-CREATE TRIGGER "fk_dbtableparameter_tableid_del" BEFORE DELETE ON dbtable FOR EACH ROW
+CREATE TRIGGER "fk_dbtableparameter_dbtableid_del" BEFORE DELETE ON dbtable FOR EACH ROW
 BEGIN
-    SELECT CASE WHEN ((SELECT tableid FROM dbtableparameter WHERE tableid = old.id) IS NOT NULL)
-                 THEN RAISE(ABORT, 'DELETE: id violates foreign key dbtableparameter(tableid = old.id)')
+    SELECT CASE WHEN ((SELECT dbtableid FROM dbtableparameter WHERE dbtableid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'DELETE: id violates foreign key dbtableparameter(dbtableid = old.id)')
     END;
 END;
-INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbtableparameter', 'tableid');
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbtableparameter', 'dbtableid');
  
 
 -- Script ready.
