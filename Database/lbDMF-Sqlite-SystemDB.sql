@@ -15,11 +15,11 @@ BEGIN TRANSACTION;
 		
 		
 -- Application is lbDMF Manager. Package is lbDMF Manager
--- Using database settings as of name=lbDMF, user=dbuser
+-- Using database settings as of name=Requilizer, user=dbuser
 -- Skip rewrite
 -- To ignore this statement in the Sqlite rewrite parser. This statement should match to Sqlite syntax.
 -- Create default indexes for Sqlite. Version ignored.
--- Using database settings as of name=lbDMF, user=dbuser
+-- Using database settings as of name=Requilizer, user=dbuser
 
 CREATE UNIQUE INDEX IF NOT EXISTS "idx_users_userid" on "users" (userid);
 CREATE UNIQUE INDEX IF NOT EXISTS "idx_formulartypen_hi_ns" on "formulartypen" (handlerinterface, namespace, handlermodule);
@@ -90,6 +90,7 @@ delete from anwendungen_formulare where anwendungid in (select id from anwendung
 delete from dbforeignkey where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = 'lbDMF Manager')); 
 delete from dbprimarykey where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = 'lbDMF Manager')); 
 delete from dbcolumn where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = 'lbDMF Manager')); 
+delete from dbtableparameter where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = 'lbDMF Manager')); 
 delete from dbtable where anwendungenid in (select id from anwendungen where name = 'lbDMF Manager'); 
 
 -- delete formularfields
@@ -132,7 +133,7 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('gxmi encoding', 'UTF-8', (select id from anwendungen where name = 'lbDMF Manager'));
 		
-insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductVersion', '1.0.4.0', (select id from anwendungen where name = 'lbDMF Manager'));
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductVersion', '1.0.6.0', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DataStoreBaseAddress', 'net.tcp://cloud.lollisoft.de:49381', (select id from anwendungen where name = 'lbDMF Manager'));
 		
@@ -140,13 +141,9 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('StsBaseAddress', 'net.tcp://cloud.lollisoft.de:8000', (select id from anwendungen where name = 'lbDMF Manager'));
 		
-insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductCode', '0BB62EC4-D53A-4AF8-B226-C24ABC2E409F', (select id from anwendungen where name = 'lbDMF Manager'));
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductCode', 'ECDCC18A-BE39-40DA-8369-B360B1F0BD86', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 		-- Class Anwendungen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Anwendungen of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -345,10 +342,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class Formulare of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Formulare of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -525,10 +518,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class FormularFields of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class FormularFields of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -651,10 +640,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class Benutzer of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Benutzer of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -745,10 +730,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class DBType of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class DBType of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -797,10 +778,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 
 		-- Class Formular_Parameter of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Formular_Parameter of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -861,10 +838,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class AnwendungenBenutzer of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class AnwendungenBenutzer of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -921,10 +894,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 
 		-- Class FormulareAnwendung of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class FormulareAnwendung of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -1047,10 +1016,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class Aktionen of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Aktionen of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -1155,10 +1120,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class Uebersetzungen of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Uebersetzungen of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -1207,10 +1168,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 
 		-- Class Formularaktionenzuordnen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Formularaktionenzuordnen of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -1275,10 +1232,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class Anwendungsparameter of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Anwendungsparameter of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -1337,10 +1290,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 
 		-- Class Aktionsschrittezuordnen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Aktionsschrittezuordnen of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -1416,10 +1365,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 
 		-- Class Reportdefinitionen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Reportdefinitionen of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -1499,10 +1444,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class Reportparameter of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Reportparameter of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -1561,10 +1502,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 
 		-- Class FormularTypen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class FormularTypen of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -1661,10 +1598,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 
 		-- Class Tables of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Tables of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -1859,10 +1792,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class Columns of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class Columns of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -1946,10 +1875,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class PrimaryKeys of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class PrimaryKeys of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -2032,10 +1957,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 
 		-- Class ForeignKeys of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class ForeignKeys of type FORM found.') where name = 'lbDMF Manager';
-	
 
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
@@ -2132,10 +2053,6 @@ INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT a
 
 		-- Class TableParameter of type FORM found.
 
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class TableParameter of type FORM found.') where name = 'lbDMF Manager';
-	
-
 -- Generate DMF form definition for lbDMF Manager in Sqlite database
 
 
@@ -2151,8 +2068,6 @@ INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, form
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonPageName', 'Home', id FROM "formulare" WHERE name = 'TableParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'RibbonGroupName', 'Database', id FROM "formulare" WHERE name = 'TableParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
-
-INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('dbtableparameter', 'tableid', 'dbtable', '');
 
 
 -- Create query for dbtableparameter (BOUML_0x30382_4)
@@ -2193,11 +2108,7 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'TableP
 INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'TableParameter' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
 
 
-		-- Class action_parameters of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class action_parameters of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class action_parameters of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'action_parameters', '', 'BOUML_0x1fb82_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2221,11 +2132,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'actions', 'id', '', '', 'action_parameters', 'actionid', 0, 0, 0, id from dbtable where tablename = 'action_parameters' AND tableremarks = 'BOUML_0x1fb82_4';
 
-		-- Class action_step_parameter of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class action_step_parameter of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class action_step_parameter of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'action_step_parameter', '', 'BOUML_0x1fc02_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2249,11 +2156,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'action_steps', 'id', '', '', 'action_step_parameter', 'action_step_id', 0, 0, 0, id from dbtable where tablename = 'action_step_parameter' AND tableremarks = 'BOUML_0x1fc02_4';
 
-		-- Class action_step_transitions of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class action_step_transitions of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class action_step_transitions of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'action_step_transitions', '', 'BOUML_0x1fc82_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2278,11 +2181,7 @@ select '', '', 'action_steps', 'id', '', '', 'action_step_transitions', 'dst_act
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'action_steps', 'id', '', '', 'action_step_transitions', 'src_actionid', 0, 0, 0, id from dbtable where tablename = 'action_step_transitions' AND tableremarks = 'BOUML_0x1fc82_4';
 
-		-- Class action_steps of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class action_steps of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class action_steps of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'action_steps', '', 'BOUML_0x1fd02_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2309,11 +2208,7 @@ select '', '', 'action_types', 'id', '', '', 'action_steps', 'type', 0, 0, 0, id
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'actions', 'id', '', '', 'action_steps', 'actionid', 0, 0, 0, id from dbtable where tablename = 'action_steps' AND tableremarks = 'BOUML_0x1fd02_4';
 
-		-- Class action_types of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class action_types of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class action_types of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'action_types', '', 'BOUML_0x1fd82_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2330,11 +2225,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'action_types', 'id',  '', 0, id from dbtable where tablename = 'action_types' AND tableremarks = 'BOUML_0x1fd82_4';
 
 
-		-- Class actions of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class actions of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class actions of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'actions', '', 'BOUML_0x1fe02_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2361,14 +2252,34 @@ select '', '', 'action_types', 'id', '', '', 'actions', 'typ', 0, 0, 0, id from 
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'anwendungen', 'id', '', '', 'actions', 'anwendungenid', 0, 0, 0, id from dbtable where tablename = 'actions' AND tableremarks = 'BOUML_0x1fe02_4';
 
-		-- Class anwendungen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class anwendungen of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class anwendungen of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'anwendungen', '', 'BOUML_0x1fe82_4', id from anwendungen where name = 'lbDMF Manager';
 
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_method', 'subquery_join', 
+(select id from dbtable where tablename = 'anwendungen' and tableremarks = 'BOUML_0x1fe82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('action_link_to_owner', 'user_anwendungen', 
+(select id from dbtable where tablename = 'anwendungen' and tableremarks = 'BOUML_0x1fe82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('action_link_to_owner_link_field', 'anwendungenid', 
+(select id from dbtable where tablename = 'anwendungen' and tableremarks = 'BOUML_0x1fe82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('action_link_to_owner_parentvalue', '1', 
+(select id from dbtable where tablename = 'anwendungen' and tableremarks = 'BOUML_0x1fe82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_outer', 'ID', 
+(select id from dbtable where tablename = 'anwendungen' and tableremarks = 'BOUML_0x1fe82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('action_link_to_owner_link_parentfield', 'userid', 
+(select id from dbtable where tablename = 'anwendungen' and tableremarks = 'BOUML_0x1fe82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_subquery', 'user_anwendungen', 
+(select id from dbtable where tablename = 'anwendungen' and tableremarks = 'BOUML_0x1fe82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_inner', 'anwendungenid', 
+(select id from dbtable where tablename = 'anwendungen' and tableremarks = 'BOUML_0x1fe82_4'));
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21602_1', 'int4', -1, 0, 'anwendungen', id from dbtable where tablename = 'anwendungen' AND tableremarks = 'BOUML_0x1fe82_4';
 
@@ -2392,11 +2303,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'anwendungen', 'id',  '', 0, id from dbtable where tablename = 'anwendungen' AND tableremarks = 'BOUML_0x1fe82_4';
 
 
-		-- Class anwendungen_formulare of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class anwendungen_formulare of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class anwendungen_formulare of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'anwendungen_formulare', '', 'BOUML_0x1ff02_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2419,14 +2326,22 @@ select '', '', 'anwendungen', 'id', '', '', 'anwendungen_formulare', 'anwendungi
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'formulare', 'id', '', '', 'anwendungen_formulare', 'formularid', 0, 0, 0, id from dbtable where tablename = 'anwendungen_formulare' AND tableremarks = 'BOUML_0x1ff02_4';
 
-		-- Class anwendungs_parameter of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class anwendungs_parameter of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class anwendungs_parameter of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'anwendungs_parameter', '', 'BOUML_0x1ff82_4', id from anwendungen where name = 'lbDMF Manager';
 
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_method', 'subquery_join', 
+(select id from dbtable where tablename = 'anwendungs_parameter' and tableremarks = 'BOUML_0x1ff82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_outer', 'anwendungid', 
+(select id from dbtable where tablename = 'anwendungs_parameter' and tableremarks = 'BOUML_0x1ff82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_subquery', 'anwendungen', 
+(select id from dbtable where tablename = 'anwendungs_parameter' and tableremarks = 'BOUML_0x1ff82_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_inner', 'ID', 
+(select id from dbtable where tablename = 'anwendungs_parameter' and tableremarks = 'BOUML_0x1ff82_4'));
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x21982_1', 'int4', -1, 0, 'anwendungs_parameter', id from dbtable where tablename = 'anwendungs_parameter' AND tableremarks = 'BOUML_0x1ff82_4';
 
@@ -2443,11 +2358,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'anwendungen', 'id', '', '', 'anwendungs_parameter', 'anwendungid', 0, 0, 0, id from dbtable where tablename = 'anwendungs_parameter' AND tableremarks = 'BOUML_0x1ff82_4';
 
-		-- Class anwendungsberechtigungen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class anwendungsberechtigungen of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class anwendungsberechtigungen of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'anwendungsberechtigungen', '', 'BOUML_0x20002_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2468,11 +2379,7 @@ select '', '', 'formulare', 'id', '', '', 'anwendungsberechtigungen', 'idformula
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'users', 'id', '', '', 'anwendungsberechtigungen', 'iduser', 0, 0, 0, id from dbtable where tablename = 'anwendungsberechtigungen' AND tableremarks = 'BOUML_0x20002_4';
 
-		-- Class applevel_plugin_registry of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class applevel_plugin_registry of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class applevel_plugin_registry of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'applevel_plugin_registry', '', 'BOUML_0x20082_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2485,11 +2392,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'applevel_plugin_registry', 'id',  '', 0, id from dbtable where tablename = 'applevel_plugin_registry' AND tableremarks = 'BOUML_0x20082_4';
 
 
-		-- Class codegentarget of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class codegentarget of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class codegentarget of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'codegentarget', '', 'BOUML_0x20102_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2510,11 +2413,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'codegentarget', 'id',  '', 0, id from dbtable where tablename = 'codegentarget' AND tableremarks = 'BOUML_0x20102_4';
 
 
-		-- Class column_types of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class column_types of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class column_types of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'column_types', '', 'BOUML_0x20182_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2531,11 +2430,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'column_types', 'id',  '', 0, id from dbtable where tablename = 'column_types' AND tableremarks = 'BOUML_0x20182_4';
 
 
-		-- Class foreignkey_visibledata_mapping of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class foreignkey_visibledata_mapping of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class foreignkey_visibledata_mapping of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'foreignkey_visibledata_mapping', '', 'BOUML_0x20202_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2554,11 +2449,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'foreignkey_visibledata_mapping', 'id',  '', 0, id from dbtable where tablename = 'foreignkey_visibledata_mapping' AND tableremarks = 'BOUML_0x20202_4';
 
 
-		-- Class formular_actions of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class formular_actions of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class formular_actions of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'formular_actions', '', 'BOUML_0x20282_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2581,14 +2472,22 @@ select '', '', 'actions', 'id', '', '', 'formular_actions', 'action', 0, 0, 0, i
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'formulare', 'id', '', '', 'formular_actions', 'formular', 0, 0, 0, id from dbtable where tablename = 'formular_actions' AND tableremarks = 'BOUML_0x20282_4';
 
-		-- Class formular_parameters of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class formular_parameters of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class formular_parameters of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'formular_parameters', '', 'BOUML_0x20302_4', id from anwendungen where name = 'lbDMF Manager';
 
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_method', 'subquery_join', 
+(select id from dbtable where tablename = 'formular_parameters' and tableremarks = 'BOUML_0x20302_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_outer', 'formularid', 
+(select id from dbtable where tablename = 'formular_parameters' and tableremarks = 'BOUML_0x20302_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_subquery', 'formulare', 
+(select id from dbtable where tablename = 'formular_parameters' and tableremarks = 'BOUML_0x20302_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_inner', 'ID', 
+(select id from dbtable where tablename = 'formular_parameters' and tableremarks = 'BOUML_0x20302_4'));
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x22602_1', 'int4', -1, 0, 'formular_parameters', id from dbtable where tablename = 'formular_parameters' AND tableremarks = 'BOUML_0x20302_4';
 
@@ -2605,14 +2504,28 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'formulare', 'id', '', '', 'formular_parameters', 'formularid', 0, 0, 0, id from dbtable where tablename = 'formular_parameters' AND tableremarks = 'BOUML_0x20302_4';
 
-		-- Class formulare of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class formulare of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class formulare of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'formulare', '', 'BOUML_0x20382_4', id from anwendungen where name = 'lbDMF Manager';
 
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_method', 'subquery_join', 
+(select id from dbtable where tablename = 'formulare' and tableremarks = 'BOUML_0x20382_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_field', 'null', 
+(select id from dbtable where tablename = 'formulare' and tableremarks = 'BOUML_0x20382_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_outer', 'anwendungid', 
+(select id from dbtable where tablename = 'formulare' and tableremarks = 'BOUML_0x20382_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_subquery', 'anwendungen', 
+(select id from dbtable where tablename = 'formulare' and tableremarks = 'BOUML_0x20382_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_inner', 'ID', 
+(select id from dbtable where tablename = 'formulare' and tableremarks = 'BOUML_0x20382_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_value', 'null', 
+(select id from dbtable where tablename = 'formulare' and tableremarks = 'BOUML_0x20382_4'));
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x22782_1', 'int4', -1, 0, 'formulare', id from dbtable where tablename = 'formulare' AND tableremarks = 'BOUML_0x20382_4';
 
@@ -2642,14 +2555,22 @@ select '', '', 'anwendungen', 'id', '', '', 'formulare', 'anwendungid', 0, 0, 0,
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'formulartypen', 'id', '', '', 'formulare', 'typ', 0, 0, 0, id from dbtable where tablename = 'formulare' AND tableremarks = 'BOUML_0x20382_4';
 
-		-- Class formularfields of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class formularfields of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class formularfields of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'formularfields', '', 'BOUML_0x24a02_4', id from anwendungen where name = 'lbDMF Manager';
 
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_method', 'subquery_join', 
+(select id from dbtable where tablename = 'formularfields' and tableremarks = 'BOUML_0x24a02_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_outer', 'formularid', 
+(select id from dbtable where tablename = 'formularfields' and tableremarks = 'BOUML_0x24a02_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_subquery', 'formulare', 
+(select id from dbtable where tablename = 'formularfields' and tableremarks = 'BOUML_0x24a02_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_inner', 'ID', 
+(select id from dbtable where tablename = 'formularfields' and tableremarks = 'BOUML_0x24a02_4'));
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x27b82_1', 'int4', -1, 0, 'formularfields', id from dbtable where tablename = 'formularfields' AND tableremarks = 'BOUML_0x24a02_4';
 
@@ -2679,11 +2600,7 @@ select '', '', 'formulare', 'id', '', '', 'formularfields', 'formularid', 0, 0, 
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'dbtype', 'id', '', '', 'formularfields', 'dbtypeid', 0, 0, 0, id from dbtable where tablename = 'formularfields' AND tableremarks = 'BOUML_0x24a02_4';
 
-		-- Class formulartypen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class formulartypen of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class formulartypen of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'formulartypen', '', 'BOUML_0x20402_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2704,11 +2621,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'formulartypen', 'id',  '', 0, id from dbtable where tablename = 'formulartypen' AND tableremarks = 'BOUML_0x20402_4';
 
 
-		-- Class regressiontest of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class regressiontest of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class regressiontest of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'regressiontest', '', 'BOUML_0x20482_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2721,11 +2634,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'regressiontest', 'id',  '', 0, id from dbtable where tablename = 'regressiontest' AND tableremarks = 'BOUML_0x20482_4';
 
 
-		-- Class report_element_types of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class report_element_types of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class report_element_types of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'report_element_types', '', 'BOUML_0x20502_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2740,11 +2649,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'report_element_types', 'id',  '', 0, id from dbtable where tablename = 'report_element_types' AND tableremarks = 'BOUML_0x20502_4';
 
 
-		-- Class report_elements of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class report_elements of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class report_elements of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'report_elements', '', 'BOUML_0x20582_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2777,11 +2682,7 @@ select '', '', 'report_element_types', 'id', '', '', 'report_elements', 'typ', 0
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'reports', 'id', '', '', 'report_elements', 'reportid', 0, 0, 0, id from dbtable where tablename = 'report_elements' AND tableremarks = 'BOUML_0x20582_4';
 
-		-- Class report_parameters of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class report_parameters of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class report_parameters of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'report_parameters', '', 'BOUML_0x20602_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2801,11 +2702,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'reports', 'id', '', '', 'report_parameters', 'reportid', 0, 0, 0, id from dbtable where tablename = 'report_parameters' AND tableremarks = 'BOUML_0x20602_4';
 
-		-- Class report_texts of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class report_texts of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class report_texts of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'report_texts', '', 'BOUML_0x20682_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2825,11 +2722,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'report_elements', 'id', '', '', 'report_texts', 'elementid', 0, 0, 0, id from dbtable where tablename = 'report_texts' AND tableremarks = 'BOUML_0x20682_4';
 
-		-- Class reports of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class reports of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class reports of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'reports', '', 'BOUML_0x20702_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2844,11 +2737,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'reports', 'id',  '', 0, id from dbtable where tablename = 'reports' AND tableremarks = 'BOUML_0x20702_4';
 
 
-		-- Class translations of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class translations of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class translations of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'translations', '', 'BOUML_0x20782_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2865,14 +2754,22 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'translations', 'id',  '', 0, id from dbtable where tablename = 'translations' AND tableremarks = 'BOUML_0x20782_4';
 
 
-		-- Class user_anwendungen of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class user_anwendungen of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class user_anwendungen of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'user_anwendungen', '', 'BOUML_0x20802_4', id from anwendungen where name = 'lbDMF Manager';
 
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_method', 'subquery_join', 
+(select id from dbtable where tablename = 'user_anwendungen' and tableremarks = 'BOUML_0x20802_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_outer', 'anwendungenid', 
+(select id from dbtable where tablename = 'user_anwendungen' and tableremarks = 'BOUML_0x20802_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_subquery', 'users', 
+(select id from dbtable where tablename = 'user_anwendungen' and tableremarks = 'BOUML_0x20802_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_inner', 'ID', 
+(select id from dbtable where tablename = 'user_anwendungen' and tableremarks = 'BOUML_0x20802_4'));
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23b82_1', 'int4', -1, 0, 'user_anwendungen', id from dbtable where tablename = 'user_anwendungen' AND tableremarks = 'BOUML_0x20802_4';
 
@@ -2890,14 +2787,28 @@ select '', '', 'anwendungen', 'id', '', '', 'user_anwendungen', 'anwendungenid',
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'users', 'id', '', '', 'user_anwendungen', 'userid', 0, 0, 0, id from dbtable where tablename = 'user_anwendungen' AND tableremarks = 'BOUML_0x20802_4';
 
-		-- Class users of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class users of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class users of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'users', '', 'BOUML_0x20882_4', id from anwendungen where name = 'lbDMF Manager';
 
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_method', 'subquery_filter', 
+(select id from dbtable where tablename = 'users' and tableremarks = 'BOUML_0x20882_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_field', 'userid', 
+(select id from dbtable where tablename = 'users' and tableremarks = 'BOUML_0x20882_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_outer', 'ID', 
+(select id from dbtable where tablename = 'users' and tableremarks = 'BOUML_0x20882_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_subquery', 'user_anwendungen', 
+(select id from dbtable where tablename = 'users' and tableremarks = 'BOUML_0x20882_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_inner', 'userid', 
+(select id from dbtable where tablename = 'users' and tableremarks = 'BOUML_0x20882_4'));
+
+insert into dbtableparameter (parametername, parametervalue, dbtableid) values('owner_match_value', '1', 
+(select id from dbtable where tablename = 'users' and tableremarks = 'BOUML_0x20882_4'));
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x23c02_1', 'int4', -1, 0, 'users', id from dbtable where tablename = 'users' AND tableremarks = 'BOUML_0x20882_4';
 
@@ -2918,11 +2829,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'anwendungen', 'id', '', '', 'users', 'lastapp', 0, 0, 0, id from dbtable where tablename = 'users' AND tableremarks = 'BOUML_0x20882_4';
 
-		-- Class dbtype of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class dbtype of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class dbtype of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'dbtype', '', 'BOUML_0x24a82_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2937,11 +2844,7 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'dbtype', 'id',  '', 0, id from dbtable where tablename = 'dbtype' AND tableremarks = 'BOUML_0x24a82_4';
 
 
-		-- Class dbtable of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class dbtable of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class dbtable of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'dbtable', '', 'BOUML_0x27e82_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2967,11 +2870,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'anwendungen', 'id', '', '', 'dbtable', 'anwendungenid', 0, 0, 0, id from dbtable where tablename = 'dbtable' AND tableremarks = 'BOUML_0x27e82_4';
 
-		-- Class dbcolumn of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class dbcolumn of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class dbcolumn of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'dbcolumn', '', 'BOUML_0x27f02_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -2999,11 +2898,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'dbtable', 'id', '', '', 'dbcolumn', 'dbtableid', 0, 0, 0, id from dbtable where tablename = 'dbcolumn' AND tableremarks = 'BOUML_0x27f02_4';
 
-		-- Class dbforeignkey of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class dbforeignkey of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class dbforeignkey of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'dbforeignkey', '', 'BOUML_0x27f82_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -3041,11 +2936,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'dbtable', 'id', '', '', 'dbforeignkey', 'dbtableid', 0, 0, 0, id from dbtable where tablename = 'dbforeignkey' AND tableremarks = 'BOUML_0x27f82_4';
 
-		-- Class dbprimarykey of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class dbprimarykey of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class dbprimarykey of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'dbprimarykey', '', 'BOUML_0x28002_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -3073,11 +2964,7 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'dbtable', 'id', '', '', 'dbprimarykey', 'dbtableid', 0, 0, 0, id from dbtable where tablename = 'dbprimarykey' AND tableremarks = 'BOUML_0x28002_4';
 
-		-- Class dbtableparameter of type FORM found.
-
-
-UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || 'Class dbtableparameter of type ENTITY found.') where name = 'lbDMF Manager';
-	
+		-- Class dbtableparameter of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'dbtableparameter', '', 'BOUML_0x30302_4', id from anwendungen where name = 'lbDMF Manager';
 
@@ -3088,14 +2975,14 @@ INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable,
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametervalue', 'BOUML_0x3a402_1', 'bpchar', -1, 0, 'dbtableparameter', id from dbtable where tablename = 'dbtableparameter' AND tableremarks = 'BOUML_0x30302_4';
 
-INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'tableid', 'BOUML_0x36f02_0', 'int4', -1, 0, 'dbtableparameter', id from dbtable where tablename = 'dbtableparameter' AND tableremarks = 'BOUML_0x30302_4';
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'dbtableid', 'BOUML_0x36f02_0', 'int4', -1, 0, 'dbtableparameter', id from dbtable where tablename = 'dbtableparameter' AND tableremarks = 'BOUML_0x30302_4';
 	
 	
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'dbtableparameter', 'id',  '', 0, id from dbtable where tablename = 'dbtableparameter' AND tableremarks = 'BOUML_0x30302_4';
 
 
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
-select '', '', 'dbtable', 'id', '', '', 'dbtableparameter', 'tableid', 0, 0, 0, id from dbtable where tablename = 'dbtableparameter' AND tableremarks = 'BOUML_0x30302_4';
+select '', '', 'dbtable', 'id', '', '', 'dbtableparameter', 'dbtableid', 0, 0, 0, id from dbtable where tablename = 'dbtableparameter' AND tableremarks = 'BOUML_0x30302_4';
 
 -- Activity operation for class Anwendungen in package lbDMF Manager is GenerateTurboVision.
 -- Operation is a validator using activity 
