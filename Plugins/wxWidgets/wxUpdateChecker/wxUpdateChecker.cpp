@@ -259,6 +259,8 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	
 	*uri = "/updates/lbdmf.json?ostype=";
 	*uri += getOsType();
+	*uri += "&version=";
+	*uri += VERSIONINFO;
 	
 	httpStream = get.GetInputStream(_T(uri->charrep()));
 	
