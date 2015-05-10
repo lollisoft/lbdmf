@@ -1,122 +1,90 @@
-2015-04-19 12:11  lollisoft
-
-	* interfaces/lbInterfaces.h: Changed version and small changes in
-	  documentation.
-
-2015-04-18 21:43  lollisoft
+2015-05-10 16:52  lollisoft
 
 	*
 	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.odt,
 	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf,
-	  BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
-	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Changed
-	  document, splash screen.
+	  BaseDevelopment/splash.png, interfaces/lbInterfaces.h,
+	  Test/GUI/wxWrapper/splash.png, Test/GUI/wxWrapper/Inkscape
+	  Icons/Splash Screen.svg: Changed splash image, documentation and
+	  doxygen version.
 
-2015-04-18 19:19  lollisoft
+2015-05-10 10:52  lollisoft
 
-	* AppDevelopmentDemo/DynamicApp/Doc/:
-	  ApplicationprototypingDokumentation.odt,
-	  ApplicationprototypingDokumentation.pdf: Added new release
-	  information into the ODT and PDF file.
+	* include/lbVersionInfo.h,
+	  Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Added
+	  information about what version asks for updates.
 
-2015-04-18 13:32  lollisoft
-
-	* lbdmf-jenkins.spec: Fixed version in spec.
-
-2015-04-18 11:57  lollisoft
+2015-05-10 09:18  lollisoft
 
 	* bindist.iss, dist.iss, docdist.iss, jenkinsrelease.sh,
-	  lbdmf.spec, include/lbVersionInfo.h,
-	  Test/GUI/wxWrapper/postlink-mac.sh: Changed minor version.
+	  lbdmf-debug.spec, lbdmf-jenkins.spec, lbdmf.spec,
+	  Test/GUI/wxWrapper/postlink-mac.sh: Changed version.
 
-2015-04-18 06:34  lollisoft
+2015-05-09 10:44  lollisoft
 
-	* bindist.iss, dist.iss, docdist.iss: Changed version.
+	* Database/: lbDMF-Sqlite-ApplicationDB.sql,
+	  lbDMF-Sqlite-SystemDB.sql: Actualized bootstrap database schema
+	  and model.
 
-2015-04-12 15:16  lollisoft
+2015-05-03 07:55  lollisoft
 
-	* Plugins/DomainLanguages/lbUILanguage/lbPluginUIDsl.cpp,
-	  Plugins/DomainLanguages/lbUILanguage/lbPluginUIDsl.h,
-	  Plugins/DomainLanguages/lbUILanguage/lbdmf.ui,
-	  Plugins/DomainLanguages/lbUILanguage/ui.g,
-	  Plugins/DomainLanguages/lbUILanguage/output/ui.tokens,
-	  Plugins/DomainLanguages/lbUILanguage/output/uiLexer.c,
-	  Plugins/DomainLanguages/lbUILanguage/output/uiLexer.h,
-	  Plugins/DomainLanguages/lbUILanguage/output/uiParser.c,
-	  Plugins/DomainLanguages/lbUILanguage/output/uiParser.h,
-	  UnitTests/ANTLR3/TestANTLR3.cpp: First attempt of ui language can
-	  be basically parsed.
+	* lbdmf-debug.spec, lbdmf-jenkins.spec, lbdmf.spec: Fixed
+	  dependencies in srpm specs.
 
-2015-04-03 06:58  lollisoft
+2015-05-02 17:29  lollisoft
 
-	* Plugins/DomainLanguages/lbUILanguage/: lbdmf.ui, ui.g: First
-	  partial language attempt.
+	* Plugins/wxWidgets/wxUpdateChecker/makefile.module: Fixed include
+	  path issue with recursive make files. (/cygdrive/...)
 
-2015-03-29 10:31  lollisoft
+2015-05-02 09:21  lollisoft
 
-	* UnitTests/ANTLR3/: TestANTLR3.cpp, makefile.module: Initial.
+	* make_src_dist.bat: Added missing vendor code for json.
 
-2015-03-28 10:11  lollisoft
+2015-05-02 06:21  lollisoft
 
-	* Plugins/DomainLanguages/lbUILanguage/makefile.module: Fixed
-	  include definition usage.
+	* make_src_dist.bat: Added missing antlr3 code.
 
-2015-03-28 09:37  lollisoft
+2015-05-01 18:34  lollisoft
 
-	* Plugins/DomainLanguages/lbUILanguage/makefile.module: Fixed
-	  include path.
+	* buildwxWidgets_MinGW.bat: Fixed WXDIR path to use unix forward
+	  slashes. The wxWidgets library get's built separately at setup.
 
-2015-03-27 07:10  lollisoft
+2015-05-01 10:30  lollisoft
 
-	* Plugins/DomainLanguages/lbUILanguage/makefile.module: Missing
-	  include path to generated parser.
+	* watcomenv.bat: Fixed WXDIR path to use unix forward slashes. The
+	  wxWidgets library get's built separately at setup.
 
-2015-03-27 06:45  lollisoft
+2015-05-01 08:29  lollisoft
 
-	* Plugins/DomainLanguages/lbUILanguage/output/: ui.tokens,
-	  uiLexer.c, uiLexer.h, uiParser.c, uiParser.h: Added missing
-	  generated files.
+	* watcomenv.bat: Fixed WXDIR path to use unix forward slashes. The
+	  wxWidgets library get's built separately at setup.
 
-2015-03-27 06:26  lollisoft
+2015-04-30 18:50  lollisoft
 
-	* Plugins/DomainLanguages/lbUILanguage/makefile.module: Fixed
-	  include path issue for Mac.
+	* make_src_dist.bat: Fixed packaging error.
 
-2015-03-27 05:23  lollisoft
+2015-04-29 06:54  lollisoft
 
-	* BaseDevelopment/Makefile, BaseDevelopment/environment-osx.sh,
-	  Plugins/makefile,
-	  Plugins/DomainLanguages/lbUILanguage/lbPluginUIDsl.cpp,
-	  Plugins/DomainLanguages/lbUILanguage/lbPluginUIDsl.h,
-	  Plugins/DomainLanguages/lbUILanguage/lbdmf.ui,
-	  Plugins/DomainLanguages/lbUILanguage/makefile.module,
-	  interfaces/lbInterfaces.h,
-	  Plugins/DomainLanguages/lbUILanguage/plugin.cpp,
-	  Plugins/DomainLanguages/lbUILanguage/ui.g,
-	  Plugins/lbANTLR3/lbPluginAntlr3.cpp,
-	  Plugins/lbANTLR3/lbPluginAntlr3.h,
-	  Plugins/lbANTLR3/makefile.module, Plugins/lbANTLR3/plugin.cpp,
-	  UnitTests/makefile: Added new plugins to start developing domain
-	  languages.
+	* watcomenv.bat: Fixed source code installer post process.
 
-2015-02-19 19:09  lollisoft
+2015-04-26 22:33  lollisoft
 
 	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.CreateDBSchema.Sqlite.xsl,
-	  Plugins/DatabaseLayerGateway/lbDB.cpp,
-	  UnitTests/BaseDevelopment/BaseDevelopment.cpp,
-	  UnitTests/TestMainUseCases/TestMainUseCases.cpp: Fixed Date
-	  column type bug. Fixed trigger creation template code.
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/PHP_P4A/lbDMF2P4A.xsl:
+	  Fixed basic PHP template.
 
-2015-01-26 21:35  lollisoft
+2015-04-26 22:33  lollisoft
 
-	* ChangeLog-basic.txt: Updated changelog due to wxUpdateCheck
-	  fixes.
+	* Plugins/: DatabaseLayerGateway/lbDB.cpp,
+	  wxWidgets/wxUpdateChecker/timerEventInterceptor.cpp: Fixed some
+	  unimplemented function to enable generated code work.
 
-2015-01-25 14:47  lollisoft
+2015-04-19 14:10  lollisoft
 
-	* AppDevelopmentDemo/DynamicApp/Doc/:
-	  ApplicationprototypingDokumentation.odt,
-	  ApplicationprototypingDokumentation.pdf: Added new chapter for
-	  listing features per version.
+	* ChangeLog-basic.txt: Updated changelog.
+
+2015-04-19 12:11  lollisoft
+
+	* interfaces/lbInterfaces.h: Changed version and small changes in
+	  documentation.
 
