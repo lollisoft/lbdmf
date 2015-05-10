@@ -34,7 +34,7 @@
  */
 
 /*...sMain page documentation:0:*/
-/** \mainpage Distributed Multiplatform Framework (1.1.0)
+/** \mainpage Distributed Multiplatform Framework (1.1.1)
  * \section intro_sec Introduction to DMF - Distributed Multiplatform Framework
  *
  * This is the introduction for the users of DMF after the first installation.
