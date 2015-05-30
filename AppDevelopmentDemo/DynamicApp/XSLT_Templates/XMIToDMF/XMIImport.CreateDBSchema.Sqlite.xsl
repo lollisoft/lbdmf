@@ -201,14 +201,15 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
       <xsl:when test="$typename='bool'">BOOL</xsl:when>
       <xsl:when test="$typename='boolean'">BOOL</xsl:when>
       <xsl:when test="$typename='int'">INTEGER</xsl:when>
-      <xsl:when test="$typename='float'">DECIMAL</xsl:when>
+      <xsl:when test="$typename='integer'">INTEGER</xsl:when>
+      <xsl:when test="$typename='float'">FLOAT</xsl:when>
       <xsl:when test="$typename='date'">DATE</xsl:when>
       <xsl:when test="$typename='shortstring'">CHAR(20)</xsl:when>
       <xsl:when test="$typename='string'">CHAR(255)</xsl:when>
       <xsl:when test="$typename='phonenumber'">CHAR(30)</xsl:when>
       <xsl:when test="$typename='text'">TEXT</xsl:when>
       <xsl:when test="$typename='bigstring'">TEXT</xsl:when>
-      <xsl:when test="$typename='image'">BLOB</xsl:when>
+      <xsl:when test="$typename='image'">BYTEA</xsl:when>
 	  <xsl:otherwise>
 	  <xsl:if test="$stereotype='custombinaryfield'">BYTEA</xsl:if>
 	  <xsl:if test="$stereotype='customstringfield'">CHAR(255)</xsl:if>

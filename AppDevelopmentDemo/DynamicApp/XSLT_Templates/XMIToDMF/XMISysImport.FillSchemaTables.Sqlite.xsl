@@ -146,6 +146,7 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='phonenumber'">bpchar</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='bigstring'">TEXT</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='float'">FLOAT</xsl:when>
+	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='image'">BYTEA</xsl:when>
 	  <xsl:otherwise>
 	  <xsl:if test="$stereotype='custombinaryfield'"><xsl:value-of select="//UML:DataType[@xmi.id=$dbtyperef]/@name"/></xsl:if>
 	  <xsl:if test="$stereotype='customstringfield'"><xsl:value-of select="//UML:DataType[@xmi.id=$dbtyperef]/@name"/></xsl:if>

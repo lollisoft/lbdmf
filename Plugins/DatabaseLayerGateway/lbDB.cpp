@@ -4472,6 +4472,7 @@ bool LB_STDCALL lbDatabaseLayerBoundColumn::setNull(bool b) {
 lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumn::getType() {
 	switch (_DataType) {
 
+		case SQL_DECIMAL:
 		case SQL_FLOAT:
 			return lb_I_Query::lbDBColumnFloat;
 
@@ -4575,6 +4576,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsLong(lb_I_Long* result, i
 lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* result, int asParameter) {
 
 	switch (_DataType) {
+		case SQL_DECIMAL:
 		case SQL_FLOAT:
 		case SQL_DATE:
 		case SQL_TYPE_DATE:
@@ -4722,6 +4724,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 
 				}
 					break;
+				case SQL_DECIMAL:
 				case SQL_FLOAT:
 				case SQL_CHAR:
 				case SQL_VARCHAR:
@@ -4817,6 +4820,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::setFromString(lb_I_String* set
 					}
 				}
 					break;
+				case SQL_DECIMAL:
 				case SQL_FLOAT:
 				case SQL_CHAR:
 				case SQL_VARCHAR:
