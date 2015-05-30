@@ -49,7 +49,9 @@
 <xsl:when test="$StereoType='' and $DataType='bigstring'">String</xsl:when>
 <xsl:when test="$StereoType='' and $DataType='date'">String</xsl:when>
 <xsl:when test="$StereoType='' and $DataType='int'">Integer</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='integer'">Integer</xsl:when>
 <xsl:when test="$StereoType='' and $DataType='bool'">Bit</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='image'">Image</xsl:when>
 <!-- Forward the types into the model. They are later used in code generation and probably mapped there (finally) -->
 <xsl:when test="$StereoType='password'">PasswordField</xsl:when>
 <xsl:when test="$StereoType='salt'">HiddenField</xsl:when>
@@ -58,7 +60,7 @@
 <xsl:when test="$StereoType='custombinaryfield'"><xsl:value-of select="$DataType"/></xsl:when>
 <xsl:when test="$StereoType='customstringfield'"><xsl:value-of select="$DataType"/></xsl:when>
 <xsl:when test="$StereoType='custombigstringfield'"><xsl:value-of select="$DataType"/></xsl:when>
-<xsl:otherwise>Undefined</xsl:otherwise>
+<xsl:otherwise>Undefined (<xsl:value-of select="$DataType"/>)</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
 
