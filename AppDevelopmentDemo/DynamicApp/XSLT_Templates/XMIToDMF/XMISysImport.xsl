@@ -245,11 +245,17 @@ COMMIT;
 <xsl:variable name="classname" select="@name"/>
 <xsl:variable name="applicationname" select="../../@name"/>
 
-<xsl:variable name="class_stereotyperef" select="./UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/><xsl:variable name="class_stereotype"><xsl:if test="$class_stereotyperef!=''"><xsl:value-of select="//UML:Stereotype[@xmi.id=$class_stereotyperef]/@name"/></xsl:if><xsl:if test="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value!=''"><xsl:value-of select="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value"/></xsl:if></xsl:variable>
+<xsl:variable name="class_stereotyperef" select="./UML:ModelElement.stereotype/UML:Stereotype/@xmi.idref"/>
+<xsl:variable name="class_stereotype">
+<xsl:if test="$class_stereotyperef!=''">
+<xsl:value-of select="//UML:Stereotype[@xmi.id=$class_stereotyperef]/@name"/>
+</xsl:if>
+<xsl:if test="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value!=''">
+<xsl:value-of select="./UML:ModelElement.taggedValue/UML:TaggedValue[@tag='stereotype']/@value"/>
+</xsl:if>
+</xsl:variable>
 
 -- Initialize formular definition
-
-<xsl:if test="$class_stereotype!=''">INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) values('stereotype','<xsl:value-of select="@class_stereotype"/>', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));</xsl:if>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
 --select "DropFormular"('<xsl:value-of select="$applicationname"/>', '<xsl:value-of select="@name"/>');
@@ -261,6 +267,10 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 DELETE FROM "formular_parameters" where formularid = (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>'));
 
 -- --
+
+<xsl:if test="$class_stereotype!=''">
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) values('stereotype','<xsl:value-of select="@class_stereotype"/>', (select id from "formulare" where name = '<xsl:value-of select="$classname"/>' and anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$applicationname"/>')));
+</xsl:if>
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) values('query', 'select <xsl:for-each select="UML:Classifier.feature/UML:Attribute">
 <xsl:variable name="datatypeid" select="UML:StructuralFeature.type/UML:DataType/@xmi.idref"/> 
