@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.53 $
+# * $Revision: 1.229.2.54 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.53 2015/03/27 04:23:11 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.54 2015/06/27 05:06:21 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.54  2015/06/27 05:06:21  lollisoft
+# * Deactivated goldparser engine stuff.
+# *
 # * Revision 1.229.2.53  2015/03/27 04:23:11  lollisoft
 # * Added new plugins to start developing domain languages.
 # *
@@ -1199,12 +1202,12 @@ ALLTARGETS = \
 	../vendor/wxShapeFramework/src \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper \
-	../vendor/goldparserengine/src \
-	../vendor/goldparserengine/samples/engine \
-	../vendor/goldparserengine/samples/gptest \
 	../AppDevelopmentDemo/MkBs \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
+#	../vendor/goldparserengine/src \
+#	../vendor/goldparserengine/samples/engine \
+#	../vendor/goldparserengine/samples/gptest \
 #	../vendor/wxARG/src \
 #	../vendor/databaselayer/src/Implementations/ODBC \
 #	../vendor/cryptostream/src/crypstrm \
