@@ -95,8 +95,6 @@ extern "C" {
 #include <wx/file.h>
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...sdoc:0:*/
@@ -178,8 +176,6 @@ lbDatabaseDialog::lbDatabaseDialog()
 	
 	panel = new lbDatabasePanel();
 	_created = true;
-	
-	;
 }
 /*...e*/
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
@@ -486,8 +482,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
