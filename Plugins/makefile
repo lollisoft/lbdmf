@@ -45,6 +45,7 @@ TARGETPLUGIN=soplugin
 ALLTARGETS = \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
+	wxWidgets/wxPropertyForm \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -69,6 +70,7 @@ TARGETPLUGIN=soplugin
 ALLTARGETS = \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
+	wxWidgets/wxPropertyForm \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -93,6 +95,7 @@ TARGETPLUGIN=soplugin
 ALLTARGETS = \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
+	wxWidgets/wxPropertyForm \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -117,6 +120,7 @@ TARGETPLUGIN=soplugin
 ALLTARGETS = \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
+	wxWidgets/wxPropertyForm \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -145,6 +149,7 @@ TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 ALLTARGETS = \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
+	wxWidgets/wxPropertyForm \
 	wxWidgets/wxUpdateChecker \
 	wxWidgets/wxSFDesigner \
 	UserFeedback \
@@ -176,6 +181,10 @@ mkrelease:
 	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
 
 dummy:
+
+wxWidgets/wxPropertyForm: dummy
+	$(MAKE) -C $@ -e MODULE=lbwxPropertyForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	$(MAKE) -C $@
 
 wxWidgets/wxUpdateChecker: dummy
 	$(MAKE) -C $@ -e MODULE=lbwxUpdateChecker -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure

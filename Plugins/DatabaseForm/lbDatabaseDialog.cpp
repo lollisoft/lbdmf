@@ -176,8 +176,6 @@ lbDatabaseDialog::lbDatabaseDialog()
 	
 	panel = new lbDatabasePanel();
 	_created = true;
-	
-	;
 }
 /*...e*/
 /*...slbDatabaseDialog\58\\58\\126\lbDatabaseDialog\40\\41\:0:*/
