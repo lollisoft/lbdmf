@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.1 $
+ * $Revision: 1.1.2.2 $
  * $Name:  $
- * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.1 2015/07/12 10:05:50 lollisoft Exp $
+ * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.2 2015/07/12 12:13:54 lollisoft Exp $
  *
  * $Log: lbPropertyPanelHandler.cpp,v $
+ * Revision 1.1.2.2  2015/07/12 12:13:54  lollisoft
+ * Added new plugin into deployment and code to instantiate the dialog.
+ *
  * Revision 1.1.2.1  2015/07/12 10:05:50  lollisoft
  * Added new property dialog and panel implementations. A first step toward workflow enabled dialogs.
  *
@@ -112,6 +115,7 @@ extern "C" {
 
 
 #include <lbPropertyPanelHandler.h>
+#include <lbPropertyForm.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPropertyPanelHandler)
 ADD_INTERFACE(lb_I_EventHandler)
@@ -180,6 +184,12 @@ lbErrCodes LB_STDCALL lbPropertyPanelHandler::showPropertyDialog(lb_I_Unknown* u
 		params->setUAPString(*&paramResult, *&result);
 		return ERR_ILLEGAL_PARAMETER;
 	}
+	
+	lbPropertyDialog* pDialog = new lbPropertyDialog();
+	
+	pDialog->init(*&params);
+	
+	pDialog->show();
 
 	return ERR_NONE;
 }

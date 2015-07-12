@@ -38,6 +38,7 @@ Source: "dist\bindist_iss\plugins\lbVisitorOperations.dll"; DestDir: "{app}\Deve
 Source: "dist\bindist_iss\plugins\UserFeedback.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "dist\bindist_iss\plugins\lbwxSFDesigner.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 Source: "dist\bindist_iss\plugins\lbwxUpdateChecker.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
+Source: "dist\bindist_iss\plugins\lbwxPropertyForm.dll"; DestDir: "{app}\Develop\Projects\plugins"; CopyMode: alwaysoverwrite;
 
 Source: "dist\bindist_iss\dll\lbClasses.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "dist\bindist_iss\dll\lbDB.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
