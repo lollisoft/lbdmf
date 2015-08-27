@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.1 $
+ * $Revision: 1.1.2.2 $
  * $Name:  $
- * $Id: lbPropertyForm.h,v 1.1.2.1 2015/07/12 10:05:50 lollisoft Exp $
+ * $Id: lbPropertyForm.h,v 1.1.2.2 2015/08/27 14:15:20 lollisoft Exp $
  *
  * $Log: lbPropertyForm.h,v $
+ * Revision 1.1.2.2  2015/08/27 14:15:20  lollisoft
+ * First basic implementation of a property dialog using a visitor factory.
+ *
  * Revision 1.1.2.1  2015/07/12 10:05:50  lollisoft
  * Added new property dialog and panel implementations. A first step toward workflow enabled dialogs.
  *
@@ -173,7 +176,7 @@ public:
 		lb_I_Unknown* LB_STDCALL getUnknown();
 		/*...e*/
 		
-		
+		void OnClose(wxCloseEvent& event);
 		void OnDispatch(wxCommandEvent& event);
 		
 		char* base_formName;

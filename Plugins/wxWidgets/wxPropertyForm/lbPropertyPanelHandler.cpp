@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.2 $
+ * $Revision: 1.1.2.3 $
  * $Name:  $
- * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.2 2015/07/12 12:13:54 lollisoft Exp $
+ * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.3 2015/08/27 14:15:20 lollisoft Exp $
  *
  * $Log: lbPropertyPanelHandler.cpp,v $
+ * Revision 1.1.2.3  2015/08/27 14:15:20  lollisoft
+ * First basic implementation of a property dialog using a visitor factory.
+ *
  * Revision 1.1.2.2  2015/07/12 12:13:54  lollisoft
  * Added new plugin into deployment and code to instantiate the dialog.
  *
@@ -151,9 +154,11 @@ lbErrCodes LB_STDCALL lbPropertyPanelHandler::registerEventHandler(lb_I_Dispatch
 	int temp;
 	eman->registerEvent("showPropertyDialog", temp);
 	eman->registerEvent("showPropertyPanel", temp);
+	eman->registerEvent("testPropertyDialog", temp);
 	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbPropertyPanelHandler::showPropertyDialog, "showPropertyDialog");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbPropertyPanelHandler::showPropertyPanel, "showPropertyPanel");
+	disp->addEventHandlerFn(this, (lbEvHandler) &lbPropertyPanelHandler::testPropertyDialog, "testPropertyDialog");
 	
 	return ERR_NONE;
 }
@@ -224,6 +229,41 @@ lbErrCodes LB_STDCALL lbPropertyPanelHandler::showPropertyPanel(lb_I_Unknown* uk
 	return ERR_NONE;
 }
 
+lbErrCodes LB_STDCALL lbPropertyPanelHandler::testPropertyDialog(lb_I_Unknown* uk) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, params)
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, pString1)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, pString2)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, pString3)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, pInt1)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, pInt2)
+	UAP_REQUEST(getModuleInstance(), lb_I_Integer, pInt3)
+	
+	*pString1 = "Test 1";
+	*pString2 = "Test 2";
+	*pString3 = "Test 3";
+	pInt1->setData(25);
+	pInt2->setData(26);
+	pInt3->setData(27);
+	
+	*paramName = "Test Text 1";
+	params->setUAPString(*&paramName, *&pString1);
+	*paramName = "Test Text 2";
+	params->setUAPString(*&paramName, *&pString2);
+	*paramName = "Test Text 3";
+	params->setUAPString(*&paramName, *&pString3);
+	*paramName = "Test Integer 1";
+	params->setUAPInteger(*&paramName, *&pInt1);
+	*paramName = "Test Integer 2";
+	params->setUAPInteger(*&paramName, *&pInt2);
+	*paramName = "Test Integer 3";
+	params->setUAPInteger(*&paramName, *&pInt3);
+	
+	
+	showPropertyDialog(ukparams.getPtr());
+}
+
 
 class lbPluginPropertyPanelHandler : public lb_I_PluginImpl {
 public:
@@ -289,6 +329,17 @@ lbErrCodes LB_STDCALL lbPluginPropertyPanelHandler::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	PropertyPanelHandler->registerEventHandler(*&dispatcher);
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	
+	char* file = strdup(_trans("&File"));
+	char* entry = strdup(_trans("Test Property dialog"));
+	
+	meta->addMenuEntry(file, entry, "testPropertyDialog", "");
+	
+	free(file);
+	free(entry);
+	
 	
 	return err;
 }

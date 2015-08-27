@@ -33,7 +33,7 @@
  *
  */
 class lb_I_Aspect :
-public lb_I_Unknown
+public lb_I_VisitableHelper
 { // abstract interface for visitors 
 public: 
 

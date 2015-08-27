@@ -21,6 +21,8 @@ public:
 	
 	lbErrCodes				LB_STDCALL showPropertyDialog(lb_I_Unknown* uk);
 	lbErrCodes				LB_STDCALL showPropertyPanel(lb_I_Unknown* uk);
+	
+	lbErrCodes				LB_STDCALL testPropertyDialog(lb_I_Unknown* uk);
 };
 
 #endif //PLUGIN_PropertyForm
