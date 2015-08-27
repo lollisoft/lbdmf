@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.1 $
+ * $Revision: 1.1.2.2 $
  * $Name:  $
- * $Id: lbPropertyForm.cpp,v 1.1.2.1 2015/07/12 10:05:50 lollisoft Exp $
+ * $Id: lbPropertyForm.cpp,v 1.1.2.2 2015/08/27 14:15:20 lollisoft Exp $
  *
  * $Log: lbPropertyForm.cpp,v $
+ * Revision 1.1.2.2  2015/08/27 14:15:20  lollisoft
+ * First basic implementation of a property dialog using a visitor factory.
+ *
  * Revision 1.1.2.1  2015/07/12 10:05:50  lollisoft
  * Added new property dialog and panel implementations. A first step toward workflow enabled dialogs.
  *
@@ -112,6 +115,7 @@ extern "C" {
 
 
 #include <lbPropertyForm.h>
+#include <lbControlFactory.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPropertyPanel)
 ADD_INTERFACE(lb_I_Window)
@@ -190,9 +194,9 @@ void LB_STDCALL lbPropertyPanel::init() {
 }
 
 void LB_STDCALL lbPropertyPanel::init(lb_I_Parameter* parameter) {
-	wxBoxSizer* sizerMain  = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer* sizerColumn  = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizerField = NULL;
+	lbUIElementFactoryAspect* aspect = new lbUIElementFactoryAspect();
+	
+	aspect->begin(NULL, this);
 	
 	UAP(lb_I_Container, parameters)
 	
@@ -209,8 +213,17 @@ void LB_STDCALL lbPropertyPanel::init(lb_I_Parameter* parameter) {
 		
 		QI(key, lb_I_String, parameterName)
 		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, labelName)
 		
+		*labelName = "lbl";
+		*labelName += parameterName->charrep();
+		
+		aspect->setCurrentLabel(*&labelName);
+		aspect->setCurrentName(*&parameterName);
+		uk->accept(aspect);
 	}
+	
+	aspect->end();
 }
 
 
@@ -357,6 +370,8 @@ void LB_STDCALL lbPropertyDialog::init(lb_I_Parameter* parameter) {
 	
 	sizerMain->SetSizeHints(this);
 	sizerMain->Fit(this);
+	
+	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(lbPropertyDialog::OnClose));
 }
 
 lbErrCodes LB_STDCALL lbPropertyDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
@@ -377,6 +392,8 @@ lbErrCodes LB_STDCALL lbPropertyDialog::setName(const char* name, const char* ap
 
 
 
-
+void lbPropertyDialog::OnClose(wxCloseEvent& event) {
+	destroy();
+}
 
 
