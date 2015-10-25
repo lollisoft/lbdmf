@@ -899,10 +899,8 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
 
 					_LOG << "Destroy a dynamic form '" << form->getClassName() << "'." LOG_
 
-					UAP(lb_I_DatabaseForm, d)
-					QI(form, lb_I_DatabaseForm, d)
-					UAP(lb_I_FixedDatabaseForm, fd)
-					QI(form, lb_I_FixedDatabaseForm, fd)
+					UAP(lb_I_Form, d)
+					QI(form, lb_I_Form, d)
 					
 					if (d != NULL && *s == d->getName()) {
                         _LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
@@ -911,13 +909,6 @@ lbErrCodes LB_STDCALL lb_wxGUI::cleanup() {
                         d->destroy();
                         d.resetPtr();
                         _LOG << "Destroyed the dynamic form." LOG_
-					}
-
-					if (fd != NULL && *s == d->getName()) {
-							_LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
-							fd->destroy();
-							fd.resetPtr();
-							_LOG << "Destroyed the custom form." LOG_
 					}
 				}
 			}
@@ -965,59 +956,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::createLoginForm() {
 
         wizard->Destroy();
 
-
-#ifdef bla
-/*...s:0:*/
-
-        lbErrCodes err = ERR_NONE;
-
-        // Locate the form instance in the container
-
-        lbLoginDialog* _dialog = NULL;
-
-        if (forms == NULL) {
-                REQUEST(getModuleInstance(), lb_I_Container, forms)
-        }
-
-        UAP(lb_I_Unknown, uk)
-        UAP(lb_I_KeyBase, key)
-
-        UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-        fName->setData("LoginForm");
-
-        QI(fName, lb_I_KeyBase, key)
-
-        uk = forms->getElement(&key);
-
-        if (uk != NULL) {
-                _dialog = (lbLoginDialog*) *&uk;
-        }
-
-        if (_dialog) {
-                _dialog->Show(TRUE);
-        } else {
-                _dialog = new lbLoginDialog();
-                
-
-                QI(_dialog, lb_I_Unknown, uk)
-
-                forms->insert(&uk, &key);
-
-                delete _dialog;
-                _dialog = NULL;
-
-                uk = forms->getElement(&key);
-
-                if (uk != NULL) {
-                        _dialog = (lbLoginDialog*) *&uk;
-                }
-
-                _dialog->init(frame);
-                _dialog->Show();
-        }
-/*...e*/
-#endif
-        return NULL;
+	return NULL;
 }
 /*...e*/
 
@@ -1375,16 +1314,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
                 if (frame->isPanelUsage()) {
                         _dialog->create(notebook->GetId());
                 } else {
-						if (openedDialogs == NULL) {
-							REQUEST(getModuleInstance(), lb_I_Container, openedDialogs);
-						}
-						UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-						UAP(lb_I_Unknown, nuk)
-						*name = key->charrep();
-						QI(name, lb_I_Unknown, nuk)
-						if (openedDialogs->exists(&key) == 0) {
-							openedDialogs->insert(&nuk, &key);
-						}
+						registerFormCleanup(*&form, *&fName);
 				}
 
                 _LOG << "Set formname to " << formName LOG_
@@ -1747,8 +1677,6 @@ void LB_STDCALL lb_wxGUI::refreshAll() {
 
                 UAP(lb_I_DatabaseForm, d)
                 QI(form, lb_I_DatabaseForm, d)
-                UAP(lb_I_FixedDatabaseForm, fd)
-                QI(form, lb_I_FixedDatabaseForm, fd)
 
                 if (d != NULL) {
                         _LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
@@ -1756,15 +1684,6 @@ void LB_STDCALL lb_wxGUI::refreshAll() {
                         d->close(); // Avoid invalid database object while closing.
                         _LOG << "Destroyed the dynamic form." LOG_
                 }
-
-/*
-                if (fd != NULL) {
-                        _LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
-                        fd->destroy();
-                        fd.resetPtr();
-                        _LOG << "Destroyed the custom form." LOG_
-                }
-*/
         }
 
         forms->finishIteration();
@@ -1779,8 +1698,6 @@ void LB_STDCALL lb_wxGUI::refreshAll() {
 
                 UAP(lb_I_DatabaseForm, d)
                 QI(form, lb_I_DatabaseForm, d)
-                UAP(lb_I_FixedDatabaseForm, fd)
-                QI(form, lb_I_FixedDatabaseForm, fd)
 
                 if (d != NULL) {
                         _LOG << "Destroy a dynamic form with " << d->getRefCount() << " references ..." LOG_
@@ -1788,15 +1705,6 @@ void LB_STDCALL lb_wxGUI::refreshAll() {
                         d->open(); // Avoid invalid database object while closing.
                         _LOG << "Destroyed the dynamic form." LOG_
                 }
-
-                /*
-                 if (fd != NULL) {
-                 _LOG << "Destroy a custom form with " << fd->getRefCount() << " references ..." LOG_
-                 fd->destroy();
-                 fd.resetPtr();
-                 _LOG << "Destroyed the custom form." LOG_
-                 }
-                 */
         }
 }
 
@@ -1807,6 +1715,49 @@ void LB_STDCALL lb_wxGUI::setIcon(const char* name) {
         #if defined(__WXGTK__) || defined(__WXMOTIF__)
             frame->SetIcon(wxIcon(mondrian_xpm));
         #endif
+}
+
+void LB_STDCALL lb_wxGUI::registerFormCleanup(lb_I_Form* form, lb_I_String* formName) {
+	if (openedDialogs == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, openedDialogs);
+	}
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_Unknown, nuk)
+	*name = formName->charrep();
+	QI(name, lb_I_Unknown, nuk)
+	
+	UAP(lb_I_KeyBase, key)
+	QI(formName, lb_I_KeyBase, key)
+
+	if (openedDialogs->exists(&key) == 0) {
+		openedDialogs->insert(&nuk, &key);
+	}
+	
+	if (forms == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, forms)
+	}
+	
+	UAP(lb_I_Unknown, ukForm)
+
+	QI(form, lb_I_Unknown, ukForm)
+	
+	if (forms->exists(&key)) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Form, formToClose)
+		uk = forms->getElement(&key);
+		
+		QI(uk, lb_I_Form, formToClose)
+
+		forms->remove(&key);
+		
+		formToClose->destroy();
+	}
+	
+	// Forms normally get cloned yet :-(
+///\todo Refactor all cloning logic.
+	forms->setCloning(false);
+	forms->insert(&ukForm, &key);
+	forms->setCloning(true);
 }
 
 void LB_STDCALL lb_wxGUI::registerDBForm(const char* formName, lb_I_DatabaseForm* form) {

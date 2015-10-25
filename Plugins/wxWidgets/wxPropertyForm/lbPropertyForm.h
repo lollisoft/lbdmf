@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.2 $
+ * $Revision: 1.1.2.3 $
  * $Name:  $
- * $Id: lbPropertyForm.h,v 1.1.2.2 2015/08/27 14:15:20 lollisoft Exp $
+ * $Id: lbPropertyForm.h,v 1.1.2.3 2015/10/25 18:13:18 lollisoft Exp $
  *
  * $Log: lbPropertyForm.h,v $
+ * Revision 1.1.2.3  2015/10/25 18:13:18  lollisoft
+ * Fixed form cleanup code to better support new property forms.
+ *
  * Revision 1.1.2.2  2015/08/27 14:15:20  lollisoft
  * First basic implementation of a property dialog using a visitor factory.
  *
@@ -140,9 +143,9 @@ public:
 		
 		lbErrCodes	LB_STDCALL setName(const char* name, const char* appention);
 		
-		char*		LB_STDCALL getName() { return base_formName; }
+		char*		LB_STDCALL getName();
 		
-		char*		LB_STDCALL getFormName() { return formName; }
+		char*		LB_STDCALL getFormName();
 		
 		lbErrCodes	LB_STDCALL addButton(const char* buttonText, const char* evHandler, int x, int y, int w, int h) { return ERR_NONE; };
 		lbErrCodes	LB_STDCALL addLabel(const char* text, int x, int y, int w, int h) { return ERR_NONE; };
@@ -176,12 +179,8 @@ public:
 		lb_I_Unknown* LB_STDCALL getUnknown();
 		/*...e*/
 		
-		void OnClose(wxCloseEvent& event);
+		//void OnClose(wxCloseEvent& event);
 		void OnDispatch(wxCommandEvent& event);
-		
-		char* base_formName;
-		char* formName;
-		char* untranslated_formName;
 		
 		lbPropertyPanel* panel;
 		bool _created;
