@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.5 $
+ * $Revision: 1.43.2.6 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.5 2015/01/02 17:43:59 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.6 2015/10/25 18:13:18 lollisoft Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.6  2015/10/25 18:13:18  lollisoft
+ * Fixed form cleanup code to better support new property forms.
+ *
  * Revision 1.43.2.5  2015/01/02 17:43:59  lollisoft
  * Added a new method to control timer.
  *
@@ -553,6 +556,8 @@ public:
         virtual lb_I_Unknown* LB_STDCALL createMenuBar();
         virtual lb_I_Unknown* LB_STDCALL createMenuEntry();
 
+	virtual void LB_STDCALL registerFormCleanup(lb_I_Form* form, lb_I_String* formName);
+	
 	virtual lb_I_Form* LB_STDCALL addCustomForm(lb_I_Form* form, const char* formName);
 
 	virtual lb_I_DatabaseForm* LB_STDCALL createDBForm(const char* formName, const char* queryString, const char* DBName, const char* DBUser, const char* DBPass);
