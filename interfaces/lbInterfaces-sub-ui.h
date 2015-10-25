@@ -156,6 +156,11 @@ public:
 	 */
 	virtual void LB_STDCALL registerDBForm(const char* formName, lb_I_DatabaseForm* form) = 0;
 
+	/** \brief Register a form to be cleaned up at application exit.
+	 * Dialogs are not closed automatically on some platforms.
+	 */
+	virtual void LB_STDCALL registerFormCleanup(lb_I_Form* form, lb_I_String* formName) = 0;
+	
 	virtual lb_I_Form* LB_STDCALL createLoginForm() = 0;
 /*...e*/
 /*...sGetter functions:8:*/

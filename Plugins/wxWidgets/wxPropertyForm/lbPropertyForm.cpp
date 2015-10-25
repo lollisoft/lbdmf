@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.2 $
+ * $Revision: 1.1.2.3 $
  * $Name:  $
- * $Id: lbPropertyForm.cpp,v 1.1.2.2 2015/08/27 14:15:20 lollisoft Exp $
+ * $Id: lbPropertyForm.cpp,v 1.1.2.3 2015/10/25 18:13:18 lollisoft Exp $
  *
  * $Log: lbPropertyForm.cpp,v $
+ * Revision 1.1.2.3  2015/10/25 18:13:18  lollisoft
+ * Fixed form cleanup code to better support new property forms.
+ *
  * Revision 1.1.2.2  2015/08/27 14:15:20  lollisoft
  * First basic implementation of a property dialog using a visitor factory.
  *
@@ -315,9 +318,6 @@ lbPropertyDialog::lbPropertyDialog()
 lbPropertyDialog::~lbPropertyDialog() {
 	_CL_LOG << "lbPropertyDialog::~lbPropertyDialog() called." LOG_
 	
-	free (formName);
-	free (base_formName);
-	free (untranslated_formName);
 	_LOG << "lbPropertyDialog::~lbPropertyDialog() ready." LOG_
 }
 /*...e*/
@@ -331,7 +331,7 @@ lb_I_Unknown* LB_STDCALL lbPropertyDialog::getUnknown() {
 
 void LB_STDCALL lbPropertyDialog::destroy() {
 	if (_created) {
-		_LOG << "lbPropertyDialog::destroy() Destroying '" << base_formName << "'" LOG_
+		_LOG << "lbPropertyDialog::destroy() Destroying '" << getName() << "'" LOG_
 		Destroy();
 	}
 	_created = false;
@@ -371,7 +371,18 @@ void LB_STDCALL lbPropertyDialog::init(lb_I_Parameter* parameter) {
 	sizerMain->SetSizeHints(this);
 	sizerMain->Fit(this);
 	
-	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(lbPropertyDialog::OnClose));
+	//Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(lbPropertyDialog::OnClose));
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+	
+	lb_I_GUI* gui = NULL;
+	
+	app->getGUI(&gui);
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, formName)
+	*formName = getName();
+	
+	gui->registerFormCleanup(this, *&formName);
 }
 
 lbErrCodes LB_STDCALL lbPropertyDialog::registerEventHandler(lb_I_Dispatcher* dispatcher) {
@@ -383,6 +394,15 @@ void LB_STDCALL lbPropertyDialog::windowIsClosing(lb_I_Window* w) {
 	
 }
 
+char*		LB_STDCALL lbPropertyDialog::getName() {
+	return panel->getName();
+}
+
+char*		LB_STDCALL lbPropertyDialog::getFormName() {
+	return panel->getFormName();
+}
+
+
 lbErrCodes LB_STDCALL lbPropertyDialog::setName(const char* name, const char* appention) {
 	wxString Name = wxString(name)+wxString(appention);
 	SetName(Name);
@@ -391,9 +411,9 @@ lbErrCodes LB_STDCALL lbPropertyDialog::setName(const char* name, const char* ap
 }
 
 
-
+/*
 void lbPropertyDialog::OnClose(wxCloseEvent& event) {
 	destroy();
 }
-
+*/
 

@@ -136,7 +136,7 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxJSON-1.2.1/include
 OBJDEP=
 C_SOOPS_WX =-DOSX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
-C_SOOPS= $(C_SOOPS_WX)
+C_SOOPS= $(C_SOOPS_WX) -g
 VENDORLIBS=
 LDFLAGS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook -framework wxJson `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif

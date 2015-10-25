@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.3 $
+ * $Revision: 1.1.2.4 $
  * $Name:  $
- * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.3 2015/08/27 14:15:20 lollisoft Exp $
+ * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.4 2015/10/25 18:13:18 lollisoft Exp $
  *
  * $Log: lbPropertyPanelHandler.cpp,v $
+ * Revision 1.1.2.4  2015/10/25 18:13:18  lollisoft
+ * Fixed form cleanup code to better support new property forms.
+ *
  * Revision 1.1.2.3  2015/08/27 14:15:20  lollisoft
  * First basic implementation of a property dialog using a visitor factory.
  *
@@ -191,6 +194,12 @@ lbErrCodes LB_STDCALL lbPropertyPanelHandler::showPropertyDialog(lb_I_Unknown* u
 	}
 	
 	lbPropertyDialog* pDialog = new lbPropertyDialog();
+	
+	UAP_REQUEST(getModuleInstance(), lb_I_String, formName)
+	
+	*formName = "Properties";
+	
+	pDialog->setName(formName->charrep(), NULL);
 	
 	pDialog->init(*&params);
 	
