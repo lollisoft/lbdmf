@@ -180,7 +180,12 @@ BEGIN
     END;
 END;
 </xsl:if>
+<xsl:if test="$FieldName=''">
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="$thisClassName"/>', 'ID', '<xsl:value-of select="$otherClassName"/>', '<xsl:value-of select="$thisClassName"/>');
+</xsl:if>
+<xsl:if test="$FieldName!=''">
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('<xsl:value-of select="$thisClassName"/>', 'ID', '<xsl:value-of select="$otherClassName"/>', '<xsl:value-of select="$FieldName"/>');
+</xsl:if>
 </xsl:if>
     </xsl:for-each>
 </xsl:template>
@@ -308,7 +313,12 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_ins";
 DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_upd";
 DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_del";
+<xsl:if test="$FieldName=''">
 DELETE FROM "lbDMF_ForeignKeys" WHERE "PKTable"='<xsl:value-of select="$thisClassName"/>' AND "PKColumn"='ID' AND "FKTable"='<xsl:value-of select="$otherClassName"/>' AND "FKColumn"='<xsl:value-of select="$thisClassName"/>';
+</xsl:if>
+<xsl:if test="$FieldName!=''">
+DELETE FROM "lbDMF_ForeignKeys" WHERE "PKTable"='<xsl:value-of select="$thisClassName"/>' AND "PKColumn"='ID' AND "FKTable"='<xsl:value-of select="$otherClassName"/>' AND "FKColumn"='<xsl:value-of select="$FieldName"/>';
+</xsl:if>
 </xsl:if>
     </xsl:for-each>
 </xsl:template>
