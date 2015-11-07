@@ -110,7 +110,7 @@ DELETE FROM dbcolumn WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename 
 DELETE FROM dbforeignkey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbprimarykey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbtableparameter WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
-DELETE FROM dbtable WHERE anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>');
+DELETE FROM dbtable WHERE anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>') AND tablename = '<xsl:value-of select="$ClassName"/>';
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', '<xsl:value-of select="$ClassName"/>', '', '<xsl:value-of select="$ClassId"/>', id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>';
 
@@ -183,7 +183,7 @@ INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fks
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
 -- Fill schema tables primarykeys
 
-INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', 'ID',  '', 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', 'ID',  '', 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 
 </xsl:template>
 
