@@ -87,6 +87,7 @@ Don't use the association name here. If one has two or more associations between
 <xsl:call-template name="XMISysImport.FillSchemaTables.Sqlite.primarykeys">
 	<xsl:with-param name="ClassID" select="$ClassId"/>
 	<xsl:with-param name="ClassName" select="$ClassName"/>
+	<xsl:with-param name="ApplicationName" select="$ApplicationName"/>
 </xsl:call-template>
 
 <xsl:call-template name="XMISysImport.FillSchemaTableProperties.Sqlite">
@@ -181,6 +182,7 @@ INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fks
     <xsl:param name="ClassId"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="ClassName"/><!-- The Id for the current class to create schema information -->
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
+    <xsl:param name="ApplicationName"/>	
 -- Fill schema tables primarykeys
 
 INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', '<xsl:value-of select="$ClassName"/>', 'ID',  '', 0, id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
