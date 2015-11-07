@@ -56,7 +56,7 @@ CREATE TABLE "<xsl:value-of select="$ClassName"/>" (
 	</xsl:call-template>
 	</xsl:for-each>
 	<xsl:for-each select="//UML:Namespace.ownedElement/UML:Class">
-DROP TABLE "<xsl:value-of select="@name"/>";
+DROP TABLE IF EXISTS "<xsl:value-of select="@name"/>";
 	</xsl:for-each>
 </xsl:if>
 </xsl:template>
@@ -273,10 +273,10 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
       <!-- Choose only association ends where navigable is true. -->
 
 <xsl:variable name="thisClassId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/@xmi.idref"/>
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/@xmi.idref"/>
 </xsl:variable>
 <xsl:variable name="otherClassId">
-<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref!=$ClassID]/@xmi.idref"/>
+<xsl:value-of select="../../../UML:AssociationEnd/UML:AssociationEnd.participant/UML:Class[@xmi.idref=$ClassID]/@xmi.idref"/>
 </xsl:variable>
 
 
@@ -310,9 +310,9 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
 -- FieldName '<xsl:value-of select="$FieldName"/>'
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
-DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_ins";
-DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_upd";
-DROP TRIGGER "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_del";
+DROP TRIGGER IF EXISTS "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_ins";
+DROP TRIGGER IF EXISTS "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_upd";
+DROP TRIGGER IF EXISTS "fk_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$FieldName"/>_del";
 <xsl:if test="$FieldName=''">
 DELETE FROM "lbDMF_ForeignKeys" WHERE "PKTable"='<xsl:value-of select="$thisClassName"/>' AND "PKColumn"='ID' AND "FKTable"='<xsl:value-of select="$otherClassName"/>' AND "FKColumn"='<xsl:value-of select="$thisClassName"/>';
 </xsl:if>
