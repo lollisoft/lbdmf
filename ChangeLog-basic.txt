@@ -1,3 +1,129 @@
+2015-11-08 08:56  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Added documentation for
+	  release 1.2.0.
+
+2015-11-07 17:47  lollisoft
+
+	* jenkinsrelease.sh: Changed filename. Need a checklist what to do
+	  for a release.
+
+2015-11-07 16:06  lollisoft
+
+	* bindist.iss, dist.iss, docdist.iss, lbdmf-jenkins.spec,
+	  lbdmf.spec, BaseDevelopment/splash.png,
+	  Test/GUI/wxWrapper/postlink-mac.sh,
+	  Test/GUI/wxWrapper/splash.png, Test/GUI/wxWrapper/Inkscape
+	  Icons/Splash Screen.svg, include/lbVersionInfo.h,
+	  interfaces/lbInterfaces.h: Changed version.
+
+2015-11-07 11:42  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
+	  XMIImport.CreateDBSchema.Sqlite.xsl,
+	  XMISysImport.FillSchemaTables.Sqlite.xsl: Fixed XMI reimport
+	  issue. Also tested is reimport using an extended model so that new
+	  tables can be added with their relations. A downgrade to the non
+	  extended version is possible but questionable.
+
+2015-11-07 08:33  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl:
+	  Bugfix: Creating dbprimarykey entries filter was wrong. Filter for
+	  deleting dbtable entries was also wrong.
+
+2015-10-31 12:55  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/AddressBook.xmi:
+	  Bugfix: Now supporting multiple relations between two classes. This
+	  was not possible and lead to errors instead of missing feature
+	  warnings.
+
+	  This is a model testing the feature.
+
+2015-10-31 12:51  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.CreateDBSchema.Sqlite.xsl:
+	  Bugfix: Now supporting multiple relations between two classes. This
+	  was not possible and lead to errors instead of missing feature
+	  warnings.
+
+2015-10-25 19:13  lollisoft
+
+	* interfaces/lbInterfaces-sub-ui.h,
+	  Plugins/wxWidgets/wxPropertyForm/lbPropertyForm.cpp,
+	  Plugins/wxWidgets/wxPropertyForm/lbPropertyForm.h,
+	  Plugins/wxWidgets/wxPropertyForm/lbPropertyPanelHandler.cpp,
+	  Plugins/wxWidgets/wxPropertyForm/makefile.module,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h: Fixed form cleanup code to
+	  better support new property forms.
+
+2015-08-27 16:15  lollisoft
+
+	* interfaces/lbInterfaces-sub-visitor.h,
+	  Plugins/wxWidgets/wxPropertyForm/lbControlFactory.h,
+	  Plugins/wxWidgets/wxPropertyForm/lbControlFactoryVisitor.cpp,
+	  Plugins/wxWidgets/wxPropertyForm/lbPropertyForm.cpp,
+	  Plugins/wxWidgets/wxPropertyForm/lbPropertyForm.h,
+	  Plugins/wxWidgets/wxPropertyForm/lbPropertyPanelHandler.cpp,
+	  Plugins/wxWidgets/wxPropertyForm/lbPropertyPanelHandler.h: First
+	  basic implementation of a property dialog using a visitor factory.
+
+2015-07-12 14:13  lollisoft
+
+	* bindist.iss,
+	  Plugins/wxWidgets/wxPropertyForm/lbPropertyPanelHandler.cpp:
+	  Added new plugin into deployment and code to instantiate the dialog.
+
+2015-07-12 12:05  lollisoft
+
+	* Plugins/: makefile, DatabaseForm/lbDatabaseDialog.cpp,
+	  wxWidgets/wxPropertyForm/lbControlFactory.cpp,
+	  wxWidgets/wxPropertyForm/lbControlFactory.h,
+	  wxWidgets/wxPropertyForm/lbPropertyForm.cpp,
+	  wxWidgets/wxPropertyForm/lbPropertyForm.h,
+	  wxWidgets/wxPropertyForm/lbPropertyPanelHandler.cpp,
+	  wxWidgets/wxPropertyForm/lbPropertyPanelHandler.h,
+	  wxWidgets/wxPropertyForm/makefile.module,
+	  wxWidgets/wxPropertyForm/plugin.cpp: Added new property dialog
+	  and panel implementations. A first step toward workflow enabled
+	  dialogs.
+
+2015-06-27 07:06  lollisoft
+
+	* BaseDevelopment/Makefile: Deactivated goldparser engine stuff.
+
+2015-06-21 10:39  lollisoft
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Fixed copying libraries for
+	  main application.
+
+2015-06-04 23:38  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
+	  Corrected stereotype handling.
+
+2015-05-30 20:39  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.CreateDBSchema.Sqlite.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.Sqlite.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp: Added support for yet
+	  missing data types.
+
+2015-05-10 16:54  lollisoft
+
+	* ChangeLog-basic.txt: Version change
+
 2015-05-10 16:52  lollisoft
 
 	*
@@ -7,84 +133,4 @@
 	  Test/GUI/wxWrapper/splash.png, Test/GUI/wxWrapper/Inkscape
 	  Icons/Splash Screen.svg: Changed splash image, documentation and
 	  doxygen version.
-
-2015-05-10 10:52  lollisoft
-
-	* include/lbVersionInfo.h,
-	  Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Added
-	  information about what version asks for updates.
-
-2015-05-10 09:18  lollisoft
-
-	* bindist.iss, dist.iss, docdist.iss, jenkinsrelease.sh,
-	  lbdmf-debug.spec, lbdmf-jenkins.spec, lbdmf.spec,
-	  Test/GUI/wxWrapper/postlink-mac.sh: Changed version.
-
-2015-05-09 10:44  lollisoft
-
-	* Database/: lbDMF-Sqlite-ApplicationDB.sql,
-	  lbDMF-Sqlite-SystemDB.sql: Actualized bootstrap database schema
-	  and model.
-
-2015-05-03 07:55  lollisoft
-
-	* lbdmf-debug.spec, lbdmf-jenkins.spec, lbdmf.spec: Fixed
-	  dependencies in srpm specs.
-
-2015-05-02 17:29  lollisoft
-
-	* Plugins/wxWidgets/wxUpdateChecker/makefile.module: Fixed include
-	  path issue with recursive make files. (/cygdrive/...)
-
-2015-05-02 09:21  lollisoft
-
-	* make_src_dist.bat: Added missing vendor code for json.
-
-2015-05-02 06:21  lollisoft
-
-	* make_src_dist.bat: Added missing antlr3 code.
-
-2015-05-01 18:34  lollisoft
-
-	* buildwxWidgets_MinGW.bat: Fixed WXDIR path to use unix forward
-	  slashes. The wxWidgets library get's built separately at setup.
-
-2015-05-01 10:30  lollisoft
-
-	* watcomenv.bat: Fixed WXDIR path to use unix forward slashes. The
-	  wxWidgets library get's built separately at setup.
-
-2015-05-01 08:29  lollisoft
-
-	* watcomenv.bat: Fixed WXDIR path to use unix forward slashes. The
-	  wxWidgets library get's built separately at setup.
-
-2015-04-30 18:50  lollisoft
-
-	* make_src_dist.bat: Fixed packaging error.
-
-2015-04-29 06:54  lollisoft
-
-	* watcomenv.bat: Fixed source code installer post process.
-
-2015-04-26 22:33  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/PHP_P4A/lbDMF2P4A.xsl:
-	  Fixed basic PHP template.
-
-2015-04-26 22:33  lollisoft
-
-	* Plugins/: DatabaseLayerGateway/lbDB.cpp,
-	  wxWidgets/wxUpdateChecker/timerEventInterceptor.cpp: Fixed some
-	  unimplemented function to enable generated code work.
-
-2015-04-19 14:10  lollisoft
-
-	* ChangeLog-basic.txt: Updated changelog.
-
-2015-04-19 12:11  lollisoft
-
-	* interfaces/lbInterfaces.h: Changed version and small changes in
-	  documentation.
 
