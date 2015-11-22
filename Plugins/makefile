@@ -43,6 +43,10 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	../vendor/boost_1_59_0 \
+	../vendor/log4cplus-1.2.0-rc5 \
+	../vendor/gelf4cplus-master \
+	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -68,6 +72,10 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	../vendor/boost_1_59_0 \
+	../vendor/log4cplus-1.2.0-rc5 \
+	../vendor/gelf4cplus-master \
+	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -93,6 +101,10 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	../vendor/boost_1_59_0 \
+	../vendor/log4cplus-1.2.0-rc5 \
+	../vendor/gelf4cplus-master \
+	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -118,6 +130,10 @@ TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
 ALLTARGETS = \
+	../vendor/boost_1_59_0 \
+	../vendor/log4cplus-1.2.0-rc5 \
+	../vendor/gelf4cplus-master \
+	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -147,6 +163,10 @@ TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 
 ALLTARGETS = \
+	../vendor/boost_1_59_0 \
+	../vendor/log4cplus-1.2.0-rc5 \
+	../vendor/gelf4cplus-master \
+	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -197,6 +217,32 @@ wxWidgets/wxSFDesigner: dummy
 UserFeedback: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
+
+../vendor/boost_1_59_0: dummy
+	curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
+	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
+	cd ../vendor/boost_1_59_0
+	chmod +x ./bootstrap.sh
+	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python
+	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
+
+../vendor/log4cplus-1.2.0-rc5: dummy
+	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
+	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
+	cd ../vendor/log4cplus-1.2.0-rc5
+	./configure CXXFLAGS="-arch i386"
+	$(MAKE)
+	$(MAKE) install
+
+../vendor/gelf4cplus-master: ../vendor/boost_1_59_0 ../vendor/log4cplus-1.2.0-rc5 dummy
+	
+
+lbGraylogAdapter: ./vendor/gelf4cplus-master dummy
+	@echo You probably need to download the prerequisites (https://github.com/Gelber/gelf4cplus). I'll try it...
+	
+
+	-$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	-$(MAKE) -C $@
 
 lbBasicEventHandlers: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
