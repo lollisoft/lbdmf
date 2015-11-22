@@ -31,13 +31,12 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.57 $
+* $Revision: 1.56.2.3 $
 * $Name:  $
-* $Id: misc.cpp,v 1.57 2013/02/16 10:36:26 lollisoft Exp $
+* $Id: misc.cpp,v 1.56.2.3 2015/11/22 09:20:45 lollisoft Exp $
 * $Log: misc.cpp,v $
-* Revision 1.57  2013/02/16 10:36:26  lollisoft
-* Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
-* Several files were conflicting and resolved in this checkin.
+* Revision 1.56.2.3  2015/11/22 09:20:45  lollisoft
+* Added a new plugin to integrate logging with Graylog. Including first trial to get the code build on Linux and Mac. Windows may require curl.
 *
 * Revision 1.56.2.2  2012/06/05 19:15:43  lollisoft
 * PATH_MAX issue. Added some more logging on Windows part when unloading a module.
@@ -426,13 +425,6 @@ lbErrCodes LB_STDCALL lbLog::setData(lb_I_Unknown* uk) {
 
 /*...slbLog\58\\58\lbLog\40\\41\:0:*/
 lbLog::lbLog() {
-	//lbLock lbLock(sect);
-	
-	
-	
-	;
-	
-	
 	f[0] = 0;
 	strcat(f, getLogDirectory());
 #if defined (LINUX) || defined (OSX) || defined (UNIX)
