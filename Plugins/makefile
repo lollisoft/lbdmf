@@ -222,6 +222,8 @@ UserFeedback: dummy
 	curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
 	cd ../vendor/boost_1_59_0
+	pwd
+	ls
 	chmod +x ./bootstrap.sh
 	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python
 	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
