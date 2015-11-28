@@ -221,19 +221,16 @@ UserFeedback: dummy
 ../vendor/boost_1_59_0: dummy
 	curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
-	cd ../vendor/boost_1_59_0
-	pwd
-	ls
-	chmod +x ./bootstrap.sh
-	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python
+	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
+	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
 	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
 
 ../vendor/log4cplus-1.2.0-rc5: dummy
 	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
-	cd ../vendor/log4cplus-1.2.0-rc5
-	./configure CXXFLAGS="-arch i386"
-	$(MAKE)
+	cd ../vendor/log4cplus-1.2.0-rc5; \
+	./configure CXXFLAGS="-arch i386"; \
+	$(MAKE); \
 	$(MAKE) install
 
 ../vendor/gelf4cplus-master: ../vendor/boost_1_59_0 ../vendor/log4cplus-1.2.0-rc5 dummy
