@@ -226,6 +226,20 @@ UserFeedback: dummy
 	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
 	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
 
+ifeq ($(OSTYPE), linux)
+
+../vendor/log4cplus-1.2.0-rc5: dummy
+	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
+	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
+	cd ../vendor/log4cplus-1.2.0-rc5; \
+	./configure --enable-threads=no; \
+	$(MAKE); \
+	$(MAKE) install
+
+endif
+
+ifeq ($(OSTYPE), osx)
+
 ../vendor/log4cplus-1.2.0-rc5: dummy
 	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
@@ -233,6 +247,20 @@ UserFeedback: dummy
 	./configure CXXFLAGS="-arch i386" --enable-threads=no; \
 	$(MAKE); \
 	$(MAKE) install
+
+endif
+
+ifeq ($(OSTYPE), Windows_NT)
+
+../vendor/log4cplus-1.2.0-rc5: dummy
+	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
+	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
+	cd ../vendor/log4cplus-1.2.0-rc5; \
+	./configure --enable-threads=no; \
+	$(MAKE); \
+	$(MAKE) install
+
+endif
 
 ../vendor/gelf4cplus-master: ../vendor/boost_1_59_0 ../vendor/log4cplus-1.2.0-rc5 dummy
 	
