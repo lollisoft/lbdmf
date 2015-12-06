@@ -117,7 +117,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-LDFLAGS=$(L_SOOPS) `wx-config --libs`
+LDFLAGS=$(L_SOOPS) -lz -L$(HOME)/pool/lib -lboost_iostreams -lboost_system -lboost_thread -llog4cplus `wx-config --libs`
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
