@@ -265,10 +265,8 @@ endif
 ../vendor/gelf4cplus-master: ../vendor/boost_1_59_0 ../vendor/log4cplus-1.2.0-rc5 dummy
 	
 
-lbGraylogAdapter: ./vendor/gelf4cplus-master dummy
-	@echo You probably need to download the prerequisites (https://github.com/Gelber/gelf4cplus). I'll try it...
-	
-
+lbGraylogAdapter: ../vendor/gelf4cplus-master dummy
+	@echo You probably need to download the prerequisites from https://github.com/Gelber/gelf4cplus. I am using a snapshot...
 	-$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	-$(MAKE) -C $@
 
