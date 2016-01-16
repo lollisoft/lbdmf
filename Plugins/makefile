@@ -240,11 +240,23 @@ endif
 
 ifeq ($(OSTYPE), osx)
 
+OSXARCH=`arch`
+
+ifeq ($(OSXARCH), ppc)
+LOG4CPLUSARCH=
+endif
+
+ifneq ($(OSXARCH), ppc)
+LOG4CPLUSARCH="-arch i386"
+endif
+
+
+
 ../vendor/log4cplus-1.2.0-rc5: dummy
 	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 	cd ../vendor/log4cplus-1.2.0-rc5; \
-	./configure CXXFLAGS="-arch i386" --enable-threads=no; \
+	./configure CXXFLAGS=$(LOG4CPLUSARCH) --enable-threads=no; \
 	$(MAKE); \
 	$(MAKE) install
 
