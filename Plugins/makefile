@@ -293,8 +293,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 ../vendor/log4cplus-1.2.0-rc5.tar.gz:
-	wget http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-r
-c5.tar.gz
+	wget http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 
 ../vendor/log4cplus-1.2.0-rc5: ../vendor/log4cplus-1.2.0-rc5.tar.gz
