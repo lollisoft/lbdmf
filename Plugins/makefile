@@ -250,8 +250,8 @@ ifeq ($(OSTYPE), Windows_NT)
 
 ../vendor/boost_1_59_0: dummy
 	export NO_BZIP2=1; \
-	./bootstrap.bat --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
-	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
+	cd ..; cd vendor; cd boost_1_59_0; bootstrap.bat --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
+	bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
 
 endif
 
