@@ -218,6 +218,8 @@ UserFeedback: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	$(MAKE) -C $@
 
+ifeq ($(OSTYPE), linux)
+
 ../vendor/boost_1_59_0: dummy
 	curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
@@ -225,6 +227,34 @@ UserFeedback: dummy
 	export NO_BZIP2=1; \
 	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
 	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
+
+endif
+
+ifeq ($(OSTYPE), osx)
+
+../vendor/boost_1_59_0: dummy
+	curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
+	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
+	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
+	export NO_BZIP2=1; \
+	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
+	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
+
+endif
+
+ifeq ($(OSTYPE), Windows_NT)
+
+../vendor/boost_1_59_0.tar.gz:
+	wget http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
+	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
+
+../vendor/boost_1_59_0: dummy
+	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
+	export NO_BZIP2=1; \
+	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
+	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
+
+endif
 
 ifeq ($(OSTYPE), linux)
 
@@ -262,9 +292,12 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 
-../vendor/log4cplus-1.2.0-rc5: dummy
-	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
+../vendor/log4cplus-1.2.0-rc5.tar.gz:
+	wget http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-r
+c5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
+
+../vendor/log4cplus-1.2.0-rc5: ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	cd ../vendor/log4cplus-1.2.0-rc5; \
 	./configure --enable-threads=no; \
 	$(MAKE); \
