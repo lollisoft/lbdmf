@@ -249,9 +249,8 @@ ifeq ($(OSTYPE), Windows_NT)
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
 
 ../vendor/boost_1_59_0: dummy
-	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
 	export NO_BZIP2=1; \
-	./bootstrap.sh --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
+	./bootstrap.bat --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
 	./bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
 
 endif
