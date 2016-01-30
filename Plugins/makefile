@@ -246,7 +246,7 @@ ifeq ($(OSTYPE), Windows_NT)
 
 ../vendor/boost_1_59_0.tar.gz:
 	wget -O $(DEVROOT_MAKE)$(RELPATH)/vendor/boost_1_59_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
-	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
+	tar xvzf ../vendor/boost_1_59_0.tar.gz --exclude='/doc' -C ../vendor
 
 ../vendor/boost_1_59_0: ../vendor/boost_1_59_0.tar.gz dummy
 	export NO_BZIP2=1; \
