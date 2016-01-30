@@ -244,7 +244,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 
-../vendor/boost_1_59_0.tar.gz:
+../vendor/boost_1_59_0.tar.gz: dummy
 	wget -O $(DEVROOT_MAKE)$(RELPATH)/vendor/boost_1_59_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz --exclude='/doc' -C ../vendor
 
