@@ -248,7 +248,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	wget http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
 
-../vendor/boost_1_59_0: dummy
+../vendor/boost_1_59_0: ../vendor/boost_1_59_0.tar.gz dummy
 	export NO_BZIP2=1; \
 	cd ..; cd vendor; cd boost_1_59_0; bootstrap.bat --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
 	bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
