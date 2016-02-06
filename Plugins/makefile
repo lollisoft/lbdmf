@@ -249,7 +249,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	tar xvzf ../vendor/boost_1_59_0.tar.gz --exclude='doc' -C ../vendor
 
 ../vendor/boost_1_59_0: ../vendor/boost_1_59_0.tar.gz dummy
-	export NO_BZIP2=1; \
+	export NO_BZIP2=1; pwd;\
 	bootstrap --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
 	bjam address-model=32_64 architecture=x86 variant=release link=shared --with-iostreams install
 
