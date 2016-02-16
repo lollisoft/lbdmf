@@ -259,7 +259,7 @@ endif
 ifeq ($(OSTYPE), linux)
 
 ../vendor/log4cplus-1.2.0-rc5: dummy
-	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
+	curl -k -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 	cd ../vendor/log4cplus-1.2.0-rc5; \
 	./configure --enable-threads=no --prefix=$(HOME); \
@@ -281,7 +281,7 @@ LOG4CPLUSARCH="-arch i386"
 endif
 
 ../vendor/log4cplus-1.2.0-rc5: dummy
-	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
+	curl -k -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 	cd ../vendor/log4cplus-1.2.0-rc5; \
 	./configure CXXFLAGS=$(LOG4CPLUSARCH) --enable-threads=no --prefix=$(HOME); \
@@ -293,7 +293,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 ../vendor/log4cplus-1.2.0-rc5.tar.gz:
-	wget -O $(DEVROOT_MAKE)$(RELPATH)/vendor/log4cplus-1.2.0-rc5.tar.gz http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz
+	wget --no-check-certificate -O $(DEVROOT_MAKE)$(RELPATH)/vendor/log4cplus-1.2.0-rc5.tar.gz http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 
 ../vendor/log4cplus-1.2.0-rc5: ../vendor/log4cplus-1.2.0-rc5.tar.gz
