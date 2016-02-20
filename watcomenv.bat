@@ -244,7 +244,7 @@ REM -------------------
 REM Prepend my cvs path
 REM -------------------
 
-set path=C:\Program Files\GNU\WinCvs 1.2;%DEVLW%\Q\develop\Tools\curl;%PATH%
+set path=C:\Program Files\GNU\WinCvs 1.2;%DEVLW%\Q\develop\Tools\curl;%DEVLW%\Q\develop\Tools\7Zip\7-Zip;%PATH%
 
 if "%2"=="JENKINS" goto CCBUILD_END:
 if "%2"=="CC" goto CCBUILD_END:
