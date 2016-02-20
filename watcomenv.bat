@@ -249,12 +249,16 @@ set path=C:\Program Files\GNU\WinCvs 1.2;%DEVLW%\Q\develop\Tools\curl;%PATH%
 if "%2"=="JENKINS" goto CCBUILD_END:
 if "%2"=="CC" goto CCBUILD_END:
 
+SET CABUNDLEFILE=%DEVLW%\develop\Tools\curl\ca-bundle.crt
+
 rem set CONSOLE_DETACH=no
 rem wdw ..\..\bin\%1
 start %1
 goto EXIT:
 
 :CCBUILD_END
+
+SET CABUNDLEFILE=%DEVLW%\Q\develop\Tools\curl\ca-bundle.crt
 
 REM Tools used but are prerequisites and may be located anywhere.
 SET PATH=c:\q\develop\tools\tar;c:\q\develop\tools\bison;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\MkMk;%DEVLW%\Q\develop\Tools\BinBuildTools;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin;%DEVLW%\Q\develop\Tools\curl;%PATH%
