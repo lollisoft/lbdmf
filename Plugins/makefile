@@ -242,7 +242,7 @@ CURL=curl
 endif
 
 ../vendor/boost_1_59_0: dummy
-	$CURL -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
+	$(CURL) -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
 	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
 	export NO_BZIP2=1; \
@@ -292,7 +292,7 @@ CURL=curl
 endif
 
 ../vendor/log4cplus-1.2.0-rc5: dummy
-	$CURL -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
+	$(CURL) -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 	cd ../vendor/log4cplus-1.2.0-rc5; \
 	./configure CXXFLAGS=$(LOG4CPLUSARCH) --enable-threads=no --prefix=$(HOME); \
