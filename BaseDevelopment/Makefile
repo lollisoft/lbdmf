@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.54 $
+# * $Revision: 1.229.2.55 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.54 2015/06/27 05:06:21 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.55 2016/02/20 16:53:25 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.55  2016/02/20 16:53:25  lollisoft
+# * Chenged wget to curl.
+# *
 # * Revision 1.229.2.54  2015/06/27 05:06:21  lollisoft
 # * Deactivated goldparser engine stuff.
 # *
@@ -1005,6 +1008,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 DEVROOT_MAKE=$(DEVROOT_MAKE_BASE)
 WGET=wget
+CURL=curl
 TAR=tar
 endif
 
@@ -1947,7 +1951,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxml2-2.8.0:
-	$(WGET) ftp://xmlsoft.org/libxml2/libxml2-2.8.0.tar.gz
+	$(CURL) -o libxml2-2.8.0.tar.gz -L ftp://xmlsoft.org/libxml2/libxml2-2.8.0.tar.gz
 	$(TAR) -zxf libxml2-2.8.0.tar.gz --directory ../vendor
 endif
 
