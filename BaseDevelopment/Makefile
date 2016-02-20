@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.55 $
+# * $Revision: 1.229.2.56 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.55 2016/02/20 16:53:25 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.56 2016/02/20 17:21:52 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.56  2016/02/20 17:21:52  lollisoft
+# * Changed wget to curl.
+# *
 # * Revision 1.229.2.55  2016/02/20 16:53:25  lollisoft
 # * Chenged wget to curl.
 # *
@@ -1999,7 +2002,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxslt-1.1.21:
-	$(WGET) ftp://xmlsoft.org/libxml2/libxslt-1.1.21.tar.gz
+	$(CURL) -o libxslt-1.1.21.tar.gz -L ftp://xmlsoft.org/libxml2/libxslt-1.1.21.tar.gz
 	$(TAR) -zxf libxslt-1.1.21.tar.gz --directory ../vendor
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
 	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
