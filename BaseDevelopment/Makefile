@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.56 $
+# * $Revision: 1.229.2.57 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.56 2016/02/20 17:21:52 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.57 2016/02/20 18:20:47 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.57  2016/02/20 18:20:47  lollisoft
+# * Fixed missing cacert parameter.
+# *
 # * Revision 1.229.2.56  2016/02/20 17:21:52  lollisoft
 # * Changed wget to curl.
 # *
@@ -1011,7 +1014,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 DEVROOT_MAKE=$(DEVROOT_MAKE_BASE)
 WGET=wget
-CURL=curl
+CURL=curl --cacert $(DEVROOT_MAKE)/Tools/curl/ca-bundle.crt
 TAR=tar
 endif
 

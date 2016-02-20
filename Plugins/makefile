@@ -254,7 +254,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 ../vendor/boost_1_59_0.tar.gz: dummy
-	curl -o $(DEVROOT_MAKE)$(RELPATH)/vendor/boost_1_59_0.tar.gz -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
+	curl --cacert $(DEVROOT_MAKE)/Tools/curl/ca-bundle.crt -o $(DEVROOT_MAKE)$(RELPATH)/vendor/boost_1_59_0.tar.gz -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz --exclude='doc' -C ../vendor
 
 ../vendor/boost_1_59_0: ../vendor/boost_1_59_0.tar.gz dummy
