@@ -221,7 +221,7 @@ UserFeedback: dummy
 ifeq ($(OSTYPE), linux)
 
 ../vendor/boost_1_59_0: dummy
-	curl -k -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
+	curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
 	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
 	export NO_BZIP2=1; \
@@ -233,7 +233,7 @@ endif
 ifeq ($(OSTYPE), osx)
 
 ../vendor/boost_1_59_0: dummy
-	curl -k -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
+	curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
 	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
 	export NO_BZIP2=1; \
@@ -245,7 +245,7 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 ../vendor/boost_1_59_0.tar.gz: dummy
-	wget --no-check-certificate -O $(DEVROOT_MAKE)$(RELPATH)/vendor/boost_1_59_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
+	wget -O $(DEVROOT_MAKE)$(RELPATH)/vendor/boost_1_59_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz --exclude='doc' -C ../vendor
 
 ../vendor/boost_1_59_0: ../vendor/boost_1_59_0.tar.gz dummy
