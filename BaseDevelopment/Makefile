@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.57 $
+# * $Revision: 1.229.2.58 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.57 2016/02/20 18:20:47 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.58 2016/02/21 16:25:42 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.58  2016/02/21 16:25:42  lollisoft
+# * Removing downloading dependencies.
+# *
 # * Revision 1.229.2.57  2016/02/20 18:20:47  lollisoft
 # * Fixed missing cacert parameter.
 # *
@@ -1957,7 +1960,6 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxml2-2.8.0:
-	$(CURL) -o libxml2-2.8.0.tar.gz -L ftp://xmlsoft.org/libxml2/libxml2-2.8.0.tar.gz
 	$(TAR) -zxf libxml2-2.8.0.tar.gz --directory ../vendor
 endif
 
@@ -2005,7 +2007,6 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxslt-1.1.21:
-	$(CURL) -o libxslt-1.1.21.tar.gz -L ftp://xmlsoft.org/libxml2/libxslt-1.1.21.tar.gz
 	$(TAR) -zxf libxslt-1.1.21.tar.gz --directory ../vendor
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
 	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h

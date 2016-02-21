@@ -221,7 +221,6 @@ UserFeedback: dummy
 ifeq ($(OSTYPE), linux)
 
 ../vendor/boost_1_59_0: dummy
-	curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
 	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
 	export NO_BZIP2=1; \
@@ -231,18 +230,8 @@ ifeq ($(OSTYPE), linux)
 endif
 
 ifeq ($(OSTYPE), osx)
-OSXARCH=$(shell arch)
-
-ifeq ($(OSXARCH), ppc)
-CURL=/opt/local/bin/curl
-endif
-
-ifneq ($(OSXARCH), ppc)
-CURL=curl
-endif
 
 ../vendor/boost_1_59_0: dummy
-	$(CURL) -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > ../vendor/boost_1_59_0.tar.gz
 	tar xvzf ../vendor/boost_1_59_0.tar.gz -C ../vendor
 	cd ../vendor/boost_1_59_0; pwd;	ls; chmod +x ./bootstrap.sh; \
 	export NO_BZIP2=1; \
@@ -254,7 +243,6 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 ../vendor/boost_1_59_0.tar.gz: dummy
-	curl --cacert $(CABUNDLEFILE) -o $(DEVROOT_MAKE)$(RELPATH)/vendor/boost_1_59_0.7z -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.7z
 	7z -y -r x ..\\vendor\\boost_1_59_0.7z -o..\\vendor
 
 ../vendor/boost_1_59_0: ../vendor/boost_1_59_0.tar.gz dummy
@@ -268,7 +256,6 @@ endif
 ifeq ($(OSTYPE), linux)
 
 ../vendor/log4cplus-1.2.0-rc5: dummy
-	curl -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 	cd ../vendor/log4cplus-1.2.0-rc5; \
 	./configure --enable-threads=no --prefix=$(HOME); \
@@ -279,20 +266,7 @@ endif
 
 ifeq ($(OSTYPE), osx)
 
-OSXARCH=$(shell arch)
-
-ifeq ($(OSXARCH), ppc)
-LOG4CPLUSARCH=
-CURL=/opt/local/bin/curl
-endif
-
-ifneq ($(OSXARCH), ppc)
-LOG4CPLUSARCH="-arch i386"
-CURL=curl
-endif
-
 ../vendor/log4cplus-1.2.0-rc5: dummy
-	$(CURL) -L http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz > ../vendor/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 	cd ../vendor/log4cplus-1.2.0-rc5; \
 	./configure CXXFLAGS=$(LOG4CPLUSARCH) --enable-threads=no --prefix=$(HOME); \
@@ -304,7 +278,6 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 ../vendor/log4cplus-1.2.0-rc5.tar.gz:
-	wget --no-check-certificate -O $(DEVROOT_MAKE)$(RELPATH)/vendor/log4cplus-1.2.0-rc5.tar.gz http://sourceforge.net/projects/log4cplus/files/log4cplus-stable/1.2.0/log4cplus-1.2.0-rc5.tar.gz
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 
 ../vendor/log4cplus-1.2.0-rc5: ../vendor/log4cplus-1.2.0-rc5.tar.gz
