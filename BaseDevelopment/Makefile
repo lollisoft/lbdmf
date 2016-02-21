@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.61 $
+# * $Revision: 1.229.2.62 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.61 2016/02/21 18:41:43 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.62 2016/02/21 19:08:14 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.62  2016/02/21 19:08:14  lollisoft
+# * Removed pwd and fixed libxslt library extraction.
+# *
 # * Revision 1.229.2.61  2016/02/21 18:41:43  lollisoft
 # * Corrected path.
 # *
@@ -1969,7 +1972,6 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxml2-2.8.0:
-	pwd
 	$(TAR) -zxf ../vendor/libxml2-2.8.0.tar.gz --directory ../vendor
 endif
 
@@ -2017,7 +2019,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxslt-1.1.21:
-	$(TAR) -zxf libxslt-1.1.21.tar.gz --directory ../vendor
+	$(TAR) -zxf ../vendor/libxslt-1.1.21.tar.gz --directory ../vendor
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
 	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
 endif
