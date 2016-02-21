@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.58 $
+# * $Revision: 1.229.2.59 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.58 2016/02/21 16:25:42 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.59 2016/02/21 17:40:33 lollisoft Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.59  2016/02/21 17:40:33  lollisoft
+# * Corrected path.
+# *
 # * Revision 1.229.2.58  2016/02/21 16:25:42  lollisoft
 # * Removing downloading dependencies.
 # *
@@ -1960,7 +1963,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxml2-2.8.0:
-	$(TAR) -zxf libxml2-2.8.0.tar.gz --directory ../vendor
+	$(TAR) -zxf $(DEVROOT_MAKE)$(RELPATH)/vendor/libxml2-2.8.0.tar.gz --directory $(DEVROOT_MAKE)$(RELPATH)/vendor
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
