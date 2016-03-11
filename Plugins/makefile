@@ -248,7 +248,7 @@ ifeq ($(OSTYPE), Windows_NT)
 ../vendor/boost_1_59_0: ../vendor/boost_1_59_0.tar.gz dummy
 	export NO_BZIP2=1; cd $(DEVROOT_MAKE)$(RELPATH)/vendor/boost_1_59_0;\
 	./bootstrap.bat gcc --prefix=$HOME/pool --libdir=$HOME/pool/lib --with-libraries=signals,thread,python; \
-	./b2 toolset=gcc --build-type=complete stage
+	./b2 toolset=gcc --build-type=minimal stage --with-iostreams
 
 endif
 
