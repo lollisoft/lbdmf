@@ -42,11 +42,13 @@ TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
+#Not yet activated.
+#	../vendor/boost_1_59_0 \
+#	../vendor/log4cplus-1.2.0-rc5 \
+#	../vendor/gelf4cplus-master \
+#	lbGraylogAdapter \
+
 ALLTARGETS = \
-	../vendor/boost_1_59_0 \
-	../vendor/log4cplus-1.2.0-rc5 \
-	../vendor/gelf4cplus-master \
-	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -71,11 +73,13 @@ TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
+#Not yet activated.
+#	../vendor/boost_1_59_0 \
+#	../vendor/log4cplus-1.2.0-rc5 \
+#	../vendor/gelf4cplus-master \
+#	lbGraylogAdapter \
+
 ALLTARGETS = \
-	../vendor/boost_1_59_0 \
-	../vendor/log4cplus-1.2.0-rc5 \
-	../vendor/gelf4cplus-master \
-	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -100,11 +104,13 @@ TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
+#Not yet activated.
+#	../vendor/boost_1_59_0 \
+#	../vendor/log4cplus-1.2.0-rc5 \
+#	../vendor/gelf4cplus-master \
+#	lbGraylogAdapter \
+
 ALLTARGETS = \
-	../vendor/boost_1_59_0 \
-	../vendor/log4cplus-1.2.0-rc5 \
-	../vendor/gelf4cplus-master \
-	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -129,11 +135,13 @@ TARGETEXE=elf
 TARGETWXPLUGIN=wxsoplugin
 TARGETPLUGIN=soplugin
 
+#Not yet activated.
+#	../vendor/boost_1_59_0 \
+#	../vendor/log4cplus-1.2.0-rc5 \
+#	../vendor/gelf4cplus-master \
+#	lbGraylogAdapter \
+
 ALLTARGETS = \
-	../vendor/boost_1_59_0 \
-	../vendor/log4cplus-1.2.0-rc5 \
-	../vendor/gelf4cplus-master \
-	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
@@ -162,11 +170,13 @@ TARGETEXE=exe$(TARGET_SELECTOR)
 TARGETWXPLUGIN=wxplugin$(TARGET_SELECTOR)
 TARGETPLUGIN=plugin$(TARGET_SELECTOR)
 
+#Not yet activated.
+#	../vendor/boost_1_59_0 \
+#	../vendor/log4cplus-1.2.0-rc5 \
+#	../vendor/gelf4cplus-master \
+#	lbGraylogAdapter \
+
 ALLTARGETS = \
-	../vendor/boost_1_59_0 \
-	../vendor/log4cplus-1.2.0-rc5 \
-	../vendor/gelf4cplus-master \
-	lbGraylogAdapter \
 	lbANTLR3 \
 	DomainLanguages/lbUILanguage \
 	wxWidgets/wxPropertyForm \
