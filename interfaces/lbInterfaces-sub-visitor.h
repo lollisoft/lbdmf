@@ -130,6 +130,10 @@ virtual void LB_STDCALL visit(lb_I_Column_Types*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBColumns*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBTables*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBTableParameter*) = 0;
+
+virtual void LB_STDCALL visit(lb_I_DBColumnParameter*) = 0;
+virtual void LB_STDCALL visit(lb_I_FormularFieldParameter*) = 0;
+	
 virtual void LB_STDCALL visit(lb_I_DBPrimaryKeys*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBForeignKeys*) = 0;
 virtual void LB_STDCALL visit(lb_I_DBReportProperties*) = 0;

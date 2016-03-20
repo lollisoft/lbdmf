@@ -181,6 +181,8 @@ public:
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
 	void LB_STDCALL visit(lb_I_DBTableParameter*);
+	void LB_STDCALL visit(lb_I_DBColumnParameter*);
+	void LB_STDCALL visit(lb_I_FormularFieldParameter*);
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 	
@@ -589,6 +591,38 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBTableParameter* dbtableparameter
 		"\" tableid=\"" << dbtableparameter->getTableID() << "\"/>" << "\n";
 	}
 	*oStream << "</dbtableparameter>" << "\n";
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumnParameter* dbcolumnparameter) {
+	*oStream << "<dbcolumnparameter>" << "\n";
+	
+	dbcolumnparameter->finishParameterIteration();
+	
+	while (dbcolumnparameter->hasMoreParameters()) {
+		dbcolumnparameter->setNextParameter();
+		*oStream << 
+		"<parameter ID=\"" << dbcolumnparameter->getParameterID() << 
+		"\" name=\"" << dbcolumnparameter->getParameterName() << 
+		"\" value=\"" << dbcolumnparameter->getParameterValue() << 
+		"\" columnid=\"" << dbcolumnparameter->getColumnID() << "\"/>" << "\n";
+	}
+	*oStream << "</dbcolumnparameter>" << "\n";
+}
+
+void LB_STDCALL lbXMLOutputStream::visit(lb_I_FormularFieldParameter* formularfieldparameter) {
+	*oStream << "<formularfieldparameter>" << "\n";
+	
+	formularfieldparameter->finishParameterIteration();
+	
+	while (formularfieldparameter->hasMoreParameters()) {
+		formularfieldparameter->setNextParameter();
+		*oStream << 
+		"<parameter ID=\"" << formularfieldparameter->getParameterID() << 
+		"\" name=\"" << formularfieldparameter->getParameterName() << 
+		"\" value=\"" << formularfieldparameter->getParameterValue() << 
+		"\" formularfieldid=\"" << formularfieldparameter->getFieldID() << "\"/>" << "\n";
+	}
+	*oStream << "</formularfieldparameter>" << "\n";
 }
 
 void LB_STDCALL lbXMLOutputStream::visit(lb_I_Actions* actions) {

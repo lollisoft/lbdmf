@@ -181,8 +181,10 @@ public:
         void LB_STDCALL visit(lb_I_FileLocation*);
         void LB_STDCALL visit(lb_I_DirLocation*);
         void LB_STDCALL visit(lb_I_DBColumns*);
-        void LB_STDCALL visit(lb_I_DBTables*);
+		void LB_STDCALL visit(lb_I_DBTables*);
 		void LB_STDCALL visit(lb_I_DBTableParameter*);
+		void LB_STDCALL visit(lb_I_DBColumnParameter*);
+		void LB_STDCALL visit(lb_I_FormularFieldParameter*);
         void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
         void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
@@ -886,6 +888,42 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBTableParameter* dbtableparamete
 		*oStream << dbtableparameter->getParameterName();
 		*oStream << dbtableparameter->getParameterValue();
 		*oStream << dbtableparameter->getTableID();
+	}
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_DBColumnParameter* dbcolumnparameter) {
+	int count;
+	
+	count = dbcolumnparameter->getParameterCount();
+	*oStream << count;
+	
+	dbcolumnparameter->finishParameterIteration();
+	
+	while (dbcolumnparameter->hasMoreParameters()) {
+		dbcolumnparameter->setNextParameter();
+		
+		*oStream << dbcolumnparameter->getParameterID();
+		*oStream << dbcolumnparameter->getParameterName();
+		*oStream << dbcolumnparameter->getParameterValue();
+		*oStream << dbcolumnparameter->getColumnID();
+	}
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_FormularFieldParameter* formularfieldparameter) {
+	int count;
+	
+	count = formularfieldparameter->getParameterCount();
+	*oStream << count;
+	
+	formularfieldparameter->finishParameterIteration();
+	
+	while (formularfieldparameter->hasMoreParameters()) {
+		formularfieldparameter->setNextParameter();
+		
+		*oStream << formularfieldparameter->getParameterID();
+		*oStream << formularfieldparameter->getParameterName();
+		*oStream << formularfieldparameter->getParameterValue();
+		*oStream << formularfieldparameter->getFieldID();
 	}
 }
 

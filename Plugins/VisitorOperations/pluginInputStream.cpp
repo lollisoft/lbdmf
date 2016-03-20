@@ -183,6 +183,8 @@ public:
 	void LB_STDCALL visit(lb_I_DBColumns*);
 	void LB_STDCALL visit(lb_I_DBTables*);
 	void LB_STDCALL visit(lb_I_DBTableParameter*);
+	void LB_STDCALL visit(lb_I_DBColumnParameter*);
+	void LB_STDCALL visit(lb_I_FormularFieldParameter*);
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*);
 	void LB_STDCALL visit(lb_I_DBForeignKeys*);
 
@@ -740,6 +742,46 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBTableParameter* dbtableparameter)
 		*iStream >> TID;
 		
 		dbtableparameter->addParameter(Name, Value, TID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_DBColumnParameter* dbcolumnparameter) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Value = NULL;
+		long  CID;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> CID;
+		
+		dbcolumnparameter->addParameter(Name, Value, CID, ID);
+	}
+}
+
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_FormularFieldParameter* formularfieldparameter) {
+	// Number of users
+	int   count = 0;
+	*iStream >> count;
+	
+	for (int i = 0; i < count; i++) {
+		long   ID;
+		char* Name = NULL;
+		char* Value = NULL;
+		long  FFID;
+		
+		*iStream >> ID;
+		*iStream >> Name;
+		*iStream >> Value;
+		*iStream >> FFID;
+		
+		formularfieldparameter->addParameter(Name, Value, FFID, ID);
 	}
 }
 

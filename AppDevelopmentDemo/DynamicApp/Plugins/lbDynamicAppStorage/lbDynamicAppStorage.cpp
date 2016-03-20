@@ -127,6 +127,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_FormularFieldParameter, formularfieldparameter)
 	UAP(lb_I_Column_Types, columntypes)
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_ApplicationParameter, appParams)
@@ -139,6 +140,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	UAP(lb_I_Action_Types, appActionTypes)
 	UAP(lb_I_DBTables, dbTables)
 	UAP(lb_I_DBTableParameter, dbTableParameter)
+	UAP(lb_I_DBColumnParameter, dbColumnParameter)
 	UAP(lb_I_DBColumns, dbColumns)
 	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
 	UAP(lb_I_DBForeignKeys, dbForeignKeys)
@@ -321,7 +323,7 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	*name = "DBTableParameter";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_DBTableParameter, dbTableParameter)
-	
+
 	*name = "DBColumns";
 	uk = document->getElement(&key);
 	if (uk == NULL) {
@@ -330,10 +332,19 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	}
 	QI(uk, lb_I_DBColumns, dbColumns)
 
+	*name = "DBColumnParameter";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBColumnParameter, dbColumnParameter)
+	
+	
 	*name = "FormularFields";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formular_Fields, formularfields)
 	
+	*name = "FormularFieldParameter";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FormularFieldParameter, formularfieldparameter)
+
 	*name = "ColumnTypes";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Column_Types, columntypes)
@@ -390,11 +401,13 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 	    (reportelementtypes != NULL) &&
 	    (reporttextblocks != NULL) &&
 	    (formularfields != NULL) &&
-	    (dbColumns != NULL) &&
+	    (formularfieldparameter != NULL) &&
+		(dbColumns != NULL) &&
 	    (dbPrimaryKeys != NULL) &&
 	    (dbForeignKeys != NULL) &&
 	    (dbTables != NULL) &&
 		(dbTableParameter != NULL) && 
+		(dbColumnParameter != NULL) && 
 	    (columntypes != NULL) &&
 	    (formParams != NULL) &&
 	    (formActions != NULL) &&
@@ -457,8 +470,12 @@ lbErrCodes LB_STDCALL lbDynamicAppXMLStorage::save(lb_I_OutputStream* oStream) {
 		dbTableParameter->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (dbColumns) ...");
 		dbColumns->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (dbColumnParameter) ...");
+		dbColumnParameter->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (formularfields) ...");
 		formularfields->accept(*&aspect);
+		meta->setStatusText("Info", "Write XML document (formularfieldparameter) ...");
+		formularfieldparameter->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (columntypes) ...");
 		columntypes->accept(*&aspect);
 		meta->setStatusText("Info", "Write XML document (formActions) ...");
@@ -537,6 +554,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_FormularFieldParameter, formularfieldparameter)
 	UAP(lb_I_Column_Types, columntypes)
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_Formular_Actions, formActions)
@@ -549,6 +567,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	UAP(lb_I_Action_Types, appActionTypes)
 	UAP(lb_I_DBTables, dbTables)
 	UAP(lb_I_DBTableParameter, dbTableParameter)
+	UAP(lb_I_DBColumnParameter, dbColumnParameter)
 	UAP(lb_I_DBColumns, dbColumns)
 	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
 	UAP(lb_I_DBForeignKeys, dbForeignKeys)
@@ -575,10 +594,12 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
 	AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
 	AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
+	AQUIRE_PLUGIN(lb_I_FormularFieldParameter, Model, formularfieldparameter, "'formular field parameter'")
 	AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
 	AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'application formular assoc'")
 	AQUIRE_PLUGIN(lb_I_DBTableParameter, Model, dbTableParameter, "'table parameters'")
+	AQUIRE_PLUGIN(lb_I_DBColumnParameter, Model, dbColumnParameter, "'column parameters'")
 	
 	reports->accept(*&aspect);
 	reportparams->accept(*&aspect);
@@ -589,6 +610,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	ApplicationFormulars->accept(*&aspect);
 	forms->accept(*&aspect);
 	formularfields->accept(*&aspect);
+	formularfieldparameter->accept(*&aspect);
 	columntypes->accept(*&aspect);
 	formActions->accept(*&aspect);
 	formParams->accept(*&aspect);
@@ -600,6 +622,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 	appActionParameters->accept(*&aspect);
 	appActionStepParameters->accept(*&aspect);
 	dbTableParameter->accept(*&aspect);
+	dbColumnParameter->accept(*&aspect);
 
 	// Read out application settings
 	UAP_REQUEST(getModuleInstance(), lb_I_String, UMLImportTargetDBName)
@@ -660,6 +683,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		(reportelementtypes != NULL) && 
 		(reporttextblocks != NULL) && 
 		(formularfields != NULL) && 
+		(formularfieldparameter != NULL) && 
 		(formParams != NULL) && 
 		(appActions != NULL) && 
 		(appActionSteps != NULL) && 
@@ -668,6 +692,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		(appActionStepParameters != NULL) && 
 		(appActionTypes != NULL) && 
 		(dbTableParameter != NULL) &&
+		(dbColumnParameter != NULL) &&
 		(appParams != NULL)) {
 		
 		UAP(lb_I_Unknown, uk)
@@ -717,6 +742,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		QI(formularfields, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
 		
+		*name = "FormularFieldParameter";
+		QI(formularfieldparameter, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
 		*name = "ColumnTypes";
 		QI(columntypes, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
@@ -756,11 +785,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_InputStream* iStrea
 		*name = "appActionStepParameters";
 		QI(appActionStepParameters, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-
+		
 		*name = "DBTableParameter";
 		QI(dbTableParameter, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
-
+		
+		*name = "DBColumnParameter";
+		QI(dbColumnParameter, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
 
 
 		
@@ -855,6 +888,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_FormularFieldParameter, formularfieldparameter)
 	UAP(lb_I_Column_Types, columntypes)
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_Formular_Actions, formActions)
@@ -867,6 +901,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	UAP(lb_I_Action_Types, appActionTypes)
 
 	UAP(lb_I_DBTableParameter, dbTableParameter)
+	UAP(lb_I_DBColumnParameter, dbColumnParameter)
 
 	UAP(lb_I_Reports, reports)
 	UAP(lb_I_ReportParameters, reportparams)
@@ -952,11 +987,15 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "Formulars";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formulars, forms)
-			
+	
 	*name = "FormularFields";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Formular_Fields, formularfields)
-			
+	
+	*name = "FormularFieldParameter";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_FormularFieldParameter, formularfieldparameter)
+	
 	*name = "ColumnTypes";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_Column_Types, columntypes)
@@ -1000,8 +1039,11 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	*name = "DBTableParameter";
 	uk = document->getElement(&key);
 	QI(uk, lb_I_DBTableParameter, dbTableParameter)
-
-
+	
+	*name = "DBColumnParameter";
+	uk = document->getElement(&key);
+	QI(uk, lb_I_DBColumnParameter, dbColumnParameter)
+	
 	// Store the settings from dynamic application
 	*name = "UMLImportTargetDBName";
 	uk = document->getElement(&key);
@@ -1077,6 +1119,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 	    (reportelementtypes != NULL) &&
 	    (reporttextblocks != NULL) &&
 	    (formularfields != NULL) &&
+	    (formularfieldparameter != NULL) &&
 	    (formParams != NULL) &&
 	    (columntypes != NULL) &&
 	    (formActions != NULL) &&
@@ -1087,6 +1130,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		(appActionParameters != NULL) &&
 		(appActionStepParameters != NULL) &&
 		(dbTableParameter != NULL) &&
+		(dbColumnParameter != NULL) &&
 		(appActionSteps != NULL)) {
 
 		_LOG << "Start storing the data" LOG_
@@ -1100,6 +1144,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		ApplicationFormulars->accept(*&aspect);
 		forms->accept(*&aspect);
 		formularfields->accept(*&aspect);
+		formularfieldparameter->accept(*&aspect);
 		columntypes->accept(*&aspect);
 		formActions->accept(*&aspect);
 		formParams->accept(*&aspect);
@@ -1111,6 +1156,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::save(lb_I_OutputStream* oStre
 		appActionParameters->accept(*&aspect);
 		appActionStepParameters->accept(*&aspect);
 		dbTableParameter->accept(*&aspect);
+		dbColumnParameter->accept(*&aspect);
 
 		UMLImportTargetDBName->accept(*&aspect);
 		UMLImportTargetDBUser->accept(*&aspect);
@@ -1155,6 +1201,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP(lb_I_Applications_Formulars, ApplicationFormulars)
 	UAP(lb_I_Formulars, forms)
 	UAP(lb_I_Formular_Fields, formularfields)
+	UAP(lb_I_FormularFieldParameter, formularfieldparameter)
 	UAP(lb_I_Column_Types, columntypes)
 	UAP(lb_I_FormularParameter, formParams)
 	UAP(lb_I_Formular_Actions, formActions)
@@ -1163,6 +1210,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	UAP(lb_I_Action_Steps, appActionSteps)
 	UAP(lb_I_Action_Types, appActionTypes)
 	UAP(lb_I_DBTableParameter, dbTableParameter)
+	UAP(lb_I_DBColumnParameter, dbColumnParameter)
 	UAP(lb_I_DBTables, dbTables)
 	UAP(lb_I_DBColumns, dbColumns)
 	UAP(lb_I_DBPrimaryKeys, dbPrimaryKeys)
@@ -1194,6 +1242,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	AQUIRE_PLUGIN(lb_I_Action_Steps, Model, appActionSteps, "'action steps'")
 	AQUIRE_PLUGIN(lb_I_Formulars, Model, forms, "'formulars'")
 	AQUIRE_PLUGIN(lb_I_Formular_Fields, Model, formularfields, "'formular fields'")
+	AQUIRE_PLUGIN(lb_I_FormularFieldParameter, Model, formularfieldparameter, "'formular field parameter'")
 	AQUIRE_PLUGIN(lb_I_FormularParameter, Model, formParams, "'formular parameters'")
 	AQUIRE_PLUGIN(lb_I_ApplicationParameter, Model, appParams, "'application parameters'")
 	AQUIRE_PLUGIN(lb_I_Applications_Formulars, Model, ApplicationFormulars, "'application formular assoc'")
@@ -1201,12 +1250,16 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	AQUIRE_PLUGIN(lb_I_Action_Parameters, Model, appActionParameters, "'action parameters'")
 	AQUIRE_PLUGIN(lb_I_ActionStep_Parameters, Model, appActionStepParameters, "'action step parameters'")
 	AQUIRE_PLUGIN(lb_I_DBTableParameter, Model, dbTableParameter, "'table parameters'");
+	AQUIRE_PLUGIN(lb_I_DBColumnParameter, Model, dbColumnParameter, "'column parameters'");
 	
 	if (dbTables == NULL)  {
 		_LOG << "lb_I_DBTables instance is NULL." LOG_
 	}
 	if (dbTableParameter == NULL) {
 		_LOG << "lb_I_DBTableParameter instance is NULL." LOG_
+	}
+	if (dbColumnParameter == NULL) {
+		_LOG << "lb_I_DBColumnParameter instance is NULL." LOG_
 	}
 	if (dbColumns == NULL)  {
 		_LOG << "lb_I_DBColumns instance is NULL." LOG_
@@ -1240,6 +1293,9 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	}
 	if (formularfields == NULL)  {
 		_LOG << "lb_I_Formular_Fields instance is NULL." LOG_
+	}
+	if (formularfieldparameter == NULL)  {
+		_LOG << "lb_I_FormularFieldParameter instance is NULL." LOG_
 	}
 	if (columntypes == NULL)  {
 		_LOG << "lb_I_Column_Types instance is NULL." LOG_
@@ -1298,6 +1354,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	forms->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (formularfields) ...");
 	formularfields->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (formularfieldparameter) ...");
+	formularfieldparameter->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (columntypes) ...");
 	columntypes->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (formActions) ...");
@@ -1320,6 +1378,8 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	appActionStepParameters->accept(*&aspect);
 	meta->setStatusText("Info", "Load database configuration (dbTableParameter) ...");
 	dbTableParameter->accept(*&aspect);
+	meta->setStatusText("Info", "Load database configuration (dbColumnParameter) ...");
+	dbColumnParameter->accept(*&aspect);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 	UAP(lb_I_Unknown, ukDoc)
@@ -1466,6 +1526,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 	QI(dbTableParameter, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
 	
+	*name = "DBColumnParameter";
+	QI(dbColumnParameter, lb_I_Unknown, uk)
+	document->insert(&uk, &key);
+	
 	*name = "DBColumns";
 	QI(dbColumns, lb_I_Unknown, uk)
 	document->insert(&uk, &key);
@@ -1565,6 +1629,7 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		(reportelementtypes != NULL) && 
 		(reporttextblocks != NULL) && 
 		(formularfields != NULL) && 
+		(formularfieldparameter != NULL) && 
 		(formParams != NULL) && 
 		(appActions != NULL) && 
 		(appActionSteps != NULL) && 
@@ -1606,6 +1671,10 @@ lbErrCodes LB_STDCALL lbDynamicAppInternalStorage::load(lb_I_Database* iDB) {
 		
 		*name = "FormularFields";
 		QI(formularfields, lb_I_Unknown, uk)
+		document->insert(&uk, &key);
+		
+		*name = "FormularFieldParameter";
+		QI(formularfieldparameter, lb_I_Unknown, uk)
 		document->insert(&uk, &key);
 		
 		*name = "ColumnTypes";
