@@ -906,7 +906,429 @@ long LB_STDCALL lbDBTableParameters::getTableID() {
 	return currentTableID->getData();
 }
 
+// Column Parameter
 
+
+IMPLEMENT_FUNCTOR(instanceOflbDBColumnParameters, lbDBColumnParameters)
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDBColumnParameters)
+ADD_INTERFACE(lb_I_DBColumnParameter)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+lbDBColumnParameters::lbDBColumnParameters() {
+	
+	REQUEST(getModuleInstance(), lb_I_Container, Parameters)
+	REQUEST(getModuleInstance(), lb_I_String, currentParameterName)
+	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
+	REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentColumnID)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
+	_CL_VERBOSE << "lbDBColumnParameters::lbDBColumnParameters() called." LOG_
+}
+
+lbDBColumnParameters::~lbDBColumnParameters() {
+	_CL_VERBOSE << "lbDBColumnParameters::~lbDBColumnParameters() called." LOG_
+}
+
+lbErrCodes LB_STDCALL lbDBColumnParameters::setData(lb_I_Unknown*) {
+	_LOG << "Error: lbDBColumnParameters::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
+}
+
+long  LB_STDCALL lbDBColumnParameters::addParameter(const char* name, const char* value, long column_id, long _id) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ColumnID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	
+	_CL_VERBOSE << "Add a parameter to lbDBColumnParameters: " << name LOG_
+	
+	*Name = name;
+	*Value = value;
+	ID->setData(_id);
+	ColumnID->setData(column_id);
+	
+	*paramname = "Name";
+	param->setUAPString(*&paramname, *&Name);
+	*paramname = "Value";
+	param->setUAPString(*&paramname, *&Value);
+	*paramname = "ID";
+	param->setUAPLong(*&paramname, *&ID);
+	*paramname = "ColumnID";
+	param->setUAPLong(*&paramname, *&ColumnID);
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, ukParam)
+	QI(ID, lb_I_KeyBase, key)
+	QI(param, lb_I_Unknown, ukParam)
+	
+	Parameters->insert(&ukParam, &key);
+	
+	return -1;
+}
+
+bool  LB_STDCALL lbDBColumnParameters::selectParameter(long _id) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	id->setData(_id);
+	
+	QI(id, lb_I_KeyBase, key)
+	uk = Parameters->getElement(&key);
+	
+	if (uk != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Parameter, param)
+		QI(uk, lb_I_Parameter, param)
+		
+		*name = "Name";
+		param->getUAPString(*&name, *&currentParameterName);
+		*name = "Value";
+		param->getUAPString(*&name, *&currentParameterValue);
+		*name = "ID";
+		param->getUAPLong(*&name, *&currentID);
+		*name = "ColumnID";
+		param->getUAPLong(*&name, *&currentColumnID);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
+		
+		return true;
+	}
+	
+	return false;
+}
+
+void LB_STDCALL lbDBColumnParameters::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbDBColumnParameters::unmark() {
+	marked->setData((long) 0);
+}
+
+bool LB_STDCALL lbDBColumnParameters::ismarked() {
+	if (marked->getData() == (long) 1) return true;
+	return false;
+}
+
+int  LB_STDCALL lbDBColumnParameters::getParameterCount() {
+	return Parameters->Count();
+}
+
+void		LB_STDCALL lbDBColumnParameters::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Parameters->finishIteration();
+	while (hasMoreParameters()) {
+		setNextParameter();
+		if (!ismarked()) {
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+			ID->setData(getParameterID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Parameters->remove(&key);
+			Parameters->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbDBColumnParameters::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Parameters->finishIteration();
+	while (hasMoreParameters()) {
+		setNextParameter();
+		if (ismarked()) {
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+			ID->setData(getParameterID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Parameters->remove(&key);
+			Parameters->finishIteration();
+		}
+	}
+}
+
+bool  LB_STDCALL lbDBColumnParameters::hasMoreParameters() {
+	return Parameters->hasMoreElements();
+}
+
+void  LB_STDCALL lbDBColumnParameters::setNextParameter() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_Unknown, uk)
+	
+	uk = Parameters->nextElement();
+	QI(uk, lb_I_Parameter, param)
+	
+	*name = "Name";
+	param->getUAPString(*&name, *&currentParameterName);
+	*name = "Value";
+	param->getUAPString(*&name, *&currentParameterValue);
+	*name = "ID";
+	param->getUAPLong(*&name, *&currentID);
+	*name = "ColumnID";
+	param->getUAPLong(*&name, *&currentColumnID);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
+}
+
+void  LB_STDCALL lbDBColumnParameters::finishParameterIteration() {
+	Parameters->finishIteration();
+}
+
+long LB_STDCALL lbDBColumnParameters::getParameterID() {
+	return currentID->getData();
+}
+
+char*  LB_STDCALL lbDBColumnParameters::getParameterName() {
+	return currentParameterName->charrep();
+}
+
+char*  LB_STDCALL lbDBColumnParameters::getParameter(const char* name, long column_id) {
+	finishParameterIteration();
+	
+	while (hasMoreParameters()) {
+		setNextParameter();
+		
+		if ((strcmp(getParameterName(), name) == 0) && (getColumnID() == column_id)) {
+			finishParameterIteration();
+			return getParameterValue();
+		}
+	}
+	
+	return (char*) "";
+}
+
+char*  LB_STDCALL lbDBColumnParameters::getParameterValue() {
+	return currentParameterValue->charrep();
+}
+
+long LB_STDCALL lbDBColumnParameters::getColumnID() {
+	return currentColumnID->getData();
+}
+
+// Column Parameter
+
+
+IMPLEMENT_FUNCTOR(instanceOflbFormularFieldParameters, lbFormularFieldParameters)
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbFormularFieldParameters)
+ADD_INTERFACE(lb_I_FormularFieldParameter)
+END_IMPLEMENT_LB_UNKNOWN()
+
+
+lbFormularFieldParameters::lbFormularFieldParameters() {
+	
+	REQUEST(getModuleInstance(), lb_I_Container, Parameters)
+	REQUEST(getModuleInstance(), lb_I_String, currentParameterName)
+	REQUEST(getModuleInstance(), lb_I_String, currentParameterValue)
+	REQUEST(getModuleInstance(), lb_I_Long, currentID)
+	REQUEST(getModuleInstance(), lb_I_Long, currentFieldID)
+	
+	REQUEST(getModuleInstance(), lb_I_Long, marked)
+	_CL_VERBOSE << "lbFormularFieldParameters::lbFormularFieldParameters() called." LOG_
+}
+
+lbFormularFieldParameters::~lbFormularFieldParameters() {
+	_CL_VERBOSE << "lbFormularFieldParameters::~lbFormularFieldParameters() called." LOG_
+}
+
+lbErrCodes LB_STDCALL lbFormularFieldParameters::setData(lb_I_Unknown*) {
+	_LOG << "Error: lbFormularFieldParameters::setData(lb_I_Unknown*) not implemented." LOG_
+	return ERR_NOT_IMPLEMENTED;
+}
+
+long  LB_STDCALL lbFormularFieldParameters::addParameter(const char* name, const char* value, long field_id, long _id) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Value)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, FieldID)
+	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, paramname)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, marked)
+	
+	_CL_VERBOSE << "Add a parameter to lbFormularFieldParameters: " << name LOG_
+	
+	*Name = name;
+	*Value = value;
+	ID->setData(_id);
+	FieldID->setData(field_id);
+	
+	*paramname = "Name";
+	param->setUAPString(*&paramname, *&Name);
+	*paramname = "Value";
+	param->setUAPString(*&paramname, *&Value);
+	*paramname = "ID";
+	param->setUAPLong(*&paramname, *&ID);
+	*paramname = "FieldID";
+	param->setUAPLong(*&paramname, *&FieldID);
+	
+	UAP(lb_I_KeyBase, key)
+	UAP(lb_I_Unknown, ukParam)
+	QI(ID, lb_I_KeyBase, key)
+	QI(param, lb_I_Unknown, ukParam)
+	
+	Parameters->insert(&ukParam, &key);
+	
+	return -1;
+}
+
+bool  LB_STDCALL lbFormularFieldParameters::selectParameter(long _id) {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, id)
+	UAP(lb_I_Unknown, uk)
+	UAP(lb_I_KeyBase, key)
+	id->setData(_id);
+	
+	QI(id, lb_I_KeyBase, key)
+	uk = Parameters->getElement(&key);
+	
+	if (uk != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP(lb_I_Parameter, param)
+		QI(uk, lb_I_Parameter, param)
+		
+		*name = "Name";
+		param->getUAPString(*&name, *&currentParameterName);
+		*name = "Value";
+		param->getUAPString(*&name, *&currentParameterValue);
+		*name = "ID";
+		param->getUAPLong(*&name, *&currentID);
+		*name = "FieldID";
+		param->getUAPLong(*&name, *&currentFieldID);
+		*name = "marked";
+		param->getUAPLong(*&name, *&marked);
+		
+		return true;
+	}
+	
+	return false;
+}
+
+void LB_STDCALL lbFormularFieldParameters::mark() {
+	marked->setData((long) 1);
+}
+
+void LB_STDCALL lbFormularFieldParameters::unmark() {
+	marked->setData((long) 0);
+}
+
+bool LB_STDCALL lbFormularFieldParameters::ismarked() {
+	if (marked->getData() == (long) 1) return true;
+	return false;
+}
+
+int  LB_STDCALL lbFormularFieldParameters::getParameterCount() {
+	return Parameters->Count();
+}
+
+void		LB_STDCALL lbFormularFieldParameters::deleteUnmarked() {
+	lbErrCodes err = ERR_NONE;
+	Parameters->finishIteration();
+	while (hasMoreParameters()) {
+		setNextParameter();
+		if (!ismarked()) {
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+			ID->setData(getParameterID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Parameters->remove(&key);
+			Parameters->finishIteration();
+		}
+	}
+}
+
+void		LB_STDCALL lbFormularFieldParameters::deleteMarked() {
+	lbErrCodes err = ERR_NONE;
+	Parameters->finishIteration();
+	while (hasMoreParameters()) {
+		setNextParameter();
+		if (ismarked()) {
+			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
+			ID->setData(getParameterID());
+			
+			UAP(lb_I_KeyBase, key)
+			QI(ID, lb_I_KeyBase, key)
+			
+			Parameters->remove(&key);
+			Parameters->finishIteration();
+		}
+	}
+}
+
+bool  LB_STDCALL lbFormularFieldParameters::hasMoreParameters() {
+	return Parameters->hasMoreElements();
+}
+
+void  LB_STDCALL lbFormularFieldParameters::setNextParameter() {
+	lbErrCodes err = ERR_NONE;
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP(lb_I_Parameter, param)
+	UAP(lb_I_Unknown, uk)
+	
+	uk = Parameters->nextElement();
+	QI(uk, lb_I_Parameter, param)
+	
+	*name = "Name";
+	param->getUAPString(*&name, *&currentParameterName);
+	*name = "Value";
+	param->getUAPString(*&name, *&currentParameterValue);
+	*name = "ID";
+	param->getUAPLong(*&name, *&currentID);
+	*name = "FieldID";
+	param->getUAPLong(*&name, *&currentFieldID);
+	*name = "marked";
+	param->getUAPLong(*&name, *&marked);
+}
+
+void  LB_STDCALL lbFormularFieldParameters::finishParameterIteration() {
+	Parameters->finishIteration();
+}
+
+long LB_STDCALL lbFormularFieldParameters::getParameterID() {
+	return currentID->getData();
+}
+
+char*  LB_STDCALL lbFormularFieldParameters::getParameterName() {
+	return currentParameterName->charrep();
+}
+
+char*  LB_STDCALL lbFormularFieldParameters::getParameter(const char* name, long field_id) {
+	finishParameterIteration();
+	
+	while (hasMoreParameters()) {
+		setNextParameter();
+		
+		if ((strcmp(getParameterName(), name) == 0) && (getFieldID() == field_id)) {
+			finishParameterIteration();
+			return getParameterValue();
+		}
+	}
+	
+	return (char*) "";
+}
+
+char*  LB_STDCALL lbFormularFieldParameters::getParameterValue() {
+	return currentParameterValue->charrep();
+}
+
+long LB_STDCALL lbFormularFieldParameters::getFieldID() {
+	return currentFieldID->getData();
+}
 
 
 /*...sclass lbPluginUsersModel implementation:0:*/
@@ -1358,6 +1780,229 @@ void LB_STDCALL lbPluginDBTableParameters::releaseImplementation() {
 	if (ukDBTableParameters != NULL) {
 		ukDBTableParameters--;
 		ukDBTableParameters.resetPtr();
+	}
+}
+/*...e*/
+/*...e*/
+
+
+/*...sclass lbPluginDBColumnParameters implementation:0:*/
+/*...slbPluginDBColumnParameters:0:*/
+class lbPluginDBColumnParameters : public lb_I_PluginImpl {
+public:
+	lbPluginDBColumnParameters();
+	
+	virtual ~lbPluginDBColumnParameters();
+	
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
+	/*...sfrom plugin interface:8:*/
+	void LB_STDCALL initialize();
+	
+	bool LB_STDCALL run();
+	
+	lb_I_Unknown* LB_STDCALL peekImplementation();
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
+	/*...e*/
+	
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Unknown, ukDBColumnParameters)
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginDBColumnParameters)
+ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginDBColumnParameters, lbPluginDBColumnParameters)
+
+/*...slbErrCodes LB_STDCALL lbPluginDBColumnParameters\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbPluginDBColumnParameters::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	_CL_VERBOSE << "lbPluginDBColumnParameters::setData(...) called.\n" LOG_
+	
+	return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginDBColumnParameters::lbPluginDBColumnParameters() {
+	_CL_VERBOSE << "lbPluginDBTableParameters::lbPluginDBTableParameters() called.\n" LOG_
+}
+
+lbPluginDBColumnParameters::~lbPluginDBColumnParameters() {
+	_CL_VERBOSE << "lbPluginDBColumnParameters::~lbPluginDBColumnParameters() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginDBColumnParameters::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginDBColumnParameters::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+void LB_STDCALL lbPluginDBColumnParameters::initialize() {
+}
+
+bool LB_STDCALL lbPluginDBColumnParameters::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginDBColumnParameters\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDBColumnParameters::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (ukDBColumnParameters == NULL) {
+		lbDBColumnParameters* tp = new lbDBColumnParameters();
+		
+		
+		QI(tp, lb_I_Unknown, ukDBColumnParameters)
+	} else {
+		_CL_VERBOSE << "lbPluginDBColumnParameters::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return ukDBColumnParameters.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginDBColumnParameters\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginDBColumnParameters::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (ukDBColumnParameters == NULL) {
+		
+		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
+		
+		lbDBColumnParameters* tp = new lbDBColumnParameters();
+		
+		
+		QI(tp, lb_I_Unknown, ukDBColumnParameters)
+	}
+	
+	lb_I_Unknown* r = ukDBColumnParameters.getPtr();
+	ukDBColumnParameters.resetPtr();
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginDBColumnParameters::releaseImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (ukDBColumnParameters != NULL) {
+		ukDBColumnParameters--;
+		ukDBColumnParameters.resetPtr();
+	}
+}
+/*...e*/
+/*...e*/
+
+/*...sclass lbPluginDBColumnParameters implementation:0:*/
+/*...slbPluginDBColumnParameters:0:*/
+class lbPluginFormularFieldParameters : public lb_I_PluginImpl {
+public:
+	lbPluginFormularFieldParameters();
+	
+	virtual ~lbPluginFormularFieldParameters();
+	
+	bool LB_STDCALL canAutorun();
+	lbErrCodes LB_STDCALL autorun();
+	/*...sfrom plugin interface:8:*/
+	void LB_STDCALL initialize();
+	
+	bool LB_STDCALL run();
+	
+	lb_I_Unknown* LB_STDCALL peekImplementation();
+	lb_I_Unknown* LB_STDCALL getImplementation();
+	void LB_STDCALL releaseImplementation();
+	/*...e*/
+	
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Unknown, ukDBFormularFieldParameters)
+};
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginFormularFieldParameters)
+ADD_INTERFACE(lb_I_PluginImpl)
+END_IMPLEMENT_LB_UNKNOWN()
+
+IMPLEMENT_FUNCTOR(instanceOflbPluginFormularFieldParameters, lbPluginFormularFieldParameters)
+
+/*...slbErrCodes LB_STDCALL lbPluginDBColumnParameters\58\\58\setData\40\lb_I_Unknown\42\ uk\41\:0:*/
+lbErrCodes LB_STDCALL lbPluginFormularFieldParameters::setData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	
+	_CL_VERBOSE << "lbPluginFormularFieldParameters::setData(...) called.\n" LOG_
+	
+	return ERR_NOT_IMPLEMENTED;
+}
+/*...e*/
+
+lbPluginFormularFieldParameters::lbPluginFormularFieldParameters() {
+	_CL_VERBOSE << "lbPluginFormularFieldParameters::lbPluginFormularFieldParameters() called.\n" LOG_
+}
+
+lbPluginFormularFieldParameters::~lbPluginFormularFieldParameters() {
+	_CL_VERBOSE << "lbPluginFormularFieldParameters::~lbPluginFormularFieldParameters() called.\n" LOG_
+}
+
+bool LB_STDCALL lbPluginFormularFieldParameters::canAutorun() {
+	return false;
+}
+
+lbErrCodes LB_STDCALL lbPluginFormularFieldParameters::autorun() {
+	lbErrCodes err = ERR_NONE;
+	return err;
+}
+
+void LB_STDCALL lbPluginFormularFieldParameters::initialize() {
+}
+
+bool LB_STDCALL lbPluginFormularFieldParameters::run() {
+	return true;
+}
+
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginFormularFieldParameters\58\\58\peekImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginFormularFieldParameters::peekImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (ukDBFormularFieldParameters == NULL) {
+		lbFormularFieldParameters* tp = new lbFormularFieldParameters();
+		
+		
+		QI(tp, lb_I_Unknown, ukDBFormularFieldParameters)
+	} else {
+		_CL_VERBOSE << "lbPluginFormularFieldParameters::peekImplementation() Implementation already peeked.\n" LOG_
+	}
+	
+	return ukDBFormularFieldParameters.getPtr();
+}
+/*...e*/
+/*...slb_I_Unknown\42\ LB_STDCALL lbPluginFormularFieldParameters\58\\58\getImplementation\40\\41\:0:*/
+lb_I_Unknown* LB_STDCALL lbPluginFormularFieldParameters::getImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (ukDBFormularFieldParameters == NULL) {
+		
+		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
+		
+		lbFormularFieldParameters* tp = new lbFormularFieldParameters();
+		
+		
+		QI(tp, lb_I_Unknown, ukDBFormularFieldParameters)
+	}
+	
+	lb_I_Unknown* r = ukDBFormularFieldParameters.getPtr();
+	ukDBFormularFieldParameters.resetPtr();
+	return r;
+}
+/*...e*/
+void LB_STDCALL lbPluginFormularFieldParameters::releaseImplementation() {
+	lbErrCodes err = ERR_NONE;
+	
+	if (ukDBFormularFieldParameters != NULL) {
+		ukDBFormularFieldParameters--;
+		ukDBFormularFieldParameters.resetPtr();
 	}
 }
 /*...e*/

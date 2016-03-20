@@ -272,5 +272,85 @@ public:
 	UAP(lb_I_Long, marked)
 };
 
+
+class lbDBColumnParameters : public lb_I_DBColumnParameter {
+public:
+	lbDBColumnParameters();
+	virtual ~lbDBColumnParameters();
+	
+	long		LB_STDCALL addParameter(const char* name, const char* value, long column_id, long _id = -1);
+	bool		LB_STDCALL selectParameter(long _id);
+	int			LB_STDCALL getParameterCount();
+	bool		LB_STDCALL hasMoreParameters();
+	void		LB_STDCALL setNextParameter();
+	void		LB_STDCALL finishParameterIteration();
+	
+	long		LB_STDCALL getParameterID();
+	long		LB_STDCALL getColumnID();
+	
+	char*		LB_STDCALL getParameterName();
+	char*		LB_STDCALL getParameterValue();
+	char*		LB_STDCALL getParameter(const char* name, long column_id);
+	
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+	
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+	
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Container, Parameters)
+	
+	UAP(lb_I_String, currentParameterName)
+	UAP(lb_I_String, currentParameterValue)
+	
+	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentColumnID)
+	
+	UAP(lb_I_Long, marked)
+};
+
+class lbFormularFieldParameters : public lb_I_FormularFieldParameter {
+public:
+	lbFormularFieldParameters();
+	virtual ~lbFormularFieldParameters();
+	
+	long		LB_STDCALL addParameter(const char* name, const char* value, long field_id, long _id = -1);
+	bool		LB_STDCALL selectParameter(long _id);
+	int			LB_STDCALL getParameterCount();
+	bool		LB_STDCALL hasMoreParameters();
+	void		LB_STDCALL setNextParameter();
+	void		LB_STDCALL finishParameterIteration();
+	
+	long		LB_STDCALL getParameterID();
+	long		LB_STDCALL getFieldID();
+	
+	char*		LB_STDCALL getParameterName();
+	char*		LB_STDCALL getParameterValue();
+	char*		LB_STDCALL getParameter(const char* name, long field_id);
+	
+	bool		LB_STDCALL ismarked();
+	void		LB_STDCALL mark();
+	void		LB_STDCALL unmark();
+	
+	void		LB_STDCALL deleteUnmarked();
+	void		LB_STDCALL deleteMarked();
+	
+	DECLARE_LB_UNKNOWN()
+	
+	UAP(lb_I_Container, Parameters)
+	
+	UAP(lb_I_String, currentParameterName)
+	UAP(lb_I_String, currentParameterValue)
+	
+	UAP(lb_I_Long, currentID)
+	UAP(lb_I_Long, currentFieldID)
+	
+	UAP(lb_I_Long, marked)
+};
+
+
 DECLARE_FUNCTOR(instanceOflbFormularParameters)
 DECLARE_FUNCTOR(instanceOflbApplicationParameters)

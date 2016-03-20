@@ -584,6 +584,20 @@ CREATE TABLE "dbtableparameter" (
 	"dbtableid" INTEGER
 );
 
+CREATE TABLE "dbcolumnparameter" (
+	"id" INTEGER PRIMARY KEY,
+	"parametername" BPCHAR,
+	"parametervalue" BPCHAR,
+	"dbcolumnid" INTEGER
+);
+
+CREATE TABLE "formularfieldparameter" (
+	"id" INTEGER PRIMARY KEY,
+	"parametername" BPCHAR,
+	"parametervalue" BPCHAR,
+	"formularfieldid" INTEGER
+);
+
 -- Class Anwendungen of type FORM found.
 				
 -- Class Formulare of type FORM found.
@@ -1801,6 +1815,55 @@ BEGIN
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbtableparameter', 'dbtableid');
  
+
+
+
+
+
+CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_ins" BEFORE INSERT ON formularfieldparameter FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.formularfieldid IS NOT NULL) AND ((SELECT id FROM formularfields WHERE id = new.formularfieldid) IS NULL))
+                 THEN RAISE(ABORT, 'INSERT: formularfieldid violates foreign key formularfields(id = SELECT new.formularfieldid)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_upd" BEFORE UPDATE ON formularfieldparameter FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.formularfieldid IS NOT NULL) AND ((SELECT id FROM formularfields WHERE id = new.formularfieldid) IS NULL))
+                 THEN RAISE(ABORT, 'UPDATE: formularfieldid violates foreign key formularfields(id)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_del" BEFORE DELETE ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT formularfieldid FROM formularfieldparameter WHERE formularfieldid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'DELETE: id violates foreign key formularfieldparameter(formularfieldid = old.id)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formularfields', 'id', 'formularfieldparameter', 'formularfieldid');
+
+
+
+
+CREATE TRIGGER "fk_dbcolumnparameter_dbcolumnid_ins" BEFORE INSERT ON dbcolumnparameter FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbcolumnid IS NOT NULL) AND ((SELECT id FROM dbcolumn WHERE id = new.dbcolumnid) IS NULL))
+                 THEN RAISE(ABORT, 'INSERT: dbcolumnid violates foreign key dbcolumn(id = SELECT new.dbcolumnid)')
+    END;
+END;
+CREATE TRIGGER "fk_dbcolumnparameter_dbcolumnid_upd" BEFORE UPDATE ON dbcolumnparameter FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.dbcolumnid IS NOT NULL) AND ((SELECT id FROM dbcolumn WHERE id = new.dbcolumnid) IS NULL))
+                 THEN RAISE(ABORT, 'UPDATE: dbcolumnid violates foreign key dbcolumn(id)')
+    END;
+END;
+CREATE TRIGGER "fk_dbcolumnparameter_dbcolumnid_del" BEFORE DELETE ON dbcolumn FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT dbcolumnid FROM dbcolumnparameter WHERE dbcolumnid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'DELETE: id violates foreign key dbcolumnparameter(dbcolumnid = old.id)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbcolumn', 'id', 'dbcolumnparameter', 'dbcolumnid');
+
+
 
 -- Script ready.
 COMMIT;

@@ -290,7 +290,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	tar xvzf ../vendor/log4cplus-1.2.0-rc5.tar.gz -C ../vendor
 
 ../vendor/log4cplus-1.2.0-rc5: ../vendor/log4cplus-1.2.0-rc5.tar.gz
-	cd ../vendor/log4cplus-1.2.0-rc5; \
+	cd ..\\vendor\\log4cplus-1.2.0-rc5; \
 	./configure --enable-threads=no; \
 	$(MAKE); \
 	$(MAKE) install

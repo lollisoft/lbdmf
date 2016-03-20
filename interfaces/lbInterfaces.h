@@ -4087,6 +4087,26 @@ public:
 	virtual char*		LB_STDCALL getParameter(const char* name, long table_id) = 0;	
 };
 
+/** \brief A class to store parameters related to a column definition.
+ *
+ */
+class lb_I_DBColumnParameter : public lb_I_ParameterTable {
+public:
+	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long column_id, long _id = -1) = 0;
+	virtual long		LB_STDCALL getColumnID() = 0;
+	virtual char*		LB_STDCALL getParameter(const char* name, long column_id) = 0;	
+};
+
+/** \brief A class to store parameters related to a formular field.
+ *
+ */
+class lb_I_FormularFieldParameter : public lb_I_ParameterTable {
+public:
+	virtual long		LB_STDCALL addParameter(const char* name, const char* value, long field_id, long _id = -1) = 0;
+	virtual long		LB_STDCALL getFieldID() = 0;
+	virtual char*		LB_STDCALL getParameter(const char* name, long field_id) = 0;	
+};
+
 /** \brief A class to store database column information.
  *
  * This is the internal storage for database column information. It will be used in the visitor plugin to transfer
@@ -5363,6 +5383,7 @@ UAPDECL(lb_I_DispatchResponse)
 UAPDECL(lb_I_Applications_Formulars)
 UAPDECL(lb_I_DBTables)
 UAPDECL(lb_I_DBTableParameter)
+UAPDECL(lb_I_DBColumnParameter)
 UAPDECL(lb_I_DBColumns)
 UAPDECL(lb_I_DBPrimaryKeys)
 UAPDECL(lb_I_DBForeignKeys)
@@ -5442,6 +5463,7 @@ UAPDECL(lb_I_Transfer)
 UAPDECL(lb_I_ThreadImplementation)
 UAPDECL(lb_I_Column_Types)
 UAPDECL(lb_I_Formular_Fields)
+UAPDECL(lb_I_FormularFieldParameter)
 UAPDECL(lb_I_FixedDatabaseForm)
 UAPDECL(lb_I_DBReportTextblock)
 UAPDECL(lb_I_DBReportProperties)
