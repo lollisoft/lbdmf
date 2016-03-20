@@ -64,6 +64,9 @@
 </xsl:choose>
 </xsl:variable>
 
+delete from formularfieldparameter where formularfieldid IN (select id from formularfields where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')))
+
+
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="$TableName"/>', 0, '<xsl:value-of select="$MappedDataType"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 
 </xsl:template>

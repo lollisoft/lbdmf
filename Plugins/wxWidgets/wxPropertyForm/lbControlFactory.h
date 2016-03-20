@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.2 $
+ * $Revision: 1.1.2.3 $
  * $Name:  $
- * $Id: lbControlFactory.h,v 1.1.2.2 2015/08/27 14:15:20 lollisoft Exp $
+ * $Id: lbControlFactory.h,v 1.1.2.3 2016/03/20 10:12:28 lollisoft Exp $
  *
  * $Log: lbControlFactory.h,v $
+ * Revision 1.1.2.3  2016/03/20 10:12:28  lollisoft
+ * Added new model elements for storing parameters (for columns and formularfields).
+ *
  * Revision 1.1.2.2  2015/08/27 14:15:20  lollisoft
  * First basic implementation of a property dialog using a visitor factory.
  *
@@ -200,6 +203,8 @@ public:
 	void LB_STDCALL visit(lb_I_DBColumns*) { _CL_LOG << "visit(lb_I_DBColumns*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DBTables*) { _CL_LOG << "visit(lb_I_DBTables*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DBTableParameter*) { _CL_LOG << "visit(lb_I_DBTableParameter*)" LOG_ }
+	void LB_STDCALL visit(lb_I_DBColumnParameter*) { _CL_LOG << "visit(lb_I_DBTableParameter*)" LOG_ }
+	void LB_STDCALL visit(lb_I_FormularFieldParameter*) { _CL_LOG << "visit(lb_I_FormularFieldParameter*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DBPrimaryKeys*) { _CL_LOG << "visit(lb_I_DBPrimaryKeys*)" LOG_ }
 	void LB_STDCALL visit(lb_I_DBForeignKeys*) { _CL_LOG << "visit(lb_I_DBForeignKeys*)" LOG_ }
 	

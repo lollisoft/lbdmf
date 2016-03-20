@@ -387,6 +387,7 @@ delete from dbcolumn where dbtableid in (select id from dbtable where anwendunge
 delete from dbtableparameter where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')); 
 delete from dbtable where anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'); 
 
+delete from formularfieldparameter where formularfieldid IN (select id from formularfields where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')))
 -- delete formularfields
 delete from formularfields where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 
