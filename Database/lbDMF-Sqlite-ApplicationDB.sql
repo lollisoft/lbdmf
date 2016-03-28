@@ -53,6 +53,10 @@ BEGIN TRANSACTION;
 				
 -- Class TableParameter of type FORM found.
 				
+-- Class ColumnParameter of type FORM found.
+				
+-- Class FormularFieldParameter of type FORM found.
+				
 -- Class action_parameters of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
 
@@ -584,6 +588,13 @@ CREATE TABLE "dbtableparameter" (
 	"dbtableid" INTEGER
 );
 
+-- Class dbcolumnparameter of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table dbcolumnparameter for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE dbcolumnparameter
 CREATE TABLE "dbcolumnparameter" (
 	"id" INTEGER PRIMARY KEY,
 	"parametername" BPCHAR,
@@ -591,6 +602,13 @@ CREATE TABLE "dbcolumnparameter" (
 	"dbcolumnid" INTEGER
 );
 
+-- Class formularfieldparameter of type ENTITY found.
+-- Create table model with template 'importApplicationTable'.
+
+-- Generate application table formularfieldparameter for lbDMFManager_Entities. Tagtet database: 'Sqlite'
+
+
+-- CREATE Sqlite TABLE formularfieldparameter
 CREATE TABLE "formularfieldparameter" (
 	"id" INTEGER PRIMARY KEY,
 	"parametername" BPCHAR,
@@ -639,6 +657,10 @@ CREATE TABLE "formularfieldparameter" (
 -- Class ForeignKeys of type FORM found.
 				
 -- Class TableParameter of type FORM found.
+				
+-- Class ColumnParameter of type FORM found.
+				
+-- Class FormularFieldParameter of type FORM found.
 				
 -- Class action_parameters of type ENTITY found.
 
@@ -874,6 +896,20 @@ CREATE TABLE "formularfieldparameter" (
 -- Class dbtableparameter of type ENTITY found.
 
 -- Generate application tables dbtableparameter for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class dbcolumnparameter of type ENTITY found.
+
+-- Generate application tables dbcolumnparameter for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
+
+
+-- Skipped, due to creation in template 'importApplicationTable'
+
+-- Class formularfieldparameter of type ENTITY found.
+
+-- Generate application tables formularfieldparameter for lbDMFManager_Entities primary keys. Tagtet database: 'Sqlite'
 
 
 -- Skipped, due to creation in template 'importApplicationTable'
@@ -1816,32 +1852,13 @@ END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbtable', 'id', 'dbtableparameter', 'dbtableid');
  
 
+-- Generate Sqlite application relations for table dbcolumnparameter for lbDMFManager_Entities
+-- Create table relations for dbcolumnparameter
+--ALTER TABLE "dbcolumnparameter" ADD CONSTRAINT "cst_dbcolumnparameter_dbcolumn_id" FOREIGN KEY ( "dbcolumnid" ) REFERENCES "dbcolumn" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "dbcolumnparameter" ADD CONSTRAINT "cst_dbcolumnparameter_dbcolumn_id" FOREIGN KEY ( "dbcolumnid" ) REFERENCES "dbcolumn" ( "id" );
 
-
-
-
-CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_ins" BEFORE INSERT ON formularfieldparameter FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((new.formularfieldid IS NOT NULL) AND ((SELECT id FROM formularfields WHERE id = new.formularfieldid) IS NULL))
-                 THEN RAISE(ABORT, 'INSERT: formularfieldid violates foreign key formularfields(id = SELECT new.formularfieldid)')
-    END;
-END;
-CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_upd" BEFORE UPDATE ON formularfieldparameter FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((new.formularfieldid IS NOT NULL) AND ((SELECT id FROM formularfields WHERE id = new.formularfieldid) IS NULL))
-                 THEN RAISE(ABORT, 'UPDATE: formularfieldid violates foreign key formularfields(id)')
-    END;
-END;
-CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_del" BEFORE DELETE ON formularfields FOR EACH ROW
-BEGIN
-    SELECT CASE WHEN ((SELECT formularfieldid FROM formularfieldparameter WHERE formularfieldid = old.id) IS NOT NULL)
-                 THEN RAISE(ABORT, 'DELETE: id violates foreign key formularfieldparameter(formularfieldid = old.id)')
-    END;
-END;
-INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formularfields', 'id', 'formularfieldparameter', 'formularfieldid');
-
-
-
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
 
 CREATE TRIGGER "fk_dbcolumnparameter_dbcolumnid_ins" BEFORE INSERT ON dbcolumnparameter FOR EACH ROW
 BEGIN
@@ -1862,8 +1879,36 @@ BEGIN
     END;
 END;
 INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('dbcolumn', 'id', 'dbcolumnparameter', 'dbcolumnid');
+ 
 
+-- Generate Sqlite application relations for table formularfieldparameter for lbDMFManager_Entities
+-- Create table relations for formularfieldparameter
+--ALTER TABLE "formularfieldparameter" ADD CONSTRAINT "cst_formularfieldparameter_formularfields_id" FOREIGN KEY ( "formularfieldid" ) REFERENCES "formularfields" ( "id" );
+-- Using just in time rewriting doesn't work when execute_droprules is set to yes. The fk tool has no parser for DROP rules and also no DELETE statement is supported.
+--ALTER TABLE "formularfieldparameter" ADD CONSTRAINT "cst_formularfieldparameter_formularfields_id" FOREIGN KEY ( "formularfieldid" ) REFERENCES "formularfields" ( "id" );
 
+-- Build trigger manually. (Todo: add support for nullable and not nullable)
+
+CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_ins" BEFORE INSERT ON formularfieldparameter FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.formularfieldid IS NOT NULL) AND ((SELECT id FROM formularfields WHERE id = new.formularfieldid) IS NULL))
+                 THEN RAISE(ABORT, 'INSERT: formularfieldid violates foreign key formularfields(id = SELECT new.formularfieldid)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_upd" BEFORE UPDATE ON formularfieldparameter FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((new.formularfieldid IS NOT NULL) AND ((SELECT id FROM formularfields WHERE id = new.formularfieldid) IS NULL))
+                 THEN RAISE(ABORT, 'UPDATE: formularfieldid violates foreign key formularfields(id)')
+    END;
+END;
+CREATE TRIGGER "fk_formularfieldparameter_formularfieldid_del" BEFORE DELETE ON formularfields FOR EACH ROW
+BEGIN
+    SELECT CASE WHEN ((SELECT formularfieldid FROM formularfieldparameter WHERE formularfieldid = old.id) IS NOT NULL)
+                 THEN RAISE(ABORT, 'DELETE: id violates foreign key formularfieldparameter(formularfieldid = old.id)')
+    END;
+END;
+INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") VALUES ('formularfields', 'id', 'formularfieldparameter', 'formularfieldid');
+ 
 
 -- Script ready.
 COMMIT;
