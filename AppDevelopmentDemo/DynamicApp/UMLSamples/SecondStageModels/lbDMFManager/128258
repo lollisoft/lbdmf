@@ -1,6 +1,6 @@
 format 75
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 41
+  revision 44
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1663,6 +1663,14 @@ ${inlines}
 	python_decl ""
 	idl_decl ""
       end
+
+      classrelation 238722 // <association>
+	relation_ref 234114 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
     end
 
     class 132098 "formulartypen"
@@ -2718,6 +2726,10 @@ ${inlines}
 
       classrelation 231938 // <association>
 	relation_ref 227458 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
       end
     end
 
@@ -3066,7 +3078,7 @@ ${inlines}
 
       classrelation 231810 // dbcolumnid (<association>)
 	relation 227458 ----
-	  stereotype "relationship"
+	  stereotype "lbDMF:relationship"
 	  a role_name "dbcolumnid" multiplicity "1" protected
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
@@ -3075,6 +3087,71 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
 "
 	    classrelation_ref 231938 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
+      end
+    end
+
+    class 210818 "formularfieldparameter"
+      visibility package stereotype "entity"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 259586 "id"
+	protected explicit_type "int"
+	stereotype "lbDMF:pk"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 259714 "parametername"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 259842 "parametervalue"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 238594 // formularfieldid (<association>)
+	relation 234114 ----
+	  stereotype "lbDMF:relationship"
+	  a role_name "formularfieldid" multiplicity "1" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 238594 // formularfieldid (<association>)
+	  b role_name "" multiplicity "*" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${stereotype}<${type} *> ${name}${value};
+"
+	    classrelation_ref 238722 // <association>
+	ncouples 3
+	key "lbDMF:relationship:sourcecolumn" value ""
+	key "lbDMF:relationship:table" value ""
+	key "lbDMF:relationship:order" value ""
       end
     end
   end
