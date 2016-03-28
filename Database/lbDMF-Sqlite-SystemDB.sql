@@ -15,11 +15,11 @@ BEGIN TRANSACTION;
 		
 		
 -- Application is lbDMF Manager. Package is lbDMF Manager
--- Using database settings as of name=Requilizer, user=dbuser
+-- Using database settings as of name=lbdmf, user=dbuser
 -- Skip rewrite
 -- To ignore this statement in the Sqlite rewrite parser. This statement should match to Sqlite syntax.
 -- Create default indexes for Sqlite. Version ignored.
--- Using database settings as of name=Requilizer, user=dbuser
+-- Using database settings as of name=lbdmf, user=dbuser
 
 CREATE UNIQUE INDEX IF NOT EXISTS "idx_users_userid" on "users" (userid);
 CREATE UNIQUE INDEX IF NOT EXISTS "idx_formulartypen_hi_ns" on "formulartypen" (handlerinterface, namespace, handlermodule);
@@ -93,6 +93,7 @@ delete from dbcolumn where dbtableid in (select id from dbtable where anwendunge
 delete from dbtableparameter where dbtableid in (select id from dbtable where anwendungenid in (select id from anwendungen where name = 'lbDMF Manager')); 
 delete from dbtable where anwendungenid in (select id from anwendungen where name = 'lbDMF Manager'); 
 
+delete from formularfieldparameter where formularfieldid IN (select id from formularfields where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = 'lbDMF Manager')))
 -- delete formularfields
 delete from formularfields where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = 'lbDMF Manager'));
 
@@ -121,9 +122,11 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('gxmi use profile', 'no', (select id from anwendungen where name = 'lbDMF Manager'));
 		
-insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('gxmi path', 'Q:/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF Manager.xmi', (select id from anwendungen where name = 'lbDMF Manager'));
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('gxmi path', '/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF Manager.xmi', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('gxmi vis prefix', 'no', (select id from anwendungen where name = 'lbDMF Manager'));
+		
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('gxmi no model', 'no', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('gxmi linefeed', 'no', (select id from anwendungen where name = 'lbDMF Manager'));
 		
@@ -2108,6 +2111,114 @@ INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'TableP
 INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'TableParameter' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
 
 
+		-- Class ColumnParameter of type FORM found.
+
+-- Generate DMF form definition for lbDMF Manager in Sqlite database
+
+
+--select "DropFormular"('lbDMF Manager', 'ColumnParameter');
+
+
+
+INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select 'ColumnParameter', 'ColumnParameter verwalten', 'manageColumnParameter', 'Edit data of ColumnParameter', '', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
+
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+-- Create query for dbcolumnparameter (BOUML_0x31d82_4)
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
+SELECT 'query', 'select "parametername", "parametervalue", "columnid" from "dbcolumnparameter"', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+
+-- Field name parametername
+-- Field datatypeid 
+-- Field datatype 
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'parametername', 'dbcolumnparameter', 0, 'String', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+-- Field name parametervalue
+-- Field datatypeid 
+-- Field datatype 
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'parametervalue', 'dbcolumnparameter', 0, 'String', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+-- Field name columnid
+-- Field datatypeid 
+-- Field datatype 
+-- dropdown field
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'columnid', 'dbcolumnparameter', 1, 'columnname', 'dbcolumn', 'Integer', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'ColumnParameter', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'ColumnParameter', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'ColumnParameter', 1);
+
+
+
+-- Create operation definitions
+
+INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'ColumnParameter' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
+
+
+		-- Class FormularFieldParameter of type FORM found.
+
+-- Generate DMF form definition for lbDMF Manager in Sqlite database
+
+
+--select "DropFormular"('lbDMF Manager', 'FormularFieldParameter');
+
+
+
+INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select 'FormularFieldParameter', 'FormularFieldParameter verwalten', 'manageFormularFieldParameter', 'Edit data of FormularFieldParameter', '', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
+
+
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'FormularFieldParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('formularfieldparameter', 'formularfieldid', 'formularfields', '');
+
+
+-- Create query for formularfieldparameter (BOUML_0x33702_4)
+INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
+SELECT 'query', 'select "parametername", "parametervalue", "formularfieldid" from "formularfieldparameter"', id FROM "formulare" WHERE name = 'FormularFieldParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+
+-- Field name parametername
+-- Field datatypeid 
+-- Field datatype 
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'parametername', 'formularfieldparameter', 0, 'String', id FROM "formulare" WHERE name = 'FormularFieldParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+-- Field name parametervalue
+-- Field datatypeid 
+-- Field datatype 
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'parametervalue', 'formularfieldparameter', 0, 'String', id FROM "formulare" WHERE name = 'FormularFieldParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+-- Field name formularfieldid
+-- Field datatypeid 
+-- Field datatype 
+-- dropdown field
+
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'formularfieldid', 'formularfieldparameter', 1, 'name', 'formularfields', 'Integer', id FROM "formulare" WHERE name = 'FormularFieldParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+
+
+
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'FormularFieldParameter', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'FormularFieldParameter', 1);
+INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'FormularFieldParameter', 1);
+
+
+
+-- Create operation definitions
+
+INSERT OR IGNORE INTO "anwendungen_formulare" (anwendungid, formularid) SELECT anwendungid, id FROM "formulare" WHERE "name" = 'FormularFieldParameter' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
+
+
 		-- Class action_parameters of type ENTITY found.
 
 INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'action_parameters', '', 'BOUML_0x1fb82_4', id from anwendungen where name = 'lbDMF Manager';
@@ -2983,6 +3094,46 @@ INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, colu
 
 INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
 select '', '', 'dbtable', 'id', '', '', 'dbtableparameter', 'dbtableid', 0, 0, 0, id from dbtable where tablename = 'dbtableparameter' AND tableremarks = 'BOUML_0x30302_4';
+
+		-- Class dbcolumnparameter of type ENTITY found.
+
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'dbcolumnparameter', '', 'BOUML_0x31d02_4', id from anwendungen where name = 'lbDMF Manager';
+
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x3d882_1', 'int4', -1, 0, 'dbcolumnparameter', id from dbtable where tablename = 'dbcolumnparameter' AND tableremarks = 'BOUML_0x31d02_4';
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametername', 'BOUML_0x3d902_1', 'bpchar', -1, 0, 'dbcolumnparameter', id from dbtable where tablename = 'dbcolumnparameter' AND tableremarks = 'BOUML_0x31d02_4';
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametervalue', 'BOUML_0x3d982_1', 'bpchar', -1, 0, 'dbcolumnparameter', id from dbtable where tablename = 'dbcolumnparameter' AND tableremarks = 'BOUML_0x31d02_4';
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'dbcolumnid', 'BOUML_0x38982_0', 'int4', -1, 0, 'dbcolumnparameter', id from dbtable where tablename = 'dbcolumnparameter' AND tableremarks = 'BOUML_0x31d02_4';
+	
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'dbcolumnparameter', 'id',  '', 0, id from dbtable where tablename = 'dbcolumnparameter' AND tableremarks = 'BOUML_0x31d02_4';
+
+
+INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
+select '', '', 'dbcolumn', 'id', '', '', 'dbcolumnparameter', 'dbcolumnid', 0, 0, 0, id from dbtable where tablename = 'dbcolumnparameter' AND tableremarks = 'BOUML_0x31d02_4';
+
+		-- Class formularfieldparameter of type ENTITY found.
+
+INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks, anwendungenid) select '', '', 'formularfieldparameter', '', 'BOUML_0x33782_4', id from anwendungen where name = 'lbDMF Manager';
+
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'id', 'BOUML_0x3f602_1', 'int4', -1, 0, 'formularfieldparameter', id from dbtable where tablename = 'formularfieldparameter' AND tableremarks = 'BOUML_0x33782_4';
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametername', 'BOUML_0x3f682_1', 'bpchar', -1, 0, 'formularfieldparameter', id from dbtable where tablename = 'formularfieldparameter' AND tableremarks = 'BOUML_0x33782_4';
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'parametervalue', 'BOUML_0x3f702_1', 'bpchar', -1, 0, 'formularfieldparameter', id from dbtable where tablename = 'formularfieldparameter' AND tableremarks = 'BOUML_0x33782_4';
+
+INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select 'formularfieldid', 'BOUML_0x3a402_0', 'int4', -1, 0, 'formularfieldparameter', id from dbtable where tablename = 'formularfieldparameter' AND tableremarks = 'BOUML_0x33782_4';
+	
+	
+INSERT INTO dbprimarykey (tablecatalog, tableschema, tablename, columnname, columnname2, keysequence, dbtableid) select '', '', 'formularfieldparameter', 'id',  '', 0, id from dbtable where tablename = 'formularfieldparameter' AND tableremarks = 'BOUML_0x33782_4';
+
+
+INSERT INTO dbforeignkey (pkcatalog, pkschema, pktable, pkcolumn, fkcatalog, fkschema, fktable, fkcolumn, keysequence, updaterule, deleterule, dbtableid) 
+select '', '', 'formularfields', 'id', '', '', 'formularfieldparameter', 'formularfieldid', 0, 0, 0, id from dbtable where tablename = 'formularfieldparameter' AND tableremarks = 'BOUML_0x33782_4';
 
 -- Activity operation for class Anwendungen in package lbDMF Manager is GenerateTurboVision.
 -- Operation is a validator using activity 

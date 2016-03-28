@@ -1,6 +1,6 @@
 format 75
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 66
+  revision 68
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -2272,6 +2272,64 @@ ${inlines}
 	ncouples 2
 	key "lbDMF:dropdown:column" value "columnname"
 	key "lbDMF:dropdown:table" value "dbcolumn"
+      end
+    end
+
+    class 210690 "FormularFieldParameter"
+      visibility package stereotype "lbDMF:form"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      ncouples 2
+      key "lbDMF:form:ribbongroup" value ""
+      key "lbDMF:form:ribbonpage" value ""
+      attribute 259202 "parametername"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 259330 "parametervalue"
+	protected explicit_type "string"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 259458 "formularfieldid"
+	protected explicit_type "int"
+	stereotype "lbDMF:dropdown"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	ncouples 2
+	key "lbDMF:dropdown:column" value "name"
+	key "lbDMF:dropdown:table" value "formularfields"
+      end
+
+      classrelation 245250 // <dependency>
+	relation 240642 -_->
+	  a default
+	    cpp default "#include in source"
+	    classrelation_ref 245250 // <dependency>
+	  b parent class_ref 210818 // formularfieldparameter
       end
     end
   end
