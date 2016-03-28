@@ -2183,10 +2183,12 @@ INSERT OR IGNORE INTO "formulare" (name, menuname, eventname, menuhilfe, toolbar
 
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid) select 'XMLEntityName', 'entry', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
+INSERT OR IGNORE INTO "foreignkey_visibledata_mapping" ("fktable", "fkname", "pktable", "pkname") VALUES ('dbcolumnparameter', 'dbcolumnid', 'dbcolumn', '');
+
 
 -- Create query for dbcolumnparameter (BOUML_0x31d82_4)
 INSERT OR IGNORE INTO "formular_parameters" (parametername, parametervalue, formularid)
-SELECT 'query', 'select "parametername", "parametervalue", "columnid" from "dbcolumnparameter"', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+SELECT 'query', 'select "parametername", "parametervalue", "dbcolumnid" from "dbcolumnparameter"', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 
@@ -2202,12 +2204,12 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT 'parametervalue', 'dbcolumnparameter', 0, 'String', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
--- Field name columnid
+-- Field name dbcolumnid
 -- Field datatypeid 
 -- Field datatype 
 -- dropdown field
 
-INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'columnid', 'dbcolumnparameter', 1, 'columnname', 'dbcolumn', 'Integer', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
+INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'dbcolumnid', 'dbcolumnparameter', 1, 'columnname', 'dbcolumn', 'Integer', id FROM "formulare" WHERE name = 'ColumnParameter' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
 
