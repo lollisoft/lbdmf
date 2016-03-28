@@ -8,11 +8,11 @@
 	<XMI.metamodel XMI.name="UML" XMI.version="1.4"/>
 </XMI.header>
 <XMI.content>
-	<UML:Model name="OpenSourceStoreReview" xmi.id="BOUML_0x49b06a0">
+	<UML:Model name="OpenSourceStoreReview" xmi.id="BOUML_0x2171b90">
 		<UML:Namespace.ownedElement>
-			<UML:Package xmi.id="BOUML_0x49b03d0" name ="OpenSourceStoreReview">
+			<UML:Package xmi.id="BOUML_0x21718c0" name ="OpenSourceStoreReview">
 				<UML:ModelElement.taggedValue>
-					<UML:TaggedValue tag="ProductVersion" value="1.0.0.0"/>
+					<UML:TaggedValue tag="ProductVersion" value="1.0.0.1"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="DataStoreBaseAddress" value="net.tcp://cloud.lollisoft.de:49381"/>
@@ -24,43 +24,43 @@
 					<UML:TaggedValue tag="StsBaseAddress" value="net.tcp://cloud.lollisoft.de:8000"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
-					<UML:TaggedValue tag="ProductCode" value="63B6F751-9A8A-4AA4-811C-D46D7386F30A"/>
+					<UML:TaggedValue tag="ProductCode" value="B6C71D9D-AE7C-42ED-B764-BB57E72477C3"/>
 				</UML:ModelElement.taggedValue>
 				<UML:Namespace.ownedElement>
-					<UML:Class name="ApplicationProvider" xmi.id="BOUML_0x49b01e0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="ApplicationProvider" xmi.id="BOUML_0x21716e0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="userid" xmi.id="BOUML_0x49b1eb0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="userid" xmi.id="BOUML_0x2171410" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="lockedout" xmi.id="BOUML_0x49b1e00" visibility="private" ownerScope="instance">
+							<UML:Attribute name="lockedout" xmi.id="BOUML_0x2171360" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_1"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="creationdate" xmi.id="BOUML_0x49b1d50" visibility="private" ownerScope="instance">
+							<UML:Attribute name="creationdate" xmi.id="BOUML_0x21712b0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_2"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="email" xmi.id="BOUML_0x49b1ca0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="email" xmi.id="BOUML_0x2171200" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="description" xmi.id="BOUML_0x49b1bf0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="description" xmi.id="BOUML_0x2171150" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="ApplicationProvider_ApplicationRelease (userid)" xmi.id="BOUML_0x49b1b30">
+					<UML:Association name="ApplicationProvider_ApplicationRelease (userid)" xmi.id="BOUML_0x2171090">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider_ApplicationRelease" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x49b0140">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider_ApplicationRelease" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x2171640">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b0140"/>
+									<UML:Class xmi.idref="BOUML_0x2171640"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -69,9 +69,9 @@
 									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
 								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b01e0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x21716e0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b01e0"/>
+									<UML:Class xmi.idref="BOUML_0x21716e0"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -82,7 +82,7 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="ApplicationProvider_ApplicationRelease" xmi.id="BOUML_0x49b0140" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="ApplicationProvider_ApplicationRelease" xmi.id="BOUML_0x2171640" visibility="public" isAbstract="false" isActive="false" >
 						<UML:ModelElement.taggedValue>
 							<UML:TaggedValue tag="owner_match_method" value="subquery_join"/>
 						</UML:ModelElement.taggedValue>
@@ -96,33 +96,33 @@
 							<UML:TaggedValue tag="owner_match_inner" value="email"/>
 						</UML:ModelElement.taggedValue>
 						<UML:Classifier.feature>
-							<UML:Attribute name="applicationname" xmi.id="BOUML_0x49b1940" visibility="private" ownerScope="instance">
+							<UML:Attribute name="applicationname" xmi.id="BOUML_0x2172e40" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="lockedout" xmi.id="BOUML_0x49b1890" visibility="private" ownerScope="instance">
+							<UML:Attribute name="lockedout" xmi.id="BOUML_0x2172d90" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_1"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="creationdate" xmi.id="BOUML_0x49b17e0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="creationdate" xmi.id="BOUML_0x2172ce0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_2"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="description" xmi.id="BOUML_0x49b1730" visibility="private" ownerScope="instance">
+							<UML:Attribute name="description" xmi.id="BOUML_0x2172c30" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="ApplicationRelease (applicationname)" xmi.id="BOUML_0x49b1670">
+					<UML:Association name="ApplicationRelease (applicationname)" xmi.id="BOUML_0x2172b70">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationRelease" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x49b00a0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationRelease" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x21715a0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b00a0"/>
+									<UML:Class xmi.idref="BOUML_0x21715a0"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -131,9 +131,9 @@
 									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
 								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider_ApplicationRelease" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b0140">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider_ApplicationRelease" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x2171640">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b0140"/>
+									<UML:Class xmi.idref="BOUML_0x2171640"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -144,11 +144,11 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Association name="PromotedArticles (applicationname)" xmi.id="BOUML_0x49b15b0">
+					<UML:Association name="PromotedArticles (applicationname)" xmi.id="BOUML_0x2172ab0">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="PromotedArticles" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x49b1f60">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="PromotedArticles" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x2171500">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b1f60"/>
+									<UML:Class xmi.idref="BOUML_0x2171500"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -157,9 +157,9 @@
 									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
 								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider_ApplicationRelease" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b0140">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApplicationProvider_ApplicationRelease" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x2171640">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b0140"/>
+									<UML:Class xmi.idref="BOUML_0x2171640"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -170,43 +170,43 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="ApplicationRelease" xmi.id="BOUML_0x49b00a0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="ApplicationRelease" xmi.id="BOUML_0x21715a0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="release" xmi.id="BOUML_0x49b1380" visibility="private" ownerScope="instance">
+							<UML:Attribute name="release" xmi.id="BOUML_0x2172880" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_2"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="releasepage" xmi.id="BOUML_0x49b12d0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="releasepage" xmi.id="BOUML_0x21727d0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="releasenodes" xmi.id="BOUML_0x49b1220" visibility="private" ownerScope="instance">
+							<UML:Attribute name="releasenodes" xmi.id="BOUML_0x2172720" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Class name="PromotedArticles" xmi.id="BOUML_0x49b1f60" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="PromotedArticles" xmi.id="BOUML_0x2171500" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="publicationdate" xmi.id="BOUML_0x49b1170" visibility="private" ownerScope="instance">
+							<UML:Attribute name="publicationdate" xmi.id="BOUML_0x2172670" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_2"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="title" xmi.id="BOUML_0x49b10c0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="title" xmi.id="BOUML_0x21725c0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="teaser" xmi.id="BOUML_0x49b1010" visibility="private" ownerScope="instance">
+							<UML:Attribute name="teaser" xmi.id="BOUML_0x2172510" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="article" xmi.id="BOUML_0x49b2f50" visibility="private" ownerScope="instance">
+							<UML:Attribute name="article" xmi.id="BOUML_0x2172460" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_3"/>
 								</UML:StructuralFeature.type>

@@ -12,7 +12,7 @@
 		<UML:Namespace.ownedElement>
 			<UML:Package xmi.id="BOUML_0x49b03d0" name ="StsManagement">
 				<UML:ModelElement.taggedValue>
-					<UML:TaggedValue tag="ProductVersion" value="1.0.1.0"/>
+					<UML:TaggedValue tag="ProductVersion" value="1.0.2.0"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="DataStoreBaseAddress" value="net.tcp://cloud.lollisoft.de:49381"/>
@@ -30,7 +30,7 @@
 					<UML:TaggedValue tag="CustomDataStorePath" value="lbDMFManagerStsStore"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
-					<UML:TaggedValue tag="ProductCode" value="80E9011E-B4D8-4897-96D3-112B2108431C"/>
+					<UML:TaggedValue tag="ProductCode" value="25FA890F-B0E9-4775-8783-53F9B93CAC58"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="BuildStsService" value="yes"/>
