@@ -229,7 +229,7 @@
 							<type xmi:type="uml:Class" xmi:idref="BOUML_0x33702_4"/>
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:masterdetail_action"/>
-								<taggedValue tag="lbDMF:masterdetail_action:sourcecolumn" value="parametername"/>
+								<taggedValue tag="lbDMF:masterdetail_action:sourcecolumn" value="name"/>
 							</xmi:Extension>
 						</ownedAttribute>
 					</packagedElement>
@@ -3213,7 +3213,7 @@
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21882_0" sourcecolumn="name" base_Element="BOUML_0x21882_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x25e02_0" sourcecolumn="name" base_Element="BOUML_0x25e02_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x25f02_0" sourcecolumn="name" base_Element="BOUML_0x25f02_0"/>
-	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x3d782_0" sourcecolumn="parametername" base_Element="BOUML_0x3d782_0"/>
+	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x3d782_0" sourcecolumn="name" base_Element="BOUML_0x3d782_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x21782_0" sourcecolumn="userid" base_Element="BOUML_0x21782_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x29402_0" sourcecolumn="name" base_Element="BOUML_0x29402_0"/>
 	<lbDMF:masterdetail_action xmi:id="BOUML_STELT_0x29482_0" sourcecolumn="name" base_Element="BOUML_0x29482_0"/>

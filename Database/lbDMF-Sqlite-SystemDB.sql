@@ -650,16 +650,16 @@ INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
 
 
 -- Build up a master detail action
-INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x3d782_0', 'Parameter', 1, 'parametername', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x3d782_0', 'Parameter', 1, 'name', id from "anwendungen" where name = 'lbDMF Manager';	
 INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
 'Master detail action for Parameter', 
 1, 
 'FormularFieldParameter', 
 (select id from action_types where bezeichnung = 'Open detail form'), 
-(select id from actions where target = 'BOUML_0x3d782_0' and source = 'parametername'));
+(select id from actions where target = 'BOUML_0x3d782_0' and source = 'name'));
 INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
 (SELECT id FROM "formulare" WHERE "name" = 'FormularFields' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
-(SELECT id from actions where target = 'BOUML_0x3d782_0' and source = 'parametername'), 
+(SELECT id from actions where target = 'BOUML_0x3d782_0' and source = 'name'), 
 'action_master_detail_BOUML_0x3d782_0'
 );
 --UPDATE actions set name = 'Parameter' where name = 'BOUML_0x3d782_0';
