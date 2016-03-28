@@ -1,6 +1,6 @@
 format 75
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 68
+  revision 70
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -525,6 +525,18 @@ ${inlines}
 	ncouples 2
 	key "lbDMF:dropdown:column" value "name"
 	key "lbDMF:dropdown:table" value "dbtype"
+      end
+
+      classrelation 251778 // Parameter (Parameter)
+	relation 247170 ---> name "Parameter"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Parameter" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 251778 // Parameter (Parameter)
+	  b parent class_ref 210690 // FormularFieldParameter
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "parametername"
       end
     end
 
@@ -1940,6 +1952,18 @@ ${inlines}
 	ncouples 2
 	key "lbDMF:dropdown:column" value "tablename"
 	key "lbDMF:dropdown:table" value "dbtable"
+      end
+
+      classrelation 251906 // Parameter (Parameter)
+	relation 247298 ---> name "Parameter"
+	  stereotype "lbDMF:masterdetail_action"
+	  a role_name "Parameter" protected
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 251906 // Parameter (Parameter)
+	  b parent class_ref 204162 // ColumnParameter
+	ncouples 1
+	key "lbDMF:masterdetail_action:sourcecolumn" value "parametername"
       end
     end
 
