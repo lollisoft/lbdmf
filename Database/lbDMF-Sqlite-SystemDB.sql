@@ -602,6 +602,8 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'dbtypeid', 'formularfields', 1, 'name', 'dbtype', 'Integer', id FROM "formulare" WHERE name = 'FormularFields' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
+-- Field name Parameter
+
 
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'FormularFields', 1);
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'FormularFields', 1);
@@ -634,6 +636,33 @@ INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
 'action_master_detail_BOUML_0x25f02_0'
 );
 --UPDATE actions set name = 'DBType' where name = 'BOUML_0x25f02_0';
+	
+-- Association from FormularFields to FormularFieldParameter
+-- From formular 'BOUML_0x24b02_4'
+-- To   formular 'BOUML_0x33702_4'
+
+
+
+
+-- Create sqlite based action
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x3d782_0'.
+
+
+
+-- Build up a master detail action
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x3d782_0', 'Parameter', 1, '', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Parameter', 
+1, 
+'FormularFieldParameter', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x3d782_0' and source = ''));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'FormularFields' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x3d782_0' and source = ''), 
+'action_master_detail_BOUML_0x3d782_0'
+);
+--UPDATE actions set name = 'Parameter' where name = 'BOUML_0x3d782_0';
 	
 
 -- Create operation definitions
@@ -1864,12 +1893,41 @@ INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formulari
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, fkname, fktable, dbtype, formularid) SELECT 'dbtableid', 'dbcolumn', 1, 'tablename', 'dbtable', 'Integer', id FROM "formulare" WHERE name = 'Columns' and anwendungid in (select id from anwendungen where name = 'lbDMF Manager');
 
 
+-- Field name Parameter
+
 
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('ID', 'Columns', 1);
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('id', 'Columns', 1);
 INSERT OR IGNORE INTO "column_types" (name, tablename, ro) values ('Id', 'Columns', 1);
 
 
+-- Association from Columns to ColumnParameter
+-- From formular 'BOUML_0x28102_4'
+-- To   formular 'BOUML_0x31d82_4'
+
+
+
+
+-- Create sqlite based action
+-- Select action type ActionType: lbDMF:masterdetail_action, Property: 'BOUML_0x3d802_0'.
+
+
+
+-- Build up a master detail action
+INSERT OR IGNORE INTO actions (target, name, typ, source, anwendungenid) select 'BOUML_0x3d802_0', 'Parameter', 1, '', id from "anwendungen" where name = 'lbDMF Manager';	
+INSERT OR IGNORE INTO action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
+'Master detail action for Parameter', 
+1, 
+'ColumnParameter', 
+(select id from action_types where bezeichnung = 'Open detail form'), 
+(select id from actions where target = 'BOUML_0x3d802_0' and source = ''));
+INSERT OR IGNORE INTO formular_actions (formular, action, event) VALUES(
+(SELECT id FROM "formulare" WHERE "name" = 'Columns' AND "anwendungid" IN (SELECT id  FROM "anwendungen" WHERE "name" = 'lbDMF Manager')),
+(SELECT id from actions where target = 'BOUML_0x3d802_0' and source = ''), 
+'action_master_detail_BOUML_0x3d802_0'
+);
+--UPDATE actions set name = 'Parameter' where name = 'BOUML_0x3d802_0';
+	
 
 -- Create operation definitions
 
