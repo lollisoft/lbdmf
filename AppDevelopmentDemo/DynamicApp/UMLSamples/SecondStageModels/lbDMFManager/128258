@@ -1,6 +1,6 @@
 format 75
 "lbDMFManager_Entities" // DMFToUML::lbDMFManager_Entities
-  revision 44
+  revision 46
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1667,9 +1667,9 @@ ${inlines}
       classrelation 238722 // <association>
 	relation_ref 234114 // <association>
 	ncouples 3
-	key "lbDMF:relationship:sourcecolumn" value ""
-	key "lbDMF:relationship:table" value ""
-	key "lbDMF:relationship:order" value ""
+	key "lbDMF:relationship:sourcecolumn" value "id"
+	key "lbDMF:relationship:table" value "formularfields"
+	key "lbDMF:relationship:order" value "-1"
       end
     end
 
@@ -2727,9 +2727,9 @@ ${inlines}
       classrelation 231938 // <association>
 	relation_ref 227458 // <association>
 	ncouples 3
-	key "lbDMF:relationship:sourcecolumn" value ""
-	key "lbDMF:relationship:table" value ""
-	key "lbDMF:relationship:order" value ""
+	key "lbDMF:relationship:sourcecolumn" value "id"
+	key "lbDMF:relationship:table" value "dbcolumn"
+	key "lbDMF:relationship:order" value "-1"
       end
     end
 
