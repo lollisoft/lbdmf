@@ -107,6 +107,8 @@ Don't use the association name here. If one has two or more associations between
     <xsl:param name="TargetDBVersion"/><!-- What is the version of the database -->
 -- Fill schema tables dbtables
 
+DELETE FROM dbcolumnparameter WHERE dbcolumnid in (SELECT id FROM dbcolumn WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')));
+
 DELETE FROM dbcolumn WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbforeignkey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 DELETE FROM dbprimarykey WHERE dbtableid in (SELECT id FROM dbtable WHERE tablename = '<xsl:value-of select="$ClassName"/>' AND anwendungenid = (SELECT id FROM anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
@@ -157,6 +159,18 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 </xsl:variable>	
 
 INSERT INTO dbcolumn (columnname, columnremarks, typename, columnsize, nullable, tablename, dbtableid) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@xmi:id"/>', '<xsl:value-of select="$dbtype"/>', -1, 0, '<xsl:value-of select="$ClassName"/>', id from dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>';
+
+<xsl:choose>
+
+	<xsl:when test="$stereoType='password'">INSERT OR IGNORE INTO "dbcolumnparameter" (parametername, parametervalue, dbcolumnid) VALUES ('stereotype', 'PasswordField', (SELECT id from "dbcolumn" WHERE columnname = '<xsl:value-of select="@name"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND dbtableid = (SELECT id FROM dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>'));</xsl:when>
+	<xsl:when test="$stereoType='claim'">INSERT OR IGNORE INTO "dbcolumnparameter" (parametername, parametervalue, dbcolumnid) VALUES ('stereotype', 'ClaimField', (SELECT id from "dbcolumn" WHERE columnname = '<xsl:value-of select="@name"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND dbtableid = (SELECT id FROM dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>'));</xsl:when>
+	<xsl:when test="$stereoType='approvedclaim'">INSERT OR IGNORE INTO "dbcolumnparameter" (parametername, parametervalue, dbcolumnid) VALUES ('stereotype', 'ApprovedClaimField', (SELECT id from "dbcolumn" WHERE columnname = '<xsl:value-of select="@name"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND dbtableid = (SELECT id FROM dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>'));</xsl:when>
+	<xsl:when test="$stereoType='salt'">INSERT OR IGNORE INTO "dbcolumnparameter" (parametername, parametervalue, dbcolumnid) VALUES ('stereotype', 'HiddenField', (SELECT id from "dbcolumn" WHERE columnname = '<xsl:value-of select="@name"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND dbtableid = (SELECT id FROM dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>'));</xsl:when>
+	<xsl:when test="$stereoType='timeout'">INSERT OR IGNORE INTO "dbcolumnparameter" (parametername, parametervalue, dbcolumnid) VALUES ('stereotype', 'HiddenField', (SELECT id from "dbcolumn" WHERE columnname = '<xsl:value-of select="@name"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND dbtableid = (SELECT id FROM dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>'));</xsl:when>
+	<xsl:when test="$stereoType='onetimetoken'">INSERT OR IGNORE INTO "dbcolumnparameter" (parametername, parametervalue, dbcolumnid) VALUES ('stereotype', 'HiddenField', (SELECT id from "dbcolumn" WHERE columnname = '<xsl:value-of select="@name"/>' AND tablename = '<xsl:value-of select="$ClassName"/>' AND dbtableid = (SELECT id FROM dbtable where tablename = '<xsl:value-of select="$ClassName"/>' AND tableremarks = '<xsl:value-of select="$ClassId"/>'));</xsl:when>
+
+</xsl:choose>
+
 	</xsl:for-each>
 	
 

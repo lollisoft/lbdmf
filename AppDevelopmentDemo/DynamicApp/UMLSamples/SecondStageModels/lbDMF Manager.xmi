@@ -1082,7 +1082,7 @@
 						<ownedAttribute xmi:type="uml:Property" name="parametervalue" xmi:id="BOUML_0x3da82_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#String"/>
 						</ownedAttribute>
-						<ownedAttribute xmi:type="uml:Property" name="columnid" xmi:id="BOUML_0x3db02_1" visibility="protected">
+						<ownedAttribute xmi:type="uml:Property" name="dbcolumnid" xmi:id="BOUML_0x3db02_1" visibility="protected">
 							<type xmi:type="uml:PrimitiveType" href="http://schema.omg.org/spec/UML/2.1/uml.xml#Integer"/>
 							<xmi:Extension extender="Bouml">
 								<stereotype name="lbDMF:dropdown"/>

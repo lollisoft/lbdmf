@@ -68,10 +68,23 @@
 </xsl:choose>
 </xsl:variable>
 
-delete from formularfieldparameter where formularfieldid IN (select id from formularfields where formularid in (select id from formulare where anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')))
+delete from "formularfieldparameter" where formularfieldid IN (select id from formularfields where name = '<xsl:value-of select="$FieldName"/>' AND tablename = '<xsl:value-of select="$TableName"/>' AND formularid in (select id from formulare where name = '<xsl:value-of select="$ClassName"/>' AND anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')));
 
 
 INSERT OR IGNORE INTO "formularfields" (name, tablename, isfk, dbtype, formularid) SELECT '<xsl:value-of select="$FieldName"/>', '<xsl:value-of select="$TableName"/>', 0, '<xsl:value-of select="$MappedDataType"/>', id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
+
+<xsl:choose>
+
+	<xsl:when test="$StereoType='password'">INSERT OR IGNORE INTO "formularfieldparameter" (parametername, parametervalue, formularfieldid) VALUES ('stereotype', 'PasswordField', (SELECT id from "formularfields" WHERE name = '<xsl:value-of select="$FieldName"/>' AND tablename = '<xsl:value-of select="$TableName"/>' AND formularid = (SELECT id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'))));</xsl:when>
+	<xsl:when test="$StereoType='claim'">INSERT OR IGNORE INTO "formularfieldparameter" (parametername, parametervalue, formularfieldid) VALUES ('stereotype', 'ClaimField', (SELECT id from "formularfields" WHERE name = '<xsl:value-of select="$FieldName"/>' AND tablename = '<xsl:value-of select="$TableName"/>' AND formularid = (SELECT id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'))));</xsl:when>
+	<xsl:when test="$StereoType='approvedclaim'">INSERT OR IGNORE INTO "formularfieldparameter" (parametername, parametervalue, formularfieldid) VALUES ('stereotype', 'ApprovedClaimField', (SELECT id from "formularfields" WHERE name = '<xsl:value-of select="$FieldName"/>' AND tablename = '<xsl:value-of select="$TableName"/>' AND formularid = (SELECT id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'))));</xsl:when>
+	<xsl:when test="$StereoType='salt'">INSERT OR IGNORE INTO "formularfieldparameter" (parametername, parametervalue, formularfieldid) VALUES ('stereotype', 'HiddenField', (SELECT id from "formularfields" WHERE name = '<xsl:value-of select="$FieldName"/>' AND tablename = '<xsl:value-of select="$TableName"/>' AND formularid = (SELECT id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'))));</xsl:when>
+	<xsl:when test="$StereoType='timeout'">INSERT OR IGNORE INTO "formularfieldparameter" (parametername, parametervalue, formularfieldid) VALUES ('stereotype', 'HiddenField', (SELECT id from "formularfields" WHERE name = '<xsl:value-of select="$FieldName"/>' AND tablename = '<xsl:value-of select="$TableName"/>' AND formularid = (SELECT id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'))));</xsl:when>
+	<xsl:when test="$StereoType='onetimetoken'">INSERT OR IGNORE INTO "formularfieldparameter" (parametername, parametervalue, formularfieldid) VALUES ('stereotype', 'HiddenField', (SELECT id from "formularfields" WHERE name = '<xsl:value-of select="$FieldName"/>' AND tablename = '<xsl:value-of select="$TableName"/>' AND formularid = (SELECT id FROM "formulare" WHERE name = '<xsl:value-of select="$ClassName"/>' and anwendungid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'))));</xsl:when>
+
+	<xsl:otherwise></xsl:otherwise>
+	
+</xsl:choose>
 
 </xsl:template>
 

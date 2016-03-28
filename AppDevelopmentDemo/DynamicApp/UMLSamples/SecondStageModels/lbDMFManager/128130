@@ -1,6 +1,6 @@
 format 75
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 71
+  revision 72
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -2284,7 +2284,7 @@ ${inlines}
 	idl_decl ""
       end
 
-      attribute 252674 "columnid"
+      attribute 252674 "dbcolumnid"
 	protected explicit_type "int"
 	stereotype "lbDMF:dropdown"
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
