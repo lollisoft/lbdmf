@@ -54,6 +54,10 @@
 <xsl:when test="$StereoType='' and $DataType='image'">Image</xsl:when>
 <!-- Forward the types into the model. They are later used in code generation and probably mapped there (finally) -->
 <xsl:when test="$StereoType='password'">PasswordField</xsl:when>
+<!-- A claim is some data that is used for security management (a proved value like a telephone number that has been called back to check) -->
+<xsl:when test="$StereoType='claim'">ClaimField</xsl:when>
+<!-- A claim that has to be checked back -->
+<xsl:when test="$StereoType='approvedclaim'">ApprovedClaimField</xsl:when>
 <xsl:when test="$StereoType='salt'">HiddenField</xsl:when>
 <xsl:when test="$StereoType='timeout'">HiddenField</xsl:when>
 <xsl:when test="$StereoType='onetimetoken'">HiddenField</xsl:when>
