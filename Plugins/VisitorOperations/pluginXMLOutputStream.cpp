@@ -521,7 +521,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 		
 		if (dbcolumns->isNullable()) {
 			*oStream << 
-			"<column tablename=\"" << dbcolumns->getColumnTableName() << "\" tableid=\"" << dbcolumns->getTableID() << 
+			"<column ID=\""  << dbcolumns->getColumnID() << "\" tablename=\"" << dbcolumns->getColumnTableName() << "\" tableid=\"" << dbcolumns->getTableID() << 
 			"\" name=\"" << dbcolumns->getColumnName() <<
 			"\" remarks=\"" << dbcolumns->getColumnComment() <<
 			"\" typ=\"" << dbcolumns->getColumnTyp() <<
@@ -530,7 +530,7 @@ void LB_STDCALL lbXMLOutputStream::visit(lb_I_DBColumns* dbcolumns) {
 			"\"/>" << "\n";
 		} else {
 			*oStream << 
-			"<column tablename=\"" << dbcolumns->getColumnTableName() << "\" tableid=\"" << dbcolumns->getTableID() <<
+			"<column ID=\""  << dbcolumns->getColumnID() << "\" tablename=\"" << dbcolumns->getColumnTableName() << "\" tableid=\"" << dbcolumns->getTableID() <<
 			"\" name=\"" << dbcolumns->getColumnName() <<
 			"\" remarks=\"" << dbcolumns->getColumnComment() <<
 			"\" typ=\"" << dbcolumns->getColumnTyp() <<
