@@ -1,6 +1,6 @@
 format 75
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 72
+  revision 73
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -1963,7 +1963,7 @@ ${inlines}
 	    classrelation_ref 251906 // Parameter (Parameter)
 	  b parent class_ref 204162 // ColumnParameter
 	ncouples 1
-	key "lbDMF:masterdetail_action:sourcecolumn" value "parametername"
+	key "lbDMF:masterdetail_action:sourcecolumn" value "columnname"
       end
     end
 

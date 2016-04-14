@@ -1,5 +1,5 @@
 #ifndef VERSIONINFO
 
-#define VERSIONINFO "1.2.0"
+#define VERSIONINFO "1.3.1"
 
 #endif // VERSIONINFO
