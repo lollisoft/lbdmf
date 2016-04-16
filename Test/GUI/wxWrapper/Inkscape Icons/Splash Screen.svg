@@ -1255,10 +1255,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.61580177"
-     inkscape:cx="-240.89581"
+     inkscape:cx="382.37739"
      inkscape:cy="530.39998"
      inkscape:document-units="px"
-     inkscape:current-layer="g3200"
+     inkscape:current-layer="g3653"
      inkscape:window-width="1920"
      inkscape:window-height="1058"
      inkscape:window-x="1280"
@@ -1292,8 +1292,8 @@
          inkscape:export-xdpi="34.66547"
          inkscape:export-ydpi="34.66547">
         <rect
-           inkscape:export-ydpi="34.751293"
-           inkscape:export-xdpi="34.751293"
+           inkscape:export-ydpi="34.624123"
+           inkscape:export-xdpi="34.624123"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
            style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:2.04053569px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            id="rect2685"
@@ -1309,14 +1309,14 @@
            x="10.064828"
            y="6.5614548"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293" />
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123" />
         <g
            id="g43078"
            transform="matrix(2.4486338,0.5623169,-0.4648497,2.2772154,-2196.0661,-921.92118)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293">
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123">
           <path
              transform="matrix(0.479653,0.00386615,-0.00372447,0.461999,899.3227,-259.237)"
              d="m 533.63243,1211.5447 a 88.938736,110.2067 0 0 1 -88.93873,110.2067 88.938736,110.2067 0 0 1 -88.93874,-110.2067 88.938736,110.2067 0 0 1 88.93874,-110.2067 88.938736,110.2067 0 0 1 88.93873,110.2067 z"
@@ -1518,8 +1518,8 @@
            id="g10242"
            transform="matrix(0.4274444,0,0,0.4542842,113.49253,364.04639)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293">
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123">
           <path
              style="font-size:12px;fill:#eaf536;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3.69637966"
              sodipodi:nodetypes="ccccccc"
@@ -1556,14 +1556,14 @@
            x="140.194"
            y="483.47852"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293" />
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123" />
         <g
            id="g1752"
            transform="matrix(0,-0.1902834,0.1790411,0,317.12419,256.36386)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293">
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123">
           <path
              d="m 322.99934,-148.98563 -142.97459,174.562173 70.86614,0 0,442.913387 141.73228,0 0,-442.913387 70.86614,0 -140.48997,-174.562173 z"
              id="path1061"
@@ -1581,8 +1581,8 @@
            id="g90615"
            transform="matrix(0,-0.1902834,-0.1790411,0,432.98122,586.63533)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293">
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123">
           <path
              d="m 322.99934,-148.98563 -142.97459,174.562173 70.86614,0 0,442.913387 141.73228,0 0,-442.913387 70.86614,0 -140.48997,-174.562173 z"
              id="path90617"
@@ -1600,8 +1600,8 @@
            id="g90673"
            transform="matrix(0.1790411,0,0,0.1902834,502.09954,329.82221)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293">
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123">
           <path
              d="m 322.99934,-148.98563 -142.97459,174.562173 70.86614,0 0,442.913387 141.73228,0 0,-442.913387 70.86614,0 -140.48997,-174.562173 z"
              id="path90675"
@@ -1619,8 +1619,8 @@
            id="g90679"
            transform="matrix(0.1790411,0,0,-0.1902834,191.341,452.95406)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293">
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123">
           <path
              d="m 322.99934,-148.98563 -142.97459,174.562173 70.86614,0 0,442.913387 141.73228,0 0,-442.913387 70.86614,0 -140.48997,-174.562173 z"
              id="path90681"
@@ -1637,8 +1637,8 @@
         <g
            id="g3169"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293"
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123"
            transform="translate(0.549799,-2.953574)">
           <g
              transform="matrix(0.3815885,0,0,0.405549,130.13012,167.65498)"
@@ -1826,8 +1826,8 @@
            id="g2512"
            transform="matrix(0.273818,0,0,0.273818,404.32569,160.10528)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293">
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123">
           <g
              style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica;-inkscape-font-specification:Helvetica"
              transform="translate(-213.09945,-186.66851)"
@@ -2168,12 +2168,12 @@
            sodipodi:linespacing="125%"
            transform="scale(0.90334905,1.1069918)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293"><tspan
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123"><tspan
              sodipodi:role="line"
              x="10.262201"
              y="66.510239"
-             id="tspan2293">wxWrapper 1.2.0</tspan><tspan
+             id="tspan2293">wxWrapper 1.3.1</tspan><tspan
              sodipodi:role="line"
              x="10.262201"
              y="173.72321"
@@ -2214,8 +2214,8 @@
            id="text1571"
            sodipodi:linespacing="125%"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-           inkscape:export-xdpi="34.751293"
-           inkscape:export-ydpi="34.751293"><tspan
+           inkscape:export-xdpi="34.624123"
+           inkscape:export-ydpi="34.624123"><tspan
              sodipodi:role="line"
              id="tspan1573"
              x="445.59824"
