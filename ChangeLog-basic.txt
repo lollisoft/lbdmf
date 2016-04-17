@@ -1,136 +1,466 @@
+2016-04-16 14:13  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Doc/UMLModelWherePasswordStereotypesAreStored.png,
+	  BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
+	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: New image
+	  and version change.
+
+2016-04-16 14:10  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.pdf,
+	  ApplicationprototypingDokumentation.odt: Added new documentation
+	  parts for version 1.3.1 that explains security issues to be
+	  addressed by stereotypes.
+
+2016-04-14 19:40  lollisoft
+
+	* lbdmf-jenkins.spec: Version change and UML model changes.
+
+2016-04-14 18:06  lollisoft
+
+	* jenkinsrelease.sh, Test/GUI/wxWrapper/postlink-mac.sh: Version
+	  change and UML model changes.
+
+2016-04-14 18:00  lollisoft
+
+	* bindist.iss, dist.iss, docdist.iss,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/StsManagement/128002,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/StsManagement/128002.diagram,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/159490.diagram,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj,
+	  include/lbVersionInfo.h, interfaces/lbInterfaces.h, lbdmf.spec:
+	  Version change and UML model changes.
+
+2016-04-10 22:15  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/: PasswordFieldsModeled.png,
+	  UMLPasswordsModeled.png: New pictures for the documantation.
+
+2016-04-10 09:19  lollisoft
+
+	* Plugins/VisitorOperations/pluginXMLOutputStream.cpp: Added
+	  writing column ID value.
+
+2016-04-02 08:08  lollisoft
+
+	* Database/lbDMF-Sqlite-SystemDB.sql: Wrong column name.
+
+2016-03-29 00:36  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl:
+	  Fixed variable name usage and brackets.
+
+2016-03-28 21:50  lollisoft
+
+	* Database/lbDMF-Sqlite-SystemDB.sql: Fixed column name.
+
+2016-03-28 19:47  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/:
+	  XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.Sqlite.xsl,
+	  XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl,
+	  UMLSamples/SecondStageModels/lbDMF Manager.xmi,
+	  UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  UMLSamples/SecondStageModels/lbDMFManager/159490.diagram,
+	  UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj: Added
+	  support for the new column and field parameters.
+
+2016-03-28 16:19  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj,
+	  Database/lbDMF-Sqlite-SystemDB.sql: Fixed master detail parameter
+
+2016-03-28 14:16  lollisoft
+
+	* Database/lbDMF-Sqlite-SystemDB.sql,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/159490.diagram,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj:
+	  Missing relation definition parameters
+
+2016-03-28 12:25  lollisoft
+
+	* Database/lbDMF-Sqlite-SystemDB.sql: Added new master detail
+	  actions for the parameters.
+
+2016-03-28 12:17  lollisoft
+
+	* Database/lbDMF-Sqlite-SystemDB.sql: SQL syntax fix.
+
+2016-03-28 12:15  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/createDefaultStoredProcs.xsl:
+	  Fix a SQL syntax error.
+
+2016-03-28 07:38  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  OpenSourceStoreReview/128258,
+	  OpenSourceStoreReview/OpenSourceStoreReview.prj,
+	  OpenSourceStoreReview/generation_settings,
+	  OpenSourceStoreReviewApp.xmi, StsManagement.xmi: New product
+	  version.
+
+2016-03-28 07:37  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/StsManagement/:
+	  128002, 128002.diagram, StsManagement.prj, generation_settings:
+	  Some changes.
+
+2016-03-28 07:34  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.Sqlite.xsl:
+	  Added new types for claims and approved claims.
+
+2016-03-28 07:31  lollisoft
+
+	* Database/lbDMF-Sqlite-ApplicationDB.sql,
+	  Database/lbDMF-Sqlite-SystemDB.sql,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128258,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/159490.diagram,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/generation_settings,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj:
+	  Added new meta model storage for parameters.
+
+2016-03-20 21:41  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/:
+	  128130, 128258, 128258.diagram, 128386.diagram, 159490.diagram:
+	  Added column parameter table and form.
+
+2016-03-20 11:12  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/lbDynamicAppStorage.cpp,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.Sqlite.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/createDefaultStoredProcs.xsl,
+	  Database/lbDMF-Sqlite-ApplicationDB.sql, Plugins/makefile,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp,
+	  Plugins/VisitorOperations/pluginInputStream.cpp,
+	  Plugins/VisitorOperations/pluginJSONInputStream.cpp,
+	  Plugins/VisitorOperations/pluginJSONOutputStream.cpp,
+	  Plugins/VisitorOperations/pluginOutputStream.cpp,
+	  Plugins/VisitorOperations/pluginXMLOutputStream.cpp,
+	  Plugins/lbDMFDataModel/lbParameters.cpp,
+	  Plugins/lbDMFDataModel/lbParameters.h,
+	  Plugins/lbDMFDataModel/plugin.cpp,
+	  interfaces/lbInterfaces-sub-visitor.h,
+	  Plugins/wxWidgets/wxPropertyForm/lbControlFactory.h,
+	  interfaces/lbInterfaces.h: Added new model elements for storing
+	  parameters (for columns and formularfields).
+
+2016-03-19 17:21  lollisoft
+
+	* Plugins/makefile: Deactivated Graylog plugin. Compilation on
+	  Windows didn't work.
+
+2016-03-13 00:24  lollisoft
+
+	* Plugins/makefile: Fixing circular dependencies.
+
+2016-03-12 23:22  lollisoft
+
+	* Plugins/makefile: Changed build rules.
+
+2016-03-11 11:06  lollisoft
+
+	* Plugins/makefile: Chenged some boost build settings to reduce hdd
+	  space used.
+
+2016-02-28 09:58  lollisoft
+
+	* Plugins/makefile: Fixed boost build for Windows according to
+
+	  http://www.boost.org/doc/libs/1_60_0/more/getting_started/windows.html
+
+2016-02-28 08:11  lollisoft
+
+	* Plugins/makefile: Fixed boost build for Windows according to
+
+	  http://www.boost.org/doc/libs/1_60_0/more/getting_started/windows.html
+
+2016-02-28 08:02  lollisoft
+
+	* Plugins/makefile: Fixed boost build for Windows according to
+
+	  http://www.boost.org/doc/libs/1_60_0/more/getting_started/windows.html
+
+2016-02-21 22:05  lollisoft
+
+	* Plugins/makefile: Changed boost Windows toolset.
+
+2016-02-21 21:04  lollisoft
+
+	* Plugins/makefile: Removed chmod.
+
+2016-02-21 20:08  lollisoft
+
+	* BaseDevelopment/Makefile: Removed pwd and fixed libxslt library
+	  extraction.
+
+2016-02-21 19:41  lollisoft
+
+	* BaseDevelopment/Makefile: Corrected path.
+
+2016-02-21 19:02  lollisoft
+
+	* BaseDevelopment/Makefile: Corrected path.
+
+2016-02-21 18:40  lollisoft
+
+	* BaseDevelopment/Makefile: Corrected path.
+
+2016-02-21 17:25  lollisoft
+
+	* BaseDevelopment/Makefile, Plugins/makefile: Removing downloading
+	  dependencies.
+
+2016-02-21 13:06  lollisoft
+
+	* Plugins/makefile: Fixing slash issue - hopefully.
+
+2016-02-21 10:49  lollisoft
+
+	* Plugins/makefile: Tested usage of 7z and corrected command.
+
+2016-02-21 01:05  lollisoft
+
+	* Plugins/makefile: Removed exclude parameter.
+
+2016-02-21 00:16  lollisoft
+
+	* watcomenv.bat, Plugins/makefile: Trying 7z.
+
+2016-02-20 23:48  lollisoft
+
+	* Plugins/makefile: Trying umask.
+
+2016-02-20 21:40  lollisoft
+
+	* Plugins/makefile: Moved same owner parameter.
+
+2016-02-20 21:16  lollisoft
+
+	* Plugins/makefile: Permission issue.
+
+2016-02-20 20:04  lollisoft
+
+	* watcomenv.bat, Plugins/makefile: Externalized ca bundle file
+	  location.
+
+2016-02-20 19:20  lollisoft
+
+	* BaseDevelopment/Makefile, Plugins/makefile: Fixed missing cacert
+	  parameter.
+
+2016-02-20 18:21  lollisoft
+
+	* BaseDevelopment/Makefile: Changed wget to curl.
+
+2016-02-20 17:53  lollisoft
+
+	* BaseDevelopment/Makefile: Chenged wget to curl.
+
+2016-02-20 16:48  lollisoft
+
+	* watcomenv.bat: Fixed path.
+
+2016-02-20 15:05  lollisoft
+
+	* Plugins/makefile: Using curl.
+
+2016-02-20 13:47  lollisoft
+
+	* buildwxWidgets_MinGW.bat, make_src_dist.bat, dist.iss: Changed
+	  wget usage to curl.
+
+2016-02-20 13:46  lollisoft
+
+	* Plugins/makefile: Fixed curl command.
+
+2016-02-20 12:58  lollisoft
+
+	* Plugins/makefile: Added support for specific curl version on PPC
+	  Mac OS X Leopard due to build in has certificate failures.
+
+2016-02-20 09:57  lollisoft
+
+	* Plugins/makefile: Removed ignoring certificate switches because
+	  within jenkins build configuration a download of prerequisites
+	  works.
+
+2016-02-16 20:03  lollisoft
+
+	* Plugins/makefile: Temporarly ignore ssl issus.
+
+2016-02-16 06:31  lollisoft
+
+	* Plugins/makefile: Added option to ignore certificate errors for
+	  boost.
+
+2016-02-13 08:04  lollisoft
+
+	* Plugins/makefile: Simply the bootstrap.bat file is not executable
+	  within the tar gz package. Fix that.
+
+2016-02-07 10:40  lollisoft
+
+	* Plugins/makefile: Changed to directory, changed make settings for
+	  bjam and used bat extension for both.
+
+2016-02-06 11:06  lollisoft
+
+	* Plugins/makefile: Adding path to the commands.
+
+2016-02-06 09:24  lollisoft
+
+	* Plugins/makefile: Using pwd.
+
+2016-02-06 08:10  lollisoft
+
+	* Plugins/makefile: Calling bootstrap without using extension.
+
+2016-01-31 12:59  lollisoft
+
+	* Plugins/makefile: Added some debug output where am I.
+
+2016-01-31 11:20  lollisoft
+
+	* Plugins/makefile: Removed changing directory.
+
+2016-01-30 15:25  lollisoft
+
+	* Plugins/makefile: Excluding doc folder. On Windows the long file
+	  names or path makes problems. Documentation isn't really required to
+	  build. Second try.
+
+2016-01-30 14:18  lollisoft
+
+	* Plugins/makefile: Always download dependencies.
+
+2016-01-30 13:50  lollisoft
+
+	* Plugins/makefile: Excluding doc folder. On Windows the long file
+	  names or path makes problems. Documentation isn't really required to
+	  build.
+
+2016-01-30 12:38  lollisoft
+
+	* Plugins/makefile: Changed output location.
+
+2016-01-30 11:57  lollisoft
+
+	* Plugins/makefile: Added prefix to wget.
+
+2016-01-30 10:16  lollisoft
+
+	* Plugins/makefile: Added dependency.
+
+2016-01-24 13:38  lollisoft
+
+	* Plugins/makefile: Fixed path issues.
+
+2016-01-24 12:35  lollisoft
+
+	* Plugins/makefile: Removed chmod stuff and using bat file on
+	  Windows.
+
+2016-01-24 11:26  lollisoft
+
+	* Plugins/makefile: Fixed separator issue.
+
+2016-01-24 10:25  lollisoft
+
+	* Plugins/makefile: Added separate build tasks for Windows.
+
+2016-01-23 08:24  lollisoft
+
+	* Plugins/makefile: Added prefix.
+
+2016-01-16 21:31  lollisoft
+
+	* Plugins/makefile: Corrected PPC detection.
+
+2016-01-16 19:00  lollisoft
+
+	* Plugins/makefile: Detect OSX arch and if not PPC, restrict to
+	  i386.
+
+2016-01-16 13:09  lollisoft
+
+	* Plugins/makefile: Fixed Linux make failure.
+
+2015-12-07 22:01  lollisoft
+
+	* Doc/Architecture/Architecture-10-Pages.pdf: Initial preview of
+	  architecture document.
+
+2015-12-06 14:09  lollisoft
+
+	* Plugins/: makefile, lbGraylogAdapter/makefile.module: Added
+	  prefix usage and missing libraries to link on linux.
+
+2015-12-06 12:57  lollisoft
+
+	* Plugins/makefile: Splitted build definitions for os types.
+
+2015-12-06 12:20  lollisoft
+
+	* Plugins/makefile: Test logging without using threads as I am not
+	  using threads yet.
+
+2015-12-04 06:57  lollisoft
+
+	* Plugins/makefile: Using export NO_BZIP2=1
+
+2015-11-28 07:22  lollisoft
+
+	* Plugins/makefile: Corrected build file.
+
+2015-11-26 06:53  lollisoft
+
+	* Plugins/makefile: Added some debug info.
+
+2015-11-22 10:20  lollisoft
+
+	* BaseDevelopment/lbclasses/misc.cpp, Plugins/makefile,
+	  Plugins/lbGraylogAdapter/lbGraylogAdapter.cpp,
+	  Plugins/lbGraylogAdapter/lbGraylogAdapter.h,
+	  Plugins/lbGraylogAdapter/makefile.module,
+	  Plugins/lbGraylogAdapter/plugin.cpp: Added a new plugin to
+	  integrate logging with Graylog. Including first trial to get the
+	  code build on Linux and Mac. Windows may require curl.
+
+2015-11-08 08:58  lollisoft
+
+	* ChangeLog-basic.txt: New changelog for release 1.2.0
+
 2015-11-08 08:56  lollisoft
 
 	* AppDevelopmentDemo/DynamicApp/Doc/:
 	  ApplicationprototypingDokumentation.odt,
 	  ApplicationprototypingDokumentation.pdf: Added documentation for
 	  release 1.2.0.
-
-2015-11-07 17:47  lollisoft
-
-	* jenkinsrelease.sh: Changed filename. Need a checklist what to do
-	  for a release.
-
-2015-11-07 16:06  lollisoft
-
-	* bindist.iss, dist.iss, docdist.iss, lbdmf-jenkins.spec,
-	  lbdmf.spec, BaseDevelopment/splash.png,
-	  Test/GUI/wxWrapper/postlink-mac.sh,
-	  Test/GUI/wxWrapper/splash.png, Test/GUI/wxWrapper/Inkscape
-	  Icons/Splash Screen.svg, include/lbVersionInfo.h,
-	  interfaces/lbInterfaces.h: Changed version.
-
-2015-11-07 11:42  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
-	  XMIImport.CreateDBSchema.Sqlite.xsl,
-	  XMISysImport.FillSchemaTables.Sqlite.xsl: Fixed XMI reimport
-	  issue. Also tested is reimport using an extended model so that new
-	  tables can be added with their relations. A downgrade to the non
-	  extended version is possible but questionable.
-
-2015-11-07 08:33  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl:
-	  Bugfix: Creating dbprimarykey entries filter was wrong. Filter for
-	  deleting dbtable entries was also wrong.
-
-2015-10-31 12:55  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/AddressBook.xmi:
-	  Bugfix: Now supporting multiple relations between two classes. This
-	  was not possible and lead to errors instead of missing feature
-	  warnings.
-
-	  This is a model testing the feature.
-
-2015-10-31 12:51  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.CreateDBSchema.Sqlite.xsl:
-	  Bugfix: Now supporting multiple relations between two classes. This
-	  was not possible and lead to errors instead of missing feature
-	  warnings.
-
-2015-10-25 19:13  lollisoft
-
-	* interfaces/lbInterfaces-sub-ui.h,
-	  Plugins/wxWidgets/wxPropertyForm/lbPropertyForm.cpp,
-	  Plugins/wxWidgets/wxPropertyForm/lbPropertyForm.h,
-	  Plugins/wxWidgets/wxPropertyForm/lbPropertyPanelHandler.cpp,
-	  Plugins/wxWidgets/wxPropertyForm/makefile.module,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
-	  Test/GUI/wxWrapperDLL/wxWrapperDLL.h: Fixed form cleanup code to
-	  better support new property forms.
-
-2015-08-27 16:15  lollisoft
-
-	* interfaces/lbInterfaces-sub-visitor.h,
-	  Plugins/wxWidgets/wxPropertyForm/lbControlFactory.h,
-	  Plugins/wxWidgets/wxPropertyForm/lbControlFactoryVisitor.cpp,
-	  Plugins/wxWidgets/wxPropertyForm/lbPropertyForm.cpp,
-	  Plugins/wxWidgets/wxPropertyForm/lbPropertyForm.h,
-	  Plugins/wxWidgets/wxPropertyForm/lbPropertyPanelHandler.cpp,
-	  Plugins/wxWidgets/wxPropertyForm/lbPropertyPanelHandler.h: First
-	  basic implementation of a property dialog using a visitor factory.
-
-2015-07-12 14:13  lollisoft
-
-	* bindist.iss,
-	  Plugins/wxWidgets/wxPropertyForm/lbPropertyPanelHandler.cpp:
-	  Added new plugin into deployment and code to instantiate the dialog.
-
-2015-07-12 12:05  lollisoft
-
-	* Plugins/: makefile, DatabaseForm/lbDatabaseDialog.cpp,
-	  wxWidgets/wxPropertyForm/lbControlFactory.cpp,
-	  wxWidgets/wxPropertyForm/lbControlFactory.h,
-	  wxWidgets/wxPropertyForm/lbPropertyForm.cpp,
-	  wxWidgets/wxPropertyForm/lbPropertyForm.h,
-	  wxWidgets/wxPropertyForm/lbPropertyPanelHandler.cpp,
-	  wxWidgets/wxPropertyForm/lbPropertyPanelHandler.h,
-	  wxWidgets/wxPropertyForm/makefile.module,
-	  wxWidgets/wxPropertyForm/plugin.cpp: Added new property dialog
-	  and panel implementations. A first step toward workflow enabled
-	  dialogs.
-
-2015-06-27 07:06  lollisoft
-
-	* BaseDevelopment/Makefile: Deactivated goldparser engine stuff.
-
-2015-06-21 10:39  lollisoft
-
-	* Test/GUI/wxWrapper/postlink-mac.sh: Fixed copying libraries for
-	  main application.
-
-2015-06-04 23:38  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
-	  Corrected stereotype handling.
-
-2015-05-30 20:39  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.CreateDBSchema.Sqlite.xsl,
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.Sqlite.xsl,
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl,
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl,
-	  Plugins/DatabaseLayerGateway/lbDB.cpp: Added support for yet
-	  missing data types.
-
-2015-05-10 16:54  lollisoft
-
-	* ChangeLog-basic.txt: Version change
-
-2015-05-10 16:52  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.odt,
-	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf,
-	  BaseDevelopment/splash.png, interfaces/lbInterfaces.h,
-	  Test/GUI/wxWrapper/splash.png, Test/GUI/wxWrapper/Inkscape
-	  Icons/Splash Screen.svg: Changed splash image, documentation and
-	  doxygen version.
 
