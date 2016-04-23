@@ -1,0 +1,59 @@
+format 75
+
+classcanvas 128002 class_ref 128002 // Application
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 55 281 2000
+end
+classcanvas 128130 class_ref 128130 // Machine
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 500 307 2000
+end
+classcanvas 128258 class_ref 128258 // Environment
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 501 40 2000
+end
+note 128386 "Development
+Test
+PreProduction
+Production"
+  xyzwh 671 41 2000 111 79
+classcanvas 128642 class_ref 128386 // Application_Environment
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 24 56 2000
+end
+note 129154 "A machine is allocated to an environment"
+  xyzwh 682 300 2000 115 63
+classcanvas 129410 class_ref 128514 // LogEntry
+  draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
+  xyz 313 466 2000
+end
+relationcanvas 128770 relation_ref 128002 // Name
+  from ref 128258 z 2001 label "Name" italic xyz 326 66 3000 stereotype "<<masterdetail_action>>" xyz 276 80 3000 to ref 128642
+  role_a_pos 196 62 3000 role_b_pos 421 62 3000
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 128898 relation_ref 128130 // Name
+  from ref 128002 z 2001 label "Name" italic xyz 88 178 3000 to ref 128642
+  role_a_pos 115 111 3000 role_b_pos 115 262 3000
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129026 relation_ref 128258 // Name
+  from ref 128258 z 2001 label "Name" italic xyz 534 199 3000 stereotype "<<masterdetail_action>>" xyz 484 213 3000 to ref 128130
+  role_a_pos 561 288 3000 role_b_pos 561 127 3000
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129666 relation_ref 128514 // Name
+  from ref 128130 z 2001 label "Name" italic xyz 426.5 409 3000 to ref 129410
+  role_a_pos 391 450 3000 role_b_pos 449 345 3000
+  no_multiplicity_a no_multiplicity_b
+end
+relationcanvas 129794 relation_ref 128642 // Name
+  from ref 128002 z 2001 label "Name" italic xyz 217 405 3000 stereotype "<<masterdetail_action>>" xyz 167 419 3000 to ref 129410
+  role_a_pos 252 468 3000 role_b_pos 167 349 3000
+  no_multiplicity_a no_multiplicity_b
+end
+line 128514 -_-_
+  from ref 128386 z 2001 to ref 128258
+line 129282 -_-_
+  from ref 129154 z 2001 to ref 128130
+end
