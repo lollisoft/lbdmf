@@ -1,6 +1,6 @@
 format 75
 "DatabaseLogging"
-  revision 1
+  revision 6
   modified_by 2 "lothar"
 
 
@@ -38,5 +38,10 @@ format 75
 
   mark_for_import
   
+  ncouples 4
+  key "gxmi path" value "C:/lbDMF/UMLSamples/InitialModels/DatabaseLogging.xmi"
+  key "gxmi gen views" value "no"
+  key "gxmi encoding" value "ISO-8859-1"
+  key "gxmi taggedvalue" value "1"
   package_ref 128002 // DatabaseLogging
 end
