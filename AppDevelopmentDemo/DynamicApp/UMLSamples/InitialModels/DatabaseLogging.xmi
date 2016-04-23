@@ -1,0 +1,226 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<XMI xmi.version="1.2" xmlns:UML="org.omg.xmi.namespace.UML">
+<XMI.header>
+	<XMI.documentation>
+		<XMI.exporter>Bouml</XMI.exporter>
+		<XMI.exporterVersion>1.4.6</XMI.exporterVersion>
+	</XMI.documentation>
+	<XMI.metamodel XMI.name="UML" XMI.version="1.4"/>
+</XMI.header>
+<XMI.content>
+	<UML:Model name="DatabaseLogging" xmi.id="BOUML_0x2221b90">
+		<UML:Namespace.ownedElement>
+			<UML:Package xmi.id="BOUML_0x22218c0" name ="DatabaseLogging">
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="ProductVersion" value="1.0.0.0"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="DataStoreBaseAddress" value="net.tcp://cloud.lollisoft.de:49381"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="UpgradeCode" value="5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="StsBaseAddress" value="net.tcp://cloud.lollisoft.de:8000"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="ProductCode" value="5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"/>
+				</UML:ModelElement.taggedValue>
+				<UML:Namespace.ownedElement>
+					<UML:Class name="Application" xmi.id="BOUML_0x22216e0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x22212b0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x2221200" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Description" xmi.id="BOUML_0x2221150" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="Application_Environment (Name)" xmi.id="BOUML_0x2221360">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application_Environment" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x2221500">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x2221500"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x22216e0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x22216e0"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association name="LogEntry (Name)" xmi.id="BOUML_0x2221090">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="LogEntry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x2221460">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x2221460"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x22216e0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x22216e0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Machine" xmi.id="BOUML_0x2221640" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x2222c50" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x2222ba0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="LogEntry (Name)" xmi.id="BOUML_0x2222d00">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="LogEntry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x2221460">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x2221460"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Machine" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x2221640">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x2221640"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="DeploymentEnvironment" xmi.id="BOUML_0x22215a0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x2222970" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x22228c0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Description" xmi.id="BOUML_0x2222810" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="Application_Environment (Name)" xmi.id="BOUML_0x2222750">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application_Environment" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x2221500">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x2221500"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Environment" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x22215a0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x22215a0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association name="Machine (Name)" xmi.id="BOUML_0x2222ae0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Machine" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x2221640">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x2221640"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Environment" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x22215a0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x22215a0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="Application_Environment" xmi.id="BOUML_0x2221500" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x22225e0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Class name="LogEntry" xmi.id="BOUML_0x2221460" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Message" xmi.id="BOUML_0x2222530" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Severity" xmi.id="BOUML_0x2222480" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_2"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="When" xmi.id="BOUML_0x22223d0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_3"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+				<!-- for pack DatabaseLogging-->
+				</UML:Namespace.ownedElement>
+			</UML:Package>
+			<UML:DataType xmi.id="BOUML_datatype_1" name = "bigstring" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_3" name = "datetime" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_2" name = "int" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_0" name = "string" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+		</UML:Namespace.ownedElement>
+	</UML:Model>
+</XMI.content>
+</XMI>
