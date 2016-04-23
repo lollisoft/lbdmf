@@ -1,6 +1,6 @@
 format 75
 "DatabaseLogging" // DatabaseLogging
-  revision 2
+  revision 6
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -26,6 +26,12 @@ format 75
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
+  ncouples 5
+  key "ProductVersion" value "1.0.0.0"
+  key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
+  key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
+  key "UpgradeCode" value "5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"
+  key "ProductCode" value "5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"
   classview 128002 "Model"
     //class diagram settings
     draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -110,7 +116,7 @@ format 75
       idl_decl ""
       explicit_switch_type ""
       
-      classrelation 128642 // Environmenr (Name)
+      classrelation 128642 // Name
 	relation_ref 128258 // Name
       end
 
@@ -141,7 +147,7 @@ format 75
       end
     end
 
-    class 128258 "Environment"
+    class 128258 "DeploymentEnvironment"
       visibility package 
       cpp_decl ""
       java_decl ""
@@ -191,8 +197,8 @@ format 75
 	  stereotype "masterdetail_action"
 	  a role_name "Machine" private
 	    classrelation_ref 128514 // Machine (Name)
-	  b role_name "Environmenr" private
-	    classrelation_ref 128642 // Environmenr (Name)
+	  b role_name "Environment" private
+	    classrelation_ref 128642 // Name
       end
     end
 
