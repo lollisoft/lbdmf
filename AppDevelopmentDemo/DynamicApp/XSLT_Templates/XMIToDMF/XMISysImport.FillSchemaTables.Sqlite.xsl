@@ -143,7 +143,8 @@ INSERT INTO dbtable (catalogname, schemaname, tablename, tabletype, tableremarks
 <xsl:variable name="dbtype">
 <xsl:choose>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='bool'">BIT</xsl:when>
-	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='date'">DATETIME</xsl:when>
+	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='date'">DATE</xsl:when>
+	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='datetime'">DATETIME</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='int'">int4</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='string'">bpchar</xsl:when>
 	<xsl:when test="//UML:DataType[@xmi.id=$dbtyperef]/@name='phonenumber'">bpchar</xsl:when>
