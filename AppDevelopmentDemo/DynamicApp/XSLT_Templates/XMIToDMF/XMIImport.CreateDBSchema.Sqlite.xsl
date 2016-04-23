@@ -209,6 +209,7 @@ INSERT INTO "lbDMF_ForeignKeys" ("PKTable", "PKColumn", "FKTable", "FKColumn") V
       <xsl:when test="$typename='integer'">INTEGER</xsl:when>
       <xsl:when test="$typename='float'">FLOAT</xsl:when>
       <xsl:when test="$typename='date'">DATE</xsl:when>
+      <xsl:when test="$typename='datetime'">DATETIME</xsl:when>
       <xsl:when test="$typename='shortstring'">CHAR(20)</xsl:when>
       <xsl:when test="$typename='string'">CHAR(255)</xsl:when>
       <xsl:when test="$typename='phonenumber'">CHAR(30)</xsl:when>
