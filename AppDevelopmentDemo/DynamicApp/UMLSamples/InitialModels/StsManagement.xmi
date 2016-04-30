@@ -8,17 +8,20 @@
 	<XMI.metamodel XMI.name="UML" XMI.version="1.4"/>
 </XMI.header>
 <XMI.content>
-	<UML:Model name="StsManagement" xmi.id="BOUML_0x49b06a0">
+	<UML:Model name="StsManagement" xmi.id="BOUML_0x126930">
 		<UML:Namespace.ownedElement>
-			<UML:Package xmi.id="BOUML_0x49b03d0" name ="StsManagement">
+			<UML:Package xmi.id="BOUML_0x140260" name ="StsManagement">
 				<UML:ModelElement.taggedValue>
-					<UML:TaggedValue tag="ProductVersion" value="1.0.2.0"/>
+					<UML:TaggedValue tag="ProductVersion" value="1.0.1.0"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="DataStoreBaseAddress" value="net.tcp://cloud.lollisoft.de:49381"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="CustomDataStoreFile" value="lbDMFManagerStsStore"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingStrategy" value="client"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="UpgradeCode" value="633C13D5-F277-47CB-9E82-0533D83E1507"/>
@@ -30,30 +33,36 @@
 					<UML:TaggedValue tag="CustomDataStorePath" value="lbDMFManagerStsStore"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
-					<UML:TaggedValue tag="ProductCode" value="25FA890F-B0E9-4775-8783-53F9B93CAC58"/>
+					<UML:TaggedValue tag="ProductCode" value="80E9011E-B4D8-4897-96D3-112B2108431C"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="BuildStsService" value="yes"/>
 				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingVendorName" value="Lollisoft"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingImplementation" value="client"/>
+				</UML:ModelElement.taggedValue>
 				<UML:Namespace.ownedElement>
-					<UML:Class name="SecurityUsers" xmi.id="BOUML_0x49b0150" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="SecurityUsers" xmi.id="BOUML_0x12a0a0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="name" xmi.id="BOUML_0x49b1db0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="name" xmi.id="BOUML_0x128b90" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="vorname" xmi.id="BOUML_0x49b1d00" visibility="private" ownerScope="instance">
+							<UML:Attribute name="vorname" xmi.id="BOUML_0x128780" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="userid" xmi.id="BOUML_0x49b1c50" visibility="private" ownerScope="instance">
+							<UML:Attribute name="userid" xmi.id="BOUML_0x128680" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="passwort" xmi.id="BOUML_0x49b1ba0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="passwort" xmi.id="BOUML_0x163c10" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
@@ -64,7 +73,7 @@
 									<UML:TaggedValue tag="stereotype" value="password"/>
 								</UML:ModelElement.taggedValue>
 							</UML:Attribute>
-							<UML:Attribute name="secret" xmi.id="BOUML_0x49b1a30" visibility="private" ownerScope="instance">
+							<UML:Attribute name="secret" xmi.id="BOUML_0x140640" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
@@ -75,7 +84,7 @@
 									<UML:TaggedValue tag="stereotype" value="salt"/>
 								</UML:ModelElement.taggedValue>
 							</UML:Attribute>
-							<UML:Attribute name="email" xmi.id="BOUML_0x49b1980" visibility="private" ownerScope="instance">
+							<UML:Attribute name="email" xmi.id="BOUML_0x142ca0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
@@ -86,7 +95,7 @@
 									<UML:TaggedValue tag="stereotype" value="claim"/>
 								</UML:ModelElement.taggedValue>
 							</UML:Attribute>
-							<UML:Attribute name="passwordreset" xmi.id="BOUML_0x49b18d0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="passwordreset" xmi.id="BOUML_0x1415b0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_1"/>
 								</UML:StructuralFeature.type>
@@ -97,7 +106,7 @@
 									<UML:TaggedValue tag="stereotype" value="timeout"/>
 								</UML:ModelElement.taggedValue>
 							</UML:Attribute>
-							<UML:Attribute name="passwordresettoken" xmi.id="BOUML_0x49b1820" visibility="private" ownerScope="instance">
+							<UML:Attribute name="passwordresettoken" xmi.id="BOUML_0x13d800" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
@@ -110,11 +119,11 @@
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="(name)" xmi.id="BOUML_0x49b1ae0">
+					<UML:Association name="(name)" xmi.id="BOUML_0x13f960">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x49b0010">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x1427d0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b0010"/>
+									<UML:Class xmi.idref="BOUML_0x1427d0"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -123,9 +132,9 @@
 									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
 								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="SecurityUsers" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b0150">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="SecurityUsers" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x12a0a0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b0150"/>
+									<UML:Class xmi.idref="BOUML_0x12a0a0"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -136,45 +145,45 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="ApprovedAudiences" xmi.id="BOUML_0x49b00b0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="ApprovedAudiences" xmi.id="BOUML_0x122090" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="uri" xmi.id="BOUML_0x49b1650" visibility="private" ownerScope="instance">
+							<UML:Attribute name="uri" xmi.id="BOUML_0x138e30" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="description" xmi.id="BOUML_0x49b15a0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="description" xmi.id="BOUML_0x702c210" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="certificate_store_name" xmi.id="BOUML_0x49b1430" visibility="private" ownerScope="instance">
+							<UML:Attribute name="certificate_store_name" xmi.id="BOUML_0x70673e0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="certificate_store_location" xmi.id="BOUML_0x49b1380" visibility="private" ownerScope="instance">
+							<UML:Attribute name="certificate_store_location" xmi.id="BOUML_0x170540" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="certificate_find_type" xmi.id="BOUML_0x49b12d0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="certificate_find_type" xmi.id="BOUML_0x7098540" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="certificate_find_value" xmi.id="BOUML_0x49b1220" visibility="private" ownerScope="instance">
+							<UML:Attribute name="certificate_find_value" xmi.id="BOUML_0x708bde0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="(uri)" xmi.id="BOUML_0x49b14e0">
+					<UML:Association name="(uri)" xmi.id="BOUML_0x1a3260">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x49b0010">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x1427d0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b0010"/>
+									<UML:Class xmi.idref="BOUML_0x1427d0"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -183,9 +192,9 @@
 									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
 								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApprovedAudiences" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b00b0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApprovedAudiences" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x122090">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b00b0"/>
+									<UML:Class xmi.idref="BOUML_0x122090"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -196,11 +205,11 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Association name="(uri)" xmi.id="BOUML_0x49b1160">
+					<UML:Association name="(uri)" xmi.id="BOUML_0x70914f0">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x49b1ec0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x140f20">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b1ec0"/>
+									<UML:Class xmi.idref="BOUML_0x140f20"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -209,9 +218,9 @@
 									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
 								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApprovedAudiences" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b00b0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="ApprovedAudiences" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x122090">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b00b0"/>
+									<UML:Class xmi.idref="BOUML_0x122090"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -222,39 +231,39 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="SecurityUsers_ApprovedAudiences" xmi.id="BOUML_0x49b0010" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="SecurityUsers_ApprovedAudiences" xmi.id="BOUML_0x1427d0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="name" xmi.id="BOUML_0x49b2e90" visibility="private" ownerScope="instance">
+							<UML:Attribute name="name" xmi.id="BOUML_0x704c410" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Class name="Applications" xmi.id="BOUML_0x49b1f60" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="Applications" xmi.id="BOUML_0x70998c0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="name" xmi.id="BOUML_0x49b2de0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="name" xmi.id="BOUML_0x1dda50" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="applicationid" xmi.id="BOUML_0x49b2d30" visibility="private" ownerScope="instance">
+							<UML:Attribute name="applicationid" xmi.id="BOUML_0x7084c80" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="enablerequestaccount" xmi.id="BOUML_0x49b2c80" visibility="private" ownerScope="instance">
+							<UML:Attribute name="enablerequestaccount" xmi.id="BOUML_0x70476f0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_2"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="(name)" xmi.id="BOUML_0x49b2bc0">
+					<UML:Association name="(name)" xmi.id="BOUML_0x7098370">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x49b1ec0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x140f20">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b1ec0"/>
+									<UML:Class xmi.idref="BOUML_0x140f20"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -263,9 +272,9 @@
 									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
 								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Applications" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x49b1f60">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Applications" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x70998c0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x49b1f60"/>
+									<UML:Class xmi.idref="BOUML_0x70998c0"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -276,9 +285,9 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="Applications_ApprovedAudiences" xmi.id="BOUML_0x49b1ec0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="Applications_ApprovedAudiences" xmi.id="BOUML_0x140f20" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="name" xmi.id="BOUML_0x49b2a50" visibility="private" ownerScope="instance">
+							<UML:Attribute name="name" xmi.id="BOUML_0x1bedc0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
