@@ -1,6 +1,6 @@
 format 75
 "DatabaseLogging" // DatabaseLogging
-  revision 6
+  revision 11
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -26,12 +26,16 @@ format 75
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
-  ncouples 5
+  ncouples 9
   key "ProductVersion" value "1.0.0.0"
   key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
   key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
   key "UpgradeCode" value "5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"
   key "ProductCode" value "5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"
+  key "LoggingStrategy" value "server"
+  key "LoggingVendorName" value "Lollisoft"
+  key "LoggingImplementation" value "client"
+  key "LoggingService" value "generate"
   classview 128002 "Model"
     //class diagram settings
     draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
@@ -271,6 +275,97 @@ format 75
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      classrelation 142978 // Name
+	relation_ref 141826 // Name
+      end
+    end
+
+    class 135042 "IPAddress"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 149250 "Name"
+	private explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "The fully qualified name for the IP if found, otherwise narrow geo location name"
+      end
+
+      attribute 142338 "Value"
+	private explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 136322 // Poi
+	relation_ref 135298 // Poi
+      end
+
+      classrelation 142850 // LogEntry (Name)
+	relation 141826 o--- name "Name"
+	  a role_name "LogEntry" private
+	    classrelation_ref 142850 // LogEntry (Name)
+	  b role_name "IPAddress" private
+	    classrelation_ref 142978 // Name
+      end
+    end
+
+    class 135170 "GeoLocation"
+      visibility package 
+      cpp_decl ""
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 142466 "Lon"
+	private explicit_type "double"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 142594 "Lat"
+	private explicit_type "double"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 136194 // IPAddress (Poi)
+	relation 135298 o--- name "Poi"
+	  a role_name "IPAddress" private
+	    classrelation_ref 136194 // IPAddress (Poi)
+	  b role_name "GeoLocation" private
+	    classrelation_ref 136322 // Poi
+      end
+
+      attribute 142722 "Poi"
+	private explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "A point of interest if given, otherwise the combination of the geo point"
       end
     end
   end
