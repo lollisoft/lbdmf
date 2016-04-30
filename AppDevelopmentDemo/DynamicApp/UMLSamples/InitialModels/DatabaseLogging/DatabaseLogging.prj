@@ -1,6 +1,6 @@
 format 75
 "DatabaseLogging"
-  revision 5
+  revision 7
   modified_by 2 "lothar"
 
 
@@ -39,7 +39,7 @@ format 75
   mark_for_import
   
   ncouples 4
-  key "gxmi path" value "C:/lbDMF/UMLSamples/InitialModels/DatabaseLogging.xmi"
+  key "gxmi path" value "/Users/lothar/develop/Projects/CPP/AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/DatabaseLogging.xmi"
   key "gxmi gen views" value "no"
   key "gxmi encoding" value "ISO-8859-1"
   key "gxmi taggedvalue" value "1"
