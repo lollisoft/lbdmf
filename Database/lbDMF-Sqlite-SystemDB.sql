@@ -140,11 +140,17 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DataStoreBaseAddress', 'net.tcp://cloud.lollisoft.de:49381', (select id from anwendungen where name = 'lbDMF Manager'));
 		
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('LoggingStrategy', 'client', (select id from anwendungen where name = 'lbDMF Manager'));
+		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('UpgradeCode', '48dc066c-97cc-4512-8fa3-52bbe195e075', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('StsBaseAddress', 'net.tcp://cloud.lollisoft.de:8000', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductCode', 'ECDCC18A-BE39-40DA-8369-B360B1F0BD86', (select id from anwendungen where name = 'lbDMF Manager'));
+		
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('LoggingVendorName', 'Lollisoft', (select id from anwendungen where name = 'lbDMF Manager'));
+		
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('LoggingImplementation', 'client', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 		-- Class Anwendungen of type FORM found.
 
