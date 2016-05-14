@@ -1,6 +1,6 @@
 format 75
 "OpenSourceStoreReview" // OpenSourceStoreReview
-  revision 9
+  revision 10
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -27,11 +27,11 @@ format 75
   show_infonote default drawing_language default show_stereotype_properties default
   
   ncouples 8
-  key "ProductVersion" value "1.0.0.1"
+  key "ProductVersion" value "1.0.0.2"
   key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
   key "UpgradeCode" value "FE8317C9-2078-45F5-8CDD-B3E5F668110B"
   key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
-  key "ProductCode" value "B6C71D9D-AE7C-42ED-B764-BB57E72477C3"
+  key "ProductCode" value "CD0DCAAA-64D3-42C0-848C-B8AE492B6DE8"
   key "LoggingStrategy" value "client"
   key "LoggingVendorName" value "Lollisoft"
   key "LoggingImplementation" value "client"
