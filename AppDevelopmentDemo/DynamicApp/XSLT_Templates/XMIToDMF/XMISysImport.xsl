@@ -203,6 +203,7 @@ select GetOrCreateApplication('<xsl:value-of select="@name"/>');
         <xsl:call-template name="genAssociations">
           <xsl:with-param name="classID" select="$classID"/>
           <xsl:with-param name="package" select="$packagename"/>
+		  <xsl:with-param name="ApplicationName" select="$packagename"/>
         </xsl:call-template>
       </xsl:for-each>
 
@@ -593,12 +594,14 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
   <xsl:template name="genAssociations">
     <xsl:param name="classID"/>
     <xsl:param name="package"/>
+    <xsl:param name="ApplicationName"/>
 
 -- 	genAssociations called.
 
     <xsl:call-template name="associationsForClass_12">
       <xsl:with-param name="id" select="$classID"/>
       <xsl:with-param name="package" select="$package"/>
+      <xsl:with-param name="ApplicationName" select="$ApplicationName"/>
     </xsl:call-template>
   </xsl:template>
 
@@ -728,6 +731,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
   <xsl:template name="associationsForClass_12">
     <xsl:param name="id"/>
     <xsl:param name="package"/>    
+    <xsl:param name="ApplicationName"/>    
     <!-- UML1.4: -->
 -- associationsForClass_12 called.
     <xsl:for-each select="//UML:AssociationEnd/UML:AssociationEnd.participant/*[@xmi.idref = $id]">
@@ -803,10 +807,10 @@ INSERT OR IGNORE INTO foreignkey_visibledata_mapping (fkname, fktable, pkname, p
 -- ActionID from assocname2 = <xsl:value-of select="$assocname2"/> converted is <xsl:value-of select="$assocname1"/>
 
 <xsl:if test="$TargetDBType = 'Sqlite'">
-delete from formular_actions where action in (select ID from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>') AND formular IN (select id from "formulare" where anwendungid IN	(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>');
-delete from action_steps where actionid IN (select ID from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
-delete from action_parameters where actionid IN (select ID from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>');
-delete from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>';
+delete from formular_actions where action in (select ID from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>' AND anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')) AND formular IN (select id from "formulare" where anwendungid IN	(select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>');
+delete from action_steps where actionid IN (select ID from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>' AND anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+delete from action_parameters where actionid IN (select ID from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>' AND anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
+delete from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>' AND anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>');
 </xsl:if>
 
 <xsl:if test="$assocname1=''">
