@@ -1,6 +1,6 @@
 format 75
 "OpenSourceStoreReviewBrazil" // OpenSourceStoreReviewBrazil
-  revision 11
+  revision 15
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -28,10 +28,10 @@ format 75
   
   ncouples 10
   key "ProductVersion" value "1.0.0.2"
-  key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
-  key "UpgradeCode" value "FE8317C9-2078-45F5-8CDD-B3E5F668110B"
+  key "DataStoreBaseAddress" value "net.tcp://review.opensourcestore.org:49381"
+  key "UpgradeCode" value "C7E7C25B-4635-434F-B439-5F817BEC9532"
   key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
-  key "ProductCode" value "CD0DCAAA-64D3-42C0-848C-B8AE492B6DE8"
+  key "ProductCode" value "738C21DC-92D0-4DA2-827F-B82A0D8272DE"
   key "LoggingStrategy" value "client"
   key "LoggingVendorName" value "Lollisoft"
   key "LoggingImplementation" value "client"
