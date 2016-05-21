@@ -379,7 +379,7 @@ INSERT OR IGNORE INTO column_types (name, tablename, specialcolumn, controltype)
 
 INSERT OR IGNORE INTO "action_types" (bezeichnung) values ('Validator');
 
-INSERT OR IGNORE INTO "actions" (name, typ, source) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Validator'), '<xsl:value-of select="$parameters"/>');	
+INSERT OR IGNORE INTO "actions" (name, typ, source, anwendungenid) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Validator'), '<xsl:value-of select="$parameters"/>', (select id from anwendungen where name = '<xsl:value-of select="$applicationname"/>'));	
 
 INSERT OR IGNORE INTO "action_steps" (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
 
@@ -483,7 +483,7 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 
 INSERT OR IGNORE INTO "action_types" (bezeichnung) values ('Validator');
 
-insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Validator'), '<xsl:value-of select="$parameters"/>');	
+insert into actions (name, typ, source, anwendungenid) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Validator'), '<xsl:value-of select="$parameters"/>', (select id from anwendungen where name = '<xsl:value-of select="$applicationname"/>'));	
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
 
@@ -562,7 +562,7 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 
 insert into "action_types" (bezeichnung) values ('Validator');
 
-insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Validator'), '<xsl:value-of select="$parameters"/>');	
+insert into actions (name, typ, source, anwendungenid) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Validator'), '<xsl:value-of select="$parameters"/>', (select id from anwendungen where name = '<xsl:value-of select="$applicationname"/>'));	
 
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values ('Validation activity for <xsl:value-of select="@name"/>', 1, '<xsl:value-of select="@name"/>', 7, (select id from action_types where bezeichnung = 'Activity'));
 
@@ -814,12 +814,12 @@ delete from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:v
 </xsl:if>
 
 <xsl:if test="$assocname1=''">
-insert into actions (name, typ, source, target)
-values ('<xsl:value-of select="$otherClassName"/>', 1, 'ID', 0);
+insert into actions (name, typ, source, target, anwendungenid)
+values ('<xsl:value-of select="$otherClassName"/>', 1, 'ID', 0, (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 </xsl:if>
 <xsl:if test="$assocname1!=''">
-insert into actions (name, typ, source, target)
-values ('<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$assocname1"/>', 0);
+insert into actions (name, typ, source, target, anwendungenid)
+values ('<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$assocname1"/>', 0, (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'));
 </xsl:if>
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) values (
@@ -837,13 +837,12 @@ insert into formular_actions (formular, action, event) values (GetFormularId(Get
 <xsl:if test="$TargetDBType = 'Sqlite'">
 insert into action_steps (bezeichnung, a_order_nr, what, type, actionid) 
 values ('open <xsl:value-of select="$otherClassName"/>', 1, '<xsl:value-of select="$otherClassName"/>', 4, 
-(select id from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>')); 
+(select id from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>' and anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>'))); 
 
 insert into formular_actions (formular, action, event) values (
-(select id from "formulare" where anwendungid in 
- (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') 
-	and name = '<xsl:value-of select="$thisClassName"/>'), 
-(select id from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>'), 'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
+(select id from "formulare" where anwendungid in (select id from "anwendungen" where name = '<xsl:value-of select="$package"/>') and name = '<xsl:value-of select="$thisClassName"/>'), 
+(select id from actions where name = '<xsl:value-of select="$thisClassName"/>_<xsl:value-of select="$assocname1"/>_<xsl:value-of select="$otherClassName"/>' and anwendungenid in (select id from anwendungen where name = '<xsl:value-of select="$ApplicationName"/>')),
+'evt_<xsl:value-of select="$otherClassName"/>_<xsl:value-of select="$thisClassName"/>');
 </xsl:if>
 </xsl:if>
 </xsl:if>
