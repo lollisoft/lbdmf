@@ -1,6 +1,6 @@
 format 75
 "DatabaseLogging" // DatabaseLogging
-  revision 14
+  revision 15
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -27,11 +27,11 @@ format 75
   show_infonote default drawing_language default show_stereotype_properties default
   
   ncouples 14
-  key "ProductVersion" value "1.0.0.0"
+  key "ProductVersion" value "1.0.0.1"
   key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
   key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
   key "UpgradeCode" value "5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"
-  key "ProductCode" value "5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"
+  key "ProductCode" value "DF682BC-8A4F-4841-9676-3FF4E9A1B8FB"
   key "LoggingStrategy" value "server"
   key "LoggingManufacturerName" value "Lollisoft Software Development"
   key "LoggingImplementation" value "client"
