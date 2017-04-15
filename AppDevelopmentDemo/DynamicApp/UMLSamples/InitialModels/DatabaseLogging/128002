@@ -1,6 +1,6 @@
 format 75
 "DatabaseLogging" // DatabaseLogging
-  revision 15
+  revision 16
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -31,13 +31,13 @@ format 75
   key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
   key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
   key "UpgradeCode" value "5C3474A3-2971-4C4D-8758-B1B3C50B8E3E"
-  key "ProductCode" value "DF682BC-8A4F-4841-9676-3FF4E9A1B8FB"
+  key "ProductCode" value "2AEFC778-5A91-4D56-867E-AD64B45661C7"
   key "LoggingStrategy" value "server"
   key "LoggingManufacturerName" value "Lollisoft Software Development"
   key "LoggingImplementation" value "client"
   key "LoggingService" value "generate"
   key "LoggingUpgradeCode" value "4FA4AA4E-1640-4218-BED5-864530C91CD3"
-  key "LoggingProductCode" value "A8FBF42C-E4AC-4A55-A83E-49D15EFDB717"
+  key "LoggingProductCode" value "FEF98ED7-3637-4CD4-BA20-3138AC3C9A3D"
   key "LoggingProductVersion" value "1.0.0.1"
   key "LoggingNamespaceName" value "Lollisoft"
   key "LoggingProductName" value "Lollisoft Logging Service"
