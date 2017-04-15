@@ -8,14 +8,14 @@
 	<XMI.metamodel XMI.name="UML" XMI.version="1.4"/>
 </XMI.header>
 <XMI.content>
-	<UML:Model name="DatabaseLogging" xmi.id="BOUML_0x126950">
+	<UML:Model name="DatabaseLogging" xmi.id="BOUML_0x126930">
 		<UML:Namespace.ownedElement>
-			<UML:Package xmi.id="BOUML_0x143e10" name ="DatabaseLogging">
+			<UML:Package xmi.id="BOUML_0x12b600" name ="DatabaseLogging">
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="ProductVersion" value="1.0.0.1"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
-					<UML:TaggedValue tag="LoggingProductCode" value="A8FBF42C-E4AC-4A55-A83E-49D15EFDB717"/>
+					<UML:TaggedValue tag="LoggingProductCode" value="FEF98ED7-3637-4CD4-BA20-3138AC3C9A3D"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="LoggingService" value="generate"/>
@@ -48,50 +48,50 @@
 					<UML:TaggedValue tag="LoggingProductVersion" value="1.0.0.1"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
-					<UML:TaggedValue tag="ProductCode" value="DF682BC-8A4F-4841-9676-3FF4E9A1B8FB"/>
+					<UML:TaggedValue tag="ProductCode" value="2AEFC778-5A91-4D56-867E-AD64B45661C7"/>
 				</UML:ModelElement.taggedValue>
 				<UML:ModelElement.taggedValue>
 					<UML:TaggedValue tag="LoggingImplementation" value="client"/>
 				</UML:ModelElement.taggedValue>
 				<UML:Namespace.ownedElement>
-					<UML:Class name="Application" xmi.id="BOUML_0x12a0c0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="Application" xmi.id="BOUML_0x150100" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Name" xmi.id="BOUML_0x128bb0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Name" xmi.id="BOUML_0x128b90" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x1406a0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x128fc0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Description" xmi.id="BOUML_0x13d860" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Description" xmi.id="BOUML_0x1431e0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_1"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="Application_Environment (Name)" xmi.id="BOUML_0x128440">
+					<UML:Association name="Application_Environment (Name)" xmi.id="BOUML_0x1437f0">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application_Environment" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x1a84d0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application_Environment" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x1408f0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x1a84d0"/>
+									<UML:Class xmi.idref="BOUML_0x1408f0"/>
 								</UML:AssociationEnd.participant>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x12a0c0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x150100">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x12a0c0"/>
+									<UML:Class xmi.idref="BOUML_0x150100"/>
 								</UML:AssociationEnd.participant>
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
 					<UML:Association name="LogEntry (Name)" xmi.id="BOUML_0x13f9c0">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="LogEntry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x140f80">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="LogEntry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x13a580">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x140f80"/>
+									<UML:Class xmi.idref="BOUML_0x13a580"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -100,9 +100,9 @@
 									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
 								</UML:ModelElement.taggedValue>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x12a0c0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x150100">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x12a0c0"/>
+									<UML:Class xmi.idref="BOUML_0x150100"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -113,58 +113,58 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="Machine" xmi.id="BOUML_0x1220b0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="Machine" xmi.id="BOUML_0x1290b0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Name" xmi.id="BOUML_0x13aa90" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Name" xmi.id="BOUML_0x1220b0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x138e50" visibility="private" ownerScope="instance">
+							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x1467a0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="LogEntry (Name)" xmi.id="BOUML_0x1407f0">
+					<UML:Association name="LogEntry (Name)" xmi.id="BOUML_0x13f700">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="LogEntry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x140f80">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="LogEntry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x13a580">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x140f80"/>
+									<UML:Class xmi.idref="BOUML_0x13a580"/>
 								</UML:AssociationEnd.participant>
 							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Machine" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x1220b0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Machine" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x1290b0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x1220b0"/>
+									<UML:Class xmi.idref="BOUML_0x1290b0"/>
 								</UML:AssociationEnd.participant>
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
 					<UML:Class name="DeploymentEnvironment" xmi.id="BOUML_0x142830" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Name" xmi.id="BOUML_0x156930" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Name" xmi.id="BOUML_0x13fef0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x13f700" visibility="private" ownerScope="instance">
+							<UML:Attribute name="ShortDescription" xmi.id="BOUML_0x129f60" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Description" xmi.id="BOUML_0x11a950" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Description" xmi.id="BOUML_0x142d00" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_1"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="Application_Environment (Name)" xmi.id="BOUML_0x143200">
+					<UML:Association name="Application_Environment (Name)" xmi.id="BOUML_0x1283e0">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application_Environment" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x1a84d0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Application_Environment" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x1408f0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x1a84d0"/>
+									<UML:Class xmi.idref="BOUML_0x1408f0"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -186,11 +186,11 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Association name="Machine (Name)" xmi.id="BOUML_0x12a520">
+					<UML:Association name="Machine (Name)" xmi.id="BOUML_0x11a950">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Machine" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x1220b0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Machine" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x1290b0">
 								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x1220b0"/>
+									<UML:Class xmi.idref="BOUML_0x1290b0"/>
 								</UML:AssociationEnd.participant>
 								<UML:ModelElement.stereotype>
 									<UML:Stereotype name="masterdetail_action"/>
@@ -212,37 +212,37 @@
 							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="Application_Environment" xmi.id="BOUML_0x1a84d0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="Application_Environment" xmi.id="BOUML_0x1408f0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Name" xmi.id="BOUML_0x1408f0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Name" xmi.id="BOUML_0x13b9f0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Class name="LogEntry" xmi.id="BOUML_0x140f80" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="LogEntry" xmi.id="BOUML_0x13a580" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Message" xmi.id="BOUML_0x143320" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Message" xmi.id="BOUML_0x14fc40" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_1"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Severity" xmi.id="BOUML_0x142e60" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Severity" xmi.id="BOUML_0x17d530" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_2"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="When" xmi.id="BOUML_0x13b9f0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="When" xmi.id="BOUML_0x147610" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_3"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Class name="IPAddress" xmi.id="BOUML_0x13a580" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="IPAddress" xmi.id="BOUML_0x13c7e0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Name" xmi.id="BOUML_0x13e370" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Name" xmi.id="BOUML_0x128e70" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
@@ -250,40 +250,40 @@
 									<UML:TaggedValue tag="documentation" value="The fully qualified name for the IP if found, otherwise narrow geo location name"/>
 								</UML:ModelElement.taggedValue>
 							</UML:Attribute>
-							<UML:Attribute name="Value" xmi.id="BOUML_0x13c510" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Value" xmi.id="BOUML_0x143ae0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="LogEntry (Name)" xmi.id="BOUML_0x141a70">
+					<UML:Association name="LogEntry (Name)" xmi.id="BOUML_0x13e3c0">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="LogEntry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x140f80">
-								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x140f80"/>
-								</UML:AssociationEnd.participant>
-							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="IPAddress" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x13a580">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="LogEntry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x13a580">
 								<UML:AssociationEnd.participant>
 									<UML:Class xmi.idref="BOUML_0x13a580"/>
 								</UML:AssociationEnd.participant>
 							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="IPAddress" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x13c7e0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x13c7e0"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
 						</UML:Association.connection>
 					</UML:Association>
-					<UML:Class name="GeoLocation" xmi.id="BOUML_0x13c7e0" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="GeoLocation" xmi.id="BOUML_0x156660" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Lon" xmi.id="BOUML_0x148ee0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Lon" xmi.id="BOUML_0x13a3d0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_4"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Lat" xmi.id="BOUML_0x13a3f0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Lat" xmi.id="BOUML_0x13beb0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_4"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="Poi" xmi.id="BOUML_0x17d5b0" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Poi" xmi.id="BOUML_0x1414c0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
@@ -293,16 +293,16 @@
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
-					<UML:Association name="IPAddress (Poi)" xmi.id="BOUML_0x13d430">
+					<UML:Association name="IPAddress (Poi)" xmi.id="BOUML_0x13e530">
 						<UML:Association.connection>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="IPAddress" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x13a580">
-								<UML:AssociationEnd.participant>
-									<UML:Class xmi.idref="BOUML_0x13a580"/>
-								</UML:AssociationEnd.participant>
-							</UML:AssociationEnd>
-							<UML:AssociationEnd visibility="private" ownerScope="instance" name="GeoLocation" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x13c7e0">
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="IPAddress" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x13c7e0">
 								<UML:AssociationEnd.participant>
 									<UML:Class xmi.idref="BOUML_0x13c7e0"/>
+								</UML:AssociationEnd.participant>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="GeoLocation" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x156660">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x156660"/>
 								</UML:AssociationEnd.participant>
 							</UML:AssociationEnd>
 						</UML:Association.connection>
