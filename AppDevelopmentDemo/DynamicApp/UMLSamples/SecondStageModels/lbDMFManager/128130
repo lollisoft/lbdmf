@@ -1,6 +1,6 @@
 format 75
 "lbDMF Manager" // DMFToUML::lbDMF Manager
-  revision 74
+  revision 75
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -28,12 +28,12 @@ format 75
   
   ncouples 8
   key "UpgradeCode" value "48dc066c-97cc-4512-8fa3-52bbe195e075"
-  key "ProductVersion" value "1.0.6.0"
-  key "ProductCode" value "ECDCC18A-BE39-40DA-8369-B360B1F0BD86"
+  key "ProductVersion" value "1.0.7.0"
+  key "ProductCode" value "5494B76A-60ED-4DB1-94D4-3C44FF658F9F"
   key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
   key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
   key "LoggingStrategy" value "client"
-  key "LoggingVendorName" value "Lollisoft"
+  key "LoggingNamespaceName" value "Lollisoft"
   key "LoggingImplementation" value "client"
   classview 128002 "Class View"
     //class diagram settings
