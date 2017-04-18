@@ -1,6 +1,6 @@
 format 75
 "OpenSourceStoreReviewBrazil" // OpenSourceStoreReviewBrazil
-  revision 15
+  revision 16
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -26,17 +26,18 @@ format 75
   package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
   show_infonote default drawing_language default show_stereotype_properties default
   
-  ncouples 10
-  key "ProductVersion" value "1.0.0.2"
+  ncouples 11
+  key "ProductVersion" value "1.0.1.0"
   key "DataStoreBaseAddress" value "net.tcp://review.opensourcestore.org:49381"
   key "UpgradeCode" value "C7E7C25B-4635-434F-B439-5F817BEC9532"
   key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
-  key "ProductCode" value "738C21DC-92D0-4DA2-827F-B82A0D8272DE"
+  key "ProductCode" value "A17EE5C5-1B26-4175-8B76-8E7D3C3AB018"
   key "LoggingStrategy" value "client"
-  key "LoggingVendorName" value "Lollisoft"
+  key "LoggingManufacturerName" value "Lollisoft Software Development"
   key "LoggingImplementation" value "client"
   key "ServiceCertFingerPrint" value "a5 22 4d f8 8c 63 e9 9f 08 38 c0 03 c6 98 b7 ea 1f 01 4e 89"
   key "STSCertFingerPrint" value "8f b4 3c 14 75 e8 ca dd 1d 20 46 c4 46 2e 19 ee d3 91 b1 55"
+  key "LoggingNamespaceName" value "Lollisoft"
   classview 128002 "Class View"
     //class diagram settings
     draw_all_relations default hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition default show_members_visibility default show_members_stereotype default show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default

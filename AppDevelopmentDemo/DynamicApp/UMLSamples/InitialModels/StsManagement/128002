@@ -1,6 +1,6 @@
 format 75
 "StsManagement" // StsManagement
-  revision 14
+  revision 15
   modified_by 2 "lothar"
   // class settings
   //class diagram settings
@@ -29,14 +29,14 @@ format 75
   ncouples 11
   key "DataStoreBaseAddress" value "net.tcp://cloud.lollisoft.de:49381"
   key "StsBaseAddress" value "net.tcp://cloud.lollisoft.de:8000"
-  key "ProductVersion" value "1.0.1.0"
+  key "ProductVersion" value "1.0.2.0"
   key "UpgradeCode" value "633C13D5-F277-47CB-9E82-0533D83E1507"
-  key "ProductCode" value "80E9011E-B4D8-4897-96D3-112B2108431C"
+  key "ProductCode" value "4E522EB0-A465-456C-B1F7-16F946C39B7D"
   key "BuildStsService" value "yes"
   key "CustomDataStorePath" value "lbDMFManagerStsStore"
   key "CustomDataStoreFile" value "lbDMFManagerStsStore"
   key "LoggingStrategy" value "client"
-  key "LoggingVendorName" value "Lollisoft"
+  key "LoggingNamespaceName" value "Lollisoft"
   key "LoggingImplementation" value "client"
   classview 128002 "Auth"
     //class diagram settings

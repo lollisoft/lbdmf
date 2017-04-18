@@ -24,13 +24,13 @@
 			<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f402_22" name ="DMFToUML">
 				<packagedElement xmi:type="uml:Package" xmi:id="BOUML_0x1f482_22" name ="lbDMF Manager">
 					<xmi:Extension extender="Bouml">
-						<taggedValue tag="ProductVersion" value="1.0.6.0"/>
+						<taggedValue tag="ProductVersion" value="1.0.7.0"/>
+						<taggedValue tag="LoggingNamespaceName" value="Lollisoft"/>
 						<taggedValue tag="DataStoreBaseAddress" value="net.tcp://cloud.lollisoft.de:49381"/>
 						<taggedValue tag="LoggingStrategy" value="client"/>
 						<taggedValue tag="UpgradeCode" value="48dc066c-97cc-4512-8fa3-52bbe195e075"/>
 						<taggedValue tag="StsBaseAddress" value="net.tcp://cloud.lollisoft.de:8000"/>
-						<taggedValue tag="ProductCode" value="ECDCC18A-BE39-40DA-8369-B360B1F0BD86"/>
-						<taggedValue tag="LoggingVendorName" value="Lollisoft"/>
+						<taggedValue tag="ProductCode" value="5494B76A-60ED-4DB1-94D4-3C44FF658F9F"/>
 						<taggedValue tag="LoggingImplementation" value="client"/>
 					</xmi:Extension>
 					<packagedElement xmi:type="uml:Class" name="Anwendungen" xmi:id="BOUML_0x1f682_4" visibility="package">
