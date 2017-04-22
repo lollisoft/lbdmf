@@ -136,7 +136,9 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('gxmi encoding', 'UTF-8', (select id from anwendungen where name = 'lbDMF Manager'));
 		
-insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductVersion', '1.0.6.0', (select id from anwendungen where name = 'lbDMF Manager'));
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductVersion', '1.0.7.0', (select id from anwendungen where name = 'lbDMF Manager'));
+		
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('LoggingNamespaceName', 'Lollisoft', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DataStoreBaseAddress', 'net.tcp://cloud.lollisoft.de:49381', (select id from anwendungen where name = 'lbDMF Manager'));
 		
@@ -146,9 +148,7 @@ insert into anwendungs_parameter (parametername, parametervalue, anwendungid) va
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('StsBaseAddress', 'net.tcp://cloud.lollisoft.de:8000', (select id from anwendungen where name = 'lbDMF Manager'));
 		
-insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductCode', 'ECDCC18A-BE39-40DA-8369-B360B1F0BD86', (select id from anwendungen where name = 'lbDMF Manager'));
-		
-insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('LoggingVendorName', 'Lollisoft', (select id from anwendungen where name = 'lbDMF Manager'));
+insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('ProductCode', '5494B76A-60ED-4DB1-94D4-3C44FF658F9F', (select id from anwendungen where name = 'lbDMF Manager'));
 		
 insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('LoggingImplementation', 'client', (select id from anwendungen where name = 'lbDMF Manager'));
 		
