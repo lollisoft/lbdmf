@@ -62,6 +62,8 @@ public:
 		lbDBColumnBinary,
 		lbDBColumnDate,
 		lbDBColumnFloat,
+		lbDBColumnDouble,
+		lbDBColumnDecimal,
 		lbDBColumnUnknown = 0x7FFFFFFF
 	};
 
