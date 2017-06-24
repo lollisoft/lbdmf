@@ -44,6 +44,8 @@
 <xsl:variable name="MappedDataType">
 <xsl:choose>
 <xsl:when test="$StereoType='' and $DataType='float'">Float</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='double'">Double</xsl:when>
+<xsl:when test="$StereoType='' and $DataType='decimal'">Devimal</xsl:when>
 <xsl:when test="$StereoType='' and $DataType='string'">String</xsl:when>
 <xsl:when test="$StereoType='' and $DataType='phonenumber'">PhoneNumber</xsl:when>
 <xsl:when test="$StereoType='' and $DataType='bigstring'">String</xsl:when>
