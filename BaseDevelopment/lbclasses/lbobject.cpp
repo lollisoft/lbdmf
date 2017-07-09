@@ -74,6 +74,8 @@ extern "C" {
 #endif
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
+IMPLEMENT_FUNCTOR(instanceOfFloat, lbFloat)
+IMPLEMENT_FUNCTOR(instanceOfDouble, lbDouble)
 IMPLEMENT_FUNCTOR(instanceOfBinaryData, lbBinaryData)
 IMPLEMENT_FUNCTOR(instanceOfFileLocation, lbFileLocation)
 IMPLEMENT_FUNCTOR(instanceOfDirLocation, lbDirLocation)
@@ -85,11 +87,235 @@ IMPLEMENT_FUNCTOR(instanceOfReference, lbReference)
 #endif
 IMPLEMENT_FUNCTOR(instanceOfParameter, lbParameter)
 
+IMPLEMENT_FUNCTOR(instanceOfLocale, lbLocale)
+
 #ifdef __cplusplus
 }
 #endif
 
 
+/*...slbLocale:0:*/
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbLocale)
+        ADD_INTERFACE(lb_I_Locale)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbLocale::setData(lb_I_Unknown* uk) {
+	return ERR_NONE;
+}
+
+/// \todo Use environment variable to select language.
+lbLocale::lbLocale() {
+	_lang = (char*) malloc(100);
+	_lang[0] = 0;
+	strcpy(_lang, "german");
+	dbAvailable = true;
+	//REQUEST(getModuleInstance(), lb_I_Translations, translations)
+}
+
+lbLocale::~lbLocale() {
+	if (_lang) free(_lang);
+	_CL_LOG << "lbLocale::~lbLocale() called." LOG_
+}
+
+void LB_STDCALL lbLocale::setLanguage(const char* lang) {
+	if (_lang) free(_lang);
+	_lang = (char*) malloc(strlen(lang)+1);
+	_lang[0] = 0;
+	strcpy(_lang, lang);
+}
+
+void LB_STDCALL lbLocale::setTranslationData(lb_I_Unknown* uk) {
+	lbErrCodes err = ERR_NONE;
+	QI(uk, lb_I_Translations, translations)
+}
+
+
+/*...svoid LB_STDCALL lbLocale\58\\58\translate\40\char \42\\42\ text\44\ char const \42\ to_translate\41\:0:*/
+/// \todo Add default language in insert statement. This enables automatic creation of new languages, if selected.
+void LB_STDCALL lbLocale::translate(char ** text, const char* to_translate) {
+	lbErrCodes err = ERR_NONE;
+
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	if (translations == NULL) {
+		UAP(lb_I_Database, database)
+
+		char* dbbackend = meta->getSystemDatabaseBackend();
+		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+			_LOG << "Using plugin (" << dbbackend << ") database backend for translation..." LOG_
+		} else {
+			// Use built in
+			REQUEST(getModuleInstance(), lb_I_Database, database)
+			_LOG << "Using built in database backend for translation..." LOG_
+		}
+
+		if (database == NULL) {
+			dbAvailable = false;
+			char* temp = *text;
+			*text = (char*) malloc(strlen(to_translate)+1);
+			*text[0] = 0;
+			strcpy(*text, to_translate);
+			if (temp) free(temp);
+			return;
+		}
+		
+		_LOG << "Translate text with SQL statements..." LOG_
+
+		database->init();
+
+		const char* lbDMFPasswd = getenv("lbDMFPasswd");
+		const char* lbDMFUser   = getenv("lbDMFUser");
+
+		if (!lbDMFUser) lbDMFUser = "dba";
+		if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+		if (!dbAvailable || database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+			_LOG << "lbLocale::translate() Error: Failed to connect to the database." LOG_
+			dbAvailable = false;
+			char* temp = *text;
+			*text = (char*) malloc(strlen(to_translate)+1);
+			*text[0] = 0;
+			strcpy(*text, to_translate);
+			if (temp) free(temp);
+			return;
+		}
+
+		UAP(lb_I_Query, sampleQuery)
+
+			sampleQuery = database->getQuery("lbDMF", 0);
+
+		char buffer[800] = "";
+
+		sprintf(buffer, "select translated from translations where language = '%s' and text = '%s'", _lang, to_translate);
+
+		sampleQuery->skipFKCollecting();
+		sampleQuery->query(buffer);
+
+		// Fill up the available applications for that user.
+
+		lbErrCodes err = sampleQuery->first();
+
+		if ((err == ERR_NONE) || (err == WARN_DB_NODATA)) {
+
+	        UAP_REQUEST(getModuleInstance(), lb_I_String, s1)
+
+	        s1 = sampleQuery->getAsString(1);
+
+			char* temp = *text;
+
+			if (strcmp(s1->charrep(), "") == 0) {
+				*text = (char*) malloc(strlen(to_translate) + 1);
+				*text[0] = 0;
+				strcpy(*text, to_translate);
+			} else {
+				*text = (char*) malloc(strlen(s1->charrep()) + 1);
+				*text[0] = 0;
+				strcpy(*text, s1->charrep());
+			}
+			if (temp) free(temp);
+		} else {
+			char* temp = *text;
+			*text = (char*) malloc(strlen(to_translate) + 1);
+			*text[0] = 0;
+			if (temp) free(temp);
+
+			_LOG << "Translation for '" << to_translate << "' not found. Insert into database" LOG_
+
+				buffer[0] = 0;
+
+			sprintf(buffer, "insert into translations (text, translated, language) values('%s', '%s', '%s')", to_translate, to_translate, _lang);
+
+			/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
+			UAP(lb_I_Query, sampleQuery1)
+				sampleQuery1 = database->getQuery("lbDMF", 0);
+			sampleQuery1->skipFKCollecting();
+			sampleQuery1->query(buffer);
+			sampleQuery1->enableFKCollecting();
+
+			strcpy(*text, to_translate);
+		}
+
+		sampleQuery->enableFKCollecting();
+	} else {
+		if (translations->selectText(to_translate, _lang) == false) {
+			UAP(lb_I_Database, database)
+
+			char* dbbackend = meta->getApplicationDatabaseBackend();
+			if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
+				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
+				AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, database, "'database plugin'")
+				_LOG << "Using plugin database backend for UML import operation..." LOG_
+			} else {
+				// Use built in
+				REQUEST(getModuleInstance(), lb_I_Database, database)
+				_LOG << "Using built in database backend for UML import operation..." LOG_
+			}
+
+			_LOG << "Translate text with SQL statements..." LOG_
+
+			database->init();
+
+			const char* lbDMFPasswd = getenv("lbDMFPasswd");
+			const char* lbDMFUser   = getenv("lbDMFUser");
+
+			if (!lbDMFUser) lbDMFUser = "dba";
+			if (!lbDMFPasswd) lbDMFPasswd = "trainres";
+
+			if (database->connect("lbDMF", "lbDMF", lbDMFUser, lbDMFPasswd) != ERR_NONE) {
+				char* temp = *text;
+				*text = (char*) malloc(strlen(to_translate)+1);
+				*text[0] = 0;
+				strcpy(*text, to_translate);
+				if (temp) free(temp);
+				return;
+			}
+			char buffer[800] = "";
+			char* temp = *text;
+			*text = (char*) malloc(strlen(to_translate) + 1);
+			*text[0] = 0;
+			if (temp) free(temp);
+
+			_LOG << "Translation for '" << to_translate << "' not found. Insert into database" LOG_
+
+				buffer[0] = 0;
+
+			sprintf(buffer, "insert into translations (text, translated, language) values('%s', '%s', '%s')", to_translate, to_translate, _lang);
+
+			/* Sybase SQL Anywhere 5.5 has problems with state 24000. Maybe an auto commit problem */
+			UAP(lb_I_Query, sampleQuery1)
+				sampleQuery1 = database->getQuery("lbDMF", 0);
+			sampleQuery1->skipFKCollecting();
+
+			sampleQuery1->query(buffer);
+			sampleQuery1->enableFKCollecting();
+
+			// Also store into translations object.
+
+			translations->addTranslation(to_translate, *text, _lang);
+
+			strcpy(*text, to_translate);
+		} else {
+			UAP_REQUEST(getModuleInstance(), lb_I_String, s1)
+			char* temp = *text;
+
+			*s1 = translations->getTranslationTranslated();
+
+			if (strcmp(s1->charrep(), "") == 0) {
+				*text = (char*) malloc(strlen(to_translate) + 1);
+				*text[0] = 0;
+				strcpy(*text, to_translate);
+			} else {
+				*text = (char*) malloc(strlen(s1->charrep()) + 1);
+				*text[0] = 0;
+				strcpy(*text, s1->charrep());
+			}
+			if (temp) free(temp);
+		}
+	}
+}
+/*...e*/
+/*...e*/
 /*...slbParameter:0:*/
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbParameter)
 	ADD_INTERFACE(lb_I_Parameter)
@@ -1179,9 +1405,6 @@ char* LB_STDCALL lbString::charrep() const {
 /*...e*/
 /*...slbFileLocation:0:*/
 lbFileLocation::lbFileLocation() {
-	
-   	
-	;
 	_path = NULL;
 }
 
@@ -1270,9 +1493,6 @@ char* LB_STDCALL lbFileLocation::charrep() const {
 /*...e*/
 /*...slbFileLocation:0:*/
 lbDirLocation::lbDirLocation() {
-	
-   	
-	;
 	_path = NULL;
 }
 
@@ -1358,9 +1578,6 @@ char* LB_STDCALL lbDirLocation::charrep() const {
 
 /*...slbInteger:0:*/
 lbInteger::lbInteger() {
-	
-   	
-	;
 	integerdata = 0;
 	key = NULL;
 }
@@ -1420,11 +1637,144 @@ char* LB_STDCALL lbInteger::charrep() const {
 }
 /*...e*/
 /*...e*/
+
+
+
+
+
+
+/*...slbFloat:0:*/
+lbFloat::lbFloat() {
+	floatdata = 0;
+	key = NULL;
+}
+
+lbFloat::~lbFloat() {
+	free(key);
+}
+
+void lbFloat::setData(float p) {
+	if (key == NULL) {
+		key = (char*) malloc(100);
+	}
+	sprintf(key, "%f", p);
+    
+	floatdata = p;
+}
+
+float lbFloat::getData() const {
+	return floatdata;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbFloat)
+ADD_INTERFACE(lb_I_Float)
+ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbFloat::setData(lb_I_Unknown* uk) {
+	lbErrCodes err= ERR_NONE;
+	UAP(lb_I_Float, i)
+	QI(uk, lb_I_Float, i)
+    
+	float v = i->getData();
+	setData(v);
+    
+	return err;
+}
+
+/*...sKey:0:*/
+char const* LB_STDCALL lbFloat::getKeyType() const {
+    return "float";
+}
+
+int LB_STDCALL lbFloat::equals(const lb_I_KeyBase* _key) const {
+    return floatdata == ((lbFloat*) _key)->floatdata;
+}
+
+int LB_STDCALL lbFloat::greater(const lb_I_KeyBase* _key) const {
+    return floatdata > ((lbFloat*) _key)->floatdata;
+}
+
+int LB_STDCALL lbFloat::lessthan(const lb_I_KeyBase* _key) const {
+    return floatdata < ((lbFloat*) _key)->floatdata;
+}
+
+char* LB_STDCALL lbFloat::charrep() const {
+	return key;
+}
+/*...e*/
+/*...e*/
+
+
+
+
+/*...slbDouble:0:*/
+lbDouble::lbDouble() {
+	doubledata = 0.0;
+	key = NULL;
+}
+
+lbDouble::~lbDouble() {
+	free(key);
+}
+
+void lbDouble::setData(double p) {
+	if (key == NULL) {
+		key = (char*) malloc(100);
+	}
+	sprintf(key, "%lf", p);
+    
+	doubledata = p;
+}
+
+double lbDouble::getData() const {
+	return doubledata;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDouble)
+ADD_INTERFACE(lb_I_Double)
+ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbDouble::setData(lb_I_Unknown* uk) {
+	lbErrCodes err= ERR_NONE;
+	UAP(lb_I_Double, i)
+	QI(uk, lb_I_Double, i)
+    
+	double v = i->getData();
+	setData(v);
+    
+	return err;
+}
+
+/*...sKey:0:*/
+char const* LB_STDCALL lbDouble::getKeyType() const {
+    return "double";
+}
+
+int LB_STDCALL lbDouble::equals(const lb_I_KeyBase* _key) const {
+    return doubledata == ((lbDouble*) _key)->doubledata;
+}
+
+int LB_STDCALL lbDouble::greater(const lb_I_KeyBase* _key) const {
+    return doubledata > ((lbDouble*) _key)->doubledata;
+}
+
+int LB_STDCALL lbDouble::lessthan(const lb_I_KeyBase* _key) const {
+    return doubledata < ((lbDouble*) _key)->doubledata;
+}
+
+char* LB_STDCALL lbDouble::charrep() const {
+	return key;
+}
+/*...e*/
+/*...e*/
+
+
+
+
 /*...slbBoolean:0:*/
 lbBoolean::lbBoolean() {
-	
-   	
-	;
 	integerdata = 0;
 	key = (char*) "false";
 }
@@ -1482,9 +1832,6 @@ char* LB_STDCALL lbBoolean::charrep() const {
 /*...e*/
 /*...e*/
 lbBinaryData::lbBinaryData() {
-	
-   	
-	;
 	blob = NULL;
 	size = 0L;
 }
@@ -1569,9 +1916,6 @@ lbErrCodes LB_STDCALL lbBinaryData::setData(lb_I_Unknown* uk) {
 
 /*...slbLong:0:*/
 lbLong::lbLong() {
-	
-   	
-	;
 	longdata = 0;
 	key = NULL;
 }

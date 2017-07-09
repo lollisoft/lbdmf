@@ -1054,12 +1054,12 @@ void LB_STDCALL lbDatabasePanel::addFloatField(const char* name, wxSizer* sizerM
 
 						val.SetIncludes(ValArray);
 
-						UAP(lb_I_String, s)
+						UAP(lb_I_Float, floatValue)
 						int i = lookupColumnIndex(name);
 
-						s = sampleQuery->getAsString(i);
+						floatValue = sampleQuery->getAsFloat(i);
 
-						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
+						wxTextCtrl *text = new wxTextCtrl(this, -1, floatValue->charrep(), wxPoint(), wxDefaultSize, 0, val);
 						text->SetName(name);
 
 						addLabel(name, sizerLabel, hideThisColumn);
@@ -1069,6 +1069,43 @@ void LB_STDCALL lbDatabasePanel::addFloatField(const char* name, wxSizer* sizerM
 						if (FFI->isReadonly(name)) {
 							text->Disable();
 						}
+}
+
+void LB_STDCALL lbDatabasePanel::addDoubleField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+    _CL_LOG << "Have a numeric field." LOG_
+    wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
+    
+    wxArrayString ValArray;
+    ValArray.Add(".");
+    ValArray.Add("-");
+    ValArray.Add("0");
+    ValArray.Add("1");
+    ValArray.Add("2");
+    ValArray.Add("3");
+    ValArray.Add("4");
+    ValArray.Add("5");
+    ValArray.Add("6");
+    ValArray.Add("7");
+    ValArray.Add("8");
+    ValArray.Add("9");
+    
+    val.SetIncludes(ValArray);
+    
+    UAP(lb_I_Double, doubleValue)
+    int i = lookupColumnIndex(name);
+    
+    doubleValue = sampleQuery->getAsDouble(i);
+    
+    wxTextCtrl *text = new wxTextCtrl(this, -1, doubleValue->charrep(), wxPoint(), wxDefaultSize, 0, val);
+    text->SetName(name);
+    
+    addLabel(name, sizerLabel, hideThisColumn);
+    sizerControl->Add(text, 1, wxALL, GAP);
+    sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, GAP);
+    
+    if (FFI->isReadonly(name)) {
+        text->Disable();
+    }
 }
 
 void LB_STDCALL lbDatabasePanel::addLongField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
@@ -1706,13 +1743,20 @@ void LB_STDCALL lbDatabasePanel::init(const char* _SQLString, const char* DBName
 						createdControl = true;
 					}
 					break;
-
+                        
                     case lb_I_Query::lbDBColumnFloat:
 					{
                         addFloatField(name->charrep(), sizerColumn, sizerField, sizerField);
 						createdControl = true;
 					}
-					break;
+                        break;
+                        
+                    case lb_I_Query::lbDBColumnDouble:
+					{
+                        addDoubleField(name->charrep(), sizerColumn, sizerField, sizerField);
+						createdControl = true;
+					}
+                        break;
                     case lb_I_Query::lbDBColumnChar:
 					{
                         addTextField(name->charrep(), sizerColumn, sizerField, sizerField);
@@ -4126,6 +4170,20 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 						break;
 
 					case lb_I_Query::lbDBColumnFloat:
+                    {
+                        if (!sampleQuery->getReadonly(name->charrep())) {
+                            wxTextCtrl* tx = (wxTextCtrl*) w;
+                            
+                            wxString v = tx->GetValue();
+                            
+                            col->setData(name->charrep());
+                            val->setData(v.c_str());
+                            
+                            sampleQuery->setString(*&col, *&val);
+                        }
+                    }
+						break;
+                        
 					case lb_I_Query::lbDBColumnChar:
 						{
 							if (!sampleQuery->getReadonly(name->charrep())) {
@@ -4423,6 +4481,25 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 						break;
 
 					case lb_I_Query::lbDBColumnFloat:
+                        {
+                            UAP(lb_I_Float, floatValue)
+                        
+                            floatValue = sampleQuery->getAsFloat(i);
+                        
+                            wxTextCtrl* tx = (wxTextCtrl*) w;
+                            tx->SetValue(wxString(floatValue->charrep()));
+                        }
+						break;
+					case lb_I_Query::lbDBColumnDouble:
+                        {
+                            UAP(lb_I_Double, doubleValue)
+                        
+                            doubleValue = sampleQuery->getAsDouble(i);
+                        
+                            wxTextCtrl* tx = (wxTextCtrl*) w;
+                            tx->SetValue(wxString(doubleValue->charrep()));
+                        }
+						break;
 					case lb_I_Query::lbDBColumnChar:
 						{
 							UAP(lb_I_String, s)
