@@ -31,17 +31,12 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.59 $
+ * $Revision: 1.58.2.1 $
  * $Name:  $
- * $Id: lbobject.h,v 1.59 2011/10/29 06:03:58 lollisoft Exp $
+ * $Id: lbobject.h,v 1.58.2.1 2017/07/09 08:23:12 lollisoft Exp $
  * $Log: lbobject.h,v $
- * Revision 1.59  2011/10/29 06:03:58  lollisoft
- * Refactored application model (and it's model classes) into separate files to enable code generation.
- * The code generation is planned for the model classes and the composite container for the model.
- * Refactored out the login and user management from meta application due to the fact that it is a
- * distinct feature the meta application should not provide. The code has been moved to a security
- * provider API based plugin that should be loaded as a plugin. Currently this fails and thus login is not
- * available.
+ * Revision 1.58.2.1  2017/07/09 08:23:12  lollisoft
+ * Added new data type mappings. Hopefully first usable version.
  *
  * Revision 1.58  2011/10/15 13:14:05  lollisoft
  * Decided to make a hash cut and removed stuff that everywhere was the cause for crashes on Mac.
@@ -300,7 +295,28 @@
 #include <stdio.h>
 #include <lbInterfaces.h>
 
+/*...sclass lbLocale:0:*/
+class lbLocale : public lb_I_Locale
+{
+public:
 
+        void LB_STDCALL setLanguage(const char* lang);
+
+		void LB_STDCALL translate(char ** text, const char* to_translate);
+		void LB_STDCALL setTranslationData(lb_I_Unknown* uk);
+
+        UAP(lb_I_Translations, translations)
+        char* _lang;
+		bool  dbAvailable;
+
+		DECLARE_LB_UNKNOWN()
+
+public:
+        lbLocale();
+        virtual ~lbLocale();
+
+};
+/*...e*/
 
 
 /*...sclass lbParameter:0:*/
@@ -548,6 +564,46 @@ private:
 	long longdata;
 };
 /*...e*/
+
+/*...sclass lbFloat:0:*/
+class lbFloat : public lb_I_Float
+{
+public:
+	lbFloat();
+	virtual ~lbFloat();
+    
+	DECLARE_LB_UNKNOWN()
+    
+	DECLARE_LB_KEYBASE()
+	
+	virtual void LB_STDCALL setData(float p);
+	virtual float LB_STDCALL getData() const;
+	
+private:
+    char* key;
+	float floatdata;
+};
+/*...e*/
+/*...sclass lbDouble:0:*/
+class lbDouble : public lb_I_Double
+{
+public:
+	lbDouble();
+	virtual ~lbDouble();
+    
+	DECLARE_LB_UNKNOWN()
+    
+	DECLARE_LB_KEYBASE()
+	
+	virtual void LB_STDCALL setData(double p);
+	virtual double LB_STDCALL getData() const;
+	
+private:
+    char* key;
+	double doubledata;
+};
+/*...e*/
+
 /*...sifdef __cplusplus:0:*/
 #ifdef __cplusplus
 extern "C" {
@@ -555,6 +611,8 @@ extern "C" {
 /*...e*/
 
 DECLARE_FUNCTOR(instanceOfInteger)
+DECLARE_FUNCTOR(instanceOfFloat)
+DECLARE_FUNCTOR(instanceOfDouble)
 DECLARE_FUNCTOR(instanceOfBinaryData)
 DECLARE_FUNCTOR(instanceOfFileLocation)
 DECLARE_FUNCTOR(instanceOfDirLocation)

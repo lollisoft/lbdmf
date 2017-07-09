@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106.2.4 $
+ * $Revision: 1.106.2.5 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.106.2.4 2014/03/15 06:30:32 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106.2.5 2017/07/09 08:23:13 lollisoft Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.106.2.5  2017/07/09 08:23:13  lollisoft
+ * Added new data type mappings. Hopefully first usable version.
+ *
  * Revision 1.106.2.4  2014/03/15 06:30:32  lollisoft
  * Some new features.
  *
@@ -830,6 +833,51 @@ public:
 	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
 };
 /*...e*/
+
+class lb_I_Float : public lb_I_KeyBase {
+public:
+	/** 
+	 * \brief Set p as the int value.
+	 *
+	 * \param p Integer value to be set.
+	 */        
+    virtual void LB_STDCALL setData(float p) = 0;
+    
+    /**
+     * \brief Get the integer value.
+     */
+    virtual float LB_STDCALL getData() const = 0;
+	
+    /**
+     * \brief Set data from other lb_I_Integer instance.
+     *
+     * This member is used in lb_I_Container implementation via clone.
+     */
+	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;    
+};
+
+class lb_I_Double : public lb_I_KeyBase {
+public:
+	/** 
+	 * \brief Set p as the int value.
+	 *
+	 * \param p Integer value to be set.
+	 */        
+    virtual void LB_STDCALL setData(double p) = 0;
+    
+    /**
+     * \brief Get the integer value.
+     */
+    virtual double LB_STDCALL getData() const = 0;
+	
+    /**
+     * \brief Set data from other lb_I_Integer instance.
+     *
+     * This member is used in lb_I_Container implementation via clone.
+     */
+	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;    
+};
+
 /*...sclass lb_I_Boolean:0:*/
 /**
  * \brief A basic boolean class.

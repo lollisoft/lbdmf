@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149.2.3 $
+ * $Revision: 1.149.2.4 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.149.2.3 2013/09/16 09:23:07 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.149.2.4 2017/07/09 08:23:11 lollisoft Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.149.2.4  2017/07/09 08:23:11  lollisoft
+ * Added new data type mappings. Hopefully first usable version.
+ *
  * Revision 1.149.2.3  2013/09/16 09:23:07  lollisoft
  * Changed implementation of makefile bootstrapping for Mac OS X. Added relevant code for it and other changes.
  *
@@ -2232,11 +2235,23 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
 		found = true;
 	}
 	else
-	if (strcmp(searchArgument, "lb_I_Long") == 0) {
-		functor = PREFIX "instanceOfLong";
-		module = "lbClasses";
-		found = true;
-	}
+    if (strcmp(searchArgument, "lb_I_Float") == 0) {
+        functor = PREFIX "instanceOfFloat";
+        module = "lbClasses";
+        found = true;
+    }
+	else
+    if (strcmp(searchArgument, "lb_I_Double") == 0) {
+        functor = PREFIX "instanceOfDouble";
+        module = "lbClasses";
+        found = true;
+    }
+    else
+    if (strcmp(searchArgument, "lb_I_Long") == 0) {
+        functor = PREFIX "instanceOfLong";
+        module = "lbClasses";
+        found = true;
+    }
 	else
 	if (strcmp(searchArgument, "lb_I_Boolean") == 0) {
 		functor = PREFIX "instanceOfBoolean";

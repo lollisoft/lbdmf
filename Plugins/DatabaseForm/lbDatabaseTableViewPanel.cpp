@@ -958,12 +958,12 @@ void LB_STDCALL lbDatabaseTableViewPanel::addFloatField(const char* name, wxSize
 
 						val.SetIncludes(ValArray);
 
-						UAP(lb_I_String, s)
+						UAP(lb_I_Float, floatValue)
 						int i = lookupColumnIndex(name);
 
-						s = sampleQuery->getAsString(i);
+						floatValue = sampleQuery->getAsFloat(i);
 
-						wxTextCtrl *text = new wxTextCtrl(this, -1, s->charrep(), wxPoint(), wxDefaultSize, 0, val);
+						wxTextCtrl *text = new wxTextCtrl(this, -1, floatValue->charrep(), wxPoint(), wxDefaultSize, 0, val);
 						text->SetName(name);
 
 						addLabel(name, sizerLabel, hideThisColumn);
@@ -973,6 +973,43 @@ void LB_STDCALL lbDatabaseTableViewPanel::addFloatField(const char* name, wxSize
 						if (FFI->isReadonly(name)) {
 							text->Disable();
 						}
+}
+
+void LB_STDCALL lbDatabaseTableViewPanel::addDoubleField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+    _CL_LOG << "Have a numeric field." LOG_
+    wxTextValidator val = wxTextValidator(wxFILTER_INCLUDE_CHAR_LIST, new wxString(""));
+    
+    wxArrayString ValArray;
+    ValArray.Add(".");
+    ValArray.Add("-");
+    ValArray.Add("0");
+    ValArray.Add("1");
+    ValArray.Add("2");
+    ValArray.Add("3");
+    ValArray.Add("4");
+    ValArray.Add("5");
+    ValArray.Add("6");
+    ValArray.Add("7");
+    ValArray.Add("8");
+    ValArray.Add("9");
+    
+    val.SetIncludes(ValArray);
+    
+    UAP(lb_I_Double, doubleValue)
+    int i = lookupColumnIndex(name);
+    
+    doubleValue = sampleQuery->getAsDouble(i);
+    
+    wxTextCtrl *text = new wxTextCtrl(this, -1, doubleValue->charrep(), wxPoint(), wxDefaultSize, 0, val);
+    text->SetName(name);
+    
+    addLabel(name, sizerLabel, hideThisColumn);
+    sizerControl->Add(text, 1, wxALL, 5);
+    sizerMain->Add(sizerControl, 0, wxEXPAND | wxALL, 5);
+    
+    if (FFI->isReadonly(name)) {
+        text->Disable();
+    }
 }
 
 void LB_STDCALL lbDatabaseTableViewPanel::addLongField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
@@ -1181,6 +1218,11 @@ void LB_STDCALL lbDatabaseTableViewPanel::addDateColumn(const char* name, wxSize
 }
 
 void LB_STDCALL lbDatabaseTableViewPanel::addFloatColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
+    TableView->AppendCols(1, false);
+    TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
+}
+
+void LB_STDCALL lbDatabaseTableViewPanel::addDoubleColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn) {
     TableView->AppendCols(1, false);
     TableView->SetColLabelValue(TableView->GetNumberCols() - 1, name);
 }

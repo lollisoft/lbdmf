@@ -74,6 +74,8 @@ extern "C" {
 #endif
 
 IMPLEMENT_FUNCTOR(instanceOfInteger, lbInteger)
+IMPLEMENT_FUNCTOR(instanceOfFloat, lbFloat)
+IMPLEMENT_FUNCTOR(instanceOfDouble, lbDouble)
 IMPLEMENT_FUNCTOR(instanceOfBinaryData, lbBinaryData)
 IMPLEMENT_FUNCTOR(instanceOfFileLocation, lbFileLocation)
 IMPLEMENT_FUNCTOR(instanceOfDirLocation, lbDirLocation)
@@ -103,9 +105,6 @@ lbErrCodes LB_STDCALL lbLocale::setData(lb_I_Unknown* uk) {
 
 /// \todo Use environment variable to select language.
 lbLocale::lbLocale() {
-	
-   	
-	;
 	_lang = (char*) malloc(100);
 	_lang[0] = 0;
 	strcpy(_lang, "german");
@@ -1406,9 +1405,6 @@ char* LB_STDCALL lbString::charrep() const {
 /*...e*/
 /*...slbFileLocation:0:*/
 lbFileLocation::lbFileLocation() {
-	
-   	
-	;
 	_path = NULL;
 }
 
@@ -1497,9 +1493,6 @@ char* LB_STDCALL lbFileLocation::charrep() const {
 /*...e*/
 /*...slbFileLocation:0:*/
 lbDirLocation::lbDirLocation() {
-	
-   	
-	;
 	_path = NULL;
 }
 
@@ -1585,9 +1578,6 @@ char* LB_STDCALL lbDirLocation::charrep() const {
 
 /*...slbInteger:0:*/
 lbInteger::lbInteger() {
-	
-   	
-	;
 	integerdata = 0;
 	key = NULL;
 }
@@ -1647,11 +1637,144 @@ char* LB_STDCALL lbInteger::charrep() const {
 }
 /*...e*/
 /*...e*/
+
+
+
+
+
+
+/*...slbFloat:0:*/
+lbFloat::lbFloat() {
+	floatdata = 0;
+	key = NULL;
+}
+
+lbFloat::~lbFloat() {
+	free(key);
+}
+
+void lbFloat::setData(float p) {
+	if (key == NULL) {
+		key = (char*) malloc(100);
+	}
+	sprintf(key, "%f", p);
+    
+	floatdata = p;
+}
+
+float lbFloat::getData() const {
+	return floatdata;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbFloat)
+ADD_INTERFACE(lb_I_Float)
+ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbFloat::setData(lb_I_Unknown* uk) {
+	lbErrCodes err= ERR_NONE;
+	UAP(lb_I_Float, i)
+	QI(uk, lb_I_Float, i)
+    
+	float v = i->getData();
+	setData(v);
+    
+	return err;
+}
+
+/*...sKey:0:*/
+char const* LB_STDCALL lbFloat::getKeyType() const {
+    return "float";
+}
+
+int LB_STDCALL lbFloat::equals(const lb_I_KeyBase* _key) const {
+    return floatdata == ((lbFloat*) _key)->floatdata;
+}
+
+int LB_STDCALL lbFloat::greater(const lb_I_KeyBase* _key) const {
+    return floatdata > ((lbFloat*) _key)->floatdata;
+}
+
+int LB_STDCALL lbFloat::lessthan(const lb_I_KeyBase* _key) const {
+    return floatdata < ((lbFloat*) _key)->floatdata;
+}
+
+char* LB_STDCALL lbFloat::charrep() const {
+	return key;
+}
+/*...e*/
+/*...e*/
+
+
+
+
+/*...slbDouble:0:*/
+lbDouble::lbDouble() {
+	doubledata = 0.0;
+	key = NULL;
+}
+
+lbDouble::~lbDouble() {
+	free(key);
+}
+
+void lbDouble::setData(double p) {
+	if (key == NULL) {
+		key = (char*) malloc(100);
+	}
+	sprintf(key, "%lf", p);
+    
+	doubledata = p;
+}
+
+double lbDouble::getData() const {
+	return doubledata;
+}
+
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbDouble)
+ADD_INTERFACE(lb_I_Double)
+ADD_INTERFACE(lb_I_KeyBase)
+END_IMPLEMENT_LB_UNKNOWN()
+
+lbErrCodes LB_STDCALL lbDouble::setData(lb_I_Unknown* uk) {
+	lbErrCodes err= ERR_NONE;
+	UAP(lb_I_Double, i)
+	QI(uk, lb_I_Double, i)
+    
+	double v = i->getData();
+	setData(v);
+    
+	return err;
+}
+
+/*...sKey:0:*/
+char const* LB_STDCALL lbDouble::getKeyType() const {
+    return "double";
+}
+
+int LB_STDCALL lbDouble::equals(const lb_I_KeyBase* _key) const {
+    return doubledata == ((lbDouble*) _key)->doubledata;
+}
+
+int LB_STDCALL lbDouble::greater(const lb_I_KeyBase* _key) const {
+    return doubledata > ((lbDouble*) _key)->doubledata;
+}
+
+int LB_STDCALL lbDouble::lessthan(const lb_I_KeyBase* _key) const {
+    return doubledata < ((lbDouble*) _key)->doubledata;
+}
+
+char* LB_STDCALL lbDouble::charrep() const {
+	return key;
+}
+/*...e*/
+/*...e*/
+
+
+
+
 /*...slbBoolean:0:*/
 lbBoolean::lbBoolean() {
-	
-   	
-	;
 	integerdata = 0;
 	key = (char*) "false";
 }
@@ -1709,9 +1832,6 @@ char* LB_STDCALL lbBoolean::charrep() const {
 /*...e*/
 /*...e*/
 lbBinaryData::lbBinaryData() {
-	
-   	
-	;
 	blob = NULL;
 	size = 0L;
 }
@@ -1796,9 +1916,6 @@ lbErrCodes LB_STDCALL lbBinaryData::setData(lb_I_Unknown* uk) {
 
 /*...slbLong:0:*/
 lbLong::lbLong() {
-	
-   	
-	;
 	longdata = 0;
 	key = NULL;
 }

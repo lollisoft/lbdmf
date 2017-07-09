@@ -24,8 +24,10 @@ int SqliteResultSetMetaData::GetColumnType(int i)
     returnType = COLUMN_INTEGER;
   else if (columnTypeString.IsSameAs(_("STRING")) || columnTypeString.StartsWith(_("BPCHAR")) || columnTypeString.StartsWith(_("VARCHAR")) || columnTypeString.StartsWith(_("CHAR")))
     returnType = COLUMN_STRING;
-  else if (columnTypeString.IsSameAs(_("DOUBLE")) || columnTypeString.IsSameAs(_("FLOAT")))
+  else if (columnTypeString.IsSameAs(_("DOUBLE")))
     returnType = COLUMN_DOUBLE;
+  else if (columnTypeString.IsSameAs(_("FLOAT")))
+    returnType = COLUMN_FLOAT;
   else if (columnTypeString.StartsWith(_("TEXT")))
 	  returnType = COLUMN_TEXT;
   else if (columnTypeString.StartsWith(_("BOOL")))
