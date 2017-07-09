@@ -1,0 +1,41 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<XMI xmi.version="1.2" xmlns:UML="org.omg.xmi.namespace.UML">
+<XMI.header>
+	<XMI.documentation>
+		<XMI.exporter>Bouml</XMI.exporter>
+		<XMI.exporterVersion>1.4.6</XMI.exporterVersion>
+	</XMI.documentation>
+	<XMI.metamodel XMI.name="UML" XMI.version="1.4"/>
+</XMI.header>
+<XMI.content>
+	<UML:Model name="LoRa" xmi.id="BOUML_0x126940">
+		<UML:Namespace.ownedElement>
+			<UML:Package xmi.id="BOUML_0x142ef0" name ="LoRa">
+				<UML:Namespace.ownedElement>
+					<UML:Class name="TemparatureHumidityTelemetry" xmi.id="BOUML_0x129e90" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Humidity" xmi.id="BOUML_0x128980" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="TemperatureCelcius" xmi.id="BOUML_0x140390" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="DewPoint" xmi.id="BOUML_0x13d540" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+				<!-- for pack LoRa-->
+				</UML:Namespace.ownedElement>
+			</UML:Package>
+			<UML:DataType xmi.id="BOUML_datatype_0" name = "double" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+		</UML:Namespace.ownedElement>
+	</UML:Model>
+</XMI.content>
+</XMI>
