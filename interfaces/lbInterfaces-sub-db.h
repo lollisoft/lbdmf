@@ -448,12 +448,39 @@ public:
          * \param value Value as a string.
          */
         virtual lbErrCodes	LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value) = 0;
+    /**
+     * \brief Set string to column.
+     *
+     * Modifies the column at the current row or sets the column for the new row data.
+     *
+     * \param columnName Name of the column.
+     * \param value Value as a string.
+     */
+    virtual lbErrCodes	LB_STDCALL setLong(lb_I_String* columnName, lb_I_Long* value) = 0;
+    /**
+     * \brief Set string to column.
+     *
+     * Modifies the column at the current row or sets the column for the new row data.
+     *
+     * \param columnName Name of the column.
+     * \param value Value as a string.
+     */
+    virtual lbErrCodes	LB_STDCALL setFloat(lb_I_String* columnName, lb_I_Float* value) = 0;
+    /**
+     * \brief Set string to column.
+     *
+     * Modifies the column at the current row or sets the column for the new row data.
+     *
+     * \param columnName Name of the column.
+     * \param value Value as a string.
+     */
+    virtual lbErrCodes	LB_STDCALL setDouble(lb_I_String* columnName, lb_I_Double* value) = 0;
 		
 		/**
 		 * \brief Get the column data as lb_I_Long* instance.
 		 * 
 		 * Builds a lb_I_Long instance and fills in the data of the bound column.
-		 * The database column must be of valit integer type. 
+		 * The database column must be of valid integer type. 
 		 */
 		virtual lb_I_Long* LB_STDCALL getAsLong(int column) = 0;
 		
@@ -461,10 +488,42 @@ public:
 		* \brief Get the column data as lb_I_Long* instance.
 		* 
 		* Builds a lb_I_Long instance and fills in the data of the bound column.
-		* The database column must be of valit integer type. 
+		* The database column must be of valid integer type. 
 		*/
 		virtual lb_I_Long* LB_STDCALL getAsLong(const char* column) = 0;
-		
+
+       /**
+        * \brief Get the column data as lb_I_Float* instance.
+        * 
+        * Builds a lb_I_Float instance and fills in the data of the bound column.
+        * The database column must be of valid integer type. 
+        */
+        virtual lb_I_Float* LB_STDCALL getAsFloat(int column) = 0;
+    
+       /**
+        * \brief Get the column data as lb_I_Float* instance.
+        * 
+        * Builds a lb_I_Float instance and fills in the data of the bound column.
+        * The database column must be of valid integer type. 
+        */
+        virtual lb_I_Float* LB_STDCALL getAsFloat(const char* column) = 0;
+    
+       /**
+        * \brief Get the column data as lb_I_Double* instance.
+        * 
+        * Builds a lb_I_Double instance and fills in the data of the bound column.
+        * The database column must be of valid integer type. 
+        */
+        virtual lb_I_Double* LB_STDCALL getAsDouble(int column) = 0;
+    
+       /**
+        * \brief Get the column data as lb_I_Float* instance.
+        * 
+        * Builds a lb_I_Float instance and fills in the data of the bound column.
+        * The database column must be of valid integer type. 
+        */
+        virtual lb_I_Double* LB_STDCALL getAsDouble(const char* column) = 0;
+
 		/** \brief Get BLOB data.
 		 */
 		virtual lb_I_BinaryData* LB_STDCALL getBinaryData(int column) = 0;
@@ -580,6 +639,22 @@ public:
 	virtual lbErrCodes LB_STDCALL getAsLong(lb_I_Long* result, int asParameter = 0) = 0;
 	
 	/**
+	 * \brief Get a long column.
+	 *
+	 * \param result Result must be an instance of lb_I_Long to be filled.
+	 * \param asParameter Don't know why here a parameter should be possible.
+	 */
+	virtual lbErrCodes LB_STDCALL getAsFloat(lb_I_Float* result, int asParameter = 0) = 0;
+	
+	/**
+	 * \brief Get a long column.
+	 *
+	 * \param result Result must be an instance of lb_I_Long to be filled.
+	 * \param asParameter Don't know why here a parameter should be possible.
+	 */
+	virtual lbErrCodes LB_STDCALL getAsDouble(lb_I_Double* result, int asParameter = 0) = 0;
+	
+	/**
 	 * \brief Set the data from a string.
 	 *
 	 * This sets the column value to the content of string set.
@@ -588,6 +663,36 @@ public:
 	 * \param mode ??
 	 */	
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode) = 0;
+	
+	/**
+	 * \brief Set the data from a string.
+	 *
+	 * This sets the column value to the content of string set.
+	 *
+	 * \param set Set the value of this string into the column.
+	 * \param mode ??
+	 */	
+	virtual lbErrCodes LB_STDCALL setFromLong(lb_I_Long* set, int mode) = 0;
+	
+	/**
+	 * \brief Set the data from a string.
+	 *
+	 * This sets the column value to the content of string set.
+	 *
+	 * \param set Set the value of this string into the column.
+	 * \param mode ??
+	 */	
+	virtual lbErrCodes LB_STDCALL setFromFloat(lb_I_Float* set, int mode) = 0;
+	
+	/**
+	 * \brief Set the data from a string.
+	 *
+	 * This sets the column value to the content of string set.
+	 *
+	 * \param set Set the value of this string into the column.
+	 * \param mode ??
+	 */	
+	virtual lbErrCodes LB_STDCALL setFromDouble(lb_I_Double* set, int mode) = 0;
 
 	/**
 	 * \brief Get the column name.
@@ -775,66 +880,46 @@ public:
 	/**
 	 * \brief Get the index of the bound column.
 	 */
-	virtual int             LB_STDCALL getColumnIndex(const char* name) = 0;
+	virtual int                         LB_STDCALL getColumnIndex(const char* name) = 0;
 
 	/**
 	 * \brief Set the column updateability.
 	 */
-	virtual void		LB_STDCALL setReadonly(const char* column, bool updateable) = 0;
+	virtual void                        LB_STDCALL setReadonly(const char* column, bool updateable) = 0;
 
 	/**
 	 * \brief Get the column updateability.
 	 */
-	virtual bool		LB_STDCALL getReadonly(const char* column) = 0;
+	virtual bool                        LB_STDCALL getReadonly(const char* column) = 0;
 	
 	/**
 	 * \brief Get the amound of columns.
 	 *
 	 * This returns the currently bound columns based on the SQL query.
 	 */
-	virtual int               LB_STDCALL getColumnCount() = 0;
+	virtual int                         LB_STDCALL getColumnCount() = 0;
 
 	/**
 	 * \brief Get the column as string representation.
 	 *
-	 * Returns index column as a string.
+	 * Returns column at index as a string.
 	 *
 	 * \param column Index of the column.
 	 * \param instance String instance to be filled with the value.
 	 */
-        virtual lbErrCodes      LB_STDCALL getString(int column, lb_I_String* instance) = 0;
+    virtual lbErrCodes      LB_STDCALL getString(int column, lb_I_String* instance) = 0;
 	
 	/**
 	 * \brief Get the column as string representation.
 	 *
-	 * Returns index column as a string.
-	 *
-	 * \param column Index of the column.
-	 * \param instance String instance to be filled with the value.
-	 */
-	virtual lbErrCodes      LB_STDCALL getLong(int column, lb_I_Long* instance) = 0;
-	
-	/**
-	 * \brief Get the column as string representation.
-	 *
-	 * Returns index column as a string.
+	 * Returns column with name as a string.
 	 *
 	 * \param column Name of the column.
 	 * \param instance String instance to be filled with the value.
 	 */
-	virtual lbErrCodes      LB_STDCALL getLong(const char* column, lb_I_Long* instance) = 0;
-	
-	/**
-	 * \brief Get the column as string representation.
-	 *
-	 * Returns index column as a string.
-	 *
-	 * \param column Name of the column.
-	 * \param instance String instance to be filled with the value.
-	 */
-        virtual lbErrCodes      LB_STDCALL getString(const char* column, lb_I_String* instance) = 0;
-        
-	/**
+    virtual lbErrCodes      LB_STDCALL getString(const char* column, lb_I_String* instance) = 0;
+
+    /**
 	 * \brief Set the column as string representation.
 	 *
 	 * Sets column as a string.
@@ -843,6 +928,97 @@ public:
 	 * \param instance String instance with the value to be set.
 	 */
 	virtual lbErrCodes      LB_STDCALL setString(const char* column, lb_I_String* instance) = 0;        
+
+	/**
+	 * \brief Get the column as long representation.
+	 *
+	 * Returns column at index as a long.
+	 *
+	 * \param column Index of the column.
+	 * \param instance Long instance to be filled with the value.
+	 */
+	virtual lbErrCodes      LB_STDCALL getLong(int column, lb_I_Long* instance) = 0;
+	
+	/**
+	 * \brief Get the column as long representation.
+	 *
+	 * Returns column with name as a long.
+	 *
+	 * \param column Name of the column.
+	 * \param instance Long instance to be filled with the value.
+	 */
+	virtual lbErrCodes      LB_STDCALL getLong(const char* column, lb_I_Long* instance) = 0;
+    
+    /**
+	 * \brief Set the column as long representation.
+	 *
+	 * Sets column as a long.
+	 *
+	 * \param column Name of the column.
+	 * \param instance String instance with the value to be set.
+	 */
+	virtual lbErrCodes      LB_STDCALL setLong(const char* column, lb_I_Long* instance) = 0;        
+	
+	/**
+	 * \brief Get the column as float representation.
+	 *
+	 * Returns column at index as a long.
+	 *
+	 * \param column Index of the column.
+	 * \param instance Float instance to be filled with the value.
+	 */
+	virtual lbErrCodes      LB_STDCALL getFloat(int column, lb_I_Float* instance) = 0;
+	
+	/**
+	 * \brief Get the column as float representation.
+	 *
+	 * Returns column with name as a string.
+	 *
+	 * \param column Name of the column.
+	 * \param instance String instance to be filled with the value.
+	 */
+	virtual lbErrCodes      LB_STDCALL getFloat(const char* column, lb_I_Float* instance) = 0;
+    
+    /**
+	 * \brief Set the column as float representation.
+	 *
+	 * Sets column as a float.
+	 *
+	 * \param column Name of the column.
+	 * \param instance Float instance with the value to be set.
+	 */
+	virtual lbErrCodes      LB_STDCALL setFloat(const char* column, lb_I_Float* instance) = 0;        
+	
+	/**
+	 * \brief Get the column as double representation.
+	 *
+	 * Returns column at index as a double.
+	 *
+	 * \param column Index of the column.
+	 * \param instance Double instance to be filled with the value.
+	 */
+	virtual lbErrCodes      LB_STDCALL getDouble(int column, lb_I_Double* instance) = 0;
+	
+	/**
+	 * \brief Get the column as double representation.
+	 *
+	 * Returns column with name as a double.
+	 *
+	 * \param column Name of the column.
+	 * \param instance Double instance to be filled with the value.
+	 */
+	virtual lbErrCodes      LB_STDCALL getDouble(const char* column, lb_I_Double* instance) = 0;
+    
+    /**
+	 * \brief Set the column as double representation.
+	 *
+	 * Sets column as a double.
+	 *
+	 * \param column Name of the column.
+	 * \param instance Double instance with the value to be set.
+	 */
+	virtual lbErrCodes      LB_STDCALL setDouble(const char* column, lb_I_Double* instance) = 0;        
+        
 
 #ifdef bla
         /**

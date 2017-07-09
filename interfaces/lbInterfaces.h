@@ -985,7 +985,9 @@ PRIMARY KEY (id),
 	class lb_I_Streamable;
 	class lb_I_Integer;
 	class lb_I_Long;
-	class lb_I_Container;
+    class lb_I_Float;
+    class lb_I_Double;
+    class lb_I_Container;
 	class lb_I_Database;
 	class lb_I_Connection;
 	class lb_I_ColumnBinding;
@@ -5426,6 +5428,8 @@ UAPDECL(lb_I_VisitableHelper)
 //UAPDECL(lb_I_Streamable)
 UAPDECL(lb_I_Integer)
 UAPDECL(lb_I_Long)
+UAPDECL(lb_I_Float)
+UAPDECL(lb_I_Double)
 UAPDECL(lb_I_Container)
 UAPDECL(lb_I_Database)
 UAPDECL(lb_I_Connection)

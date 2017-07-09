@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71.2.6 $
+ * $Revision: 1.71.2.7 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.71.2.6 2014/03/15 06:30:32 lollisoft Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.7 2017/07/09 08:23:12 lollisoft Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71.2.7  2017/07/09 08:23:12  lollisoft
+ * Added new data type mappings. Hopefully first usable version.
+ *
  * Revision 1.71.2.6  2014/03/15 06:30:32  lollisoft
  * Some new features.
  *
@@ -1103,6 +1106,7 @@ public:
     void LB_STDCALL addCheckField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addDateField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addFloatField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDoubleField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addBinaryField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
 	bool LB_STDCALL checkMissingNotNullableColumns(const char* sql, lb_I_Container* addcolumns);
@@ -1408,6 +1412,7 @@ public:
     void LB_STDCALL addCheckField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addDateField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addFloatField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDoubleField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addBinaryField(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
     void LB_STDCALL addSpecialColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
@@ -1418,6 +1423,7 @@ public:
     void LB_STDCALL addCheckColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addDateColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addFloatColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
+    void LB_STDCALL addDoubleColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
     void LB_STDCALL addBinaryColumn(const char* name, wxSizer* sizerMain, wxSizer* sizerControl, wxSizer* sizerLabel, bool hideThisColumn = false);
 
     // wxGrid event handler

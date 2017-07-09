@@ -173,28 +173,38 @@ public:
 
 	DECLARE_LB_UNKNOWN()
 
-        lb_I_Container* LB_STDCALL getBoundColumns();
-        lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc);
+    lb_I_Container* LB_STDCALL getBoundColumns();
+    lbErrCodes      LB_STDCALL setBoundColumns(lb_I_Container* bc);
 
 	lb_I_BoundColumn* LB_STDCALL getBoundColumn(int column);
-	int		  LB_STDCALL getColumnCount();
+	int         LB_STDCALL getColumnCount();
 
-        /**
-         * Set a currently used query to bind their columns.
-         */
-        lbErrCodes      LB_STDCALL setQuery(lb_I_Query* q, lb_I_Container* ReadonlyColumns);
+    /**
+     * Set a currently used query to bind their columns.
+     */
+    lbErrCodes  LB_STDCALL setQuery(lb_I_Query* q, lb_I_Container* ReadonlyColumns);
 
-	int		LB_STDCALL getMode();
+	int         LB_STDCALL getMode();
 
 
-        /**
-         * Convert the internal data to a char array and return the data.
-         */
-        lbErrCodes	LB_STDCALL getString(int column, lb_I_String* instance);
+    /**
+     * Convert the internal data to a char array and return the data.
+     */
+    lbErrCodes	LB_STDCALL getString(int column, lb_I_String* instance);
+    lbErrCodes	LB_STDCALL getString(const char* column, lb_I_String* instance);
+    lbErrCodes  LB_STDCALL setString(const char* column, lb_I_String* instance);
+
 	lbErrCodes	LB_STDCALL getLong(int column, lb_I_Long* instance);
 	lbErrCodes	LB_STDCALL getLong(const char* column, lb_I_Long* instance);
-        lbErrCodes	LB_STDCALL getString(const char* column, lb_I_String* instance);
-        lbErrCodes      LB_STDCALL setString(const char* column, lb_I_String* instance);
+    lbErrCodes  LB_STDCALL setLong(const char* column, lb_I_Long* instance);
+
+	lbErrCodes	LB_STDCALL getFloat(int column, lb_I_Float* instance);
+	lbErrCodes	LB_STDCALL getFloat(const char* column, lb_I_Float* instance);
+    lbErrCodes  LB_STDCALL setFloat(const char* column, lb_I_Float* instance);
+
+    lbErrCodes	LB_STDCALL getDouble(int column, lb_I_Double* instance);
+	lbErrCodes	LB_STDCALL getDouble(const char* column, lb_I_Double* instance);
+    lbErrCodes  LB_STDCALL setDouble(const char* column, lb_I_Double* instance);
 
 	void		LB_STDCALL unbindReadonlyColumns();
 	void		LB_STDCALL rebindReadonlyColumns();
@@ -335,8 +345,18 @@ public:
         lb_I_String*	LB_STDCALL getAsString(int column);
         lb_I_String*	LB_STDCALL getAsString(const char* column);
 		lbErrCodes		LB_STDCALL setString(lb_I_String* columnName, lb_I_String* value);
+    
 		lb_I_Long*		LB_STDCALL getAsLong(int column);
 		lb_I_Long*		LB_STDCALL getAsLong(const char* column);
+        lbErrCodes		LB_STDCALL setLong(lb_I_String* columnName, lb_I_Long* value);
+    
+        lb_I_Float*		LB_STDCALL getAsFloat(int column);
+        lb_I_Float*		LB_STDCALL getAsFloat(const char* column);
+        lbErrCodes		LB_STDCALL setFloat(lb_I_String* columnName, lb_I_Float* value);
+
+        lb_I_Double*    LB_STDCALL getAsDouble(int column);
+        lb_I_Double*    LB_STDCALL getAsDouble(const char* column);
+        lbErrCodes		LB_STDCALL setDouble(lb_I_String* columnName, lb_I_Double* value);
 
 		lb_I_BinaryData* LB_STDCALL getBinaryData(int column);
 		lb_I_BinaryData* LB_STDCALL getBinaryData(const char* column);
@@ -551,8 +571,12 @@ public:
 	virtual lb_I_Unknown* LB_STDCALL getData();
 	virtual lbErrCodes LB_STDCALL getAsString(lb_I_String* result, int asParameter = 0);
 	virtual lbErrCodes LB_STDCALL getAsLong(lb_I_Long* result, int asParameter = 0);
+	virtual lbErrCodes LB_STDCALL getAsFloat(lb_I_Float* result, int asParameter = 0);
+	virtual lbErrCodes LB_STDCALL getAsDouble(lb_I_Double* result, int asParameter = 0);
 	virtual lbErrCodes LB_STDCALL setFromString(lb_I_String* set, int mode);
 	virtual lbErrCodes LB_STDCALL setFromLong(lb_I_Long* set, int mode);
+	virtual lbErrCodes LB_STDCALL setFromFloat(lb_I_Float* set, int mode);
+	virtual lbErrCodes LB_STDCALL setFromDouble(lb_I_Double* set, int mode);
 
 	void		LB_STDCALL checkReadonly(int column);
 	void		LB_STDCALL setReadonly(bool updateable);
@@ -1295,6 +1319,135 @@ lbErrCodes	LB_STDCALL lbBoundColumns::getLong(const char* column, lb_I_Long* ins
 	
 	return ERR_NONE;
 }
+
+lbErrCodes      LB_STDCALL lbBoundColumns::setLong(const char* column, lb_I_Long* instance) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Unknown, ukdata)
+	UAP(lb_I_KeyBase, key)
+    
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
+    
+	Column->setData(column);
+    
+	QI(Column, lb_I_KeyBase, key)
+	ukdata = ColumnNameMapping->getElement(&key);
+    
+	if (ukdata == NULL) {
+		_LOG << "Error: Column '" << column << "' not found." LOG_
+		return ERR_DB_COLUMN_NOT_FOUND;
+	}
+    
+	UAP(lb_I_KeyBase, index)
+	QI(ukdata, lb_I_KeyBase, index)
+    
+	UAP(lb_I_Unknown, uk_bc)
+	uk_bc = boundColumns->getElement(&index);
+    
+	UAP(lb_I_BoundColumn, bc)
+	QI(uk_bc, lb_I_BoundColumn, bc)
+    
+	// Adding or updating ? - Decided inside
+	bc->setFromLong(instance, getMode());
+    
+	return ERR_NONE;
+}
+
+lbErrCodes	LB_STDCALL lbBoundColumns::getFloat(int column, lb_I_Float* instance) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_BoundColumn, bc)
+	
+	bc = getBoundColumn(column);
+	bc->getAsFloat(instance);
+	
+	return ERR_NONE;
+}
+lbErrCodes	LB_STDCALL lbBoundColumns::getFloat(const char* column, lb_I_Float* instance) {
+	getFloat(getColumnIndex(column), instance);
+	
+	return ERR_NONE;
+}
+
+lbErrCodes      LB_STDCALL lbBoundColumns::setFloat(const char* column, lb_I_Float* instance) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Unknown, ukdata)
+	UAP(lb_I_KeyBase, key)
+    
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
+    
+	Column->setData(column);
+    
+	QI(Column, lb_I_KeyBase, key)
+	ukdata = ColumnNameMapping->getElement(&key);
+    
+	if (ukdata == NULL) {
+		_LOG << "Error: Column '" << column << "' not found." LOG_
+		return ERR_DB_COLUMN_NOT_FOUND;
+	}
+    
+	UAP(lb_I_KeyBase, index)
+	QI(ukdata, lb_I_KeyBase, index)
+    
+	UAP(lb_I_Unknown, uk_bc)
+	uk_bc = boundColumns->getElement(&index);
+    
+	UAP(lb_I_BoundColumn, bc)
+	QI(uk_bc, lb_I_BoundColumn, bc)
+    
+	// Adding or updating ? - Decided inside
+	bc->setFromFloat(instance, getMode());
+    
+	return ERR_NONE;
+}
+
+lbErrCodes	LB_STDCALL lbBoundColumns::getDouble(int column, lb_I_Double* instance) {
+	lbErrCodes err = ERR_NONE;
+	
+	UAP(lb_I_BoundColumn, bc)
+	
+	bc = getBoundColumn(column);
+	bc->getAsDouble(instance);
+	
+	return ERR_NONE;
+}
+lbErrCodes	LB_STDCALL lbBoundColumns::getDouble(const char* column, lb_I_Double* instance) {
+	getDouble(getColumnIndex(column), instance);
+	
+	return ERR_NONE;
+}
+
+lbErrCodes      LB_STDCALL lbBoundColumns::setDouble(const char* column, lb_I_Double* instance) {
+	lbErrCodes err = ERR_NONE;
+	UAP(lb_I_Unknown, ukdata)
+	UAP(lb_I_KeyBase, key)
+    
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
+    
+	Column->setData(column);
+    
+	QI(Column, lb_I_KeyBase, key)
+	ukdata = ColumnNameMapping->getElement(&key);
+    
+	if (ukdata == NULL) {
+		_LOG << "Error: Column '" << column << "' not found." LOG_
+		return ERR_DB_COLUMN_NOT_FOUND;
+	}
+    
+	UAP(lb_I_KeyBase, index)
+	QI(ukdata, lb_I_KeyBase, index)
+    
+	UAP(lb_I_Unknown, uk_bc)
+	uk_bc = boundColumns->getElement(&index);
+    
+	UAP(lb_I_BoundColumn, bc)
+	QI(uk_bc, lb_I_BoundColumn, bc)
+    
+	// Adding or updating ? - Decided inside
+	bc->setFromDouble(instance, getMode());
+    
+	return ERR_NONE;
+}
+
 /*...e*/
 /*...slbErrCodes      LB_STDCALL lbBoundColumns\58\\58\getString\40\int column\44\ lb_I_String\42\ instance\41\:0:*/
 lbErrCodes	LB_STDCALL lbBoundColumns::getString(int column, lb_I_String* instance) {
@@ -1917,6 +2070,22 @@ lb_I_String* LB_STDCALL lbQuery::getAsString(const char* column) {
 	return string.getPtr();
 }
 
+lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* value) {
+	if (boundColumns == NULL) {
+		_LOG << "lbQuery::setString() failed!" LOG_
+		return ERR_NONE;
+	}
+    
+	if (_readonly == 1) return ERR_DB_READONLY;
+	if (mode == 1) {
+		boundColumns->setString(columnName->charrep(), value);
+	} else {
+		boundColumns->setString(columnName->charrep(), value);
+	}
+    
+	return ERR_NONE;
+}
+
 lb_I_Long* LB_STDCALL lbQuery::getAsLong(int column) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, value)
 	// Caller get's an owner
@@ -1941,6 +2110,106 @@ lb_I_Long* LB_STDCALL lbQuery::getAsLong(const char* column) {
 	}
 	
 	return value.getPtr();
+}
+
+lbErrCodes LB_STDCALL lbQuery::setLong(lb_I_String* columnName, lb_I_Long* value) {
+	if (boundColumns == NULL) {
+		_LOG << "lbQuery::setLong() failed!" LOG_
+		return ERR_NONE;
+	}
+    
+	if (_readonly == 1) return ERR_DB_READONLY;
+	if (mode == 1) {
+		boundColumns->setLong(columnName->charrep(), value);
+	} else {
+		boundColumns->setLong(columnName->charrep(), value);
+	}
+    
+	return ERR_NONE;
+}
+
+lb_I_Float* LB_STDCALL lbQuery::getAsFloat(int column) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Float, value)
+	// Caller get's an owner
+	value++;
+	if (boundColumns != NULL) {
+		boundColumns->getFloat(column, *&value);
+	} else {
+		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
+	}
+	
+	return value.getPtr();
+}
+
+lb_I_Float* LB_STDCALL lbQuery::getAsFloat(const char* column) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Float, value)
+	// Caller get's an owner
+	value++;
+	if (boundColumns != NULL) {
+		boundColumns->getFloat(column, *&value);
+	} else {
+		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
+	}
+	
+	return value.getPtr();
+}
+
+lbErrCodes LB_STDCALL lbQuery::setFloat(lb_I_String* columnName, lb_I_Float* value) {
+	if (boundColumns == NULL) {
+		_LOG << "lbQuery::setLong() failed!" LOG_
+		return ERR_NONE;
+	}
+    
+	if (_readonly == 1) return ERR_DB_READONLY;
+	if (mode == 1) {
+		boundColumns->setFloat(columnName->charrep(), value);
+	} else {
+		boundColumns->setFloat(columnName->charrep(), value);
+	}
+    
+	return ERR_NONE;
+}
+
+lb_I_Double* LB_STDCALL lbQuery::getAsDouble(int column) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Double, value)
+	// Caller get's an owner
+	value++;
+	if (boundColumns != NULL) {
+		boundColumns->getDouble(column, *&value);
+	} else {
+		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
+	}
+	
+	return value.getPtr();
+}
+
+lb_I_Double* LB_STDCALL lbQuery::getAsDouble(const char* column) {
+	UAP_REQUEST(getModuleInstance(), lb_I_Double, value)
+	// Caller get's an owner
+	value++;
+	if (boundColumns != NULL) {
+		boundColumns->getDouble(column, *&value);
+	} else {
+		_LOG << "Error: Column is not bound. (" << column << ")" LOG_
+	}
+	
+	return value.getPtr();
+}
+
+lbErrCodes LB_STDCALL lbQuery::setDouble(lb_I_String* columnName, lb_I_Double* value) {
+	if (boundColumns == NULL) {
+		_LOG << "lbQuery::setLong() failed!" LOG_
+		return ERR_NONE;
+	}
+    
+	if (_readonly == 1) return ERR_DB_READONLY;
+	if (mode == 1) {
+		boundColumns->setDouble(columnName->charrep(), value);
+	} else {
+		boundColumns->setDouble(columnName->charrep(), value);
+	}
+    
+	return ERR_NONE;
 }
 
 lb_I_BinaryData* LB_STDCALL lbQuery::getBinaryData(int column) {
@@ -3701,23 +3970,6 @@ lbErrCodes LB_STDCALL lbQuery::last() {
 	}
 }
 /*...e*/
-/*...slbErrCodes LB_STDCALL lbQuery\58\\58\setString\40\lb_I_String\42\ columnName\44\ lb_I_String\42\ value\41\:0:*/
-lbErrCodes LB_STDCALL lbQuery::setString(lb_I_String* columnName, lb_I_String* value) {
-	if (boundColumns == NULL) {
-		_LOG << "lbQuery::setString() failed!" LOG_
-		return ERR_NONE;
-	}
-
-	if (_readonly == 1) return ERR_DB_READONLY;
-	if (mode == 1) {
-		boundColumns->setString(columnName->charrep(), value);
-	} else {
-		boundColumns->setString(columnName->charrep(), value);
-	}
-
-	return ERR_NONE;
-}
-/*...e*/
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\add\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::add() {
 
@@ -4203,6 +4455,40 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsLong(lb_I_Long* result, int asParamete
 
 	return err;
 }
+lbErrCodes LB_STDCALL lbBoundColumn::getAsFloat(lb_I_Float* result, int asParameter) {
+	lbErrCodes err = ERR_NONE;
+    
+	switch (_DataType) {
+		case SQL_FLOAT:
+		{
+			result->setData(*(float*) buffer);
+			break;
+		}
+            
+        default:
+			_CL_VERBOSE << "lbBoundColumn::getAsLong(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
+	       	break;
+	}
+    
+	return err;
+}
+lbErrCodes LB_STDCALL lbBoundColumn::getAsDouble(lb_I_Double* result, int asParameter) {
+	lbErrCodes err = ERR_NONE;
+    
+	switch (_DataType) {
+		case SQL_DOUBLE:
+		{
+			result->setData(*(double*) buffer);
+			break;
+		}
+            
+        default:
+			_CL_VERBOSE << "lbBoundColumn::getAsLong(...) failed: Unknown or not supported datatype for column '" << columnName << "'"  LOG_
+	       	break;
+	}
+    
+	return err;
+}
 
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\getAsString\40\lb_I_String\42\ result\44\ int asParameter\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asParameter) {
@@ -4347,6 +4633,73 @@ lbErrCodes LB_STDCALL lbBoundColumn::setFromLong(lb_I_Long* set, int mode) {
 	_hasValidData = true;
 	return err;
 }
+    
+lbErrCodes LB_STDCALL lbBoundColumn::setFromFloat(lb_I_Float* set, int mode) {
+        lbErrCodes err = ERR_NONE;
+        if (isReadonly) {
+            _CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
+            return ERR_NONE;
+        }
+        if (mode == 1) {
+            switch (_DataType) {
+                case SQL_FLOAT:
+                {
+                    float l = set->getData();
+                    
+                    float* pl = (float*) buffer;
+                    
+                    void* b = pl+1;
+                    
+                    memcpy(b, &l, sizeof(l));
+                }
+                    break;
+            }
+        } else {
+            switch (_DataType) {
+                case SQL_FLOAT:
+                {
+                    float l = set->getData();
+                    memcpy(buffer, &l, sizeof(l));
+                }
+            }
+        }
+        _hasValidData = true;
+        return err;
+   }
+    
+lbErrCodes LB_STDCALL lbBoundColumn::setFromDouble(lb_I_Double* set, int mode) {
+        lbErrCodes err = ERR_NONE;
+        if (isReadonly) {
+            _CL_LOG << "Warning: Updating a column '" << columnName << "' with readonly status skipped." LOG_
+            return ERR_NONE;
+        }
+        if (mode == 1) {
+            switch (_DataType) {
+                case SQL_DOUBLE:
+                {
+                    double l = set->getData();
+                    
+                    double* pl = (double*) buffer;
+                    
+                    void* b = pl+1;
+                    
+                    memcpy(b, &l, sizeof(l));
+                }
+                    break;
+            }
+        } else {
+            switch (_DataType) {
+                case SQL_DOUBLE:
+                {
+                    double l = set->getData();
+                    memcpy(buffer, &l, sizeof(l));
+                }
+            }
+        }
+        _hasValidData = true;
+        return err;
+    }
+    
 /*...slbErrCodes LB_STDCALL lbBoundColumn\58\\58\setFromString\40\lb_I_String\42\ set\44\ int mode\41\:0:*/
 lbErrCodes LB_STDCALL lbBoundColumn::setFromString(lb_I_String* set, int mode) {
 		if (isReadonly) {
