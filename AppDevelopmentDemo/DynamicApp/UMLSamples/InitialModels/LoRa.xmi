@@ -8,33 +8,74 @@
 	<XMI.metamodel XMI.name="UML" XMI.version="1.4"/>
 </XMI.header>
 <XMI.content>
-	<UML:Model name="LoRa" xmi.id="BOUML_0x126940">
+	<UML:Model name="LoRa" xmi.id="BOUML_0x126960">
 		<UML:Namespace.ownedElement>
-			<UML:Package xmi.id="BOUML_0x142ef0" name ="LoRa">
+			<UML:Package xmi.id="BOUML_0x143e00" name ="LoRa">
 				<UML:Namespace.ownedElement>
-					<UML:Class name="TemparatureHumidityTelemetry" xmi.id="BOUML_0x129e90" visibility="public" isAbstract="false" isActive="false" >
+					<UML:Class name="TemparatureHumidityTelemetry" xmi.id="BOUML_0x12a0d0" visibility="public" isAbstract="false" isActive="false" >
 						<UML:Classifier.feature>
-							<UML:Attribute name="Humidity" xmi.id="BOUML_0x128980" visibility="private" ownerScope="instance">
+							<UML:Attribute name="Humidity" xmi.id="BOUML_0x128bc0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="TemperatureCelcius" xmi.id="BOUML_0x140390" visibility="private" ownerScope="instance">
+							<UML:Attribute name="TemperatureCelcius" xmi.id="BOUML_0x140690" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
-							<UML:Attribute name="DewPoint" xmi.id="BOUML_0x13d540" visibility="private" ownerScope="instance">
+							<UML:Attribute name="DewPoint" xmi.id="BOUML_0x142cf0" visibility="private" ownerScope="instance">
 								<UML:StructuralFeature.type>
 									<UML:DataType xmi.idref="BOUML_datatype_0"/>
 								</UML:StructuralFeature.type>
 							</UML:Attribute>
 						</UML:Classifier.feature>
 					</UML:Class>
+					<UML:Class name="Node" xmi.id="BOUML_0x1220c0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x13d850" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="WLanSsid" xmi.id="BOUML_0x138e60" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_1"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="Telemetry (Name)" xmi.id="BOUML_0x14aab0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="Telemetry" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x12a0d0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x12a0d0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="NodeName" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x1220c0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x1220c0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
 				<!-- for pack LoRa-->
 				</UML:Namespace.ownedElement>
 			</UML:Package>
 			<UML:DataType xmi.id="BOUML_datatype_0" name = "double" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+			<UML:DataType xmi.id="BOUML_datatype_1" name = "string" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
 		</UML:Namespace.ownedElement>
 	</UML:Model>
 </XMI.content>
