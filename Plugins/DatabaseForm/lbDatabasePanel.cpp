@@ -4169,9 +4169,31 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBUpdate() {
 						}
 						break;
 
+					case lb_I_Query::lbDBColumnDouble:
+                    {
+                        if (!sampleQuery->getReadonly(name->charrep())) {
+                            _LOG << "lbDatabasePanel::lbDBUpdate() updates double column" LOG_
+                            
+                            wxTextCtrl* tx = (wxTextCtrl*) w;
+                            wxString v = tx->GetValue();
+                            double value;
+
+                            if(v.ToDouble(&value))
+                            {                            
+                                UAP_REQUEST(getModuleInstance(), lb_I_Double, dval)
+                                col->setData(name->charrep());
+                                dval->setData(value);
+                            
+                                sampleQuery->setDouble(*&col, *&dval);
+                            }    
+                        }
+                    }
+                        
 					case lb_I_Query::lbDBColumnFloat:
                     {
                         if (!sampleQuery->getReadonly(name->charrep())) {
+                            _LOG << "lbDatabasePanel::lbDBUpdate() updates float column" LOG_
+
                             wxTextCtrl* tx = (wxTextCtrl*) w;
                             
                             wxString v = tx->GetValue();
