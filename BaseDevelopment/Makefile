@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.62 $
+# * $Revision: 1.229.2.63 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.62 2016/02/21 19:08:14 lollisoft Exp $
+# * $Id: Makefile,v 1.229.2.63 2023/04/10 15:12:56 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.63  2023/04/10 15:12:56  lothar
+# * Some more changes to get compiling to start
+# *
 # * Revision 1.229.2.62  2016/02/21 19:08:14  lollisoft
 # * Removed pwd and fixed libxslt library extraction.
 # *
@@ -935,9 +938,9 @@
 #.PHONY: dummy
 
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 endif
 
 
@@ -1038,6 +1041,17 @@ DEVROOT_MAKE=$(DEVROOT)
 endif
 
 Path=$(PATH)
+
+
+ifeq ($(OSTYPE), Windows_NT)
+PATH_SEP=\\
+MKDIR=cmd /c mkdir 
+endif
+
+ifneq ($(OSTYPE), Windows_NT)
+PATH_SEP=\
+MKDIR=mkdir
+endif
 
 
 #
@@ -1853,22 +1867,22 @@ test-ldd:
 	./copy-wxGTK-libs.sh $(prefix)
 
 ../../bin:
-	-mkdir ../../bin
+	-$(MKDIR) ..$(PATH_SEP)..$(PATH_SEP)bin
 	
 ../../lib:
-	-mkdir ../../lib
+	-$(MKDIR) ..$(PATH_SEP)..$(PATH_SEP)lib
 
 ../../dll:
-	-mkdir ../../dll
+	-$(MKDIR) ..$(PATH_SEP)..$(PATH_SEP)dll
 
 ../../dll/libs: ../../dll
-	-mkdir ../../dll/libs
+	-$(MKDIR) ..$(PATH_SEP)..$(PATH_SEP)dll$(PATH_SEP)libs
 
 ../../plugins:
-	-mkdir ../../plugins
+	-$(MKDIR) ..$(PATH_SEP)..$(PATH_SEP)plugins
 
 ../../plugins/libs: ../../plugins
-	-mkdir ../../plugins/libs
+	-$(MKDIR) ..$(PATH_SEP)..$(PATH_SEP)plugins$(PATH_SEP)libs
 
 $(prefix)/Library:
 	-mkdir -p $@
@@ -1903,7 +1917,7 @@ mkrelease:
 	@for d in $(ALLDIRS); do \
 	    $(MAKE) -C $$d clean || exit $? ; \
 	done
-	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
+	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz $(REPO_NAME); cd $(REPO_NAME)/BaseDevelopment
 
 #	Doesn't compile yet under linux
 #	lbPluginManager \
