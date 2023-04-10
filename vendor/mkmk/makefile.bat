@@ -1,7 +1,7 @@
 @echo off
 @rem This script creates a makefile based on templates
 
-type %DEVROOT%\Projects\%REPO_NAME%\make\makefile.template > makefile
+type %DEVROOT%\Projects\%REPO_NAME%\make\makefile.template.mkmk > makefile
 type makefile.module >> makefile
 echo all: premake mkmk.exe >> makefile
 echo premake: >> makefile
@@ -10,4 +10,4 @@ echo clean: >> makefile
 echo 		@del *.obj >> makefile
 echo 		@del *.exe >> makefile
 
-mkmk exe mkmk ../dosdir *.cpp >> makefile
+mkmk exe_target_mingw mkmk "" *.cpp ../dosdir/*.c >> makefile
