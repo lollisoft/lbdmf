@@ -255,6 +255,8 @@ if "%2"=="CC" goto CCBUILD_END:
 
 SET CABUNDLEFILE=%DEVLW%\develop\Tools\curl\ca-bundle.crt
 
+set BISON_PKGDATADIR=/cygdrive/q/develop/Tools/cygwin/usr/share/bison
+
 rem set CONSOLE_DETACH=no
 rem wdw ..\..\bin\%1
 start /D %DEVROOT%\Projects\%REPO_NAME%\BaseDevelopment %1
