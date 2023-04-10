@@ -34,6 +34,9 @@ exit
 
 :WEITER
 
+@rem Most important setup is the root folder where the version system is checking out To
+SET REPO_NAME=lbdmf
+
 rem set TARGET_APPLICATION=Application
 
 set LOGGING=no
@@ -46,6 +49,7 @@ if "%2"=="JENKINS" goto JENKINSBUILD:
 
 if "%COMPUTERNAME%"=="ANAKIN" goto NODIST:
 if "%COMPUTERNAME%"=="T43" goto NODIST:
+if "%COMPUTERNAME%"=="DESKTOP-D1P98N4" goto NODIST:
 
 goto DISTMODE:
 
@@ -145,7 +149,7 @@ set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;
 
 rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
-set BINROOT=%RUNROOT%\bin;%RUNROOT%\CPP\bin
+set BINROOT=%RUNROOT%\bin;%RUNROOT%\%REPO_NAME%\bin
 
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 set Path=%Path%;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
@@ -183,7 +187,7 @@ SET EDPath=%DEVLW%\%BASE%\Tools\WATCOM\EDDAT
 
 @rem XML Module Configuration
 
-set LBHOSTCFGFILE=%DEVLW%\%BASE%\Projects\CPP\Test\Console\XML\lbXMLConfig.xml
+set LBHOSTCFGFILE=%DEVLW%\%BASE%\Projects\%REPO_NAME%\Test\Console\XML\lbXMLConfig.xml
 
 REM __stdcall convention
 set LBXMLFUNCTOR=_getlbDOMConfigInstance@16
@@ -217,10 +221,10 @@ REM This stuff is related to integrate the ACE libraries from
 REM http://www.cs.wustl.edu/~schmidt/ACE.html
 REM ------------------------------------------------------------
 
-set ACE_ROOT=%DEVROOT_MAKE%/Projects/CPP/vendor/ACE_wrappers
+set ACE_ROOT=%DEVROOT_MAKE%/Projects/%REPO_NAME%/vendor/ACE_wrappers
 set MPC_ROOT=%ACE_ROOT%/MPC
 
-set PATH=%PATH%;%DEVROOT%\Projects\CPP\vendor\ACE_wrappers\lib
+set PATH=%PATH%;%DEVROOT%\Projects\%REPO_NAME%\vendor\ACE_wrappers\lib
 
 REM -------------------
 REM GCC-XML Location
@@ -253,7 +257,7 @@ SET CABUNDLEFILE=%DEVLW%\develop\Tools\curl\ca-bundle.crt
 
 rem set CONSOLE_DETACH=no
 rem wdw ..\..\bin\%1
-start %1
+start /D %DEVROOT%\Projects\%REPO_NAME%\BaseDevelopment %1
 goto EXIT:
 
 :CCBUILD_END
@@ -263,7 +267,7 @@ SET CABUNDLEFILE=%DEVLW%\Q\develop\Tools\curl\ca-bundle.crt
 REM Tools used but are prerequisites and may be located anywhere.
 SET PATH=c:\q\develop\tools\tar;c:\q\develop\tools\bison;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\MkMk;%DEVLW%\Q\develop\Tools\BinBuildTools;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin;%DEVLW%\Q\develop\Tools\curl;%PATH%
 
-cd %DEVROOT%\Projects\CPP\BaseDevelopment
+cd %DEVROOT%\Projects\%REPO_NAME%\BaseDevelopment
 
 REM SET OSNAME=Windows_NT
 SET CRUISECONTROL=yes
