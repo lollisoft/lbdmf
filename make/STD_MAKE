@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.23 $
+# * $Revision: 1.148.2.24 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.23 2015/01/01 22:56:03 lollisoft Exp $
+# * $Id: STD_MAKE,v 1.148.2.24 2023/04/10 14:51:08 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.24  2023/04/10 14:51:08  lothar
+# * Made mkmk compile with MinGW
+# *
 # * Revision 1.148.2.23  2015/01/01 22:56:03  lollisoft
 # * Added network library.
 # *
@@ -611,11 +614,11 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH_MAKE=/Projects/CPP
-RELPATH=\\Projects\\CPP
+RELPATH_MAKE=/Projects/$(REPO_NAME)
+RELPATH=\\Projects\\$(REPO_NAME)
 else
-RELPATH_MAKE=/Projects/CPP
-RELPATH=\\Projects\\CPP
+RELPATH_MAKE=/Projects/$(REPO_NAME)
+RELPATH=\\Projects\\$(REPO_NAME)
 endif
 endif
 
@@ -623,17 +626,17 @@ ifeq ($(OSTYPE), Cross_OW)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
-RELPATH_MAKE=/Projects/CPP
-RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/$(REPO_NAME)
+RELPATH=/Projects/$(REPO_NAME)
 endif
 endif
 
 ifeq ($(OSTYPE), linux)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 else
-RELPATH_MAKE=/Projects/CPP
-RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/$(REPO_NAME)
+RELPATH=/Projects/$(REPO_NAME)
 endif
 endif
 
@@ -641,18 +644,18 @@ ifeq ($(OSTYPE), solaris)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
-RELPATH_MAKE=/Projects/CPP
-RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/$(REPO_NAME)
+RELPATH=/Projects/$(REPO_NAME)
 endif
 endif
 
 ifeq ($(OSTYPE), osx)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH_MAKE=/Projects/CPP
-RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/$(REPO_NAME)
+RELPATH=/Projects/$(REPO_NAME)
 else
-RELPATH_MAKE=/Projects/CPP
-RELPATH=/Projects/CPP
+RELPATH_MAKE=/Projects/$(REPO_NAME)
+RELPATH=/Projects/$(REPO_NAME)
 endif
 endif
 
@@ -702,23 +705,23 @@ DEVROOT_CC=q:\\develop
 
 STD_INCL_WATCOM =-i=. -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)WATCOM$(WATCOM_SLASH_CC)h \
 			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)WATCOM$(WATCOM_SLASH_CC)h$(WATCOM_SLASH_CC)nt \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)interfaces \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)cpp$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)interfaces \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)include \
 			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
 			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include
 			
 
 ifeq ($(DEBUG_MEMORY_TYPE), trmem)		
-  STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
+  STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
 endif
 ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
   STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)tools$(WATCOM_SLASH_CC)mpatrol$(WATCOM_SLASH_CC)src
 endif			
 
 #ANAKIN
-#STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
+#STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\$(REPO_NAME)\include" /I "Q:\Develop\Projects\$(REPO_NAME)\interfaces" /I "Q:\Develop\Projects\$(REPO_NAME)\basedevelopment\lbclasses"
 #LOTHARBNOTEBOOK
-STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT)\xml\xml4csrc3_3_1\src" /I "$(DEVROOT)\Projects\CPP\include" /I "$(DEVROOT)\Projects\CPP\interfaces" /I "$(DEVROOT)\Projects\CPP\basedevelopment\lbclasses"
+STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT)\xml\xml4csrc3_3_1\src" /I "$(DEVROOT)\Projects\$(REPO_NAME)\include" /I "$(DEVROOT)\Projects\$(REPO_NAME)\interfaces" /I "$(DEVROOT)\Projects\$(REPO_NAME)\basedevelopment\lbclasses"
 
 STD_INCL_CPP = $(STD_INCL_WATCOM_CPP)
 STD_INCL = $(STD_INCL_WATCOM)
@@ -846,14 +849,14 @@ YACC=bison
 DEVROOT_MINGW=$(DEVROOT_MAKE)
 
 STD_INCL_MINGW =-I. -I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)mingw$(WATCOM_SLASH_CC)include \
-			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)interfaces \
-			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)include \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)interfaces \
+			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)include \
 			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
 			-I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include
 			
 
 ifeq ($(DEBUG_MEMORY_TYPE), trmem)		
-  STD_INCL_MINGW += -I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
+  STD_INCL_MINGW += -I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
 endif
 ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
   STD_INCL_MINGW += -I$(DEVROOT_MINGW)$(WATCOM_SLASH_CC)Tools$(WATCOM_SLASH_CC)mpatrol$(WATCOM_SLASH_CC)src
@@ -1044,23 +1047,23 @@ DEVROOT_CC=$(HOME)/develop
 
 STD_INCL_WATCOM =-i=. -i=$(WATCOM_HOME)$(WATCOM_SLASH)h \
 			-i=$(WATCOM_HOME)$(WATCOM_SLASH)h$(WATCOM_SLASH)nt \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)interfaces \
-			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)include \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)interfaces \
+			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)include \
 			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)dll$(WATCOM_SLASH_CC)include \
 			-i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)Projects$(WATCOM_SLASH_CC)lib$(WATCOM_SLASH_CC)include
 			
 
 ifeq ($(DEBUG_MEMORY_TYPE), trmem)		
-  STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)CPP$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
+  STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)projects$(WATCOM_SLASH_CC)$(REPO_NAME)$(WATCOM_SLASH_CC)vendor$(WATCOM_SLASH_CC)trmem
 endif
 ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
   STD_INCL_WATCOM += -i=$(DEVROOT_CC)$(WATCOM_SLASH_CC)tools$(WATCOM_SLASH_CC)mpatrol$(WATCOM_SLASH_CC)src
 endif			
 
 #ANAKIN
-#STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\CPP\include" /I "Q:\Develop\Projects\CPP\interfaces" /I "Q:\Develop\Projects\CPP\basedevelopment\lbclasses"
+#STD_INCL_MICROSOFT = /I "." /I "F:\develop\NT\MSC\VC98\Include" /I "Q:\Develop\xml\xml4csrc3_3_1\src" /I "Q:\Develop\Projects\$(REPO_NAME)\include" /I "Q:\Develop\Projects\$(REPO_NAME)\interfaces" /I "Q:\Develop\Projects\$(REPO_NAME)\basedevelopment\lbclasses"
 #LOTHARBNOTEBOOK
-STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT)\xml\xml4csrc3_3_1\src" /I "$(DEVROOT)\Projects\CPP\include" /I "$(DEVROOT)\Projects\CPP\interfaces" /I "$(DEVROOT)\Projects\CPP\basedevelopment\lbclasses"
+STD_INCL_MICROSOFT = /I "." /I "$(DEVROOT)\Tools\msc\VC98\Include" /I "$(DEVROOT)\xml\xml4csrc3_3_1\src" /I "$(DEVROOT)\Projects\$(REPO_NAME)\include" /I "$(DEVROOT)\Projects\$(REPO_NAME)\interfaces" /I "$(DEVROOT)\Projects\$(REPO_NAME)\basedevelopment\lbclasses"
 
 STD_INCL_CPP = $(STD_INCL_WATCOM_CPP)
 STD_INCL = $(STD_INCL_WATCOM)
@@ -1528,7 +1531,7 @@ DEBUG_MEMORY_TYPE=mpatrol
 
 ifeq ($(DEBUG_MEMORY), yes)
 ifeq ($(DEBUG_MEMORY_TYPE), mpatrol)
-INCLDEBUGMEM= -I $(DEVROOT)/Projects/CPP/vendor/mpatrol/src
+INCLDEBUGMEM= -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/mpatrol/src
 endif
 endif
 
