@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.10 $
+ * $Revision: 1.114.2.11 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.10 2015/01/07 03:15:41 lollisoft Exp $
+ * $Id: mkmk.cpp,v 1.114.2.11 2023/04/10 14:06:07 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.11  2023/04/10 14:06:07  lothar
+ * Made mkmk compile with MinGW
+ *
  * Revision 1.114.2.10  2015/01/07 03:15:41  lollisoft
  * Fixed prefix issue in postlink step.
  *
@@ -1225,6 +1228,24 @@ testmingw.exe: test.o
   printf("\t\t@g++ -Wl,--enable-auto-import -o $(PROGRAM).exe $(OBJS) $(MINGWLIBS)\n");
   printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
 #endif
+
+#ifdef __MINGW32__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+#ifdef muster
+testmingw.exe: test.o
+                rm testdll.lib
+                g++ -o testmingw.exe test.o -L. -ltestdll
+#endif
+
+  printf("PROGRAM=%s\n", ModName);
+
+  printf("\n%s.exe: $(OBJS)\n", ModName);
+
+  printf("\t\t@g++ -Wl,--enable-auto-import -o $(PROGRAM).exe $(OBJS) $(MINGWLIBS)\n");
+  printf("\t\t@$(CP) $(PROGRAM).exe $(EXEDIR) > null\n");
+#endif
 }
 /*...e*/
 /*...svoid writeLexTarget\40\char\42\ modulename\41\:0:*/
@@ -1272,6 +1293,69 @@ void writeMinGWDllTarget(char* modulename) {
   printf("\t\t$(MINGWCC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP)\n",modulename);
 #endif
 #ifdef __WATCOMC__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+  printf("FILE += $(OBJLIST)\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("LINKFLAGS=@%s.lnk\n", targetname);
+  printf("endif\n");
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
+  printf("endif\n");
+  printf("PROGRAM=%s\n", ModName);
+
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+
+  printf("\n%s.dll: $(OBJS) %s.dll.lnk\n", ModName, ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+
+  printf("\t\t@cmd /C if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $@.lnk\n");
+
+  //printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  printf("\t\t@$(CPPMINGW) -fPIC -shared -Wl,--enable-auto-import -Wl,--subsystem,windows -mthreads -mwindows -Wl,--out-implib=$(PROGRAM).a -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  //printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).a $(DLLLIBDIR) > null\n");
+  printf("\t\t@$(POST_PROCESS) \n");
+
+/*
+  printf("\t\t\n");
+
+  printf("%s.dll.lnk: makefile\n", ModName);
+
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo FIL { $(OBJS) } >> $@\n");
+
+  printf("\t\t@cmd /C \"doit >> %s.lnk\"\n", targetname);
+  printf("\t\t@cmd /C \"rm doit.bat\"\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
+
+  printf("\t\t@echo @rem Nothing > doit.bat\n");
+  printf("\t\t@echo @if NOT \\\"$(LIBS)\\\" == \\\"\\\" echo LIBR $(LIBS) > doit.bat\n");
+*/
+
+  printf("endif\n");
+
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+// Don know, why this doesn't work now ??
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+// Hack for copy not found ??
+  printf("\t\t$(CP) $(PROGRAM).dll $(DLLDIR) > null\n");
+  printf("\t\t$(CP) $(PROGRAM).lib $(DLLLIBDIR) > null\n");
+  printf("\t\t@$(POST_PROCESS) \n");
+  printf("endif\n");
+#endif
+
+#ifdef __MINGW32__
   char* ModName = strdup(modulename);
   char** array;
   int count = split('.', ModName, &array);
@@ -1649,6 +1733,28 @@ void write_clean(char* modulename = NULL) {
     printf("\t\t-@rm *.pch\n");
     printf("\t\t-@rm *.pdb\n");
 #endif
+    if (modulename == NULL) {
+        printf("\t\t-@rm *.dll\n");
+    } else {
+        printf("\t\t-@rm %s.exe\n", modulename);
+    }
+
+    // Write the distclean rule
+    printf("distclean:\n");
+    printf("\t\t-@rm *.o\n");
+    printf("\t\t-@rm makefile\n");
+    printf("\t\t-@rm *.log\n");
+    if (modulename == NULL) {
+        printf("\t\t-@rm *.so.*\n");
+    } else {
+        printf("\t\t-@rm %s\n", modulename);
+    }
+#endif //__WATCOMC__
+#ifdef __MINGW32__
+    // Write the normal clean rule
+    printf("clean:\n");
+    printf("\t\t-@rm *.exp *.err *.ilk *.lib *.lk1 *.mk1 *.map *.mk *.mk1 *.sym *.obj *.o *.idb *.pch *.pdb\n");
+    printf("\t\t-@rm -f *.bak\n");
     if (modulename == NULL) {
         printf("\t\t-@rm *.dll\n");
     } else {
@@ -2166,7 +2272,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.10 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.11 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2404,12 +2510,8 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 
   replace(ObjNameC, "/", "\\\\");
 
-  fprintf(stderr, "List files.\n");
-
   ListFiles(f,Line,&p->l);
   int len;
-
-  fprintf(stderr, "Decide target type.\n");
 
   switch (targettype) {
         case IDL_TARGET:
@@ -2737,20 +2839,17 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
   TIncludeParser p;
   char FileName[256];
 
-  fprintf(stderr, "Prepare filename.\n");
   strcpy(FileName,d->Path);
   strcat(FileName,d->Name);
 
   p.setIncludes(iPathList, count);
 
-  fprintf(stderr, "Parse.\n");
   p.Parse(FileName);
 
   char fullName[1000] = "";
 
   strcpy(fullName, d->Path);
   strcat(fullName, d->Name);
-  fprintf(stderr, "Write dep.\n");
   WriteDep(f,fullName,&p);
 #ifdef VERBOSE
   printf("Warning: Using hardcoded char array.\n");
