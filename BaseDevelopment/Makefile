@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.63 $
+# * $Revision: 1.229.2.64 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.63 2023/04/10 15:12:56 lothar Exp $
+# * $Id: Makefile,v 1.229.2.64 2023/04/16 16:46:12 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.64  2023/04/16 16:46:12  lothar
+# * Try a bootstrap mechanism
+# *
 # * Revision 1.229.2.63  2023/04/10 15:12:56  lothar
 # * Some more changes to get compiling to start
 # *
@@ -1580,6 +1583,7 @@ ALLTARGETS = \
 	../../lib \
 	../../dll/libs \
 	../../plugins/libs \
+	../vendor/mkmk \
 	lbHook \
 	lbtransfer \
 	lbDB \
@@ -2089,6 +2093,14 @@ ifneq ($(OSTYPE), Windows_NT)
 	$(MAKE) -s -C $@ -e MODULE=MkBs -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
+endif
+
+ifeq ($(OSTYPE), Windows_NT)
+../vendor/mkmk: dummy
+	makefile.bat
+	$(MAKE) -s -C $@
+	cp $@/mkmk $(prefix)/bin
+	cd ../BaseDevelopment
 endif
 
 ifeq ($(OSTYPE), solaris)
