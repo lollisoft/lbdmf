@@ -108,7 +108,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
 
 C_ELFOPS += $(C_OPS) `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
@@ -130,7 +130,7 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I ../include -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../databaselayer/include -I ../sqlite
+MOD_INCL=$(STD_INCL) -I ../include -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/propgrid/include -I ../databaselayer/include -I ../sqlite
 OBJDEP=
 C_ELFOPS +=  `wx-config --inplace --cxxflags` -DwxUSE_COLOURPICKERCTRL -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
 

@@ -41,7 +41,7 @@ MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
 MINGWLIBS += $(MINGWLIBS_WXGUI) -lwxmsw$(WX_VERSION)_html$(WX_DEBUG) -lwxWrapperDLL -lwxAUI -llbHook
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/wxaui-0.9.1/include
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include
 MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/wxwin/wx/include 
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
