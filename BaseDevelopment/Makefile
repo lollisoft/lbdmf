@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.74 $
+# * $Revision: 1.229.2.75 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.74 2023/04/16 20:43:33 lothar Exp $
+# * $Id: Makefile,v 1.229.2.75 2023/04/16 21:11:44 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.75  2023/04/16 21:11:44  lothar
+# * Revert to use shell script
+# *
 # * Revision 1.229.2.74  2023/04/16 20:43:33  lothar
 # * Changed mkmk rule for linux
 # *
@@ -2159,12 +2162,12 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 endif
 
 ifeq ($(OSTYPE), linux)
-../vendor/mkmk/bootstrapped.txt: dummy
-	echo Bootstrapper copied. > ../vendor/mkmk/bootstrapped.txt
-	cp ../vendor/mkmk/makefile.mkmk ../vendor/mkmk/makefile
+../vendor/dosdir: dummy
+	$@/make.sh $@
+	cd ../BaseDevelopment
 
-../vendor/mkmk: ../vendor/mkmk/bootstrapped.txt
-	$(MAKE) -s -C $@
+../vendor/mkmk: dummy
+	$@/make.sh $@
 	cp $@/mkmk $(prefix)/bin
 	cd ../BaseDevelopment
 endif
