@@ -28,11 +28,11 @@
 
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces
-MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MAKE)/Projects/$(REPO_NAME)/AppDevelopment/Interfaces
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE)/Projects/$(REPO_NAME)/AppDevelopment/Interfaces
 
-MOD_INCL=$(STD_INCL) -I=$(DEVROOT)\\Projects\\CPP\\AppDevelopment\\Interfaces
-MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL=$(STD_INCL) -I=$(DEVROOT)\\Projects\\$(REPO_NAME)\\AppDevelopment\\Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/$(REPO_NAME)/AppDevelopment/Interfaces
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,../../../../tools/watcom/lib386/nt/odbc32.lib
 
 # use global setup
@@ -78,8 +78,8 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
-MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/AppDevelopment/Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/$(REPO_NAME)/AppDevelopment/Interfaces
 VENDORLIBS=
 LIBS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook
 endif    

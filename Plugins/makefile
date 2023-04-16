@@ -9,11 +9,11 @@
 #.PHONY: dummy
 
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 endif
 
 ifneq ($(CRUISECONTROL), yes)
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 endif
 
 ifeq ($(OSTYPE), solaris)
