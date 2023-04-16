@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.65 $
+# * $Revision: 1.229.2.66 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.65 2023/04/16 16:58:52 lothar Exp $
+# * $Id: Makefile,v 1.229.2.66 2023/04/16 17:06:28 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.66  2023/04/16 17:06:28  lothar
+# * Using backslash was indeed wrong
+# *
 # * Revision 1.229.2.65  2023/04/16 16:58:52  lothar
 # * Try to cd into directory, create the makefile with makefile.bat
 # *
@@ -2100,9 +2103,9 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/mkmk: dummy
-	cd ..\\vendor\\mkmk
+	cd ../vendor/mkmk
 	makefile.bat
-	cd ..\\BaseDevelopment
+	cd ../BaseDevelopment
 	$(MAKE) -s -C $@
 	cp $@/mkmk $(prefix)/bin
 	cd ../BaseDevelopment
