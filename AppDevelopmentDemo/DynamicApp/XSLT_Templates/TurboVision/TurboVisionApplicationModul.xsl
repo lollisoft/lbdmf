@@ -241,7 +241,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL) -I=$(DEVROOT)\\Projects\\CPP\\AppDevelopment\\Interfaces
-MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/Interfaces
 SLASH=/
 wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib, $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
@@ -284,8 +284,8 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
-MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/lbdmf/AppDevelopment/Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/lbdmf/AppDevelopment/Interfaces
 VENDORLIBS=
 LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
 endif    

@@ -288,7 +288,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL) -I=$(DEVROOT)\\Projects\\CPP\\AppDevelopment\\Interfaces
-MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/Interfaces
 SLASH=/
 wxBase=$(DEVROOT_MAKE)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib, $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
@@ -298,10 +298,10 @@ MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
 MINGWLIBS += $(MINGWLIBS_WXGUI) -lwxWrapperDLL -llbHook -lwxmsw$(WX_VERSION)$(WX_DEBUG)_aui_gcc_custom
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
-#MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/wxaui-0.9.1/include
+#MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/lbdmf/vendor/wxaui-0.9.1/include
 MOD_INCL_MINGW_CPP += -I../wxWrapperDLL 
 MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/wxwin/wx/include 
-MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/CPP/vendor/propgrid/include 
+MOD_INCL_MINGW_CPP += -I$(DEVROOT_MINGW)/Projects/lbdmf/vendor/propgrid/include 
 
 CPP_MINGW_EXEOPS += -DUSE_WXWRAPPER_DLL -D__WIN32__ -DWINVER=0x0400 -D__WINDOWS95__ -D__WINDOWS__ -D__WXMSW__ -DLB_I_EXTENTIONS
 
