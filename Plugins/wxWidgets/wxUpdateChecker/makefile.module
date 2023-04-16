@@ -27,8 +27,8 @@
 #			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/CPP/vendor/wxJSON-1.2.1/include
-MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/CPP/vendor/wxJSON-1.2.1/include
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/$(REPO_NAME)/vendor/wxJSON-1.2.1/include
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/$(REPO_NAME)/vendor/wxJSON-1.2.1/include
 
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT_MAKE)\\wxwin\\wx\\include
 MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/wxwin/wx/include
@@ -103,7 +103,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxJSON-1.2.1/include
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxJSON-1.2.1/include
 OBJDEP=
 C_SOOPS_WX = -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -113,7 +113,7 @@ endif
 
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxJSON-1.2.1/include
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxJSON-1.2.1/include
 OBJDEP=
 C_SOOPS_WX = -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -122,7 +122,7 @@ LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs`
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxJSON-1.2.1/include
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxJSON-1.2.1/include
 OBJDEP=
 C_SOOPS_WX = -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
@@ -133,7 +133,7 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxJSON-1.2.1/include
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxJSON-1.2.1/include
 OBJDEP=
 C_SOOPS_WX =-DOSX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)

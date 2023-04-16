@@ -54,7 +54,7 @@ endif
 
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL) -I../../lbHook/linuxCode \
-    -I$(DEVROOT)/Projects/CPP/vendor/XML4C/xml4c-src3_5_1/include \
-    -I$(DEVROOT)/Projects/CPP/BaseDevelopment/lbclasses
+    -I$(DEVROOT)/Projects/$(REPO_NAME)/vendor/XML4C/xml4c-src3_5_1/include \
+    -I$(DEVROOT)/Projects/$(REPO_NAME)/BaseDevelopment/lbclasses
 VENDORLIBS=-ldl -lstdc++ -lxerces-c1_5 /libdev/lib/lbHook.so
 endif    

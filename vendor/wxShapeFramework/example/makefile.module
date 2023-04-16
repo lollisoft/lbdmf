@@ -73,7 +73,7 @@ endif
 
 ifeq ($(COMPILER), WATCOM)
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT)\\Projects\\CPP\\vendor\\wxaui-0.9.1\\include  -i=..\\wxWrapperDLL  -i=$(DEVROOT)\\wxwin\\wx\\include -i=$(DEVROOT)\\Projects\\CPP\\vendor\\propgrid\\include
-MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include  -i=../wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/propgrid/include 
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include  -i=../wxWrapperDLL -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=$(DEVROOT_MAKE)/Projects/$(REPO_NAME)/vendor/propgrid/include 
 
 C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) \
 		/DUSE_WXWRAPPER_DLL \
@@ -106,7 +106,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), solaris)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
 
 C_ELFOPS += $(C_OPS) `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
@@ -116,7 +116,7 @@ VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
@@ -128,7 +128,7 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I ../include -I $(DEVROOT)/Projects/CPP/vendor/propgrid/include -I ../wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I ../include -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
 C_ELFOPS += `wx-config --inplace --cxxflags` -DwxUSE_COLOURPICKERCTRL -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
 

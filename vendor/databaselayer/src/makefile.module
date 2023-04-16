@@ -72,7 +72,7 @@ LINKFLAGS = $(L_EXEOPS_MICROSOFT) $(LIBS) $(OBJS) \
 endif
 ifeq ($(COMPILER), WATCOM)
 MOD_INCL = $(STD_INCL) -i=$(DEVROOT)\\Projects\\CPP\\vendor\\wxaui-0.9.1\\include -i=$(DEVROOT)\\wxwin\\wx\\include -i=.\\include
-MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/Projects/CPP/vendor/wxaui-0.9.1/include -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=./include 
+MOD_INCL_CPP=$(STD_INCL_CPP) -i=$(DEVROOT_MAKE)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include -i=$(DEVROOT_MAKE)/wxwin/wx/include -i=./include 
 
 C_EXEOPS= $(C_EXEOPS_WATCOM$(MODE)) /D__WIN32__ /DWINVER=0x0400 /D__WINDOWS95__ \
 		/D__WINDOWS__ /D__WXMSW__ /DLB_I_EXTENTIONS
@@ -101,7 +101,7 @@ endif
 ifeq ($(OSTYPE), solaris)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-C_SOOPS_WX = $(C_OPS) `wx-config --cxxflags` -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include -I $(HOME)/gtk+-2.10.0
+C_SOOPS_WX = $(C_OPS) `wx-config --cxxflags` -I ./include -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include -I $(HOME)/gtk+-2.10.0
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 LIBS=$(L_SOOPS) `wx-config --inplace --libs` 
@@ -110,7 +110,7 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
-C_SOOPS_WX = `wx-config --cxxflags` -I ./include -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include -I /opt/gnome/include/gtk-2.0 -I /opt/gnome/include/glib-2.0 -I /opt/gnome/lib/glib-2.0/include -I /opt/gnome/include/pango-1.0 -I /opt/gnome/lib/gtk-2.0/include -I /opt/gnome/include/atk-1.0
+C_SOOPS_WX = `wx-config --cxxflags` -I ./include -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include -I /opt/gnome/include/gtk-2.0 -I /opt/gnome/include/glib-2.0 -I /opt/gnome/lib/glib-2.0/include -I /opt/gnome/include/pango-1.0 -I /opt/gnome/lib/gtk-2.0/include -I /opt/gnome/include/atk-1.0
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 LIBS=$(L_SOOPS) `wx-config --inplace --libs` 
@@ -133,7 +133,7 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), no)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/vendor/wxaui-0.9.1/include
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include
 OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
