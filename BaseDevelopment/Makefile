@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.64 $
+# * $Revision: 1.229.2.65 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.64 2023/04/16 16:46:12 lothar Exp $
+# * $Id: Makefile,v 1.229.2.65 2023/04/16 16:58:52 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.65  2023/04/16 16:58:52  lothar
+# * Try to cd into directory, create the makefile with makefile.bat
+# *
 # * Revision 1.229.2.64  2023/04/16 16:46:12  lothar
 # * Try a bootstrap mechanism
 # *
@@ -2097,7 +2100,9 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/mkmk: dummy
+	cd ..\\vendor\\mkmk
 	makefile.bat
+	cd ..\\BaseDevelopment
 	$(MAKE) -s -C $@
 	cp $@/mkmk $(prefix)/bin
 	cd ../BaseDevelopment
