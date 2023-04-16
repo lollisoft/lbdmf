@@ -288,9 +288,9 @@ IF NOT EXIST %DEVROOT%\wxwin (
 cd %DEVLW%\q 
 cd %DEVROOT%
 set PATH=%PATH%;C:\Q\develop\Tools\7Zip\7-Zip
-7z x %DEVROOT%\Projects\CPP\vendor\wxMSW-2.8.12.zip -owxwin -aoa
-rem call %DEVROOT%\Projects\CPP\buildwxWidgets_MinGW_CC.bat
-cd %DEVROOT%\Projects\CPP\BaseDevelopment
+7z x %DEVROOT%\Projects\lbdmf\vendor\wxMSW-2.8.12.zip -owxwin -aoa
+rem call %DEVROOT%\Projects\lbdmf\buildwxWidgets_MinGW_CC.bat
+cd %DEVROOT%\Projects\lbdmf\BaseDevelopment
 )
 
 mingw32-make
