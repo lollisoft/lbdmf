@@ -12,16 +12,16 @@ ifeq ($(OSTYPE), solaris)
 ifeq ($(CRUISECRONTROL), yes)
 RELPATH=
 else
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
 ifeq ($(OSTYPE), linux)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -30,16 +30,16 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
 ifeq ($(OSTYPE), osx)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 
@@ -100,9 +100,9 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
 else
-RELPATH=\\Projects\\CPP
+RELPATH=\\Projects\\$(REPO_NAME)
 endif
 endif
 
@@ -214,7 +214,7 @@ mkrelease:
 	@for d in $(ALLTARGETS); do \
 	    $(MAKE) -C $$d clean || exit $? ; \
 	done
-	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz CPP; cd CPP/BaseDevelopment
+	cd ../..; tar cvzf lbDMF-0.3.2.3.tgz $(REPO_NAME); cd $(REPO_NAME)/BaseDevelopment
 
 dummy:
 
