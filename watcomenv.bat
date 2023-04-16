@@ -284,6 +284,14 @@ call %DEVROOT%\Projects\CPP\installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STIC
 cd %DEVROOT%\Projects\CPP\BaseDevelopment
 )
 
+IF NOT EXIST %DEVROOT%\wxwin (
+cd %DEVLW%\q 
+cd %DEVROOT%
+unzip %DEVROOT%\Projects\CPP\vendor\wxMSW-2.8.12.zip
+rem call %DEVROOT%\Projects\CPP\buildwxWidgets_MinGW_CC.bat
+cd %DEVROOT%\Projects\CPP\BaseDevelopment
+)
+
 mingw32-make
 
 
