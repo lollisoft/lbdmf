@@ -5,7 +5,7 @@ echo ---------------------------------------------------------------------------
 echo * JENKINS                                                                       * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 
-call Projects\CPP\watcomenv.bat none JENKINS
+call Projects\lbdmf\watcomenv.bat none JENKINS
 
 if "%1" == "release" (
 
