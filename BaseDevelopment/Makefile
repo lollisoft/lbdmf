@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.68 $
+# * $Revision: 1.229.2.69 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.68 2023/04/16 17:28:30 lothar Exp $
+# * $Id: Makefile,v 1.229.2.69 2023/04/16 17:58:41 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.69  2023/04/16 17:58:41  lothar
+# * Wrong parameter to change directory
+# *
 # * Revision 1.229.2.68  2023/04/16 17:28:30  lothar
 # * Another trial
 # *
@@ -2108,8 +2111,8 @@ ifneq ($(OSTYPE), Windows_NT)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-../vendor/bootstrapped.txt: dummy
-	cd $@
+../vendor/mkmk/bootstrapped.txt: dummy
+	cd ../vendor/mkmk
 	echo Bootstrapper copied. > bootstrapped.txt
 	cp makefile.mkmk makefile
 	cd ../BaseDevelopment
