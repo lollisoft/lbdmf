@@ -1,0 +1,161 @@
+# Standard template
+
+ifeq ($(OSTYPE), Windows_NT)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH_MAKE=\Projects\$(REPO_NAME)
+RELPATH=//Projects//$(REPO_NAME)
+else
+RELPATH_MAKE=\Projects\$(REPO_NAME)
+RELPATH=//Projects//$(REPO_NAME)
+endif
+
+include $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/STD_MAKE
+
+# Rule to overcome the possible override of path with recursive make
+
+DEVROOT_MINGW=$(DEVLW)/$(BASE_MAKE)
+MINGWLIBS = -L$(DEVLW)/$(BASE_MAKE)/projects/dll
+
+endif
+
+ifeq ($(OSTYPE), linux-debian-ppc)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/$(REPO_NAME)
+else
+RELPATH=/Projects/$(REPO_NAME)
+endif
+include $(DEVROOT)$(RELPATH)/make/STD_MAKE
+endif
+
+ifeq ($(OSTYPE), solaris)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/$(REPO_NAME)
+else
+RELPATH=/Projects/$(REPO_NAME)
+endif
+include $(DEVROOT)$(RELPATH)/make/STD_MAKE
+endif
+
+ifeq ($(OSTYPE), linux)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/$(REPO_NAME)
+else
+RELPATH=/Projects/$(REPO_NAME)
+endif
+include $(DEVROOT)$(RELPATH)/make/STD_MAKE
+endif
+
+ifeq ($(OSTYPE), osx)
+ifeq ($(CRUISECONTROL), yes)
+RELPATH=/Projects/$(REPO_NAME)
+else
+RELPATH=/Projects/$(REPO_NAME)
+endif
+include $(DEVROOT)$(RELPATH)/make/STD_MAKE
+endif
+
+ifndef prefix
+prefix=$(HOME)
+endif
+
+exec_prefix=$(prefix)
+bindir=$(exec_prefix)/bin
+sbindir=$(exec_prefix)/sbin
+libdir=$(exec_prefix)/lib
+plugindir=$(exec_prefix)/plugins
+
+INSTALL=install
+INSTALL_PROGRAM=$(INSTALL)
+ifeq ($(OSTYPE), linux)
+STRIP=strip -s
+endif
+ifeq ($(OSTYPE), linux-debian-ppc)
+STRIP=strip -s
+endif
+ifeq ($(OSTYPE), solaris)
+STRIP=strip 
+endif
+# Define your module based settings
+
+OBJDEP=../dosdir/match.o ../dosdir/dosdir.o
+
+ifeq ($(OSTYPE), Windows_NT)
+MOD_INCL=$(STD_INCL)
+MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP) -I../dosdir
+
+# use global setup
+COMPILER=WATCOM
+
+ifeq ($(COMPILER), MICROSOFT)
+MOD_INCL = $(STD_INCL_MICROSOFT)
+MOD_INCL += $(foreach s, $(INCLS), /I "$s")
+MOD_INCL += /I ../dosdir
+CC=Cl
+C_DLLOPS= $(C_DLLOPS_MICROSOFT$(MODE))
+C_EXEOPS= $(C_EXEOPS_MICROSOFT$(MODE))
+C_LIBOPS= $(C_LIBOPS_MICROSOFT$(MODE))
+LINK=  $(LINK_MICROSOFT)
+L_DLLOPS= $(L_DLLOPS_MICROSOFT)
+LNKDLLOPS = $(L_DLLOPS_MICROSOFT)
+COMPILERFLAGS = test.obj $(LIBS)
+endif
+
+ifeq ($(COMPILER), WATCOM)
+MOD_INCL = $(STD_INCL_WATCOM)
+endif
+
+endif
+
+ifeq ($(OSTYPE), linux)
+MOD_INCL=$(STD_INCL) -I ../dosdir
+endif    
+
+ifeq ($(OSTYPE), osx)
+MOD_INCL=$(STD_INCL) -I ../dosdir
+endif    
+
+Path=$(PATH)
+all: premake mkmk.exe 
+premake: 
+clean: 
+		@del *.obj 
+		@del *.exe 
+mkmk.exe.lnk: makefile $(OBJS)
+		echo NAME mkmk.exe > $@
+		echo FIL contain.$(OBJ) >> $@
+		echo FIL mkmk.$(OBJ) >> $@
+		echo FIL ../dosdir/dosdir.$(OBJ) >> $@
+		echo FIL ../dosdir/match.$(OBJ) >> $@
+contain.$(OBJ): makefile contain.cpp contain.h
+		@echo Build contain.cpp
+		$(CPPMINGW) -c $(CPP_MINGW_EXEOPS) $(MOD_INCL_MINGW_CPP) -ocontain.$(OBJ) contain.cpp
+
+mkmk.$(OBJ): makefile mkmk.cpp DEFS.H contain.h
+		@echo Build mkmk.cpp
+		$(CPPMINGW) -c $(CPP_MINGW_EXEOPS) $(MOD_INCL_MINGW_CPP) -omkmk.$(OBJ) mkmk.cpp
+
+../dosdir/dosdir.$(OBJ): makefile ../dosdir/dosdir.c
+		@echo Build ..\\dosdir\\dosdir.c
+		$(CCMINGW) -c $(C_MINGW_EXEOPS) $(MOD_INCL_MINGW) -o..\\dosdir\\dosdir.$(OBJ) ..\\dosdir\\dosdir.c
+
+../dosdir/match.$(OBJ): makefile ../dosdir/match.c
+		@echo Build ..\\dosdir\\match.c
+		$(CCMINGW) -c $(C_MINGW_EXEOPS) $(MOD_INCL_MINGW) -o..\\dosdir\\match.$(OBJ) ..\\dosdir\\match.c
+
+OBJS = contain.$(OBJ) mkmk.$(OBJ) ../dosdir/dosdir.$(OBJ) ../dosdir/match.$(OBJ)
+OBJLIST = contain.$(OBJ), mkmk.$(OBJ), ../dosdir/dosdir.$(OBJ), \
+		 ../dosdir/match.$(OBJ)
+PROGRAM=mkmk
+
+mkmk.exe: $(OBJS)
+		@g++ -Wl,--enable-auto-import -o $(PROGRAM).exe $(OBJS) $(MINGWLIBS)
+		@$(CP) $(PROGRAM).exe $(EXEDIR) > null
+clean:
+		-@rm *.exp *.err *.ilk *.lib *.lk1 *.mk1 *.map *.mk *.mk1 *.sym *.obj *.o *.idb *.pch *.pdb
+		-@rm -f *.bak
+		-@rm *.dll
+distclean:
+		-@rm *.o
+		-@rm makefile
+		-@rm *.log
+		-@rm *.so.*
