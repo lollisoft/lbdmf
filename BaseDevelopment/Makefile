@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.67 $
+# * $Revision: 1.229.2.68 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.67 2023/04/16 17:16:30 lothar Exp $
+# * $Id: Makefile,v 1.229.2.68 2023/04/16 17:28:30 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.68  2023/04/16 17:28:30  lothar
+# * Another trial
+# *
 # * Revision 1.229.2.67  2023/04/16 17:16:30  lothar
 # * Batch file calling impossible. Maybe do it within makefile only
 # *
@@ -2106,7 +2109,10 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/bootstrapped.txt: dummy
+	cd $@
 	echo Bootstrapper copied. > bootstrapped.txt
+	cp makefile.mkmk makefile
+	cd ../BaseDevelopment
 
 ../vendor/mkmk: ../vendor/bootstrapped.txt
 	$(MAKE) -s -C $@
