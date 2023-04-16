@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.75 $
+# * $Revision: 1.229.2.76 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.75 2023/04/16 21:11:44 lothar Exp $
+# * $Id: Makefile,v 1.229.2.76 2023/04/16 21:47:25 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.76  2023/04/16 21:47:25  lothar
+# * Deactivated dbwrapcontrols
+# *
 # * Revision 1.229.2.75  2023/04/16 21:11:44  lothar
 # * Revert to use shell script
 # *
@@ -1561,7 +1564,6 @@ ALLDIRS = \
 	../vendor/sqlite \
 	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/dbwrapcontrols \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
@@ -1576,6 +1578,7 @@ ALLDIRS = \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
+#	../vendor/dbwrapcontrols \
 #	../vendor/databaselayer/src/Implementations/ODBC \
 
 endif
