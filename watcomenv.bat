@@ -287,7 +287,8 @@ cd %DEVROOT%\Projects\CPP\BaseDevelopment
 IF NOT EXIST %DEVROOT%\wxwin (
 cd %DEVLW%\q 
 cd %DEVROOT%
-unzip %DEVROOT%\Projects\CPP\vendor\wxMSW-2.8.12.zip
+set PATH=%PATH%;C:\Q\develop\Tools\7Zip\7-Zip
+7z e %DEVROOT%\Projects\CPP\vendor\wxMSW-2.8.12.zip -owxwin -aoa
 rem call %DEVROOT%\Projects\CPP\buildwxWidgets_MinGW_CC.bat
 cd %DEVROOT%\Projects\CPP\BaseDevelopment
 )
