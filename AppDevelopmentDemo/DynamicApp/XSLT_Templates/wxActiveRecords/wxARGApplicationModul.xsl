@@ -279,7 +279,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL=$(STD_INCL) -I=$(DEVROOT)\\Projects\\CPP\\AppDevelopment\\Interfaces
-MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/Interfaces
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,../../../../tools/watcom/lib386/nt/odbc32.lib
 
 # use global setup
@@ -318,8 +318,8 @@ endif
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
-MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/CPP/AppDevelopment/Interfaces
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/lbdmf/AppDevelopment/Interfaces
+MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)/Projects/lbdmf/AppDevelopment/Interfaces
 VENDORLIBS=
 LIBS=$(L_SOOPS) -F$(HOME)/lib -framework lbHook
 endif    
