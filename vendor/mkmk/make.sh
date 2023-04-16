@@ -13,7 +13,7 @@ CPP=g++-4.1
 fi
 
 if [ $OSTYPE = linux ]; then
-CPP=g++
+CPP=gcc
 fi
 
 $CPP mkmk.cpp -c -DUNIX -DOSNAME=$OSNAME \
