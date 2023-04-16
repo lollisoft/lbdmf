@@ -107,14 +107,14 @@
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL_MINGW=$(STD_INCL_MINGW) \
-	-I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces \
-	-I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces \
-	-I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces/<xsl:value-of select="$ApplicationName"/> \
+	-I$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/Interfaces \
+	-I$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces \
+	-I$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces/<xsl:value-of select="$ApplicationName"/> \
 	-I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
 MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) \
-	-I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces \
-	-I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces \
-	-I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces/<xsl:value-of select="$ApplicationName"/> \
+	-I$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/Interfaces \
+	-I$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces \
+	-I$(DEVROOT_MAKE)/Projects/lbdmf/AppDevelopment/DynamicApp/Code/Targets/lbDMF/Interfaces/<xsl:value-of select="$ApplicationName"/> \
 	-I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
 
 OBJDEP=
