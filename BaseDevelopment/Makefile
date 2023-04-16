@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.66 $
+# * $Revision: 1.229.2.67 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.66 2023/04/16 17:06:28 lothar Exp $
+# * $Id: Makefile,v 1.229.2.67 2023/04/16 17:16:30 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.67  2023/04/16 17:16:30  lothar
+# * Batch file calling impossible. Maybe do it within makefile only
+# *
 # * Revision 1.229.2.66  2023/04/16 17:06:28  lothar
 # * Using backslash was indeed wrong
 # *
@@ -2102,10 +2105,10 @@ ifneq ($(OSTYPE), Windows_NT)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-../vendor/mkmk: dummy
-	cd ../vendor/mkmk
-	makefile.bat
-	cd ../BaseDevelopment
+../vendor/bootstrapped.txt: dummy
+	echo Bootstrapper copied. > bootstrapped.txt
+
+../vendor/mkmk: ../vendor/bootstrapped.txt
 	$(MAKE) -s -C $@
 	cp $@/mkmk $(prefix)/bin
 	cd ../BaseDevelopment
