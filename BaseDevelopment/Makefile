@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.76 $
+# * $Revision: 1.229.2.77 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.76 2023/04/16 21:47:25 lothar Exp $
+# * $Id: Makefile,v 1.229.2.77 2023/04/16 23:40:00 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.77  2023/04/16 23:40:00  lothar
+# * Missing target ../../bin on Windows_NT. Caused failure with bison.simple not found in bin.
+# *
 # * Revision 1.229.2.76  2023/04/16 21:47:25  lothar
 # * Deactivated dbwrapcontrols
 # *
@@ -1616,6 +1619,7 @@ bla = \
 	../../open-watcom
 
 ALLTARGETS = \
+	../../bin \
 	../../lib \
 	../../dll/libs \
 	../../plugins/libs \
