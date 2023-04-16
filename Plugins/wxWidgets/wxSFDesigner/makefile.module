@@ -43,7 +43,7 @@ MINGWLIBS += -lwxShapeFramework
 MINGWLIBS += -llbHook
 
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
-MOD_INCL_MINGW_CPP += -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/CPP/vendor/wxShapeFramework/include
+MOD_INCL_MINGW_CPP += -I$(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/$(REPO_NAME)/vendor/wxShapeFramework/include
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \
