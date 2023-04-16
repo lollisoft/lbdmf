@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.72 $
+# * $Revision: 1.229.2.73 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.72 2023/04/16 18:27:31 lothar Exp $
+# * $Id: Makefile,v 1.229.2.73 2023/04/16 18:37:07 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.73  2023/04/16 18:37:07  lothar
+# * Use commands with path direct
+# *
 # * Revision 1.229.2.72  2023/04/16 18:27:31  lothar
 # * Dir -> pwd
 # *
@@ -2121,11 +2124,8 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/mkmk/bootstrapped.txt: dummy
-	cd ../vendor/mkmk
-	pwd
-	echo Bootstrapper copied. > bootstrapped.txt
-	cp makefile.mkmk makefile
-	cd ../BaseDevelopment
+	echo Bootstrapper copied. > ../vendor/mkmk/bootstrapped.txt
+	cp ../vendor/mkmk/makefile.mkmk ../vendor/mkmk/makefile
 
 ../vendor/mkmk: ../vendor/mkmk/bootstrapped.txt
 	$(MAKE) -s -C $@
