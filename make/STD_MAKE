@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.24 $
+# * $Revision: 1.148.2.25 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.24 2023/04/10 14:51:08 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.25 2023/04/16 21:34:30 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.25  2023/04/16 21:34:30  lothar
+# * Changed linux g++ to gcc
+# *
 # * Revision 1.148.2.24  2023/04/10 14:51:08  lothar
 # * Made mkmk compile with MinGW
 # *
@@ -1344,7 +1347,7 @@ endif
 
 #-lefence
 CC =cc
-CPP=g++
+CPP=gcc
 LD =cc -s
 CP =cp
 EXEDIR =
