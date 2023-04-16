@@ -11,3 +11,10 @@ echo 		@del *.obj >> makefile
 echo 		@del *.exe >> makefile
 
 mkmk exe_target_mingw mkmk "" *.cpp ../dosdir/*.c >> makefile
+
+REM Assume not yet bootstrapped, mkmk it self cannot be build with new base directory name
+REM renamed from CPP to lbdmf. 
+IF NOT EXIST bootstrapped.txt (
+copy makefile.mkmk makefile
+echo Bootstrapper copied. > bootstrapped.txt
+)
