@@ -303,11 +303,11 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 		} else {
 			// There is no execution path set on the solaris desktop symbol. Therefore use the development environment at my machine
 			*testSQLFile = home;
-			*testSQLFile += "/develop/Projects/CPP/Database/lbDMF-Sqlite-SystemDB.sql";
+			*testSQLFile += "/develop/Projects/lbdmf/Database/lbDMF-Sqlite-SystemDB.sql";
 			localInitialisation = FileExists(testSQLFile->charrep());
 			if (localInitialisation) {
 				*initialDatabaseLocation = home;
-				*initialDatabaseLocation += "/develop/Projects/CPP/Database/";
+				*initialDatabaseLocation += "/develop/Projects/lbdmf/Database/";
 			} else {
 				/// \todo Implement lookup of bundle.
 				// Try resource directory in bundle.
@@ -571,7 +571,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	getenv("HOME");
 #endif
 	*installdir = home;
-	//*installdir += "/develop/Projects/CPP/Test/GUI/wxWrapper";
+	//*installdir += "/develop/Projects/lbdmf/Test/GUI/wxWrapper";
 	meta->setDirLocation(installdir->charrep());
 #endif
 	meta->msgBox("Info",
