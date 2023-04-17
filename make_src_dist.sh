@@ -26,7 +26,7 @@ fi
 
 # Building branch revision
 if [ "$2" == "" ]; then
-	cvs -d:pserver:lothar@cvsserver.behrens.de:/home/cvsroot export -r Release_1_0_4_stable_rc1_branch lbdmf
+	cvs -d:pserver:anonymous@cvsserver.behrens.de:/home/cvsroot export -r Release_1_0_4_stable_rc1_branch lbdmf
 	cp ~/develop/Projects/lbdmf/Plugins/DatabaseReport/repwrt.cpp lbdmf/Plugins/DatabaseReport/repwrt.cpp
 	cp ~/develop/Projects/lbdmf/Plugins/DatabaseReport/repwrt.h lbdmf/Plugins/DatabaseReport/repwrt.h
 
@@ -53,7 +53,7 @@ fi
 
 # Building branch revision
 if [ "$2" == "debug" ]; then
-	cvs -d:pserver:lothar@cvsserver.behrens.de:/home/cvsroot export -r Release_1_0_4_stable_rc1_branch lbdmf
+	cvs -d:pserver:anonymous@cvsserver.behrens.de:/home/cvsroot export -r Release_1_0_4_stable_rc1_branch lbdmf
 	cp ~/develop/Projects/lbdmf/Plugins/DatabaseReport/repwrt.cpp lbdmf/Plugins/DatabaseReport/repwrt.cpp
 	cp ~/develop/Projects/lbdmf/Plugins/DatabaseReport/repwrt.h lbdmf/Plugins/DatabaseReport/repwrt.h
 
@@ -82,7 +82,7 @@ fi
 if [ "$2" == "jenkins" ]; then
 	mkdir Release
 	cd Release
-	cvs -d:pserver:lothar@cvsserver.behrens.de:/home/cvsroot export -r Release_1_0_4_stable_rc1_branch lbdmf
+	cvs -d:pserver:anonymous@cvsserver.behrens.de:/home/cvsroot export -r Release_1_0_4_stable_rc1_branch lbdmf
 	cd ..
 
 	# Remove some vendor packages, I do not use yet.
