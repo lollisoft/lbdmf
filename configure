@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo all: Projects/CPP/BaseDevelopment > makefile
+echo all: Projects/lbdmf/BaseDevelopment > makefile
 echo \# >> makefile
 
 echo DEVROOT=`pwd` >> makefile
@@ -16,13 +16,13 @@ done
 
 echo dummy: >> makefile
 echo \ >> makefile
-echo Projects/CPP/BaseDevelopment: dummy >> makefile
+echo Projects/lbdmf/BaseDevelopment: dummy >> makefile
 echo \	\$\(MAKE\) -s -C \$\@ -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) >> makefile
 
 echo \ >> makefile
 echo install-strip: >> makefile
-echo \	\$\(MAKE\) -s -C Projects/CPP/BaseDevelopment -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install-strip >> makefile
+echo \	\$\(MAKE\) -s -C Projects/lbdmf/BaseDevelopment -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install-strip >> makefile
 
 echo \ >> makefile
 echo install: >> makefile
-echo \	\$\(MAKE\) -s -C Projects/CPP/BaseDevelopment -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install >> makefile
+echo \	\$\(MAKE\) -s -C Projects/lbdmf/BaseDevelopment -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install >> makefile
