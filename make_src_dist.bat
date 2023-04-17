@@ -1,9 +1,9 @@
-@REM Expecting cwd in the CPP root folder of the project when this script is called.
+@REM Expecting cwd in the lbdmf root folder of the project when this script is called.
 
 set PACKAGINGROOT=%CD%
 set BINARIESROOT=%CD%\..
 set TOOLSFOLDER=C:\Q\develop\Tools
-set DEVROOT=dist\dist_iss_src\Develop\Projects\CPP
+set DEVROOT=dist\dist_iss_src\Develop\Projects\lbdmf
 
 del /Q /S dist
 
