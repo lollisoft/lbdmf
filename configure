@@ -17,12 +17,12 @@ done
 echo dummy: >> makefile
 echo \ >> makefile
 echo Projects/lbdmf/BaseDevelopment: dummy >> makefile
-echo \	\$\(MAKE\) -s -C \$\@ -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) >> makefile
+echo \	\$\(MAKE\) -s -C \$\@ -e REPO_NAME=lbdmf -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) >> makefile
 
 echo \ >> makefile
 echo install-strip: >> makefile
-echo \	\$\(MAKE\) -s -C Projects/lbdmf/BaseDevelopment -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install-strip >> makefile
+echo \	\$\(MAKE\) -s -C Projects/lbdmf/BaseDevelopment -e REPO_NAME=lbdmf -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install-strip >> makefile
 
 echo \ >> makefile
 echo install: >> makefile
-echo \	\$\(MAKE\) -s -C Projects/lbdmf/BaseDevelopment -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install >> makefile
+echo \	\$\(MAKE\) -s -C Projects/lbdmf/BaseDevelopment -e REPO_NAME=lbdmf -e RPMBUILD=yes -e DEVROOT=\$\(DEVROOT\) install >> makefile
