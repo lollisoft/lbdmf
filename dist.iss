@@ -30,6 +30,7 @@ Source: "dist\dist_iss_MinGW_Get\*.*"; DestDir: "{app}\Develop\Tools\MinGW"; Cop
 
 ; wxWidgets configuration update
 Source: "wxWidgets-config.gcc"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "wxWidgets-config-debug.gcc"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 ; Special binary files
 Source: "dist\dist_iss_psqlodbc\psqlodbc.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
@@ -38,6 +39,7 @@ Source: "dist\dist_iss_BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects
 Source: "Database\*.*"; DestDir: "{app}\Database"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "buildwxWidgets_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "buildwxWidgets_MinGW_debug.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "installMinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment"; CopyMode: alwaysoverwrite;
