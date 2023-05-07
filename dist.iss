@@ -66,3 +66,4 @@ Filename: "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=24
 Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall unchecked
 Filename: "{app}\activateACE.bat"; Description: "Get and build ACE framework (ca. 2.4GByte disk usage!)"; Flags: shellexec postinstall unchecked
 Filename: "{app}\buildwxWidgets_MinGW.bat"; Description: "Get MinGW, wxWidgets (and ACE when flagged) and build it"; Flags: shellexec postinstall
+Filename: "{app}\buildwxWidgets_MinGW_debug.bat"; Description: "Get MinGW, wxWidgets (and ACE when flagged) and build it with debug"; Flags: shellexec postinstall

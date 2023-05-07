@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.77 $
+# * $Revision: 1.229.2.78 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.77 2023/04/16 23:40:00 lothar Exp $
+# * $Id: Makefile,v 1.229.2.78 2023/05/07 08:59:58 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.78  2023/05/07 08:59:58  lothar
+# * Some changes to get the build process further improved
+# *
 # * Revision 1.229.2.77  2023/04/16 23:40:00  lothar
 # * Missing target ../../bin on Windows_NT. Caused failure with bison.simple not found in bin.
 # *
