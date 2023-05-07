@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.11 $
+ * $Revision: 1.114.2.12 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.11 2023/04/10 14:06:07 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.12 2023/05/07 08:59:58 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.12  2023/05/07 08:59:58  lothar
+ * Some changes to get the build process further improved
+ *
  * Revision 1.114.2.11  2023/04/10 14:06:07  lothar
  * Made mkmk compile with MinGW
  *
@@ -1436,6 +1439,7 @@ void writeMinGWPluginTarget(char* modulename) {
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).
   printf("\t\t$(CC) $(LDFLAGS) -o %s $(OBJS) $(OBJDEP)\n",modulename);
 #endif
+
 #ifdef __WATCOMC__
   char* ModName = strdup(modulename);
   char** array;
@@ -1490,6 +1494,62 @@ void writeMinGWPluginTarget(char* modulename) {
   printf("\t\t$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
   printf("endif\n");
 #endif
+
+#ifdef __MINGW32__
+  char* ModName = strdup(modulename);
+  char** array;
+  int count = split('.', ModName, &array);
+
+  printf("FILE = FIL\n");
+//  printf("FILE += $(foreach s, $(OBJS),$s, )\n");
+  printf("FILE += $(OBJLIST)\n");
+  printf("LNK=%s.lnk\n", ModName);
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("LINKFLAGS=@$(LNK)\n");
+  printf("endif\n");
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("LINKFLAGS=$(OBJS) $(VENDORLIBS) $(LIBS)\n");
+  printf("endif\n");
+  printf("PROGRAM=%s\n", ModName);
+
+  printf("ifeq ($(COMPILER), WATCOM)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+
+//  printf("\t\t@$(CPPMINGW) -Wl,--kill-at,--output-def=$(PROGRAM).def -shared -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  printf("\t\t@$(CPPMINGW) -fPIC -shared -Wl,--enable-auto-import -Wl,--subsystem,windows -mthreads -mwindows -Wl,--out-implib=$(PROGRAM).a -o $(PROGRAM).dll $(OBJS) $(MINGWLIBS)\n");
+  //printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).a $(PLUGINLIBDIR) > null\n");
+  printf("\t\t@$(POST_PROCESS) \n\n");
+
+/*
+  printf("\t\t@cmd /C \"doit >> $(LNK)\"\n");
+  printf("\t\trm doit.bat\n");
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t-@cmd /C \"attrib -r *.bak\"\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+  printf("\t\t@wlib -q -n -b $(PROGRAM).lib +$(PROGRAM).dll\n");
+  printf("\t\t@$(CP) $(PROGRAM).sym $(PLUGINDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t@$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
+*/
+
+  printf("endif\n");
+
+  printf("ifeq ($(COMPILER), MICROSOFT)\n");
+  printf("\n%s.dll: $(OBJS)\n", ModName);
+  printf("\t\t@echo Link %s.dll\n", ModName);
+  printf("\t\t@echo NAME $(PROGRAM).dll > $(LNK)\n");
+  printf("\t\t@echo $(FILE) $(LIBS) >> $(LNK)\n");
+// Don know, why this doesn't work now ??
+//  printf("\t\t@;if NOT \"$(LIBS)\" == \"\" echo LIBR $(LIBS) >> $(LNK)\n");
+  printf("\t\t@$(LINK) $(LNKDLLOPS) $(LINKFLAGS)\n");
+// Hack for copy not found ??
+  printf("\t\t$(CP) $(PROGRAM).dll $(PLUGINDIR) > null\n");
+  printf("\t\t$(CP) $(PROGRAM).lib $(PLUGINLIBDIR) > null\n");
+  printf("endif\n");
+#endif
+
 }
 /*...e*/
 
@@ -2272,7 +2332,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.11 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.12 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2891,6 +2951,8 @@ int main(int argc, char *argv[])
 
   for(int c = 0; c < strlen(target); c++) target[c] = toupper(target[c]);
 
+  fprintf(stderr, "Writing target %s\n", target);
+
   if (strcmp(target, "-") == 0) {
         targettype = ELF_TARGET;
         target_ext = strdup("");
@@ -3099,6 +3161,8 @@ int main(int argc, char *argv[])
 
         strcpy(FileName, ((TDepItem*)Sources[i])->Path);
         strcat(FileName, ((TDepItem*)Sources[i])->Name);
+
+	    //fprintf(stderr, "Writing object %s\n", FileName);
 
         ObjExt(FileName,ObjName,sizeof(ObjName));
 
