@@ -60,6 +60,15 @@ Source: "dist\bindist_iss\dll\wxmsw28_html_gcc_custom.dll"; DestDir: "{app}\Deve
 Source: "dist\bindist_iss\dll\wxmsw28_xrc_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 Source: "dist\bindist_iss\dll\wxmsw28_aui_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 
+Source: "dist\bindist_iss\dll\wxbase28d_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\bindist_iss\dll\wxbase28d_xml_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\bindist_iss\dll\wxbase28d_net_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\bindist_iss\dll\wxmsw28d_adv_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\bindist_iss\dll\wxmsw28d_core_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\bindist_iss\dll\wxmsw28d_html_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\bindist_iss\dll\wxmsw28d_xrc_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+Source: "dist\bindist_iss\dll\wxmsw28d_aui_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
+
 ; Monolithic
 ;Source: "Q:\Develop\Projects\dll\wxmsw28_gcc_custom.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
 ;Source: "Q:\Develop\Projects\dll\wxAUI.dll"; DestDir: "{app}\Develop\Projects\dll"; CopyMode: alwaysoverwrite;
