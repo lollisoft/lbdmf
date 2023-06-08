@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF MinGW Repackaged
-AppVerName=lbDMF MinGW Repackaged 1.0.0.0-alpha
-OutputBaseFilename=lbDMFMinGWRepackaged-1.0.0.0-alpha
+AppVerName=lbDMF MinGW Repackaged 1.3.2-final
+OutputBaseFilename=lbDMF-MinGW-Repackaged-1.3.2
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -19,7 +19,7 @@ LicenseFile=license.txt
 ;Name: "desktopicon"; Description: "Create a &desktop icon"; GroupDescription: "Additional icons:"; MinVersion: 4,4
 
 [Files]
-Source: "dist\dist_iss_MinGW\*"; DestDir: "{app}\Develop\Tools\MinGW"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "dist\dist_iss_MinGW\*"; DestDir: "{app}\Develop\Tools"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
 [Icons]
 
