@@ -40,7 +40,7 @@ if not EXIST "dist\bindist_iss\plugins" mkdir dist\bindist_iss\plugins
 if not EXIST "dist\bindist_iss_MinGW_Libraries" mkdir dist\bindist_iss_MinGW_Libraries
 if not EXIST "dist\bindist_iss_Watcom_Libraries" mkdir dist\bindist_iss_Watcom_Libraries
 
-7z x %VENDORFOLDER%\MinGW.zip dist\dist_iss_MinGW
+7z x %DEVROOT%\vendor\MinGW.zip dist\dist_iss_MinGW
 
 copy %TOOLSFOLDER%\mingw\bin\mingwm10.dll dist\bindist_iss_MinGW_Libraries
 copy %TOOLSFOLDER%\mingw\bin\libgcc_s_dw2-1.dll dist\bindist_iss_MinGW_Libraries
