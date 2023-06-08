@@ -3,6 +3,7 @@
 set PACKAGINGROOT=%CD%
 set BINARIESROOT=%CD%\..
 set TOOLSFOLDER=C:\Q\develop\Tools
+set VENDORFOLDER=C:\Q\develop\Projects\lbdmf\vendor
 set DEVROOT=dist\dist_iss_src\Develop\Projects\lbdmf
 
 del /Q /S dist
@@ -22,6 +23,8 @@ if not EXIST "dist\dist_iss_src\Develop\Projects\lib" mkdir dist\dist_iss_src\De
 if not EXIST "dist\dist_iss_src\Develop\Projects\dll\include" mkdir dist\dist_iss_src\Develop\Projects\dll\include
 if not EXIST "dist\dist_iss_src\Develop\Projects\lib\include" mkdir dist\dist_iss_src\Develop\Projects\lib\include
 
+if not EXIST "dist\dist_iss_MinGW" mkdir dist\dist_iss_MinGW
+
 @REM Prepare files for relative packaging mechanism
 if not EXIST "dist\dist_iss_MinGW_Get" mkdir dist\dist_iss_MinGW_Get
 if not EXIST "dist\dist_iss_psqlodbc" mkdir dist\dist_iss_psqlodbc
@@ -36,6 +39,8 @@ if not EXIST "dist\bindist_iss\plugins" mkdir dist\bindist_iss\plugins
 
 if not EXIST "dist\bindist_iss_MinGW_Libraries" mkdir dist\bindist_iss_MinGW_Libraries
 if not EXIST "dist\bindist_iss_Watcom_Libraries" mkdir dist\bindist_iss_Watcom_Libraries
+
+7z x %VENDORFOLDER%\MinGW.zip dist\dist_iss_MinGW
 
 copy %TOOLSFOLDER%\mingw\bin\mingwm10.dll dist\bindist_iss_MinGW_Libraries
 copy %TOOLSFOLDER%\mingw\bin\libgcc_s_dw2-1.dll dist\bindist_iss_MinGW_Libraries
@@ -138,5 +143,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\docdist.iss
 if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\bin-buildtools-dist.iss
+if %errorlevel% neq 0 exit /b %errorlevel%
+"%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\MinGW-3.4.5-Repackaged.iss
 if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\templatedist.iss
