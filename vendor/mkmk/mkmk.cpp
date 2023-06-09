@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.12 $
+ * $Revision: 1.114.2.13 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.12 2023/05/07 08:59:58 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.13 2023/06/09 09:45:45 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.13  2023/06/09 09:45:45  lothar
+ * Probably a buffer overrun
+ *
  * Revision 1.114.2.12  2023/05/07 08:59:58  lothar
  * Some changes to get the build process further improved
  *
@@ -2332,7 +2335,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.12 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.13 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2737,7 +2740,7 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 /*...svoid WriteEnding\40\FILE \42\f\44\ char \42\ExeName\44\ TDepList \42\l\41\:0:*/
 void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 {
-  char Line[120] = "";
+  char Line[1024] = "";
 
         if ((targettype != LEX_TARGET) && (targettype != YACC_TARGET)) {
                 printf("OBJS =");
