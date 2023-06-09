@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.14 $
+ * $Revision: 1.114.2.15 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.14 2023/06/09 12:46:45 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.15 2023/06/09 12:53:54 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.15  2023/06/09 12:53:54  lothar
+ * Some corrections
+ *
  * Revision 1.114.2.14  2023/06/09 12:46:45  lothar
  * Changed some stack based strings to memory based
  *
@@ -2338,7 +2341,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.14 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.15 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2413,8 +2416,8 @@ void WriteHeader(FILE *f, char *ExeName)
 void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
   int i;
-  char *s = malloc(PATH_MAX);
-  char *FName = malloc(PATH_MAX);
+  char *s = (char*) malloc(sizeof(char) * PATH_MAX);
+  char *FName = (char*) malloc(sizeof(char) * PATH_MAX);
   TDepItem *d;
 
   memset(s, 0, PATH_MAX);
@@ -2448,8 +2451,8 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
   int i;
-  char *s = malloc(PATH_MAX);
-  char *FName = malloc(PATH_MAX);
+  char *s = (char*) malloc(sizeof(char) * PATH_MAX);
+  char *FName = (char*) malloc(sizeof(char) * PATH_MAX);
   TDepItem *d;
 
   memset(s, 0, PATH_MAX);
@@ -2514,11 +2517,11 @@ void replace(char* to, const char* match, const char* replace) {
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
 /// Todo: Reimplement without hardcoded sizes. There was a buffer overflow !
-  char *ObjName = malloc(800);
-  char *ObjNameC = malloc(800);
-  char *NameC = malloc(800);
-  char *SExt = malloc(800);
-  char *Line = malloc(800);
+  char *ObjName = (char*) malloc(sizeof(char) * 800);
+  char *ObjNameC = (char*) malloc(sizeof(char) * 800);
+  char *NameC = (char*) malloc(sizeof(char) * 800);
+  char *SExt = (char*) malloc(sizeof(char) * 800);
+  char *Line = (char*) malloc(sizeof(char) * 800);
   int  CPPFlag = 0;
   char Compiler[100] = "";
   int pos = strlen(Name);
