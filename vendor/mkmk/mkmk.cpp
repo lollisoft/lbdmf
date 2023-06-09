@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.13 $
+ * $Revision: 1.114.2.14 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.13 2023/06/09 09:45:45 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.14 2023/06/09 12:46:45 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.14  2023/06/09 12:46:45  lothar
+ * Changed some stack based strings to memory based
+ *
  * Revision 1.114.2.13  2023/06/09 09:45:45  lothar
  * Probably a buffer overrun
  *
@@ -2335,7 +2338,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.13 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.14 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2409,9 +2412,13 @@ void WriteHeader(FILE *f, char *ExeName)
 /*...svoid ListFiles\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
 void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
-  char s[PATH_MAX],FName[PATH_MAX];
   int i;
+  char *s = malloc(PATH_MAX);
+  char *FName = malloc(PATH_MAX);
   TDepItem *d;
+
+  memset(s, 0, PATH_MAX);
+  memset(FName, 0, PATH_MAX);
 
   for (i=0; i<l->Count; i++)
   {
@@ -2433,14 +2440,20 @@ void ListFiles(FILE *f, char *Line, TDepList *l, bool IsObj=false)
     }
   }
   printf("%s\n",Line);
+  free(s);
+  free(FName);
 }
 /*...e*/
 /*...svoid ListFilesWithComma\40\FILE \42\f\44\ char \42\Line\44\ TDepList \42\l\44\ bool IsObj\61\false\41\:0:*/
 void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 {
-  char s[PATH_MAX],FName[PATH_MAX];
   int i;
+  char *s = malloc(PATH_MAX);
+  char *FName = malloc(PATH_MAX);
   TDepItem *d;
+
+  memset(s, 0, PATH_MAX);
+  memset(FName, 0, PATH_MAX);
 
   for (i=0; i<l->Count; i++)
   {
@@ -2467,6 +2480,8 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
     }
   }
   printf("%s\n",Line);
+  free(s);
+  free(FName);
 }
 /*...e*/
 /*...svoid WriteDep\40\FILE \42\f\44\ char \42\Name\44\ TIncludeParser \42\p\41\:0:*/
@@ -2499,17 +2514,22 @@ void replace(char* to, const char* match, const char* replace) {
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
 /// Todo: Reimplement without hardcoded sizes. There was a buffer overflow !
-  char ObjName[800] = "";
-  char ObjNameC[800] = "";
-  char NameC[800] = "";
-  char SExt[100] = "";
-  char Line[800] = "";
-
+  char *ObjName = malloc(800);
+  char *ObjNameC = malloc(800);
+  char *NameC = malloc(800);
+  char *SExt = malloc(800);
+  char *Line = malloc(800);
   int  CPPFlag = 0;
-
   char Compiler[100] = "";
-
   int pos = strlen(Name);
+
+  memset(ObjName, 0, 800);
+  memset(ObjNameC, 0, 800);
+  memset(NameC, 0, 800);
+  memset(SExt, 0, 800);
+  memset(Line, 0, 800);
+
+
 
   strcpy(NameC, Name);
 
@@ -2735,6 +2755,13 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
     default:
                 break;
   }
+
+  free(ObjName);
+  free(ObjNameC);
+  free(NameC);
+  free(SExt);
+  free(Line);
+
 }
 /*...e*/
 /*...svoid WriteEnding\40\FILE \42\f\44\ char \42\ExeName\44\ TDepList \42\l\41\:0:*/
