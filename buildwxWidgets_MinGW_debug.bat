@@ -25,7 +25,7 @@ echo set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
 echo %DEVLW% >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Tools\MinGW\bin\gcc.exe ( >> doBuildWx.bat
 @REM echo call installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
-echo curl -k -L -o lbDMF-MinGW-Repackaged-1.3.2.exe  https://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.3.2/lbDMF-MinGW-Repackaged-1.3.2.exe/download
+echo curl -k -L -o lbDMF-MinGW-Repackaged-1.3.2.exe  https://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.3.2/lbDMF-MinGW-Repackaged-1.3.2.exe/download >> doBuildWx.bat
 echo lbDMF-MinGW-Repackaged-1.3.2.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
 rem echo copy /Y %DEVLW%\lbDMF\commctrl-wxWidgets-patch.h Develop\Tools\MinGW\include\commctrl.h >> doBuildWx.bat
 rem echo copy /Y %DEVLW%\lbDMF\w32api-Wcpp-patch.h Develop\Tools\MinGW\include\w32api.h >> doBuildWx.bat
