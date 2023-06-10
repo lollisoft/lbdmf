@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.16 $
+ * $Revision: 1.114.2.17 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.16 2023/06/10 08:35:24 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.17 2023/06/10 16:08:03 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.17  2023/06/10 16:08:03  lothar
+ * There are issues with sh and mkmk command when using large command parameter values.
+ * Added support for -I based include parameter passing and an automatic shift for the
+ * remaining parameter's start index. That seems to work partly.
+ *
  * Revision 1.114.2.16  2023/06/10 08:35:24  lothar
  * Probably found the issue for the crash.
  *
@@ -430,6 +435,10 @@
  **************************************************************/
 
 /*...e*/
+
+//#define VERBOSE
+#define VERBOSE_FillCharArray
+
 /*...sincludes:0:*/
 #include <stdio.h>
 #include <ctype.h>
@@ -609,6 +618,59 @@ class TDepList:public TDynArray {
     void AddMask(char *Mask);
 };
 /*...e*/
+
+
+// A helper to enable alternative include path parameter passing
+struct TIncludeDefinition {
+	char Path[PATH_MAX];
+};
+
+class TIncludeList:public TDynArray {
+  public:
+    TIncludeList():TDynArray(20,10,sizeof(TIncludeDefinition)){}
+    bool Search(char *forItem);
+    void Insert(char *includeDef);
+	void FillCharArray(char ***array);
+};
+
+
+bool TIncludeList::Search(char *forItem)
+{
+  int i;
+  bool Found;
+  TIncludeDefinition *d;
+
+  i=0;
+  Found=false;
+  while (i<Count && !Found)
+  {
+    d=(TIncludeDefinition*)(*this)[i];
+    Found = strcmp(d->Path,forItem)==0;
+    i++;
+  }
+  return Found;
+}
+
+void TIncludeList::Insert(char *includeDef)
+{
+  TIncludeDefinition i;
+
+  memset(&i,0,sizeof(i));
+  strncpy(i.Path,includeDef,sizeof(i.Path)-1);
+  TDynArray::Insert(&i);
+}
+
+void TIncludeList::FillCharArray(char ***array) {
+  *array = (char**) malloc(sizeof(char *) * Count);
+			
+  for (int i=0; i<Count; i++) {
+    (*array)[i] = strdup(((TIncludeDefinition*)(*this)[i])->Path);
+  }
+#ifdef VERBOSE_FillCharArray
+  fprintf(stderr, "TIncludeList::FillCharArray alternative was used...\n");
+#endif  
+}
+
 /*...svoid GetPath\40\char \42\s\44\ char \42\p\44\ int Len\41\:0:*/
 void GetPath(char *s, char *p, int Len)
 {
@@ -730,6 +792,10 @@ void TIncludeParser::AddInclude(char *IncName)
   char Path[PATH_MAX] = "";
   char realfile[1000] = "";
 
+  memset(s, 0, 1000);
+  memset(Path, 0, PATH_MAX);
+  memset(realfile, 0, 1000);
+
 /*...sSearch the real place:0:*/
   // Search on std include path's (First occurence fits)
   int foundStdPath = 0;
@@ -775,7 +841,7 @@ void TIncludeParser::AddInclude(char *IncName)
 
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-  printf("    '%s'\n",IncName);
+  fprintf(stderr, "    '%s'\n",IncName);
 #endif
 /*...e*/
 
@@ -834,7 +900,7 @@ void TIncludeParser::ParseCLine(char *s)
         }
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-        printf("Added\n");
+        fprintf(stderr, "Added\n");
 #endif
 /*...e*/
       }
@@ -858,7 +924,7 @@ void TIncludeParser::ParseCLine(char *s)
                           }
                           /*...sVERBOSE:0:*/
 #ifdef VERBOSE
-                          printf("Added\n");
+                          fprintf(stderr, "Added\n");
 #endif
                           /*...e*/
                   }
@@ -873,14 +939,8 @@ void TIncludeParser::ParseComments(char *s)
 
   i=0;
   do {
-  #ifdef VERBOSE
-    if (i == 20) printf("Char at %d, strlen is %d\n", i, strlen(s));
-  #endif
     if (Comment)
     {
-    #ifdef VERBOSE
-      if (i == 20) printf("Comment state\n");
-    #endif
       if (strlen(s)-1 < i) return;
       if (strlen(s)-1 < i+1) return;
       if (s[i]=='*' && s[i+1]=='/')
@@ -894,29 +954,14 @@ void TIncludeParser::ParseComments(char *s)
       }
     }
     else {
-      #ifdef VERBOSE
-      if (i >= 20) printf("No comment state at %d\n", i);
-      #endif
       if (strlen(s)-1 <= i) {
-        #ifdef VERBOSE
-        if (i >= 20) printf("Return 1\n");
-        #endif
         return;
       }
       if (strlen(s)-1 <= i+1) {
-        #ifdef VERBOSE
-        if (i >= 20) printf("Return 2\n");
-        #endif
         return;
       }
-      #ifdef VERBOSE
-      if (i >= 20) printf("Check for /\n");
-      #endif
       if (s[i]=='/')
       {
-      #ifdef VERBOSE
-        if (i >= 20) printf("Do switch\n");
-      #endif
        if (strlen(s) == i+1) {
          printf("Buffer overflow\n");
          return;
@@ -925,9 +970,6 @@ void TIncludeParser::ParseComments(char *s)
         {
           case '*': Comment=true; i++; break;
           case '/':
-       #ifdef VERBOSE
-                if (i >= 20) printf("Switch (/)\n");
-       #endif
                 s[i]=0;
                 i--;
                 break;
@@ -936,9 +978,6 @@ void TIncludeParser::ParseComments(char *s)
     }
     i++;
     if (strlen(s)-1 == i) return;
-#ifdef VERBOSE
-    if (i >= 20) printf("Do the while now\n");
-#endif
   } while (s[i]);
 }
 /*...e*/
@@ -965,6 +1004,8 @@ char* TIncludeParser::BasicParse(char *FileName)
   char Line[256];
   static char realfile[1000] = "";
   int success = 0;
+
+  memset(Line, 0, 256);
 
 /*...sfind file in standard include path:0:*/
   for (int i = 0; i < count; i++) {
@@ -2347,7 +2388,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.16 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.17 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2797,14 +2838,14 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
         case DLL_TARGET:
         case DLL_TARGET_CROSS:
                 #ifdef VERBOSE
-                printf("Making a dll target\n");
+                fprintf(stderr, "Making a dll target\n");
                 #endif
                 printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
                 printf("\t\t*$(LINK) $(L_OPS_DLL) name %s file $(OBJS) library $(LIBS)\n",ModuleName);
                 break;
         case LIB_TARGET:
                 #ifdef VERBOSE
-                printf("Making a lib target\n");
+                fprintf(stderr, "Making a lib target\n");
                 #endif
                 printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
                 printf("\t\t*$(WLIB) $(LIB_OPS_LIB) %s &\n", ModuleName);
@@ -2812,7 +2853,7 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
                 break;
         case EXE_TARGET:
                 #ifdef VERBOSE
-                printf("Making a exe target\n");
+                fprintf(stderr, "Making a exe target\n");
                 #endif
                 printf("%s: $(OBJS) $(LIBS)\n",ModuleName);
                 printf("\t\t*$(LINK) $(L_OPS_EXE) name %s ",ModuleName);
@@ -2951,18 +2992,22 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
   strcat(fullName, d->Name);
   WriteDep(f,fullName,&p);
 #ifdef VERBOSE
-  printf("Warning: Using hardcoded char array.\n");
+  fprintf(stderr, "Warning: Using hardcoded char array.\n");
 #endif
 //  delete[] fullName;
 }
 /*...e*/
 /*...e*/
 
+
+
 /*...svoid main\40\int argc\44\ char \42\argv\91\\93\\41\:0:*/
 int main(int argc, char *argv[])
 {
   FILE *f;
   TDepList Sources;
+  // A list of passed include paths
+  TIncludeList ParameterInludes;
   int i;
   if (argc<4)
   {
@@ -3135,16 +3180,35 @@ int main(int argc, char *argv[])
 #ifdef VERBOSE
   fprintf(stderr, "Extract arg 3...\n");
 #endif
+  
+  int SourcesParamsStart = 4;
 
-  //  WriteHeader(f,targetname);
-  char *inclPaths = strdup(argv[3]);
+  bool hadSeparateIncludes = false;
+  for (int argi = 3; argi < argc; argi++) {
+	if (strcmp(argv[argi], "-I") == 0) {
+	  hadSeparateIncludes = true;
+	  ParameterInludes.Insert(argv[argi+1]);
+	  SourcesParamsStart += 2; // Shift starting of sources
+	}
+  }
 
-#ifdef VERBOSE
-  fprintf(stderr, "Split path list by comma...\n");
-#endif
+  int count = 0;
 
-  //const char split_char, char *string, char ***array
-  int count = split(',', inclPaths, &IncPathList);
+  if (hadSeparateIncludes) {
+	count = ParameterInludes.Count;
+	ParameterInludes.FillCharArray(&IncPathList);
+  } else {
+	//  WriteHeader(f,targetname);
+	char *inclPaths = strdup(argv[3]);
+
+	#ifdef VERBOSE
+	fprintf(stderr, "Split path list by comma...\n");
+	#endif
+
+	//const char split_char, char *string, char ***array
+	count = split(',', inclPaths, &IncPathList);
+  }
+
 
 #ifdef VERBOSE
   fprintf(stderr, "Have %d includes\n", count);
@@ -3153,7 +3217,7 @@ int main(int argc, char *argv[])
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
   for (i = 0; i < count; i++) {
-        printf("Path: %s\n", IncPathList[i]);
+        fprintf(stderr, "Path: %s\n", IncPathList[i]);
   }
 #endif
 /*...e*/
@@ -3181,12 +3245,12 @@ int main(int argc, char *argv[])
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
   for (i = 0; i < count; i++) {
-        printf("Have copied this entry: %s\n", copyIPathList[i]);
+        fprintf(stderr, "Have copied this entry: %s\n", copyIPathList[i]);
   }
 #endif
 /*...e*/
 
-  for (i=4; i<argc; i++) Sources.AddMask(argv[i]);
+  for (i=SourcesParamsStart; i<argc; i++) Sources.AddMask(argv[i]);
 
   if (Sources.Count == 0) fprintf(stderr, "ERROR: No source files to write!\n");
 
