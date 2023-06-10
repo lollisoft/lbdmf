@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.15 $
+ * $Revision: 1.114.2.16 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.15 2023/06/09 12:53:54 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.16 2023/06/10 08:35:24 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.16  2023/06/10 08:35:24  lothar
+ * Probably found the issue for the crash.
+ *
  * Revision 1.114.2.15  2023/06/09 12:53:54  lothar
  * Some corrections
  *
@@ -548,6 +551,9 @@ int split(const char split_char, char *string, char ***array)
         int index;              /* position in array */
         int count;              /* number of items in array */
         char split_string[2];   /* string to hold split character */
+
+		// Non initialized variable caused a crash with MinGW on Windows.
+        memset(split_string, 0, 2);
 
         /* generate string for strtok() from split_char */
         sprintf(split_string, "%c", split_char);
@@ -2341,7 +2347,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.15 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.16 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -3126,11 +3132,23 @@ int main(int argc, char *argv[])
   if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
 /*...e*/
 
+#ifdef VERBOSE
+  fprintf(stderr, "Extract arg 3...\n");
+#endif
+
   //  WriteHeader(f,targetname);
   char *inclPaths = strdup(argv[3]);
 
+#ifdef VERBOSE
+  fprintf(stderr, "Split path list by comma...\n");
+#endif
+
   //const char split_char, char *string, char ***array
   int count = split(',', inclPaths, &IncPathList);
+
+#ifdef VERBOSE
+  fprintf(stderr, "Have %d includes\n", count);
+#endif
 
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
@@ -3155,6 +3173,11 @@ int main(int argc, char *argv[])
         //printf("Prepared include directory %s\n", temp);
         copyIPathList[i] = strdup(temp);
   }
+  
+#ifdef VERBOSE
+  fprintf(stderr, "Have prepared path array\n");
+#endif
+  
 /*...sVERBOSE:0:*/
 #ifdef VERBOSE
   for (i = 0; i < count; i++) {
