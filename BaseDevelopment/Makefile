@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.78 $
+# * $Revision: 1.229.2.79 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.78 2023/05/07 08:59:58 lothar Exp $
+# * $Id: Makefile,v 1.229.2.79 2023/06/11 09:23:46 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.79  2023/06/11 09:23:46  lothar
+# * Activated new include path parameter again. It probably was the shifting algorythm.
+# *
 # * Revision 1.229.2.78  2023/05/07 08:59:58  lothar
 # * Some changes to get the build process further improved
 # *
