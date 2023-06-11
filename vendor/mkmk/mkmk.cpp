@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.19 $
+ * $Revision: 1.114.2.20 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.19 2023/06/11 10:27:38 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.20 2023/06/11 11:41:22 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.20  2023/06/11 11:41:22  lothar
+ * More debug output
+ *
  * Revision 1.114.2.19  2023/06/11 10:27:38  lothar
  * Adding some debug output
  *
@@ -2395,7 +2398,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.19 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.20 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -3181,12 +3184,12 @@ int main(int argc, char *argv[])
 
 
 
-  if (strchr(targetname, '.') == NULL) targetname = strcat(targetname, target_ext);
+  if (strchr(targetname, '.') == NULL) {
+	targetname = strcat(targetname, target_ext);
+  }
 /*...e*/
 
-#ifdef VERBOSE
   fprintf(stderr, "Extract arg 3...\n");
-#endif
   
   int SourcesParamsStart = 3;
   int NumberOfParamsWithI = 0;
@@ -3225,17 +3228,12 @@ int main(int argc, char *argv[])
   }
 
 
-#ifdef VERBOSE
   fprintf(stderr, "Have %d includes\n", count);
-#endif
 
-/*...sVERBOSE:0:*/
-#ifdef VERBOSE
   for (i = 0; i < count; i++) {
         fprintf(stderr, "Path: %s\n", IncPathList[i]);
   }
-#endif
-/*...e*/
+
   char** copyIPathList = NULL;
 
   copyIPathList = new char*[count];
