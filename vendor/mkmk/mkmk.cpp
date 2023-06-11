@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.18 $
+ * $Revision: 1.114.2.19 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.18 2023/06/11 09:07:11 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.19 2023/06/11 10:27:38 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.19  2023/06/11 10:27:38  lothar
+ * Adding some debug output
+ *
  * Revision 1.114.2.18  2023/06/11 09:07:11  lothar
  * Added a different shift calculation. It was otherwise missing the first
  * source file and produced missing symbols at link time.
@@ -2392,7 +2395,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.18 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.19 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -3262,8 +3265,13 @@ int main(int argc, char *argv[])
 #endif
 /*...e*/
 
-  for (i=SourcesParamsStart; i<argc; i++) Sources.AddMask(argv[i]);
+  fprintf(stderr, "Start at argc %d\n", SourcesParamsStart);
 
+  for (i=SourcesParamsStart; i<argc; i++) {
+	  fprintf(stderr, "Source at %d is %s\n", i, argv[i]);
+	  Sources.AddMask(argv[i]);
+  }
+  
   if (Sources.Count == 0) fprintf(stderr, "ERROR: No source files to write!\n");
 
   // Here the link information file should be created
