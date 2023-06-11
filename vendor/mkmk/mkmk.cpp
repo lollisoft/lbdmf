@@ -12,11 +12,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.17 $
+ * $Revision: 1.114.2.18 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.17 2023/06/10 16:08:03 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.18 2023/06/11 09:07:11 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.18  2023/06/11 09:07:11  lothar
+ * Added a different shift calculation. It was otherwise missing the first
+ * source file and produced missing symbols at link time.
+ *
  * Revision 1.114.2.17  2023/06/10 16:08:03  lothar
  * There are issues with sh and mkmk command when using large command parameter values.
  * Added support for -I based include parameter passing and an automatic shift for the
@@ -2388,7 +2392,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.17 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.18 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -3181,14 +3185,15 @@ int main(int argc, char *argv[])
   fprintf(stderr, "Extract arg 3...\n");
 #endif
   
-  int SourcesParamsStart = 4;
+  int SourcesParamsStart = 3;
+  int NumberOfParamsWithI = 0;
 
   bool hadSeparateIncludes = false;
   for (int argi = 3; argi < argc; argi++) {
 	if (strcmp(argv[argi], "-I") == 0) {
+	  NumberOfParamsWithI++;
 	  hadSeparateIncludes = true;
 	  ParameterInludes.Insert(argv[argi+1]);
-	  SourcesParamsStart += 2; // Shift starting of sources
 	}
   }
 
@@ -3197,6 +3202,10 @@ int main(int argc, char *argv[])
   if (hadSeparateIncludes) {
 	count = ParameterInludes.Count;
 	ParameterInludes.FillCharArray(&IncPathList);
+
+    // Add a shift. Originally starting at 4 but must start at 5 for one file.
+	// 3 + 1 + 1 = 5
+	SourcesParamsStart += (NumberOfParamsWithI*2);
   } else {
 	//  WriteHeader(f,targetname);
 	char *inclPaths = strdup(argv[3]);
@@ -3207,6 +3216,9 @@ int main(int argc, char *argv[])
 
 	//const char split_char, char *string, char ***array
 	count = split(',', inclPaths, &IncPathList);
+	
+	// Increase only about one.
+	SourcesParamsStart++;
   }
 
 
