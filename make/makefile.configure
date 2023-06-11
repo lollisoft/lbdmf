@@ -1,8 +1,8 @@
 
 all: makefile
 
-STDDEP_OLD=.,$(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir,$(DEVROOT_MAKE)$(RELPATH)/include,$(DEVROOT_MAKE)$(RELPATH)/interfaces$(CUSTOM_DEP)
-STDDEP=-I . -I $(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir -I $(DEVROOT_MAKE)$(RELPATH)/include -I $(DEVROOT_MAKE)$(RELPATH)/interfaces $(CUSTOM_DEP)
+STDDEP=.,$(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir,$(DEVROOT_MAKE)$(RELPATH)/include,$(DEVROOT_MAKE)$(RELPATH)/interfaces$(CUSTOM_DEP)
+STDDEP_NEW=-I . -I $(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir -I $(DEVROOT_MAKE)$(RELPATH)/include -I $(DEVROOT_MAKE)$(RELPATH)/interfaces $(CUSTOM_DEP)
 
 ifndef RPMBUILD
 ifeq ($(OSTYPE), solaris)
