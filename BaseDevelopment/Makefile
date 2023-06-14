@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.79 $
+# * $Revision: 1.229.2.80 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.79 2023/06/11 09:23:46 lothar Exp $
+# * $Id: Makefile,v 1.229.2.80 2023/06/14 23:38:27 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.80  2023/06/14 23:38:27  lothar
+# * Adopted setup to support custom MinGW (repackaged jenkins build system).
+# * Made attempts to fix issues with mkmk when built with MinGW. Needs a test
+# * with the most current MinGW compiler.
+# *
 # * Revision 1.229.2.79  2023/06/11 09:23:46  lothar
 # * Activated new include path parameter again. It probably was the shifting algorythm.
 # *
@@ -1624,12 +1629,14 @@ TARGETLEX=lex
 bla = \
 	../../open-watcom
 
+# Include this before building lbHook below, if you want to use MinGW instead precompiled Open Watcom 1.7 version of mkmk.
+#	../vendor/mkmk \
+
 ALLTARGETS = \
 	../../bin \
 	../../lib \
 	../../dll/libs \
 	../../plugins/libs \
-	../vendor/mkmk \
 	lbHook \
 	lbtransfer \
 	lbDB \

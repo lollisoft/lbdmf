@@ -23,10 +23,12 @@ echo del readme.txt > doBuildWx.bat
 echo set DRIVE=%DEVLW% >> doBuildWx.bat
 echo set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
 echo %DEVLW% >> doBuildWx.bat
-echo IF NOT EXIST %DEVLW%\lbDMF\Tools\MinGW\bin\gcc.exe ( >> doBuildWx.bat
-echo call installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
+echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Tools\MinGW\bin\gcc.exe ( >> doBuildWx.bat
+@REM echo call installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
+echo curl -k -L -o lbDMF-MinGW-Repackaged-1.3.2.exe  https://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.3.2/lbDMF-MinGW-Repackaged-1.3.2.exe/download >> doBuildWx.bat
+echo lbDMF-MinGW-Repackaged-1.3.2.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
 rem echo copy /Y %DEVLW%\lbDMF\commctrl-wxWidgets-patch.h Develop\Tools\MinGW\include\commctrl.h >> doBuildWx.bat
-echo copy /Y %DEVLW%\lbDMF\w32api-Wcpp-patch.h Develop\Tools\MinGW\include\w32api.h >> doBuildWx.bat
+rem echo copy /Y %DEVLW%\lbDMF\w32api-Wcpp-patch.h Develop\Tools\MinGW\include\w32api.h >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\bin\bison.exe ( >> doBuildWx.bat
 echo curl -k -L -o lbDMF-BinbuildTools-1.0.4.4-final.exe http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.0.4.4-final/lbDMF-BinbuildTools-1.0.4.4-final.exe/download >> doBuildWx.bat
@@ -38,7 +40,7 @@ echo wxMSW-2.8.12-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR% >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo cd %WXDIR%\build\msw >> doBuildWx.bat
 echo copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx >> doBuildWx.bat
-echo copy /Y %DEVLW%\lbDMF\wxWidgets-config-debug.gcc %WXDIR%\build\msw\config.gcc >> doBuildWx.bat
+echo copy /Y %DEVLW%\lbDMF\wxWidgets-config.gcc %WXDIR%\build\msw\config.gcc >> doBuildWx.bat
 rem echo mingw32-make -f makefile.gcc clean >> doBuildWx.bat
 echo set Path=%SystemRoot%\system32 >> doBuildWx.bat
 echo set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin >> doBuildWx.bat
@@ -58,5 +60,5 @@ echo ) >> doBuildWx.bat
 echo IF EXIST %DEVLW%\lbDMF\GetACE.txt ( call %DEVLW%\lbDMF\InstallACE.bat ) >> doBuildWx.bat
 echo IF EXIST %DEVLW%\lbDMF\GetDoUMLBin.txt ( call %DEVLW%\lbDMF\InstallDoUMLBin.bat ) >> doBuildWx.bat
 echo IF EXIST %DEVLW%\lbDMF\GetDoUMLSrc.txt ( call %DEVLW%\lbDMF\InstallDoUMLSrc.bat ) >> doBuildWx.bat
-echo cd %DEVLW%\lbDMF >> doBuildWx.bat
-call watcomenv.bat %DEVLW%\lbDMF\doBuildWx.bat
+
+call watcomenv.bat doBuildWx.bat

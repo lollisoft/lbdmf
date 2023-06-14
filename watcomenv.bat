@@ -4,9 +4,18 @@ set DEVROOT=%%DEVROOT%%
 echo --------------------------------------------------------------------------------- >> readme.txt
 echo *                        Basic development settings                             * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt
+echo * Buildsystem may use mkmk ported to MinGW. A precompiled Open Watcom 1.7 port  * >> readme.txt
+echo * may be used until the MinGW version works well.                               * >> readme.txt
+echo --------------------------------------------------------------------------------- >> readme.txt
+echo * Mkmk is the main tool, that creates the required makefiles. A prebuild        * >> readme.txt
+echo * version got built by Open Watcom 1.7 prior to porting to MinGW started for it * >> readme.txt
+echo * to replace it later. Using the MinGW version requires include building it.    * >> readme.txt
+echo * To do so. search for #	../vendor/mkmk \ and include it as described.        * >> readme.txt
+echo --------------------------------------------------------------------------------- >> readme.txt
 echo * You have started lbDMF Develop the first time. Wait until wxWidgets           * >> readme.txt
 echo * got built if you opted for a build. If that is finished, reopen               * >> readme.txt
-echo * lbDMF Develop and type make.                                                  * >> readme.txt
+echo * lbDMF Develop and type make. Depending on the version you opted, mkmk needs   * >> readme.txt
+echo * to be included into the build process as described above.                     * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 echo * If you don't have opted for building wxWigets, the library and MinGW must     * >> readme.txt
 echo * be installed manually. Folders for that look respectively like this:          * >> readme.txt
