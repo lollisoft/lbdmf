@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.20 $
+ * $Revision: 1.114.2.21 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.20 2023/06/11 11:41:22 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.21 2023/06/14 23:38:27 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.21  2023/06/14 23:38:27  lothar
+ * Adopted setup to support custom MinGW (repackaged jenkins build system).
+ * Made attempts to fix issues with mkmk when built with MinGW. Needs a test
+ * with the most current MinGW compiler.
+ *
  * Revision 1.114.2.20  2023/06/11 11:41:22  lothar
  * More debug output
  *
@@ -446,7 +451,7 @@
 
 /*...e*/
 
-//#define VERBOSE
+#define VERBOSE
 #define VERBOSE_FillCharArray
 
 /*...sincludes:0:*/
@@ -664,17 +669,52 @@ bool TIncludeList::Search(char *forItem)
 void TIncludeList::Insert(char *includeDef)
 {
   TIncludeDefinition i;
-
+#ifdef VERBOSE
+  fprintf(stderr, "Insert include definition %s...\n", includeDef);
+#endif
   memset(&i,0,sizeof(i));
-  strncpy(i.Path,includeDef,sizeof(i.Path)-1);
+  if (strlen(includeDef) < sizeof(i.Path)-1) 
+	  strcpy(i.Path,includeDef);
+  else
+	  strncpy(i.Path,includeDef,sizeof(i.Path)-1);
   TDynArray::Insert(&i);
+#ifdef VERBOSE
+  	fprintf(stderr, "Check accessing %s\n", ((TIncludeDefinition*)(*this)[Count-1])->Path);
+#endif
 }
 
 void TIncludeList::FillCharArray(char ***array) {
-  *array = (char**) malloc(sizeof(char *) * Count);
+#ifdef VERBOSE_FillCharArray
+  fprintf(stderr, "TIncludeList::FillCharArray alternative is used...\n");
+#endif  
+
+  // Probably some memory management issues.
+  if (Count < 100)
+  {
+    *array = (char**) malloc(sizeof(char *) * (Count + (100-Count))); 
+  }
+  else
+  {
+    *array = (char**) malloc(sizeof(char *) * Count); 
+  }
+
+#ifdef VERBOSE_FillCharArray
+  fprintf(stderr, "TIncludeList::FillCharArray malloc was called...\n");
+#endif  
+  
+  if ((*array) == NULL) {
+    fprintf(stderr, "TIncludeList::FillCharArray Error: Memory allocation failed for %d elements!\n", Count);
+  }
 			
   for (int i=0; i<Count; i++) {
+#ifdef VERBOSE
+	fprintf(stderr, "Try copy include...\n");
+	fprintf(stderr, "Prepare special array entry at %d with %s\n", i, ((TIncludeDefinition*)(*this)[i])->Path);
+#endif
     (*array)[i] = strdup(((TIncludeDefinition*)(*this)[i])->Path);
+#ifdef VERBOSE
+	fprintf(stderr, "Copied include...\n");
+#endif
   }
 #ifdef VERBOSE_FillCharArray
   fprintf(stderr, "TIncludeList::FillCharArray alternative was used...\n");
@@ -777,22 +817,20 @@ void TDepList::AddMask(char *Mask)
 class TIncludeParser {
   public:
     bool Parse(char *FileName, bool CPP=true);
-    void setIncludes(char** iPathList, int _count);
+    void setIncludes(TIncludeList* inclueList);
     TDepList l;
   private:
     char FilePath[PATH_MAX];
     bool Comment,bCPP;
-    char** InclPathList;
-    int count;
+    TIncludeList* InclueList;
     char* BasicParse(char *FileName);
     void ParseComments(char *s);
     void ParseCLine(char *s);
     void AddInclude(char *IncName);
 };
 /*...e*/
-void TIncludeParser::setIncludes(char** iPathList, int _count) {
-        InclPathList = iPathList;
-        count = _count;
+void TIncludeParser::setIncludes(TIncludeList* inclueList) {
+        InclueList = inclueList;
 }
 /*...svoid TIncludeParser\58\\58\AddInclude\40\char \42\IncName\41\:0:*/
 void TIncludeParser::AddInclude(char *IncName)
@@ -802,28 +840,52 @@ void TIncludeParser::AddInclude(char *IncName)
   char Path[PATH_MAX] = "";
   char realfile[1000] = "";
 
-  memset(s, 0, 1000);
   memset(Path, 0, PATH_MAX);
   memset(realfile, 0, 1000);
+
+#ifdef VERBOSE
+  fprintf(stderr, "AddInclude called with %s\n", IncName);
+#endif
 
 /*...sSearch the real place:0:*/
   // Search on std include path's (First occurence fits)
   int foundStdPath = 0;
 
-  for (int i = 0; i < count; i++) {
+  for (int i = 0; i < InclueList->Count; i++) {
         FILE* f;
-        strcpy(s, InclPathList[i]);
+		
+#ifdef VERBOSE
+		fprintf(stderr, "Try if is at std path in %d InclueList elements\n", InclueList->Count);
+#endif		
+		memset(s, 0, 1000);
+		
+		TIncludeDefinition* item = (TIncludeDefinition*)(*InclueList)[i];
+		
+        strncpy(s, item->Path, 999);
         strcat(s, IncName);
+
+#ifdef VERBOSE
+		fprintf(stderr, "Constructed %s out of %s and %s\n", s, item->Path, IncName);
+#endif
 
         f = fopen(s, "rt");
 
         if (f != NULL) {
                 strcpy(realfile, s);
                 fclose(f);
-                foundStdPath = 1;
+				
+#ifdef VERBOSE
+				fprintf(stderr, "Yes %s\n", ((TIncludeDefinition*) (*InclueList)[i])->Path);
+#endif
+                
+				foundStdPath = 1;
                 break;
         }
   }
+
+#ifdef VERBOSE
+  fprintf(stderr, "The realfile is %s\n", realfile);
+#endif
 
   if (foundStdPath == 0) {
         FILE* f;
@@ -833,11 +895,19 @@ void TIncludeParser::AddInclude(char *IncName)
         if (f != NULL) {
                 strcpy(realfile, IncName);
                 fclose(f);
-        } else {
-                        //fprintf(stderr, "Error: No standard path has this file, and this rule does not match for %s\n", IncName);
-                }
+        } 
+#ifdef VERBOSE
+		else 
+		{
+          fprintf(stderr, "Error: No standard path has this file, and this rule does not match for %s\n", IncName);
+		}
+#endif
   }
 /*...e*/
+
+#ifdef VERBOSE
+  fprintf(stderr, "Search %s\n", IncName);
+#endif
 
   if (l.Search(IncName)) {
       //printf("File %s has already been added!\n", realfile);
@@ -845,41 +915,25 @@ void TIncludeParser::AddInclude(char *IncName)
   }
 
   if (strcmp(realfile,"") != 0)  {
+#ifdef VERBOSE
+  fprintf(stderr, "Split realfilename %s Path %s File %s\n", realfile, Path, IncName);
+#endif
     FSplit(realfile, Path, IncName);
+#ifdef VERBOSE
+  fprintf(stderr, "Insert %s\n", IncName);
+#endif
     l.Insert(IncName,Path);
   }
 
-/*...sVERBOSE:0:*/
 #ifdef VERBOSE
   fprintf(stderr, "    '%s'\n",IncName);
 #endif
-/*...e*/
 
   Found=BasicParse(IncName);
-/*...sbla:0:*/
-/*
-  if (Found) {
-        FSplit(Found, Path, IncName);
-        printf("Insert include file %s%s\n", Path, IncName);
-        l.Insert(IncName,Path);
-  }
-  else if (FilePath[0]!=0)
-  {
-    strcpy(s,FilePath);
-    strcat(s,IncName);
-    Found=BasicParse(s);
-    FSplit(Found, Path, IncName);
-    printf("Insert include file %s%s\n", Path, IncName);
-    l.Insert(IncName,Path);
-  }
-*/
-/*...e*/
-/*...sVERBOSE:0:*/
 #ifdef VERBOSE
   if (!Found)
     fprintf(stderr,"AddInclude: WARNING: %s could not be opened\n",IncName);
 #endif
-/*...e*/
 }
 /*...e*/
 /*...svoid TIncludeParser\58\\58\ParseCLine\40\char \42\s\41\:0:*/
@@ -899,20 +953,16 @@ void TIncludeParser::ParseCLine(char *s)
       if (p2)
       {
         *p2=0;
-/*...sVERBOSE:0:*/
 #ifdef VERBOSE
         fprintf(stderr, "Add the include '%s' for line '%s'\n", p1, s);
 #endif
-/*...e*/
 /// \todo Find a better way to skip wrong include detections.
         if (strcmp(p1, "") != 0) {
             AddInclude(p1);
         }
-/*...sVERBOSE:0:*/
 #ifdef VERBOSE
         fprintf(stderr, "Added\n");
 #endif
-/*...e*/
       }
     }
     p1=strchr(t,'<');
@@ -923,20 +973,16 @@ void TIncludeParser::ParseCLine(char *s)
                   if (p2)
                   {
                           *p2=0;
-                          /*...sVERBOSE:0:*/
 #ifdef VERBOSE
                           fprintf(stderr, "Add the include '%s' for line '%s'\n", p1, s);
 #endif
-                          /*...e*/
                           /// \todo Find a better way to skip wrong include detections.
                           if (strcmp(p1, "") != 0) {
                                   AddInclude(p1);
                           }
-                          /*...sVERBOSE:0:*/
 #ifdef VERBOSE
                           fprintf(stderr, "Added\n");
 #endif
-                          /*...e*/
                   }
           }
   }
@@ -946,34 +992,60 @@ void TIncludeParser::ParseCLine(char *s)
 void TIncludeParser::ParseComments(char *s)
 {
   int i;
-
+#ifdef VERBOSE
+  fprintf(stderr, "ParseComments %s\n", s);
+#endif
   i=0;
   do {
     if (Comment)
     {
-      if (strlen(s)-1 < i) return;
-      if (strlen(s)-1 < i+1) return;
+      if (strlen(s)-1 < i) 
+	  {
+#ifdef VERBOSE
+		fprintf(stderr, "Bailout %s\n", s);
+#endif
+		return;
+	  }
+      if (strlen(s)-1 < i+1) 
+	  {
+#ifdef VERBOSE
+		fprintf(stderr, "Bailout %s\n", s);
+#endif
+		return;
+	  }
       if (s[i]=='*' && s[i+1]=='/')
       {
         Comment=false;
         i++;
       }
       else {
-        if (strlen(s)-1 < i) return;
+        if (strlen(s)-1 < i) 
+	    {
+#ifdef VERBOSE
+		fprintf(stderr, "Bailout %s\n", s);
+#endif
+		  return;
+        }
         (s[i]='*');
       }
     }
     else {
       if (strlen(s)-1 <= i) {
+#ifdef VERBOSE
+		fprintf(stderr, "Bailout %s\n", s);
+#endif
         return;
       }
       if (strlen(s)-1 <= i+1) {
-        return;
+#ifdef VERBOSE
+		fprintf(stderr, "Bailout %s\n", s);
+#endif
+		return;
       }
       if (s[i]=='/')
       {
        if (strlen(s) == i+1) {
-         printf("Buffer overflow\n");
+         fprintf(stderr, "Buffer overflow\n");
          return;
        }
         switch (s[i+1])
@@ -989,6 +1061,9 @@ void TIncludeParser::ParseComments(char *s)
     i++;
     if (strlen(s)-1 == i) return;
   } while (s[i]);
+#ifdef VERBOSE
+  fprintf(stderr, "ParseComments done\n", s);
+#endif
 }
 /*...e*/
 /*...sbool TIncludeParser\58\\58\Parse\40\char \42\FileName\44\ bool CPP\41\:0:*/
@@ -1013,28 +1088,132 @@ char* TIncludeParser::BasicParse(char *FileName)
   FILE *f;
   char Line[256];
   static char realfile[1000] = "";
+  static char staticfile[1000] = "";
   int success = 0;
 
   memset(Line, 0, 256);
 
+#ifdef VERBOSE
+  fprintf(stderr, "BasicParse - parse something...\n");
+#endif
+
 /*...sfind file in standard include path:0:*/
-  for (int i = 0; i < count; i++) {
-    char file[1000] = "";
-    strcat(file, InclPathList[i]);
+  for (int i = 0; i < InclueList->Count; i++) {
+#ifdef VERBOSE
+	fprintf(stderr, "Calculate size...\n");	
+#endif
+
+    size_t size = sizeof(char) * strlen(((TIncludeDefinition*) (*InclueList)[i])->Path) + strlen(FileName) + 1;
+
+#ifdef VERBOSE
+	fprintf(stderr, "Calculated size %zu\n", size);
+#endif
+
+	if (size < 999) {
+#ifdef VERBOSE
+		fprintf(stderr, "Use static char array...\n");
+#endif
+
+		memset(staticfile, 0, size);
+
+#ifdef VERBOSE
+        fprintf(stderr, "BasicParse - parse append include path %d ...\n", strlen(((TIncludeDefinition*) (*InclueList)[i])->Path));
+#endif
+
+    strcat(staticfile, ((TIncludeDefinition*) (*InclueList)[i])->Path);
+
+#ifdef BLA  
+    if (strcmp(((TIncludeDefinition*) (*InclueList)[i])->Path, ".") == 0) 
+		strcat(staticfile, "\\");
+    else
+#endif
+		strcat(staticfile, "/");
+	
+#ifdef VERBOSE
+    fprintf(stderr, "BasicParse - parse append staticfile name %d ...\n", strlen(FileName));
+#endif
+
+    strcat(staticfile, FileName);
+
+#ifdef VERBOSE
+    fprintf(stderr, "BasicParse - try open %s...\n", staticfile);
+#endif
+
+    f=fopen(staticfile,"rt");
+    if (f != NULL) {
+#ifdef VERBOSE
+		fprintf(stderr, "Opened file sucessfully %s...\n", staticfile);
+#endif
+        success = 1;
+        strcpy(realfile, staticfile);
+        break;
+#ifdef VERBOSE
+    } else {
+		fprintf(stderr, "Open failed %s...\n", staticfile);
+	  perror(staticfile);
+#endif
+	}
+    }
+	else
+	{
+
+	fprintf(stderr, "Use dynamic char array %zu...\n", size);
+
+	char* file = (char*)malloc(size);
+	
+	if (file == NULL) fprintf(stderr, "Memory allocation failed %d\n", size);
+	
+	memset(file, 0, size);
+
+#ifdef VERBOSE
+    fprintf(stderr, "BasicParse - parse append include path %d ...\n", strlen(((TIncludeDefinition*) (*InclueList)[i])->Path));
+#endif
+
+    strcat(file, ((TIncludeDefinition*) (*InclueList)[i])->Path);
+  
+    strcat(file, "/");
+  
+#ifdef VERBOSE
+    fprintf(stderr, "BasicParse - parse append file name %d ...\n", strlen(FileName));
+#endif
+
     strcat(file, FileName);
+
+#ifdef VERBOSE
+    fprintf(stderr, "BasicParse - try open %s...\n", file);
+#endif
+
     f=fopen(file,"rt");
-    //printf("Open %s\n", file);
     if (f != NULL) {
         success = 1;
         strcpy(realfile, file);
         break;
-    }
+#ifdef VERBOSE
+    } else {
+	  perror(file);
+#endif
+	}
+    free(file);
+	}
   }
+  
+  
 /*...e*/
+
+#ifdef VERBOSE
+   fprintf(stderr, "BasicParse - try open...\n");
+#endif
 
   if (success == 0) {
         f=fopen(FileName, "rt");
-        if (f == NULL) return NULL;
+        if (f == NULL) 
+		{
+#ifdef VERBOSE
+		  fprintf(stderr, "BasicParse - return NULL...\n");
+#endif
+
+		  return NULL;
+		}
         strcpy(realfile, FileName);
   }
 
@@ -1042,12 +1221,15 @@ char* TIncludeParser::BasicParse(char *FileName)
     fgets(Line,sizeof(Line)-1,f);
     if (Line[0]!=0)
     {
-      //printf("Parse %s\n", Line);
       ParseComments(Line);
       ParseCLine(Line);
     }
   } while (!feof(f));
   fclose(f);
+
+#ifdef VERBOSE
+  fprintf(stderr, "BasicParse - return %s...\n", realfile);
+#endif
 
   return realfile;
 }
@@ -2398,7 +2580,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.20 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.21 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2984,15 +3166,23 @@ void WriteEnding(FILE *f, char *ModuleName, TDepList *l)
 }
 /*...e*/
 /*...svoid DoDep\40\FILE \42\f\44\ TDepItem \42\d\41\:0:*/
-void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
+void DoDep(FILE *f, TDepItem *d, TIncludeList* inclueList, int count)
 {
   TIncludeParser p;
-  char FileName[256];
+  char FileName[256] = "";
 
   strcpy(FileName,d->Path);
   strcat(FileName,d->Name);
 
-  p.setIncludes(iPathList, count);
+#ifdef VERBOSE
+  fprintf(stderr, "Call SetIncludes...\n");
+#endif
+
+  p.setIncludes(inclueList);
+
+#ifdef VERBOSE
+  fprintf(stderr, "Call Parse...\n");
+#endif
 
   p.Parse(FileName);
 
@@ -3000,6 +3190,9 @@ void DoDep(FILE *f, TDepItem *d, char** iPathList, int count)
 
   strcpy(fullName, d->Path);
   strcat(fullName, d->Name);
+#ifdef VERBOSE
+  fprintf(stderr, "Call WriteDep...\n");
+#endif
   WriteDep(f,fullName,&p);
 #ifdef VERBOSE
   fprintf(stderr, "Warning: Using hardcoded char array.\n");
@@ -3017,7 +3210,7 @@ int main(int argc, char *argv[])
   FILE *f;
   TDepList Sources;
   // A list of passed include paths
-  TIncludeList ParameterInludes;
+  TIncludeList* ParameterInludes = new TIncludeList();;
   int i;
   if (argc<4)
   {
@@ -3189,25 +3382,37 @@ int main(int argc, char *argv[])
   }
 /*...e*/
 
-  fprintf(stderr, "Extract arg 3...\n");
-  
+#ifdef VERBOSE
+  fprintf(stderr, "Extract includes...\n");
+#endif  
   int SourcesParamsStart = 3;
   int NumberOfParamsWithI = 0;
 
   bool hadSeparateIncludes = false;
   for (int argi = 3; argi < argc; argi++) {
 	if (strcmp(argv[argi], "-I") == 0) {
+#ifdef VERBOSE
+      fprintf(stderr, "Extract at %d is %s with %s\n", argi, argv[argi], argv[argi+1]);
+#endif
 	  NumberOfParamsWithI++;
 	  hadSeparateIncludes = true;
-	  ParameterInludes.Insert(argv[argi+1]);
-	}
+	  ParameterInludes->Insert(argv[argi+1]);
+#ifdef VERBOSE
+	} else {
+      fprintf(stderr, "Ignore at %d is %s\n", argi, argv[argi]);
+#endif
+    }
   }
+
+#ifdef VERBOSE
+  fprintf(stderr, "Extracted relevant include params\n");
+#endif
 
   int count = 0;
 
   if (hadSeparateIncludes) {
-	count = ParameterInludes.Count;
-	ParameterInludes.FillCharArray(&IncPathList);
+	count = ParameterInludes->Count;
+	//ParameterInludes->FillCharArray(&IncPathList);
 
     // Add a shift. Originally starting at 4 but must start at 5 for one file.
 	// 3 + 1 + 1 = 5
@@ -3228,18 +3433,21 @@ int main(int argc, char *argv[])
   }
 
 
-  fprintf(stderr, "Have %d includes\n", count);
-
-  for (i = 0; i < count; i++) {
-        fprintf(stderr, "Path: %s\n", IncPathList[i]);
-  }
-
   char** copyIPathList = NULL;
 
-  copyIPathList = new char*[count];
+  // Some memory allocation issues
+  if (count < 100)
+  {
+    copyIPathList = new char*[count + (100 - count)];
+  }
+  else
+  {
+    copyIPathList = new char*[count];
+  }
 
-
-  for (i = 0; i < count; i++) {
+  if (!hadSeparateIncludes) 
+  {
+	for (i = 0; i < count; i++) {
         char temp[1000] = "";
         char pc[2] = "";
         sprintf(pc, "%c", PathChar);
@@ -3249,8 +3457,7 @@ int main(int argc, char *argv[])
 
         //printf("Prepared include directory %s\n", temp);
         copyIPathList[i] = strdup(temp);
-  }
-  
+	}
 #ifdef VERBOSE
   fprintf(stderr, "Have prepared path array\n");
 #endif
@@ -3262,11 +3469,18 @@ int main(int argc, char *argv[])
   }
 #endif
 /*...e*/
+  } 
+  
 
+
+#ifdef VERBOSE
   fprintf(stderr, "Start at argc %d\n", SourcesParamsStart);
+#endif
 
   for (i=SourcesParamsStart; i<argc; i++) {
+#ifdef VERBOSE
 	  fprintf(stderr, "Source at %d is %s\n", i, argv[i]);
+#endif
 	  Sources.AddMask(argv[i]);
   }
   
@@ -3312,8 +3526,10 @@ int main(int argc, char *argv[])
       break;
   }
 
+#ifdef VERBOSE
   fprintf(stderr, "Creating dependency list.\n");
-  for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i], copyIPathList, count);
+#endif
+  for (i=0; i<Sources.Count; i++) DoDep(f,(TDepItem*)Sources[i], ParameterInludes, count);
   WriteEnding(f,targetname,&Sources);
 //  fclose(f);
   return 0;
