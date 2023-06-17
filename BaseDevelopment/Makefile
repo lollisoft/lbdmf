@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.83 $
+# * $Revision: 1.229.2.84 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.83 2023/06/17 07:26:11 lothar Exp $
+# * $Id: Makefile,v 1.229.2.84 2023/06/17 07:39:51 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.84  2023/06/17 07:39:51  lothar
+# * Can't switch back to Open Watcom mkmk version without more tweaking of the makefiles.
+# *
 # * Revision 1.229.2.83  2023/06/17 07:26:11  lothar
 # * Path config works. But what is missing?
 # *
@@ -1636,13 +1639,13 @@ bla = \
 	../../open-watcom
 
 # Include this before building lbHook below, if you want to use MinGW instead precompiled Open Watcom 1.7 version of mkmk.
-#	../vendor/mkmk \
 
 ALLTARGETS = \
 	../../bin \
 	../../lib \
 	../../dll/libs \
 	../../plugins/libs \
+	../vendor/mkmk \
 	lbHook \
 	lbtransfer \
 	lbDB \
@@ -2513,9 +2516,9 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 ifeq ($(OSTYPE), Windows_NT)
-	@echo What about mkmk
+	@echo Generic check that the core tool is reachable
 	mkmk.exe
-	@echo That's about mkmk
+	@echo Just for savety
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
