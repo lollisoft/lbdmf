@@ -1,13 +1,13 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.81 $
+# * $Revision: 1.229.2.82 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.81 2023/06/17 07:10:05 lothar Exp $
+# * $Id: Makefile,v 1.229.2.82 2023/06/17 07:15:40 lothar Exp $
 # *
 # * $Log: Makefile,v $
-# * Revision 1.229.2.81  2023/06/17 07:10:05  lothar
-# * Add some debug info
+# * Revision 1.229.2.82  2023/06/17 07:15:40  lothar
+# * Try to get the info in another way
 # *
 # * Revision 1.229.2.80  2023/06/14 23:38:27  lothar
 # * Adopted setup to support custom MinGW (repackaged jenkins build system).
@@ -2510,8 +2510,8 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 ifeq ($(OSTYPE), Windows_NT)
-	@echo %PATH%
-	@where mkmk.exe
+	@echo $(PATH)
+	mkmk.exe
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
