@@ -47,7 +47,7 @@ RELPATH=/Projects/$(REPO_NAME)
 else
 RELPATH=/Projects/$(REPO_NAME)
 endif
-MKMK=mkmk
+MKMK=owmkmk
 endif
 ifeq ($(OSTYPE), Cross_OW)
 ifeq ($(CRUISECONTROL), yes)
