@@ -1,7 +1,7 @@
 @rem This batch will download and install MinGW by mingw-get
 
-Develop\Tools\MinGW\bin\mingw-get install mingw
-Develop\Tools\MinGW\bin\mingw-get install g++
+%DEVLW%\lbDMF\Develop\Tools\MinGW\bin\mingw-get install mingw
+%DEVLW%\lbDMF\Develop\Tools\MinGW\bin\mingw-get install g++
 
 REM Develop\Tools\MinGW\bin\mingw-get upgrade "gcc=%1"
 REM Develop\Tools\MinGW\bin\mingw-get upgrade "g++=%1"
