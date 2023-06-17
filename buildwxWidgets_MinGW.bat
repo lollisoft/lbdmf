@@ -24,7 +24,7 @@ echo set DRIVE=%DEVLW% >> doBuildWx.bat
 echo set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
 echo %DEVLW% >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Tools\MinGW\bin\gcc.exe ( >> doBuildWx.bat
-echo call installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
+echo call %DEVLW%\lbDMF\installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
 rem echo copy /Y %DEVLW%\lbDMF\commctrl-wxWidgets-patch.h Develop\Tools\MinGW\include\commctrl.h >> doBuildWx.bat
 echo copy /Y %DEVLW%\lbDMF\w32api-Wcpp-patch.h Develop\Tools\MinGW\include\w32api.h >> doBuildWx.bat
 echo ) >> doBuildWx.bat
@@ -59,4 +59,5 @@ echo IF EXIST %DEVLW%\lbDMF\GetACE.txt ( call %DEVLW%\lbDMF\InstallACE.bat ) >> 
 echo IF EXIST %DEVLW%\lbDMF\GetDoUMLBin.txt ( call %DEVLW%\lbDMF\InstallDoUMLBin.bat ) >> doBuildWx.bat
 echo IF EXIST %DEVLW%\lbDMF\GetDoUMLSrc.txt ( call %DEVLW%\lbDMF\InstallDoUMLSrc.bat ) >> doBuildWx.bat
 
-call watcomenv.bat doBuildWx.bat
+echo cd %DEVLW%\lbDMF >> doBuildWx.bat
+call watcomenv.bat %DEVLW%\lbDMF\doBuildWx.bat
