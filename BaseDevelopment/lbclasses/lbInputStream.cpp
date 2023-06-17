@@ -226,14 +226,10 @@ lb_I_String* LB_STDCALL lbInputStream::getAsString() {
 	String s;	
 #endif
 
-	bool more = false;
-	more = std::getline(*_istream, s);
-	
 #ifndef __WATCOMC__
-  while (more) {
+  while (std::getline(*_istream, s)) {
 	  *string += s.c_str();
-	  more = std::getline(*_istream, s);
-	  if (more) *string += "\n";
+	  *string += "\n";
   }
 #endif
 
