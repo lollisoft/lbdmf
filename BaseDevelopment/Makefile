@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.85 $
+# * $Revision: 1.229.2.86 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.85 2023/06/17 08:03:40 lothar Exp $
+# * $Id: Makefile,v 1.229.2.86 2023/06/17 08:14:03 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.86  2023/06/17 08:14:03  lothar
+# * Jenkins does not like REM
+# *
 # * Revision 1.229.2.85  2023/06/17 08:03:40  lothar
 # * The mkmk tool crashes, when I just call it. But it showed that it would be used
 # * and the previous check showed the Path configuration and location of the
@@ -2521,10 +2524,6 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 ifeq ($(OSTYPE), Windows_NT)
-	@echo Generic check that the core tool is reachable
-	@REM Crashes
-	@REM mkmk.exe
-	@echo Just for savety
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
