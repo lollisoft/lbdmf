@@ -45,11 +45,13 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=/Projects/$(REPO_NAME)
-else
-RELPATH=/Projects/$(REPO_NAME)
-endif
 STDDEP=.,$(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir,$(DEVROOT_MAKE)$(RELPATH)/include,$(DEVROOT_MAKE)$(RELPATH)/interfaces$(CUSTOM_DEP)
 MKMK=owmkmk
+else
+RELPATH=/Projects/$(REPO_NAME)
+STDDEP=-I . -I $(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir -I $(DEVROOT_MAKE)$(RELPATH)/include -I $(DEVROOT_MAKE)$(RELPATH)/interfaces $(CUSTOM_DEP)
+MKMK=mkmk
+endif
 endif
 ifeq ($(OSTYPE), Cross_OW)
 ifeq ($(CRUISECONTROL), yes)
@@ -107,11 +109,13 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=/Projects/$(REPO_NAME)
-else
-RELPATH=/Projects/$(REPO_NAME)
-endif
 STDDEP=.,$(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir,$(DEVROOT_MAKE)$(RELPATH)/include,$(DEVROOT_MAKE)$(RELPATH)/interfaces$(CUSTOM_DEP)
 MKMK=owmkmk
+else
+RELPATH=/Projects/$(REPO_NAME)
+STDDEP=-I . -I $(DEVROOT_MAKE)$(RELPATH)/vendor/dosdir -I $(DEVROOT_MAKE)$(RELPATH)/include -I $(DEVROOT_MAKE)$(RELPATH)/interfaces $(CUSTOM_DEP)
+MKMK=mkmk
+endif
 endif
 ifeq ($(OSTYPE), Cross_OW)
 ifeq ($(CRUISECONTROL), yes)
