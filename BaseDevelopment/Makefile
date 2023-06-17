@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.82 $
+# * $Revision: 1.229.2.83 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.82 2023/06/17 07:15:40 lothar Exp $
+# * $Id: Makefile,v 1.229.2.83 2023/06/17 07:26:11 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.83  2023/06/17 07:26:11  lothar
+# * Path config works. But what is missing?
+# *
 # * Revision 1.229.2.82  2023/06/17 07:15:40  lothar
 # * Try to get the info in another way
 # *
@@ -2510,8 +2513,9 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 ifeq ($(OSTYPE), Windows_NT)
-	@echo $(PATH)
+	@echo What about mkmk
 	mkmk.exe
+	@echo That's about mkmk
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
