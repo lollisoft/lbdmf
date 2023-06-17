@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.84 $
+# * $Revision: 1.229.2.85 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.84 2023/06/17 07:39:51 lothar Exp $
+# * $Id: Makefile,v 1.229.2.85 2023/06/17 08:03:40 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.85  2023/06/17 08:03:40  lothar
+# * The mkmk tool crashes, when I just call it. But it showed that it would be used
+# * and the previous check showed the Path configuration and location of the
+# * Open Watcom mkmk version was correct.
+# *
 # * Revision 1.229.2.84  2023/06/17 07:39:51  lothar
 # * Can't switch back to Open Watcom mkmk version without more tweaking of the makefiles.
 # *
@@ -2517,7 +2522,8 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 else
 ifeq ($(OSTYPE), Windows_NT)
 	@echo Generic check that the core tool is reachable
-	mkmk.exe
+	@REM Crashes
+	@REM mkmk.exe
 	@echo Just for savety
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
