@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.21 $
+ * $Revision: 1.114.2.22 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.21 2023/06/14 23:38:27 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.22 2023/06/17 18:50:48 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.22  2023/06/17 18:50:48  lothar
+ * Some code parts related to the old parameter passing are becoming obsolete.
+ *
  * Revision 1.114.2.21  2023/06/14 23:38:27  lothar
  * Adopted setup to support custom MinGW (repackaged jenkins build system).
  * Made attempts to fix issues with mkmk when built with MinGW. Needs a test
@@ -451,8 +454,8 @@
 
 /*...e*/
 
-#define VERBOSE
-#define VERBOSE_FillCharArray
+//#define VERBOSE
+//#define VERBOSE_FillCharArray
 
 /*...sincludes:0:*/
 #include <stdio.h>
@@ -1103,7 +1106,7 @@ char* TIncludeParser::BasicParse(char *FileName)
 	fprintf(stderr, "Calculate size...\n");	
 #endif
 
-    size_t size = sizeof(char) * strlen(((TIncludeDefinition*) (*InclueList)[i])->Path) + strlen(FileName) + 1;
+    size_t size = sizeof(char) * strlen(((TIncludeDefinition*) (*InclueList)[i])->Path) + strlen(FileName) + 10;
 
 #ifdef VERBOSE
 	fprintf(stderr, "Calculated size %zu\n", size);
@@ -1114,7 +1117,7 @@ char* TIncludeParser::BasicParse(char *FileName)
 		fprintf(stderr, "Use static char array...\n");
 #endif
 
-		memset(staticfile, 0, size);
+		memset(staticfile, 0, 1000);
 
 #ifdef VERBOSE
         fprintf(stderr, "BasicParse - parse append include path %d ...\n", strlen(((TIncludeDefinition*) (*InclueList)[i])->Path));
@@ -2580,7 +2583,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.21 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.22 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -3411,6 +3414,9 @@ int main(int argc, char *argv[])
   int count = 0;
 
   if (hadSeparateIncludes) {
+#ifdef VERBOSE
+  fprintf(stderr, "Using separate includes\n");
+#endif
 	count = ParameterInludes->Count;
 	//ParameterInludes->FillCharArray(&IncPathList);
 
@@ -3418,6 +3424,9 @@ int main(int argc, char *argv[])
 	// 3 + 1 + 1 = 5
 	SourcesParamsStart += (NumberOfParamsWithI*2);
   } else {
+#ifdef VERBOSE
+  fprintf(stderr, "Using non separate includes\n");
+#endif
 	//  WriteHeader(f,targetname);
 	char *inclPaths = strdup(argv[3]);
 
@@ -3432,21 +3441,29 @@ int main(int argc, char *argv[])
 	SourcesParamsStart++;
   }
 
+#ifdef VERBOSE
+  fprintf(stderr, "Next step\n");
+#endif
+
 
   char** copyIPathList = NULL;
 
-  // Some memory allocation issues
-  if (count < 100)
-  {
-    copyIPathList = new char*[count + (100 - count)];
-  }
-  else
-  {
-    copyIPathList = new char*[count];
-  }
-
   if (!hadSeparateIncludes) 
   {
+    #ifdef VERBOSE
+    fprintf(stderr, "Prepare path array\n");
+    #endif
+	
+    // This code block and the kind of parameter passing is obsolete and will not work. The prepared string array is no longer used.
+    if (count < 100)
+    {
+      copyIPathList = new char*[count + (100 - count)];
+    }
+    else
+    {
+      copyIPathList = new char*[count];
+    }
+
 	for (i = 0; i < count; i++) {
         char temp[1000] = "";
         char pc[2] = "";
