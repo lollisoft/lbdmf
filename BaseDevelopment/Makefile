@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.87 $
+# * $Revision: 1.229.2.88 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.87 2023/06/18 12:52:37 lothar Exp $
+# * $Id: Makefile,v 1.229.2.88 2023/06/18 17:05:19 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.88  2023/06/18 17:05:19  lothar
+# * Let mkmk failure pass for Windows.
+# *
 # * Revision 1.229.2.87  2023/06/18 12:52:37  lothar
 # * Reworked mkmk, added dependency to and download libxslt-v1.1.38 and included bootstrapping it.
 # *
@@ -2176,9 +2179,9 @@ ifeq ($(OSTYPE), Windows_NT)
 	cp ../vendor/mkmk/makefile.mkmk ../vendor/mkmk/makefile
 
 ../vendor/mkmk: ../vendor/mkmk/bootstrapped.txt
-	$(MAKE) -s -C $@
-	cp $@/mkmk $(prefix)/bin
-	cd ../BaseDevelopment
+	-$(MAKE) -s -C $@
+	-cp $@/mkmk $(prefix)/bin
+	-cd ../BaseDevelopment
 endif
 
 ifeq ($(OSTYPE), solaris)
