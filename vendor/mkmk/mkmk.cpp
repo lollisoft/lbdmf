@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.22 $
+ * $Revision: 1.114.2.23 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.22 2023/06/17 18:50:48 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.23 2023/06/18 12:52:37 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.23  2023/06/18 12:52:37  lothar
+ * Reworked mkmk, added dependency to and download libxslt-v1.1.38 and included bootstrapping it.
+ *
  * Revision 1.114.2.22  2023/06/17 18:50:48  lothar
  * Some code parts related to the old parameter passing are becoming obsolete.
  *
@@ -464,6 +467,7 @@
 
 #include "DEFS.H"
 #include "contain.h"
+#include "stringtools.h"
 
 #ifdef __WATCOMC__
 #include <malloc.h>
@@ -2583,7 +2587,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.22 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.23 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
@@ -2732,36 +2736,13 @@ void ListFilesWithComma(FILE *f, char *Line, TDepList *l, bool IsObj=false)
 /*...svoid WriteDep\40\FILE \42\f\44\ char \42\Name\44\ TIncludeParser \42\p\41\:0:*/
 int depCount = 0;
 
-/*...svoid replace\40\char\42\ to\44\ char\42\ match\44\ char\42\ replace\41\:0:*/
-void replace(char* to, const char* match, const char* replace) {
-        char rep[800] = "";
-        char repl[800] = "";
-        char* t;
-        strcpy(rep, to);
-
-        t = strtok(rep, match);
-
-        while (t != NULL) {
-                strcat(repl, t);
-                strcat(repl, replace);
-
-                t = strtok(NULL, match);
-        }
-
-        repl[strlen(repl)-2] = 0;
-
-        to[0] = 0;
-
-        strcpy(to, repl);
-}
-/*...e*/
 
 void WriteDep(FILE *f, char *Name, TIncludeParser *p)
 {
 /// Todo: Reimplement without hardcoded sizes. There was a buffer overflow !
   char *ObjName = (char*) malloc(sizeof(char) * 800);
-  char *ObjNameC = (char*) malloc(sizeof(char) * 800);
-  char *NameC = (char*) malloc(sizeof(char) * 800);
+  char *ObjNameC = NULL;
+  char *NameC = NULL;
   char *SExt = (char*) malloc(sizeof(char) * 800);
   char *Line = (char*) malloc(sizeof(char) * 800);
   int  CPPFlag = 0;
@@ -2769,16 +2750,11 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   int pos = strlen(Name);
 
   memset(ObjName, 0, 800);
-  memset(ObjNameC, 0, 800);
-  memset(NameC, 0, 800);
   memset(SExt, 0, 800);
   memset(Line, 0, 800);
 
 
-
-  strcpy(NameC, Name);
-
-  replace(NameC, "/", "\\\\");
+  NameC = replaceStringAndDup(Name, "/", "\\\\");
 
   while ((pos > 0) && (Name[pos] != '.')) pos--;
   strcpy(SExt, &Name[pos]);
@@ -2834,9 +2810,9 @@ void WriteDep(FILE *f, char *Name, TIncludeParser *p)
   fprintf(stderr, "Name is       '%s'.\n", Name);
   fprintf(stderr, "Objectname is '%s'.\n", ObjName);
 */
-  strcpy(ObjNameC, ObjName);
+  //strcpy(ObjNameC, ObjName);
+  ObjNameC = replaceStringAndDup(ObjName, "/", "\\\\");
 
-  replace(ObjNameC, "/", "\\\\");
 
   ListFiles(f,Line,&p->l);
   int len;
