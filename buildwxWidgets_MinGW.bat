@@ -23,6 +23,9 @@ echo del readme.txt > doBuildWx.bat
 echo set DRIVE=%DEVLW% >> doBuildWx.bat
 echo set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
 echo %DEVLW% >> doBuildWx.bat
+echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-v1.1.38.tar.gz ( >> doBuildWx.bat
+echo curl -k -L -o libxslt-v1.1.38.tar.gz https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.38/libxslt-v1.1.38.tar.gz >> doBuildWx.bat
+echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Tools\MinGW\bin\gcc.exe ( >> doBuildWx.bat
 echo call %DEVLW%\lbDMF\installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
 rem echo copy /Y %DEVLW%\lbDMF\commctrl-wxWidgets-patch.h Develop\Tools\MinGW\include\commctrl.h >> doBuildWx.bat
@@ -46,11 +49,11 @@ echo set Path=%Path%;%MINGWBIN% >> doBuildWx.bat
 echo mingw32-make -f makefile.gcc all >> doBuildWx.bat
 echo copy %WXDIR%\lib\gcc_dll\*.dll %DEVLW%\%BASE%\Projects\dll >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\XSLT ( >> doBuildWx.bat
-echo xcopy %DEVLW%\lbDMF\Develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\XSLT_Templates %DEVLW%\lbDMF >> doBuildWx.bat
+echo xcopy %DEVLW%\lbDMF\Develop\Projects\lbdmf\AppDevelopmentDemo\DynamicApp\XSLT_Templates %DEVLW%\lbDMF >> doBuildWx.bat
 echo move %DEVLW%\lbDMF\XSLT_Templates %DEVLW%\lbDMF\XSLT >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\UMLSamples ( >> doBuildWx.bat
-echo xcopy %DEVLW%\lbDMF\Develop\Projects\CPP\AppDevelopmentDemo\DynamicApp\UMLSamples %DEVLW%\lbDMF >> doBuildWx.bat
+echo xcopy %DEVLW%\lbDMF\Develop\Projects\lbdmf\AppDevelopmentDemo\DynamicApp\UMLSamples %DEVLW%\lbDMF >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 
 @rem After installing msys, bunzip2 is available and watcomenv.bat sets up PATH

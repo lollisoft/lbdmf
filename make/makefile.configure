@@ -418,6 +418,23 @@ endif
 
 ifeq ($(TARGET), dll_target_mingw)
 
+ifeq ($(USEGDB), yes)
+
+makefile: makefile.module \
+$(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
+$(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
+$(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile
+	@echo Path='$(PATH)' >> makefile
+	@rm -f $(_MODULE).bak
+	@echo OBJ =o >> makefile
+	@echo all: $(_MODULE).dll >> makefile
+	gdb -args $(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES)
+	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
+
+else
+
 makefile: makefile.module \
 $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
@@ -429,6 +446,8 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@echo OBJ =o >> makefile
 	@echo all: $(_MODULE).dll >> makefile
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.c *.cpp $(CUSTOM_FILES) >> makefile
+
+endif
 
 endif
 

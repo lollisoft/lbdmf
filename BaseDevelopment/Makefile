@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.86 $
+# * $Revision: 1.229.2.87 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.86 2023/06/17 08:14:03 lothar Exp $
+# * $Id: Makefile,v 1.229.2.87 2023/06/18 12:52:37 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.87  2023/06/18 12:52:37  lothar
+# * Reworked mkmk, added dependency to and download libxslt-v1.1.38 and included bootstrapping it.
+# *
 # * Revision 1.229.2.86  2023/06/17 08:14:03  lothar
 # * Jenkins does not like REM
 # *
@@ -1670,7 +1673,7 @@ ALLTARGETS = \
 	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
-	../vendor/libxslt-1.1.21/libxslt \
+	../vendor/libxslt-v1.1.38/libxslt \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -1765,7 +1768,7 @@ ALLTARGETS = \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
-	../vendor/libxslt-1.1.21/libxslt \
+	../vendor/libxslt-v1.1.38/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -2106,14 +2109,16 @@ ifeq ($(OSTYPE), Windows_NT)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-../vendor/libxslt-1.1.21:
-	$(TAR) -zxf ../vendor/libxslt-1.1.21.tar.gz --directory ../vendor
-	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
-	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
+../vendor/libxslt-v1.1.38:
+	$(TAR) -zxf ../vendor/libxslt-v1.1.38.tar.gz --directory ../vendor
+	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-v1.1.38/libxslt/makefile.module
+	cp ../vendor/makefile.libxslt.bootstrap ../vendor/libxslt-v1.1.38/win32
+	$(MAKE) -s -C $@/win32 -f makefile.libxslt.bootstrap
+	#cd ../vendor/libxslt-v1.1.38/win32 && cscript configure.js compiler:mingw
 endif
 
 
-../vendor/libxslt-1.1.21/libxslt: ../vendor/libxslt-1.1.21
+../vendor/libxslt-v1.1.38/libxslt: ../vendor/libxslt-v1.1.38
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
@@ -2545,7 +2550,7 @@ lbDB: dummy
 	$(MAKE) -s -C $@
 
 lbPluginManager: dummy
-	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -e USEGDB=no -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 lbModule: dummy

@@ -126,9 +126,14 @@ mkmk.exe.lnk: makefile $(OBJS)
 		echo FIL mkmk.$(OBJ) >> $@
 		echo FIL ../dosdir/dosdir.$(OBJ) >> $@
 		echo FIL ../dosdir/match.$(OBJ) >> $@
+
 contain.$(OBJ): makefile contain.cpp contain.h
 		@echo Build contain.cpp
 		$(CPPMINGW) -c $(CPP_MINGW_EXEOPS) $(MOD_INCL_MINGW_CPP) -ocontain.$(OBJ) contain.cpp
+
+stringtools.$(OBJ): makefile stringtools.cpp stringtools.h
+		@echo Build stringtools.cpp
+		$(CPPMINGW) -c $(CPP_MINGW_EXEOPS) $(MOD_INCL_MINGW_CPP) -ostringtools.$(OBJ) stringtools.cpp
 
 mkmk.$(OBJ): makefile mkmk.cpp DEFS.H contain.h
 		@echo Build mkmk.cpp
@@ -142,7 +147,7 @@ mkmk.$(OBJ): makefile mkmk.cpp DEFS.H contain.h
 		@echo Build ..\\dosdir\\match.c
 		$(CCMINGW) -c $(C_MINGW_EXEOPS) $(MOD_INCL_MINGW) -o..\\dosdir\\match.$(OBJ) ..\\dosdir\\match.c
 
-OBJS = contain.$(OBJ) mkmk.$(OBJ) ../dosdir/dosdir.$(OBJ) ../dosdir/match.$(OBJ)
+OBJS = stringtools.$(OBJ) contain.$(OBJ) mkmk.$(OBJ) ../dosdir/dosdir.$(OBJ) ../dosdir/match.$(OBJ)
 OBJLIST = contain.$(OBJ), mkmk.$(OBJ), ../dosdir/dosdir.$(OBJ), \
 		 ../dosdir/match.$(OBJ)
 PROGRAM=mkmk
