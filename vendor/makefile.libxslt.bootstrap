@@ -1,0 +1,6 @@
+all: ../libxslt/xsltconfig.h
+
+
+../libxslt/xsltconfig.h:
+	cscript configure.js compiler:mingw
+	

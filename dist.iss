@@ -44,8 +44,8 @@ Source: "buildwxWidgets_Custom_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysove
 Source: "buildwxWidgets_Custom_MinGW_debug.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "installMinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
-Source: "Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment"; CopyMode: alwaysoverwrite;
-Source: "Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir: "{app}\Develop\Projects\CPP\BaseDevelopment\toolbarimages"; CopyMode: alwaysoverwrite;
+Source: "Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\lbdmf\BaseDevelopment"; CopyMode: alwaysoverwrite;
+Source: "Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir: "{app}\Develop\Projects\lbdmf\BaseDevelopment\toolbarimages"; CopyMode: alwaysoverwrite;
 
 Source: "Test\GUI\wxWrapper\lbdmf.ico"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
@@ -60,9 +60,8 @@ Source: "TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysove
 Source: "w32api-Wcpp-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 [Icons]
-Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
-Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
-;Name: "{userdesktop}\lbDMF Help"; Filename: "{app}\develop\projects\cpp\Doc\html\index.html"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
+Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
+Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
