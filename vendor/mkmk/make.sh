@@ -24,4 +24,8 @@ $CPP contain.cpp -c -DUNIX \
     -I /usr/include \
     -I ../dosdir
 
-$CPP -o mkmk contain.o mkmk.o ../dosdir/match.o ../dosdir/dosdir.o -lstdc++
+$CPP stringtools.cpp -c -DUNIX \
+    -I /usr/include \
+    -I ../dosdir
+
+$CPP -o mkmk stringtools.o contain.o mkmk.o ../dosdir/match.o ../dosdir/dosdir.o -lstdc++
