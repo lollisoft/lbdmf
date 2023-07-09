@@ -99,7 +99,6 @@ call make_dist_base.bat vendor\wxaui-0.9.1
 call make_dist_base.bat vendor\libxml2-2.8.0
 call make_dist_base.bat vendor\libxslt-1.1.21
 call make_dist_base.bat vendor\wxJSON-1.2.1
-call make_dist_base.bat vendor\makefile.module.libxslt
 call make_dist_base.bat include 
 call make_dist_base.bat interfaces 
 call make_dist_base.bat make
@@ -110,6 +109,7 @@ call make_dist_base.bat Samples
 call make_dist_base.bat Modules
 call make_dist_base.bat RegressionTests
 
+
 copy makewat.env %DEVROOT%
 copy makefile.wat %DEVROOT%
 copy README %DEVROOT%
@@ -118,6 +118,7 @@ copy doxygen.conf %DEVROOT%
 copy BaseDevelopment\makefile %DEVROOT%\BaseDevelopment
 copy BaseDevelopment\make.bat %DEVROOT%\BaseDevelopment
 copy %PACKAGINGROOT%\watcomenv.bat %DEVROOT%
+copy vendor\makefile.module.libxslt %DEVROOT%\vendor
 copy %PACKAGINGROOT%\watcomenv.bat.lnk dist
 
 @REM Does not exist in jenkins build
