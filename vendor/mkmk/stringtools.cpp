@@ -1,6 +1,8 @@
 #include "stringtools.h"
 #include <string>
+#ifdef __WATCOM__ || __MINGW__
 #include <regex>
+#endif
 
 char* replaceStringAndDup(char* to, const char* match, const char* replace) {
 #ifdef __WATCOM__ || __MINGW__
