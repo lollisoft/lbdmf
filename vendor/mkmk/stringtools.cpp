@@ -11,8 +11,9 @@ char* replaceStringAndDup(char* to, const char* match, const char* replace) {
 #else
 	size_t pos = 0;
 	std::string toReplace = to;
-    while ((pos = toReplace.find(match, pos)) != std::string::npos) {
-         toReplace.replace(pos, match.length(), replace);
+	std::string toMatch = match;
+    while ((pos = toReplace.find(toMatch, pos)) != std::string::npos) {
+         toReplace.replace(pos, toMatch.length(), replace);
          pos += replace.length();
     }
 #endif
