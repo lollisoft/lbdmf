@@ -1,5 +1,6 @@
 #include "stringtools.h"
 #include <string>
+#include <stdlib.h> 
 
 #if defined(__MINGW32__) || defined(__WATCOMC__) 
 #include <regex>
