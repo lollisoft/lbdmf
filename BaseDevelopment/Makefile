@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.88 $
+# * $Revision: 1.229.2.89 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.88 2023/06/18 17:05:19 lothar Exp $
+# * $Id: Makefile,v 1.229.2.89 2023/07/09 14:16:17 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.89  2023/07/09 14:16:17  lothar
+# * Building ../vendor/libxslt-1.1.21/libxslt on build server until the new one passes on end user test machine building
+# *
 # * Revision 1.229.2.88  2023/06/18 17:05:19  lothar
 # * Let mkmk failure pass for Windows.
 # *
@@ -1654,6 +1657,47 @@ bla = \
 
 # Include this before building lbHook below, if you want to use MinGW instead precompiled Open Watcom 1.7 version of mkmk.
 
+ifeq ($(CRUISECONTROL), yes)
+
+ALLTARGETS = \
+	../../bin \
+	../../lib \
+	../../dll/libs \
+	../../plugins/libs \
+	../vendor/mkmk \
+	lbHook \
+	lbtransfer \
+	lbDB \
+	lbModule \
+	lbclasses \
+	lbWorkflowEngine \
+	lbMetaApplication \
+	lbPluginManager \
+	lbcs \
+	lbtransfer \
+	../vendor/propgrid \
+	../Test/GUI/wxWrapperDLL \
+	../vendor/sqlite \
+	../vendor/antlr3/src \
+	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
+	../vendor/libxslt-1.1.21/libxslt \
+	../vendor/wxJSON-1.2.1/src \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/Console/XML \
+	../Test/GUI/wxWrapper \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	../Test/GUI/wxPlugins/lbCryptoStream \
+	../Samples/HelloWorld \
+	../vendor/wxShapeFramework/src \
+	$(BASEDIRECTORIES) \
+	../Doc/html \
+	../AppDevelopmentDemo/MkBs \
+	../vendor/wxShapeFramework/samples/wxSFDemo
+
+else
+
 ALLTARGETS = \
 	../../bin \
 	../../lib \
@@ -1690,6 +1734,8 @@ ALLTARGETS = \
 	../Doc/html \
 	../AppDevelopmentDemo/MkBs \
 	../vendor/wxShapeFramework/samples/wxSFDemo
+
+endif
 
 #	lbcs \
 #	../vendor/databaselayer/src/Implementations/ODBC \
@@ -2112,6 +2158,11 @@ ifeq ($(OSTYPE), Windows_NT)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
+../vendor/libxslt-1.1.21:
+ 	$(TAR) -zxf ../vendor/libxslt-1.1.21.tar.gz --directory ../vendor
+ 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
+ 	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
+
 ../vendor/libxslt-v1.1.38:
 	$(TAR) -zxf ../vendor/libxslt-v1.1.38.tar.gz --directory ../vendor
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-v1.1.38/libxslt/makefile.module
@@ -2120,6 +2171,9 @@ ifeq ($(OSTYPE), Windows_NT)
 	#cd ../vendor/libxslt-v1.1.38/win32 && cscript configure.js compiler:mingw
 endif
 
+../vendor/libxslt-1.1.21/libxslt: ../vendor/libxslt-1.1.21
+	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../vendor/libxslt-v1.1.38/libxslt: ../vendor/libxslt-v1.1.38
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
