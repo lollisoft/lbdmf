@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.89 $
+# * $Revision: 1.229.2.90 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.89 2023/07/09 14:16:17 lothar Exp $
+# * $Id: Makefile,v 1.229.2.90 2023/07/09 14:25:07 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.90  2023/07/09 14:25:07  lothar
+# * Missing separator
+# *
 # * Revision 1.229.2.89  2023/07/09 14:16:17  lothar
 # * Building ../vendor/libxslt-1.1.21/libxslt on build server until the new one passes on end user test machine building
 # *
@@ -2159,9 +2162,9 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxslt-1.1.21:
- 	$(TAR) -zxf ../vendor/libxslt-1.1.21.tar.gz --directory ../vendor
- 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
- 	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
+	$(TAR) -zxf ../vendor/libxslt-1.1.21.tar.gz --directory ../vendor
+	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
+	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
 
 ../vendor/libxslt-v1.1.38:
 	$(TAR) -zxf ../vendor/libxslt-v1.1.38.tar.gz --directory ../vendor
