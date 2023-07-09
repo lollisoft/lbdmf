@@ -24,7 +24,7 @@ $CPP contain.cpp -c -DUNIX \
     -I /usr/include \
     -I ../dosdir
 
-$CPP stringtools.cpp -c -DUNIX \
+$CPP stringtools.cpp -std=c++11 -c -DUNIX \
     -I /usr/include \
     -I ../dosdir
 
