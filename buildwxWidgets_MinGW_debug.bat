@@ -24,7 +24,7 @@ echo set DRIVE=%DEVLW% >> doBuildWx.bat
 echo set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
 echo %DEVLW% >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-v1.1.38.tar.gz ( >> doBuildWx.bat
-echo curl -k -L -o libxslt-v1.1.38.tar.gz https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.38/libxslt-v1.1.38.tar.gz >> doBuildWx.bat
+echo curl -k -L -o %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-v1.1.38.tar.gz https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.38/libxslt-v1.1.38.tar.gz >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Tools\MinGW\bin\gcc.exe ( >> doBuildWx.bat
 echo call %DEVLW%\lbDMF\installMinGW.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
