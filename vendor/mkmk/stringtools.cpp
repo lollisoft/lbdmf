@@ -19,6 +19,10 @@ char* replaceStringAndDup(char* to, const char* match, const char* replace) {
     }
 #endif
 
-	return strdup(toReplace.c_str());
+	const std::string::size_type size = toReplace.size();
+	char *buffer = malloc(size + 1);
+	memcpy(buffer, toReplace.c_str(), size + 1);
+	
+	return buffer;
 }
 
