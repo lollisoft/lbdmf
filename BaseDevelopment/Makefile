@@ -1,11 +1,18 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.90 $
+# * $Revision: 1.229.2.91 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.90 2023/07/09 14:25:07 lothar Exp $
+# * $Id: Makefile,v 1.229.2.91 2023/07/15 11:25:45 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.91  2023/07/15 11:25:45  lothar
+# * Replaced gnome libxslt library with xmlsoft.org version.
+# * That version (1.1.34) compiles after fixing one config
+# * issue in xsltconfig.h at line 120. Propably some remains
+# * of missing configure script conditoinal (WITH_PROFILER).
+# * There was a @WITH_PROFILER@.
+# *
 # * Revision 1.229.2.90  2023/07/09 14:25:07  lothar
 # * Missing separator
 # *
@@ -1723,7 +1730,7 @@ ALLTARGETS = \
 	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
-	../vendor/libxslt-v1.1.38/libxslt \
+	../vendor/libxslt-1.1.34/libxslt \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -1820,7 +1827,7 @@ ALLTARGETS = \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
-	../vendor/libxslt-v1.1.38/libxslt \
+	../vendor/libxslt-1.1.34/libxslt \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
@@ -2166,19 +2173,20 @@ ifeq ($(OSTYPE), Windows_NT)
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
 	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
 
-../vendor/libxslt-v1.1.38:
-	$(TAR) -zxf ../vendor/libxslt-v1.1.38.tar.gz --directory ../vendor
-	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-v1.1.38/libxslt/makefile.module
-	cp ../vendor/makefile.libxslt.bootstrap ../vendor/libxslt-v1.1.38/win32
+../vendor/libxslt-1.1.34:
+	$(TAR) -zxf ../vendor/libxslt-1.1.34.tar.gz --directory ../vendor
+	cp ../vendor/xsltconfig-1.1.34.h ../vendor/libxslt-1.1.34/libxslt/xsltconfig.h
+	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.34/libxslt/makefile.module
+	cp ../vendor/makefile.libxslt.bootstrap ../vendor/libxslt-1.1.34/win32
 	$(MAKE) -s -C $@/win32 -f makefile.libxslt.bootstrap
-	#cd ../vendor/libxslt-v1.1.38/win32 && cscript configure.js compiler:mingw
+	#cd ../vendor/libxslt-1.1.34/win32 && cscript configure.js compiler:mingw
 endif
 
 ../vendor/libxslt-1.1.21/libxslt: ../vendor/libxslt-1.1.21
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
-../vendor/libxslt-v1.1.38/libxslt: ../vendor/libxslt-v1.1.38
+../vendor/libxslt-1.1.34/libxslt: ../vendor/libxslt-1.1.34
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
