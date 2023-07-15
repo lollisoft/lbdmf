@@ -120,6 +120,7 @@ copy BaseDevelopment\make.bat %DEVROOT%\BaseDevelopment
 copy %PACKAGINGROOT%\watcomenv.bat %DEVROOT%
 copy vendor\makefile.module.libxslt %DEVROOT%\vendor
 copy vendor\makefile.libxslt.bootstrap %DEVROOT%\vendor
+copy vendor\xsltconfig-1.1.34.h %DEVROOT%\vendor
 copy %PACKAGINGROOT%\watcomenv.bat.lnk dist
 
 @REM Does not exist in jenkins build
