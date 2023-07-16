@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.91 $
+# * $Revision: 1.229.2.92 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.91 2023/07/15 11:25:45 lothar Exp $
+# * $Id: Makefile,v 1.229.2.92 2023/07/16 09:30:33 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.92  2023/07/16 09:30:33  lothar
+# * Fix in building libxslt. Missing commands
+# *
 # * Revision 1.229.2.91  2023/07/15 11:25:45  lothar
 # * Replaced gnome libxslt library with xmlsoft.org version.
 # * That version (1.1.34) compiles after fixing one config
@@ -2173,13 +2176,13 @@ ifeq ($(OSTYPE), Windows_NT)
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
 	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
 
-../vendor/libxslt-1.1.34:
+../vendor/libxslt-1.1.34: dummy
 	$(TAR) -zxf ../vendor/libxslt-1.1.34.tar.gz --directory ../vendor
-	cp ../vendor/xsltconfig-1.1.34.h ../vendor/libxslt-1.1.34/libxslt/xsltconfig.h
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.34/libxslt/makefile.module
 	cp ../vendor/makefile.libxslt.bootstrap ../vendor/libxslt-1.1.34/win32
 	$(MAKE) -s -C $@/win32 -f makefile.libxslt.bootstrap
-	#cd ../vendor/libxslt-1.1.34/win32 && cscript configure.js compiler:mingw
+	cd ../vendor/libxslt-1.1.34/win32 && cscript configure.js compiler:mingw
+	cp ../vendor/xsltconfig-1.1.34.h ../vendor/libxslt-1.1.34/libxslt/xsltconfig.h
 endif
 
 ../vendor/libxslt-1.1.21/libxslt: ../vendor/libxslt-1.1.21
@@ -2218,8 +2221,8 @@ endif
 	$(MAKE) -s -C $@
 
 ../Test/Console/XML: dummy
-	$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbCryptoStream: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbCryptoStream -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
