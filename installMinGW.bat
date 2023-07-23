@@ -9,4 +9,4 @@ REM Develop\Tools\MinGW\bin\mingw-get upgrade "g++=%1"
 REM Develop\Tools\MinGW\bin\mingw-get upgrade "mingw32-w32api=%2"
 
 @rem Required to compile ACE
-REM Develop\Tools\MinGW\bin\mingw-get install msys
+Develop\Tools\MinGW\bin\mingw-get install msys
