@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.92 $
+# * $Revision: 1.229.2.93 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.92 2023/07/16 09:30:33 lothar Exp $
+# * $Id: Makefile,v 1.229.2.93 2023/07/30 16:53:00 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.93  2023/07/30 16:53:00  lothar
+# * The MinGW mkmk build is unstable. Try to stick on OW yet
+# *
 # * Revision 1.229.2.92  2023/07/16 09:30:33  lothar
 # * Fix in building libxslt. Missing commands
 # *
@@ -1672,12 +1675,14 @@ bla = \
 
 ifeq ($(CRUISECONTROL), yes)
 
+# The MinGW mkmk build is unstable
+#	../vendor/mkmk \
+
 ALLTARGETS = \
 	../../bin \
 	../../lib \
 	../../dll/libs \
 	../../plugins/libs \
-	../vendor/mkmk \
 	lbHook \
 	lbtransfer \
 	lbDB \
