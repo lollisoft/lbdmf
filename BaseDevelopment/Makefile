@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.93 $
+# * $Revision: 1.229.2.94 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.93 2023/07/30 16:53:00 lothar Exp $
+# * $Id: Makefile,v 1.229.2.94 2023/08/06 13:40:56 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.94  2023/08/06 13:40:56  lothar
+# * Deactivated build rules of mkmk for Windows_NT
+# *
 # * Revision 1.229.2.93  2023/07/30 16:53:00  lothar
 # * The MinGW mkmk build is unstable. Try to stick on OW yet
 # *
@@ -2252,9 +2255,11 @@ ifeq ($(OSTYPE), Windows_NT)
 	cp ../vendor/mkmk/makefile.mkmk ../vendor/mkmk/makefile
 
 ../vendor/mkmk: ../vendor/mkmk/bootstrapped.txt
-	-$(MAKE) -s -C $@
-	-cp $@/mkmk $(prefix)/bin
-	-cd ../BaseDevelopment
+	echo Building mkmk skipped for now. Building means using MinGW for mkmk that results in an unstable build system.
+	echo My trials failed since porting it to MinGW. Please activate it at the rule ../vendor/mkmk:
+	#-$(MAKE) -s -C $@
+	#-cp $@/mkmk $(prefix)/bin
+	#-cd ../BaseDevelopment
 endif
 
 ifeq ($(OSTYPE), solaris)
