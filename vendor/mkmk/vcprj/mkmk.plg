@@ -1,0 +1,53 @@
+<html>
+<body>
+<pre>
+<h1>Erstellungsprotokoll</h1>
+<h3>
+--------------------Konfiguration: mkmk - Win32 Debug--------------------
+</h3>
+<h3>Befehlszeilen</h3>
+Erstellen der temporären Datei  "C:\DOKUME~1\Lothar\LOKALE~1\Temp\RSPBE.tmp" mit Inhalten
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fp"Debug/mkmk.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"Q:\DEVELOP\PROJECTS\LBDMF\VENDOR\MKMK\contain.cpp"
+"Q:\DEVELOP\PROJECTS\LBDMF\VENDOR\MKMK\mkmk.cpp"
+"Q:\DEVELOP\PROJECTS\LBDMF\VENDOR\MKMK\stringtools.cpp"
+]
+Creating command line "cl.exe @C:\DOKUME~1\Lothar\LOKALE~1\Temp\RSPBE.tmp" 
+Erstellen der temporären Datei  "C:\DOKUME~1\Lothar\LOKALE~1\Temp\RSPBF.tmp" mit Inhalten
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/mkmk.pdb" /debug /machine:I386 /out:"Debug/mkmk.exe" /pdbtype:sept 
+.\Debug\contain.obj
+.\Debug\mkmk.obj
+.\Debug\stringtools.obj
+]
+Erstellen der Befehlzeile "link.exe @C:\DOKUME~1\Lothar\LOKALE~1\Temp\RSPBF.tmp"
+<h3>Ausgabefenster</h3>
+Kompilierung läuft...
+contain.cpp
+q:\develop\projects\lbdmf\vendor\mkmk\contain.h(53) : warning C4138: '*/' wurde ausserhalb des Kommentars gefunden
+mkmk.cpp
+q:\develop\projects\lbdmf\vendor\mkmk\contain.h(53) : warning C4138: '*/' wurde ausserhalb des Kommentars gefunden
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(1027) : warning C4018: '<' : Konflikt zwischen signed und unsigned
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(1034) : warning C4018: '<' : Konflikt zwischen signed und unsigned
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(1047) : warning C4018: '<' : Konflikt zwischen signed und unsigned
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(1058) : warning C4018: '<=' : Konflikt zwischen signed und unsigned
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(1064) : warning C4018: '<=' : Konflikt zwischen signed und unsigned
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(1072) : warning C4018: '==' : Konflikt zwischen signed und unsigned
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(1087) : warning C4018: '==' : Konflikt zwischen signed und unsigned
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(2780) : warning C4018: '<' : Konflikt zwischen signed und unsigned
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(3240) : warning C4018: '<' : Konflikt zwischen signed und unsigned
+stringtools.cpp
+q:\develop\projects\lbdmf\vendor\mkmk\mkmk.cpp(3547) : Warnung C4700: Lokale Variable 'f' wurde ohne Initialisierung verwendet
+Linker-Vorgang läuft...
+Erstellen der Befehlzeile "bscmake.exe /nologo /o"Debug/mkmk.bsc"  .\Debug\contain.sbr .\Debug\mkmk.sbr .\Debug\stringtools.sbr"
+Browse-Informationsdatei wird erstellt...
+<h3>Ausgabefenster</h3>
+
+
+
+<h3>Ergebnisse</h3>
+mkmk.exe - 0 Fehler, 11 Warnung(en)
+</pre>
+</body>
+</html>
