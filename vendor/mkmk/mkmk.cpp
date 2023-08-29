@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.25 $
+ * $Revision: 1.114.2.26 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.25 2023/08/09 18:44:24 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.26 2023/08/29 04:53:15 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.26  2023/08/29 04:53:15  lothar
+ * Added missing log entry. There is probably missing something else. Placed the msvc mkmk.exe for deployment.
+ *
  * Revision 1.114.2.25  2023/08/09 18:44:24  lothar
  * Attempt to use Microsoft Visual C 6.0 to build it on Windows XP
  * seems to produce a stable and usable tool. Some quick hacks,
@@ -24,6 +27,10 @@
  * complete build.
  *
  * There is indeed much work yet to do :-)
+ *
+ * Revision 1.114.2.24  2023/08/06 22:30:07  lothar
+ * Literally the watcom compiled code crashes in some wired __FiniRtns code
+ * while trying to free memory. One possible bug indeed found.
  *
  * Revision 1.114.2.23  2023/06/18 12:52:37  lothar
  * Reworked mkmk, added dependency to and download libxslt-v1.1.38 and included bootstrapping it.
@@ -2613,7 +2620,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.25 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.26 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
