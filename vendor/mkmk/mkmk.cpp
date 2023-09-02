@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.28 $
+ * $Revision: 1.114.2.29 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.28 2023/09/02 14:19:58 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.29 2023/09/02 14:34:59 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.29  2023/09/02 14:34:59  lothar
+ * More changes for file and directory find functions
+ *
  * Revision 1.114.2.28  2023/09/02 14:19:58  lothar
  * Using UNIX and OSX defines to detect OSX and Linux build as defined in shell scripts
  *
@@ -533,6 +536,22 @@
 #endif
 //  #include <dosdir.h>
 #endif
+
+#ifdef OSX
+  #include <dos.h>
+  #define dd_findfirst(x,y,z) _dos_findfirst(x,z,y)
+  #define dd_findnext(x,y) _dos_findnext(y)
+  #define dd_ffblk find_t
+  #define dd_name name
+#endif
+#ifdef UNIX
+  #include <dos.h>
+  #define dd_findfirst(x,y,z) _dos_findfirst(x,z,y)
+  #define dd_findnext(x,y) _dos_findnext(y)
+  #define dd_ffblk find_t
+  #define dd_name name
+#endif
+
 /*...e*/
 /*...sdefs:0:*/
 //#define WATCOM_MAKE
@@ -2633,7 +2652,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.28 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.29 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
