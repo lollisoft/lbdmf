@@ -1,6 +1,5 @@
 		    DMF - Distributed Multiplatform Framework
-			Copyright (C) Lothar Behrens 2002
-
+		     Copyright (C)  Lothar Behrens 2002-2023
 
 This framework was intented to be independend from compiler and vendor frameworks
 like MFC or Watcom class libraries. Multiplatform stays currently for Windows and
