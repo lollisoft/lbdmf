@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.26 $
+ * $Revision: 1.114.2.27 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.26 2023/08/29 04:53:15 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.27 2023/09/02 13:30:02 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.27  2023/09/02 13:30:02  lothar
+ * Added include for LINUX and OSX - probably the simplest way
+ *
  * Revision 1.114.2.26  2023/08/29 04:53:15  lothar
  * Added missing log entry. There is probably missing something else. Placed the msvc mkmk.exe for deployment.
  *
@@ -490,6 +493,13 @@
 #ifdef _MSC_VER
 #include <malloc.h>
 #endif
+#ifdef LINUX
+#include <malloc.h>
+#endif
+#ifdef OSX
+#include <malloc.h>
+#endif
+
 /*...e*/
 /*...sdefs:0:*/
 #ifdef __WATCOMC__
@@ -2620,7 +2630,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.26 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.27 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
