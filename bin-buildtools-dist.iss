@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=lbDMF Binary Build Tools
-AppVerName=lbDMF Binary Build Tools 1.0.4.4-final
-OutputBaseFilename=lbDMF-BinbuildTools-1.0.4.4-final
+AppVerName=lbDMF Binary Build Tools 1.3.3-vc
+OutputBaseFilename=lbDMF-BinbuildTools-1.3.3-vc
 AppPublisher=Lothar Behrens
 AppPublisherURL=http://www.lollisoft.de
 AppSupportURL=http://www.sourceforge.net/projects/lbdmf
@@ -49,7 +49,7 @@ Source: "dist\dist_iss_BinBuildTools\cygattr-1.dll"; DestDir: "{app}\Develop\Pro
 Source: "dist\dist_iss_BinBuildTools\ls.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "dist\dist_iss_BinBuildTools\pwd.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
-;Dependency (Watcom Build)
+;Dependency (VC Build)
 Source: "dist\dist_iss_MkMk\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
 

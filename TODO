@@ -2,6 +2,17 @@ This file describes some things that should be done in the next time.
 
 I also will discuss some problems while the development stages.
 
+02.09.2023	With the huge break from development making a pause, there has
+		revealed some issues with the basic tools that needed for the
+		build system. This was mkmk still built with Watcom compiler.
+		After trials to port it to MinGW, there also were problems. Finally
+		I got managed to create a reasonable stable build with Visual C++
+		compiler (6.0) and up. Thus my further goal includes porting back all
+		using Visual C++ 6.0 and later. Using Visual Studio later on will
+		also enable a much better experience in development on Windows including
+		refactoring and debugging. The previous TODO's now are in question if not
+		obsolete.
+
 24.06.2012	Using a test machine I have determined the following steps that
 		are required to get the source code compiled:
 
