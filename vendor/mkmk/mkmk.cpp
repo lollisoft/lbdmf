@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.27 $
+ * $Revision: 1.114.2.28 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.27 2023/09/02 13:30:02 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.28 2023/09/02 14:19:58 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.28  2023/09/02 14:19:58  lothar
+ * Using UNIX and OSX defines to detect OSX and Linux build as defined in shell scripts
+ *
  * Revision 1.114.2.27  2023/09/02 13:30:02  lothar
  * Added include for LINUX and OSX - probably the simplest way
  *
@@ -493,7 +496,7 @@
 #ifdef _MSC_VER
 #include <malloc.h>
 #endif
-#ifdef LINUX
+#ifdef UNIX
 #include <malloc.h>
 #endif
 #ifdef OSX
@@ -2630,7 +2633,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.27 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.28 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
