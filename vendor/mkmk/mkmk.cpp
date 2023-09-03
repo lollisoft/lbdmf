@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.33 $
+ * $Revision: 1.114.2.34 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.33 2023/09/03 09:15:06 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.34 2023/09/03 09:41:50 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.34  2023/09/03 09:41:50  lothar
+ * OSX malloc.h issue
+ *
  * Revision 1.114.2.33  2023/09/03 09:15:06  lothar
  * Mac OSX also depends on dosdir.h with different parameters
  *
@@ -515,7 +518,7 @@
 #include <malloc.h>
 #endif
 #ifdef OSX
-#include <malloc.h>
+//#include <malloc.h>
 #endif
 
 /*...e*/
@@ -2664,7 +2667,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.33 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.34 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
