@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.30 $
+ * $Revision: 1.114.2.31 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.30 2023/09/03 08:20:10 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.31 2023/09/03 08:36:05 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.31  2023/09/03 08:36:05  lothar
+ * Corrections related to dosdir definitions
+ *
  * Revision 1.114.2.30  2023/09/03 08:20:10  lothar
  * Using dosdir.h for Linux/Unix
  *
@@ -541,18 +544,18 @@
 #endif
 
 #ifdef OSX
-  #include <dos.h>
-  #define dd_findfirst(x,y,z) _dos_findfirst(x,z,y)
-  #define dd_findnext(x,y) _dos_findnext(y)
-  #define dd_ffblk find_t
-  #define dd_name name
+  #include <dosdir.h>
+  //#define dd_findfirst(x,y,z) _dos_findfirst(x,z,y)
+  //#define dd_findnext(x,y) _dos_findnext(y)
+  //#define dd_ffblk find_t
+  //#define dd_name name
 #endif
 #ifdef UNIX
   #include <dosdir.h>
-  #define dd_findfirst(x,y,z) _dos_findfirst(x,z,y)
-  #define dd_findnext(x,y) _dos_findnext(y)
-  #define dd_ffblk find_t
-  #define dd_name name
+  //#define dd_findfirst(x,y,z) _dos_findfirst(x,z,y)
+  //#define dd_findnext(x,y) _dos_findnext(y)
+  //#define dd_ffblk find_t
+  //#define dd_name name
 #endif
 
 /*...e*/
@@ -2655,7 +2658,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.30 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.31 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
