@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.31 $
+ * $Revision: 1.114.2.32 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.31 2023/09/03 08:36:05 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.32 2023/09/03 08:52:00 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.32  2023/09/03 08:52:00  lothar
+ * Small differences within call
+ *
  * Revision 1.114.2.31  2023/09/03 08:36:05  lothar
  * Corrections related to dosdir definitions
  *
@@ -553,7 +556,7 @@
 #ifdef UNIX
   #include <dosdir.h>
   //#define dd_findfirst(x,y,z) _dos_findfirst(x,z,y)
-  //#define dd_findnext(x,y) _dos_findnext(y)
+  #define dd_findnext(x,y) dd_findnext(y)
   //#define dd_ffblk find_t
   //#define dd_name name
 #endif
@@ -2658,7 +2661,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.31 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.32 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
