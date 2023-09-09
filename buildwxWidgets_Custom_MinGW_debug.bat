@@ -43,7 +43,7 @@ echo wxMSW-2.8.12-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR% >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo cd %WXDIR%\build\msw >> doBuildWx.bat
 echo copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx >> doBuildWx.bat
-echo copy /Y %DEVLW%\lbDMF\wxWidgets-config-debug.gcc %WXDIR%\build\msw\config.gcc >> doBuildWx.bat
+echo @rem copy /Y %DEVLW%\lbDMF\wxWidgets-config-debug.gcc %WXDIR%\build\msw\config.gcc >> doBuildWx.bat
 rem echo mingw32-make -f makefile.gcc clean >> doBuildWx.bat
 echo set Path=%SystemRoot%\system32 >> doBuildWx.bat
 echo set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin >> doBuildWx.bat
