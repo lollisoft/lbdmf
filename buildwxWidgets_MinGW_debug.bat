@@ -11,7 +11,10 @@ set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin
 @rem Get an explicite version that always ensures to build the code
 set MINGW_STICKON_VERSION=4.7.*
 set MINGW_STICKON_WIN32_VERSION=4.0.3-*
-
+@rem set WX_VERSION=2.8.12
+@rem https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxMSW-3.2.2.1-Setup.exe
+set WX_VERSION=3.2.2.1
+set WX_DOWNLOAD=https://github.com/wxWidgets/wxWidgets/releases/download/v%WX_VERSION%/wxMSW-%WX_VERSION%-Setup.exe
 set Path=%SystemRoot%\system32
 
 set Path=%Path%;%MINGWBIN%
@@ -36,8 +39,8 @@ echo curl -k -L -o lbDMF-BinbuildTools-1.3.3-vc.exe http://sourceforge.net/proje
 echo lbDMF-BinbuildTools-1.3.3-vc.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %WXDIR%\build\msw ( >> doBuildWx.bat
-echo curl -k -L -o wxMSW-2.8.12-Setup.exe http://sourceforge.net/projects/wxwindows/files/2.8.12/wxMSW-2.8.12-Setup.exe/download >> doBuildWx.bat
-echo wxMSW-2.8.12-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR% >> doBuildWx.bat
+echo curl -k -L -o wxMSW-%WX_VERSION%-Setup.exe %WX_DOWNLOAD% >> doBuildWx.bat
+echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR% >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo cd %WXDIR%\build\msw >> doBuildWx.bat
 echo copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx >> doBuildWx.bat
