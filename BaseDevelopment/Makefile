@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.95 $
+# * $Revision: 1.229.2.96 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.95 2023/10/01 12:11:59 lothar Exp $
+# * $Id: Makefile,v 1.229.2.96 2023/10/01 13:14:47 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.96  2023/10/01 13:14:47  lothar
+# * Tweaked location, when to build wxPropgrid as extra library.
+# * On Windows build only when not running within my Jenkins.
+# * Assuming the wxWidgets library is current and includes it.
+# *
 # * Revision 1.229.2.95  2023/10/01 12:11:59  lothar
 # * Fixed a char to char* casting error.
 # * No longer build the extra propgrid
@@ -1741,7 +1746,6 @@ ALLTARGETS = \
 	lbPluginManager \
 	lbcs \
 	lbtransfer \
-	../vendor/propgrid \
 	../Test/GUI/wxWrapperDLL \
 	../vendor/sqlite \
 	../vendor/antlr3/src \
@@ -1761,6 +1765,9 @@ ALLTARGETS = \
 	../Doc/html \
 	../AppDevelopmentDemo/MkBs \
 	../vendor/wxShapeFramework/samples/wxSFDemo
+
+# Don't integrate within consumer builds (on Windows 10 on my test machine)
+#	../vendor/propgrid \
 
 endif
 
@@ -2525,8 +2532,8 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@
 
 ../vendor/propgrid: dummy
-#	$(MAKE) -s -C $@ -e MODULE=wxPropgrid -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
-#	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ -e MODULE=wxPropgrid -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
