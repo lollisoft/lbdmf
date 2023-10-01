@@ -20,7 +20,8 @@ echo ---------------------------------------------------------------------------
 echo * If you don't have opted for building wxWigets, the library and MinGW must     * >> readme.txt
 echo * be installed manually. Folders for that look respectively like this:          * >> readme.txt
 echo * C:\lbDMF\Develop\wxwin\wx (wx is the base folder for wxWidgets)               * >> readme.txt
-echo * C:\lbDMF\Develop\Tools\MinGW (MinGW is the base for the compiler stuff)       * >> readme.txt
+echo * C:\lbDMF\Develop\Tools\MinGW (MinGW is the base MinGW Get) 				     * >> readme.txt
+echo * C:\lbDMF\Develop\Tools\mingw32 (MinGW is the base for the compiler stuff)     * >> readme.txt
 echo *                                                                               * >> readme.txt
 echo * Also install the lbDMF Build tools at the same place as the source code.      * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
@@ -160,7 +161,7 @@ rem set CVSBIN=%DEVROOT%\Tools\cvs
 set WATBIN=%DEVLW%\%BASE%\Tools\WATCOM\BINNT;%DEVROOT%\Tools\WATCOM\BINW
 set DEVBIN=%DEVLW%\%BASE%\bin
 
-set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;
+set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw32\bin;
 
 rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
