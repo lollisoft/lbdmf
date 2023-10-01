@@ -1,11 +1,17 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.94 $
+# * $Revision: 1.229.2.95 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.94 2023/08/06 13:40:56 lothar Exp $
+# * $Id: Makefile,v 1.229.2.95 2023/10/01 12:11:59 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.95  2023/10/01 12:11:59  lothar
+# * Fixed a char to char* casting error.
+# * No longer build the extra propgrid
+# * library on Windows as it is now
+# * included in wxWidgets build.
+# *
 # * Revision 1.229.2.94  2023/08/06 13:40:56  lothar
 # * Deactivated build rules of mkmk for Windows_NT
 # *
@@ -2519,8 +2525,8 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@
 
 ../vendor/propgrid: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxPropgrid -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+#	$(MAKE) -s -C $@ -e MODULE=wxPropgrid -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+#	$(MAKE) -s -C $@
 
 ../vendor/wxaui-0.9.1/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxAUI -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)

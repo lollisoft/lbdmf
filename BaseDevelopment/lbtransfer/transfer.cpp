@@ -551,7 +551,7 @@ lbErrCodes lbTransfer::waitForDatatype(char* &result) {
 				_LOG << "lbSocket: Failed to get any datatype" LOG_
 				err = ERR_TRANSFER_FAILED;
 		}
-		result = '\0';
+		result = strdup("\0");
 	}
 	else
 		result = strdup(buf);
