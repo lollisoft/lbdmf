@@ -33,18 +33,37 @@ OBJDEP=
 SLASH=/
 WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
 #wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
+ifeq ($(LBWXVERSION), current)
+LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
+	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxAUI.lib,  \
+	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+endif
+ifeq ($(LBWXVERSION), old)
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxPropgrid.lib, \
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxAUI.lib,  \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
+endif
 
+ifeq ($(LBWXVERSION), current)
+MINGWLIBS += $(MINGWLIBS_WXGUI) -Wl,--subsystem,windows -mthreads -mwindows -lwxmsw$(WX_VERSION)$(WX_DEBUG)_aui_gcc_custom #-lwxAUI 
+endif
+ifeq ($(LBWXVERSION), old)
 MINGWLIBS += $(MINGWLIBS_WXGUI) -Wl,--subsystem,windows -mthreads -mwindows -lwxPropgrid -lwxmsw$(WX_VERSION)$(WX_DEBUG)_aui_gcc_custom #-lwxAUI 
+endif
 
 MOD_INCL_MINGW=$(STD_INCL_MINGW)
 MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP)
 
+ifeq ($(LBWXVERSION), current)
+MOD_INCL_MINGW_CPP +=  -I $(WXDIR)/include
+#-I $(DEVROOT_MINGW)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include
+endif
+ifeq ($(LBWXVERSION), old)
 MOD_INCL_MINGW_CPP +=  -I $(WXDIR)/include -I $(DEVROOT_MINGW)/Projects/$(REPO_NAME)/vendor/propgrid/include
 #-I $(DEVROOT_MINGW)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include
+endif
+
 CPP_MINGW_DLLOPS += #-D__WXMSW__
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
