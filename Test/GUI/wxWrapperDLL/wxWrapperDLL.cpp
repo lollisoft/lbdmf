@@ -1569,7 +1569,7 @@ void LB_STDCALL lb_wxGUI::showForm(const char* name) {
                                 for (int i = 0; i < num; i++) {
                                         wxString pageText = notebook->GetPageText(i);
 
-                                        wxStringTokenizer tkz(ageText, " - ");
+                                        wxStringTokenizer tkz(pageText, " - ");
                                         wxString token;
                                         while ( tkz.HasMoreTokens() )
                                         {
