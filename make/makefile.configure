@@ -132,6 +132,11 @@ endif
 
 _MODULE=$(MODULE)
 
+ifdef LBWXVERSION
+_LBWXVERSION=$(LBWXVERSION)
+else
+_LBWXVERSION=
+endif
 
 ifeq ($(TARGET), tvision_dll)
 makefile: makefile.module \
@@ -594,7 +599,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile
 	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(_LBWXVERSION) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
@@ -608,7 +613,7 @@ $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile
 	@echo Path='$(PATH)' >> makefile
 	@echo all: $(_MODULE).so >> makefile
-	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
+	$(MKMK) $(TARGET) $(_MODULE) $(_LBWXVERSION) $(STDDEP) *.cpp $(CUSTOM_FILES) >> makefile
 
 endif
 
