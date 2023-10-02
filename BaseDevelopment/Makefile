@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.96 $
+# * $Revision: 1.229.2.97 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.96 2023/10/01 13:14:47 lothar Exp $
+# * $Id: Makefile,v 1.229.2.97 2023/10/02 13:42:57 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.97  2023/10/02 13:42:57  lothar
+# * Added control how to build against wxWidgets (current vs old)
+# *
 # * Revision 1.229.2.96  2023/10/01 13:14:47  lothar
 # * Tweaked location, when to build wxPropgrid as extra library.
 # * On Windows build only when not running within my Jenkins.
@@ -2370,8 +2373,14 @@ endif
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+else
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+endif
+
 	
 ../vendor/goldparserengine/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxGoldParser -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
@@ -2411,7 +2420,11 @@ ifeq ($(OSTYPE), solaris)
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+else
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+endif
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
@@ -2462,7 +2475,11 @@ ifeq ($(OSTYPE), linux)
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+else
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+endif
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
@@ -2505,7 +2522,11 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+else
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+endif
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
@@ -2548,7 +2569,11 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	-$(MAKE) -s -C $@
 
 ../Test/GUI/wxWrapperDLL: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+else
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+endif
 	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
