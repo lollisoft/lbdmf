@@ -1549,7 +1549,7 @@ void LB_STDCALL lb_wxGUI::showForm(const char* name) {
                         for (int i = 0; i < num; i++) {
                                 wxString pageText = notebook->GetPageText(i);
 
-                                wxStringTokenizer tkz(wxT(pageText), wxT(" - "));
+                                wxStringTokenizer tkz(pageText, " - ");
                                 wxString token;
                                 while ( tkz.HasMoreTokens() )
                                 {
@@ -1569,7 +1569,7 @@ void LB_STDCALL lb_wxGUI::showForm(const char* name) {
                                 for (int i = 0; i < num; i++) {
                                         wxString pageText = notebook->GetPageText(i);
 
-                                        wxStringTokenizer tkz(wxT(pageText), wxT(" - "));
+                                        wxStringTokenizer tkz(ageText, " - ");
                                         wxString token;
                                         while ( tkz.HasMoreTokens() )
                                         {
@@ -1771,7 +1771,7 @@ void LB_STDCALL lb_wxGUI::splashDestroyed() {
                 _LOG << "Add a pending event..." LOG_
                 wxCommandEvent event( wxEVT_NULL, SHOW_PENDING_MESSAGES );
                 event.SetEventObject( frame );
-                frame->AddPendingEvent(event);
+                frame->GetEventHandler()->AddPendingEvent(event);
         }
 }
 
@@ -2061,7 +2061,7 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 {
         lbErrCodes err = ERR_NONE;
 
-        wxPGProperty* pProperty = event.GetPropertyPtr();
+        wxPGProperty* pProperty = event.GetProperty();
 
         // Get name of changed property
         const wxString& PropertyName = event.GetPropertyName();
