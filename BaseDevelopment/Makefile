@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.97 $
+# * $Revision: 1.229.2.98 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.97 2023/10/02 13:42:57 lothar Exp $
+# * $Id: Makefile,v 1.229.2.98 2023/10/03 11:51:26 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.98  2023/10/03 11:51:26  lothar
+# * Propably missed passing configuration also for making
+# *
 # * Revision 1.229.2.97  2023/10/02 13:42:57  lothar
 # * Added control how to build against wxWidgets (current vs old)
 # *
@@ -2571,10 +2574,11 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
 else
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
-	$(MAKE) -s -C $@
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
