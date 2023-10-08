@@ -97,7 +97,9 @@
 #ifdef USE_PROPGRID
 // Necessary header file
 #include "wx/propgrid/propgrid.h"
+#ifndef LBWXVERSION_CURRENT
 #include "wx/propgrid/propdev.h"
+#endif
 // This defines wxPropertyGridManager.
 #include <wx/propgrid/manager.h>
 
@@ -2079,7 +2081,7 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
                 REQUEST(getModuleInstance(), lb_I_EventManager, eman)
         }
 
-        eman->resolveEvent((char*) PropertyName.c_str(), PropertyEvent);
+        eman->resolveEvent((const char*) PropertyName.c_str(), PropertyEvent);
 
         name->setData("eventId");
         evId->setData(PropertyEvent);
@@ -2088,11 +2090,11 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
         _LOG << "Property '" << PropertyName.c_str() << "' changed to '" << PropValue.c_str() << "'" LOG_
 
         name->setData("value");
-        value->setData((char*) PropValue.c_str());
+        value->setData((const char*) PropValue.c_str());
         param->setUAPString(*&name, *&value);
 
         name->setData("name");
-        value->setData((char*) PropertyName.c_str());
+        value->setData((const char*) PropertyName.c_str());
         param->setUAPString(*&name, *&value);
 
         UAP(lb_I_Unknown, uk)
@@ -2339,8 +2341,21 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
         if (category) *category_name = category;
         *category_name += name->charrep();
 
-        wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+#ifdef LBWXVERSION_CURRENT
+        wxPGProperty* pgid = pg->GetPropertyByLabel(name->charrep());
 
+        if (pgid != NULL) {
+                pg->SetPropertyValueString(pgid, s->charrep());
+        } else {
+#ifdef USE_PROPGRID_1_2_2
+                pg->Append(wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
+#else
+                pg->Append(new wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
+#endif
+        }
+#else
+        wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+        
         if (wxPGIdIsOk(pgid)) {
                 pg->SetPropertyValueString(pgid, s->charrep());
         } else {
@@ -2350,6 +2365,8 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
                 pg->Append(new wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
 #endif
         }
+#endif		
+		
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateDirLocation\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
@@ -2362,6 +2379,19 @@ void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_
         if (category) *category_name = category;
         *category_name += name->charrep();
 
+#ifdef LBWXVERSION_CURRENT
+        wxPGProperty* pgid = pg->GetPropertyByLabel(name->charrep());
+
+        if (pgid != NULL) {
+                pg->SetPropertyValueString(pgid, s->charrep());
+        } else {
+#ifdef USE_PROPGRID_1_2_2
+                pg->Append(wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
+#else
+                pg->Append(new wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
+#endif
+        }
+#else
         wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
 
         if (wxPGIdIsOk(pgid)) {
@@ -2373,6 +2403,7 @@ void lb_wxFrame::populateDirLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_
                 pg->Append(new wxDirProperty (name->charrep(), category_name->charrep(), s->charrep()));
 #endif
         }
+#endif
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateString\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
@@ -2385,6 +2416,47 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
         if (category) *category_name = category;
         *category_name += name->charrep();
 
+#ifdef LBWXVERSION_CURRENT
+        wxPGProperty* pgid = pg->GetPropertyByLabel(name->charrep());
+
+        if (pgid != NULL) {
+                pg->SetPropertyValueString(pgid, s->charrep());
+				
+				UAP(lb_I_String, pname)
+				QI(name, lb_I_String, pname)
+				
+				if (pname != NULL && *pname == "DB Name")
+				{
+					if (*s == "") {
+						//wxPGPropArgCls id(pgid);
+						pg->SetPropertyBackgroundColour(pgid, *wxRED, wxPG_DONT_RECURSE);
+					} else {
+						pg->SetPropertyBackgroundColour(pgid, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
+					}
+				}
+        } else {
+#ifdef USE_PROPGRID_1_2_2
+                pg->Append(wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
+#else
+                pg->Append(new wxStringProperty (name->charrep(), category_name->charrep(), s->charrep()));
+#endif
+
+				UAP(lb_I_String, pname)
+				QI(name, lb_I_String, pname)
+				
+				if (pname != NULL && *pname == "DB Name")
+				{
+					s->trim();
+				
+					if (*s == "") {
+						pg->SetPropertyBackgroundColour(wxPGPropArgCls(category_name->charrep()), *wxRED, wxPG_DONT_RECURSE);
+					} else {
+						pg->SetPropertyBackgroundColour(wxPGPropArgCls(category_name->charrep()), wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW), wxPG_DONT_RECURSE);				
+					}
+				}
+
+		}
+#else
         wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
 
         if (wxPGIdIsOk(pgid)) {
@@ -2424,6 +2496,7 @@ void lb_wxFrame::populateString(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyBa
 				}
 
 		}
+#endif
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateBoolean\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
@@ -2436,8 +2509,21 @@ void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
         if (category) *category_name = category;
         *category_name += name->charrep();
 
-        wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+#ifdef LBWXVERSION_CURRENT
+        wxPGProperty* pgid = pg->GetPropertyByLabel(name->charrep());
 
+        if (pgid != NULL) {
+                pg->SetPropertyValue(pgid, s->getData());
+        } else {
+#ifdef USE_PROPGRID_1_2_2
+                pg->Append(wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
+#else
+                pg->Append(new wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
+#endif
+        }
+#else
+        wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+        
         if (wxPGIdIsOk(pgid)) {
                 pg->SetPropertyValueBool(pgid, s->getData());
         } else {
@@ -2447,6 +2533,7 @@ void lb_wxFrame::populateBoolean(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
                 pg->Append(new wxBoolProperty (name->charrep(), category_name->charrep(), s->getData()));
 #endif
         }
+#endif
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateInteger\40\wxPropertyGrid\42\ pg\44\ lb_I_Unknown\42\ uk\44\ lb_I_KeyBase\42\ name\44\ char\42\ category\41\:0:*/
@@ -2461,10 +2548,11 @@ void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
         if (category) *category_name = category;
         *category_name += name->charrep();
 
-        wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+#ifdef LBWXVERSION_CURRENT
+        wxPGProperty* pgid = pg->GetPropertyByLabel(name->charrep());
 
-        if (wxPGIdIsOk(pgid)) {
-                pg->SetPropertyValueLong(pgid, i->getData());
+        if (pgid != NULL) {
+                pg->SetPropertyValue(pgid, i->getData());
         } else {
 #ifdef USE_PROPGRID_1_2_2
                 pg->Append(wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
@@ -2472,6 +2560,19 @@ void lb_wxFrame::populateInteger(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I_KeyB
                 pg->Append(new wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
 #endif
         }
+#else
+        wxPGId pgid = pg->GetPropertyByLabel(name->charrep());
+        
+        if (wxPGIdIsOk(pgid)) {
+                pg->SetPropertyValue(pgid, i->getData());
+        } else {
+#ifdef USE_PROPGRID_1_2_2
+                pg->Append(wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
+#else
+                pg->Append(new wxIntProperty (name->charrep(), category_name->charrep(), i->getData()));
+#endif
+        }
+#endif
 }
 /*...e*/
 /*...svoid lb_wxFrame\58\\58\populateProperties\40\wxPropertyGrid\42\ pg\44\ lb_I_Container\42\ properties\44\ char\42\ category\41\:0:*/
@@ -2518,7 +2619,11 @@ void lb_wxFrame::populateProperties(wxPropertyGrid* pg, lb_I_Container* properti
 
                                 _CL_LOG << "Add property category: " << key->charrep() LOG_
 
-                                pg->AppendCategory( key->charrep() );
+#ifdef LBWXVERSION_CURRENT
+                                pg->Append( new wxPropertyCategory(key->charrep()) );
+#else
+								pg->AppendCategory( key->charrep() );
+#endif
                                 props = param->getParameterList();
 
                                 populateProperties(pg, *&props, key->charrep());
@@ -2638,7 +2743,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 
 #ifdef USE_WXAUI
                 m_mgr.AddPane(maintb, wxAuiPaneInfo().
-                          Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
+                          Name(wxT("Main Toolbar")).Caption("Main Toolbar").
                           ToolbarPane().Top().
                           Fixed().
                           LeftDockable(false).RightDockable(false));
@@ -2697,9 +2802,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 
                 im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
 
+				wxVector<wxBitmap> bitmaps;
                 wxBitmap bm = wxBitmap(*im);
+				bitmaps.push_back(bm);
 
-                maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
+                maintb->AddTool(DYNAMIC_QUIT, (const char*) _trans("Exit"), bm);
 
                 maintb->Realize();
 
@@ -2717,7 +2824,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
                 m_mgr.DetachPane(maintb);
 
                 m_mgr.AddPane(maintb, wxAuiPaneInfo().
-                          Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
+                          Name("Main Toolbar").Caption("Main Toolbar").
                           ToolbarPane().Top().
                           Fixed().
                           LeftDockable(false).RightDockable(false));
@@ -2755,7 +2862,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 
 #ifdef USE_WXAUI
                 m_mgr.AddPane(tb, wxAuiPaneInfo().
-                                          Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
+                                          Name(name->charrep()).Caption(name->charrep()).
                                           ToolbarPane().Top().
                                           //Fixed().
                                           LeftDockable(false).RightDockable(false));
@@ -2880,9 +2987,11 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
                                 im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
                         }
 
-                        wxBitmap bm = wxBitmap(*im);
+						wxVector<wxBitmap> bitmaps;
+						wxBitmap bm = wxBitmap(*im);
+						bitmaps.push_back(bm);
 
-                        tb->AddTool(EvNr, bm, entry->charrep());
+                        tb->AddTool(EvNr, entry->charrep(), bm);
                         tb->Realize();
 
                         _LOG << "Toolbar size is " << (long) tb->GetToolsCount() << "." LOG_
@@ -2896,17 +3005,17 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
                         m_mgr.DetachPane(tb);
 
                         m_mgr.AddPane(tb, wxAuiPaneInfo().
-                                  Name(wxT(name->charrep())).Caption(wxT(name->charrep())).
+                                  Name(name->charrep()).Caption(name->charrep()).
                                   ToolbarPane().Top().
                                                   //Fixed().
                                                   //MinSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight())).
                                   LeftDockable(false).RightDockable(false));
 
-                        wxToolBar* maintb = tb = (wxToolBar*) m_mgr.GetPane(wxT("Main Toolbar")).window;
+                        wxToolBar* maintb = tb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
                         m_mgr.DetachPane(maintb);
 
                         m_mgr.AddPane(maintb, wxAuiPaneInfo().
-                                  Name(wxT("Main Toolbar")).Caption(wxT("Main Toolbar")).
+                                  Name("Main Toolbar").Caption("Main Toolbar").
                                   ToolbarPane().Top().
                                                   //Fixed().
                                                   //MinSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight())).

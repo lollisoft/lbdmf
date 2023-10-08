@@ -25,11 +25,16 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.26 $
+# * $Revision: 1.148.2.27 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.26 2023/05/07 08:59:58 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.27 2023/10/08 12:25:53 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.27  2023/10/08 12:25:53  lothar
+# * Made changes to enable building wxWrapperDll on Windows10
+# * against wxWidgets 3.2.2.1 and hopefully on XP Jenkins against
+# * wxWidgets 2.8.12
+# *
 # * Revision 1.148.2.26  2023/05/07 08:59:58  lothar
 # * Some changes to get the build process further improved
 # *
@@ -745,7 +750,9 @@ endif
 
 MINGWLIBS = -L$(DEVLW)/$(BASE_MAKE)/projects/dll -llbHook
 
+WXBUILDFLAVOUR=32u
 MINGWLIBS_WXGUI = -L$(wxBase)$(SLASH)gcc_dll -lwxbase$(WX_VERSION)$(WX_DEBUG) -lwxmsw$(WX_VERSION)$(WX_DEBUG)_core -lwxbase$(WX_VERSION)$(WX_DEBUG)_net -lwxbase$(WX_VERSION)$(WX_DEBUG)_xml -lwxmsw$(WX_VERSION)$(WX_DEBUG)_adv -lwxmsw$(WX_VERSION)$(WX_DEBUG)_xrc
+MINGWLIBS_WXGUI_CURRENT = -L$(wxBase)$(SLASH)gcc_dll -lwxbase$(WXBUILDFLAVOUR)$(WX_DEBUG) -lwxmsw$(WXBUILDFLAVOUR)$(WX_DEBUG)_core -lwxbase$(WXBUILDFLAVOUR)$(WX_DEBUG)_net -lwxbase$(WXBUILDFLAVOUR)$(WX_DEBUG)_xml -lwxmsw$(WXBUILDFLAVOUR)$(WX_DEBUG)_adv -lwxmsw$(WXBUILDFLAVOUR)$(WX_DEBUG)_xrc
 
 ifeq ($(DEBUG_MEMORY), no)
 BASE_LIBS =
