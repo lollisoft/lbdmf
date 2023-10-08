@@ -2802,12 +2802,17 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 
                 im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
 
+#ifdef LBWXVERSION_CURRENT
 				wxVector<wxBitmap> bitmaps;
                 wxBitmap bm = wxBitmap(*im);
 				bitmaps.push_back(bm);
 
                 maintb->AddTool(DYNAMIC_QUIT, (const char*) _trans("Exit"), bm);
+#else
+                wxBitmap bm = wxBitmap(*im);
 
+                maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
+#endif
                 maintb->Realize();
 
                 wxSize s = wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight());
@@ -2987,11 +2992,17 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
                                 im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
                         }
 
+#ifdef LBWXVERSION_CURRENT
 						wxVector<wxBitmap> bitmaps;
 						wxBitmap bm = wxBitmap(*im);
 						bitmaps.push_back(bm);
 
                         tb->AddTool(EvNr, entry->charrep(), bm);
+#else
+						wxBitmap bm = wxBitmap(*im);
+
+                        tb->AddTool(EvNr, bm, entry->charrep());
+#endif
                         tb->Realize();
 
                         _LOG << "Toolbar size is " << (long) tb->GetToolsCount() << "." LOG_
