@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.99 $
+# * $Revision: 1.229.2.100 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.99 2023/10/14 11:42:34 lothar Exp $
+# * $Id: Makefile,v 1.229.2.100 2023/10/14 13:38:54 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.100  2023/10/14 13:38:54  lothar
+# * Integrated custom wx rules yet on wrong place
+# *
 # * Revision 1.229.2.99  2023/10/14 11:42:34  lothar
 # * Made changes to get Sqlite Database Layer buiding on current wxWidgets
 # *
@@ -2113,11 +2116,7 @@ ifneq ($(OSTYPE), Windows_NT)
 	@echo Build Lexer make
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	@echo Build Main makefile
-ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e LBWXVERSION=old -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
-else
-	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e LBWXVERSION=current -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
-endif
+	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
 endif
@@ -2128,7 +2127,11 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e LBWXVERSION=old  -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+else
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e LBWXVERSION=current  -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+endif
 	$(MAKE) -s -C $@
 endif
 
