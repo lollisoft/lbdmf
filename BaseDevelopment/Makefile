@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.100 $
+# * $Revision: 1.229.2.101 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.100 2023/10/14 13:38:54 lothar Exp $
+# * $Id: Makefile,v 1.229.2.101 2023/10/14 17:12:03 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.101  2023/10/14 17:12:03  lothar
+# * The mkmk tool doesn't cope with the LBWXVERSION parameter.
+# *
 # * Revision 1.229.2.100  2023/10/14 13:38:54  lothar
 # * Integrated custom wx rules yet on wrong place
 # *
@@ -2099,7 +2102,7 @@ mkrelease:
 dummy:
 
 ../vendor/databaselayer/src/Implementations/ODBC: dummy
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e LBWXVERSION=current -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../../bin/bison.simple: ../../bin
@@ -2128,11 +2131,12 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e LBWXVERSION=old  -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
 else
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e LBWXVERSION=current  -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
-	$(MAKE) -s -C $@
 endif
 
 ../vendor/databaselayer/tests: dummy
@@ -2387,11 +2391,11 @@ endif
 
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
 else
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
 
 	
@@ -2434,11 +2438,12 @@ ifeq ($(OSTYPE), solaris)
 
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
 else
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
-	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
 ../Test/GUI/wxWrapper: dummy
@@ -2489,11 +2494,12 @@ ifeq ($(OSTYPE), linux)
 
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
 else
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
-	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
 ../Test/GUI/wxWrapper: dummy
@@ -2536,11 +2542,12 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
 else
-	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
-	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install-strip
 
 ../Test/GUI/wxWrapper: dummy
@@ -2583,10 +2590,10 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=old -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=old
 else
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e LBWXVERSION=current -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
 
