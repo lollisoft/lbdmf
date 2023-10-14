@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.14 2015/01/02 17:43:58 lollisoft Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.15 2023/10/14 21:10:07 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.14 $
+ * $Revision: 1.174.2.15 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.14 2015/01/02 17:43:58 lollisoft Exp $
+ * $Id: dynamic.cpp,v 1.174.2.15 2023/10/14 21:10:07 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.15  2023/10/14 21:10:07  lothar
+ * Adopted dynamic.cpp to new wxWidgets library
+ *
  * Revision 1.174.2.14  2015/01/02 17:43:58  lollisoft
  * Added a new method to control timer.
  *
@@ -1336,9 +1339,11 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	param->getUAPString(*&parameter, *&name);
 
 	//"BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
-
+#ifdef LBWXVERSION_CURRENT
+	wxFileDialog fileDialog(NULL, _trans("Choose a file"), defaultdir->charrep(), "", name->charrep(), wxFD_OPEN);
+#else
 	wxFileDialog fileDialog(NULL, _trans("Choose a file"), defaultdir->charrep(), "", name->charrep(), wxOPEN);
-
+#endif
 	_CL_LOG << "Show up a file dialog." LOG_
 
 	if (fileDialog.ShowModal() == wxID_OK) {
