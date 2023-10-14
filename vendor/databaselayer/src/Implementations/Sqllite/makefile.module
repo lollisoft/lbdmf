@@ -44,8 +44,7 @@ MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
 
 ifeq ($(LBWXVERSION), current)
 MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT) -lwxWrapperDLL -lsqlite3 -llbHook
-endif
-ifeq ($(LBWXVERSION), old)
+else
 MINGWLIBS += $(MINGWLIBS_WXGUI) -lwxWrapperDLL -lsqlite3 -llbHook
 endif
 
