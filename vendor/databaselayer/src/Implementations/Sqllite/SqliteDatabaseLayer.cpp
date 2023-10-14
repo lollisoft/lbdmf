@@ -201,9 +201,17 @@ bool SqliteDatabaseLayer::RunQuery(const wxString& strQuery, bool bParseQuery)
 			wxString(_("	\"FKTable\" BPCHAR,")) +
 			wxString(_("	\"FKColumn\" BPCHAR")) +
 			wxString(_(");\n"));
+#ifdef LBWXVERSION_CURRENT
+			rewrittenQuery = createSystemTables + wxString((wxChar*) rewriteSchemaOfDDL((char*) strQuery.char_str()));
+#else
 			rewrittenQuery = createSystemTables + wxString((wxChar*) rewriteSchemaOfDDL((char*) strQuery.c_str()));
+#endif
 		} else {
+#ifdef LBWXVERSION_CURRENT
+			rewrittenQuery = wxString((wxChar*) rewriteSchemaOfDDL((char*) strQuery.char_str()));
+#else
 			rewrittenQuery = wxString((wxChar*) rewriteSchemaOfDDL((char*) strQuery.c_str()));
+#endif
 		}
 		wxString strErrorMessage = _("");
 		char* szErrorMessage = NULL;

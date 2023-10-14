@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.98 $
+# * $Revision: 1.229.2.99 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.98 2023/10/03 11:51:26 lothar Exp $
+# * $Id: Makefile,v 1.229.2.99 2023/10/14 11:42:34 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.99  2023/10/14 11:42:34  lothar
+# * Made changes to get Sqlite Database Layer buiding on current wxWidgets
+# *
 # * Revision 1.229.2.98  2023/10/03 11:51:26  lothar
 # * Propably missed passing configuration also for making
 # *
@@ -2093,7 +2096,7 @@ mkrelease:
 dummy:
 
 ../vendor/databaselayer/src/Implementations/ODBC: dummy
-	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e MODULE=databaselayer_odbc -e LBWXVERSION=current -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=../../*.cpp -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
 ../../bin/bison.simple: ../../bin
@@ -2110,7 +2113,11 @@ ifneq ($(OSTYPE), Windows_NT)
 	@echo Build Lexer make
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	@echo Build Main makefile
-	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e LBWXVERSION=old -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+else
+	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e LBWXVERSION=current -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+endif
 	$(MAKE) -s -C $@
 	$(MAKE) -s -C $@ install
 endif
