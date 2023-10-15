@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.101 $
+# * $Revision: 1.229.2.102 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.101 2023/10/14 17:12:03 lothar Exp $
+# * $Id: Makefile,v 1.229.2.102 2023/10/15 06:52:15 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.102  2023/10/15 06:52:15  lothar
+# * Missed the parameter to control wxWidgets version being used
+# *
 # * Revision 1.229.2.101  2023/10/14 17:12:03  lothar
 # * The mkmk tool doesn't cope with the LBWXVERSION parameter.
 # *
@@ -2566,7 +2569,11 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 
 $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@ -e MODULE=report -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
