@@ -39,8 +39,13 @@ WATCOMLIBS=$(DEVROOT_MAKE)$(SLASH)Tools$(SLASH)watcom$(SLASH)lib386$(SLASH)nt
 #wxBase=$(DEVROOT_MINGW)$(SLASH)wxwin$(SLASH)wx$(SLASH)lib
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbhook.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
-	
+
+ifeq ($(LBWXVERSION), current)
+MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT)
+endif
+ifeq ($(LBWXVERSION), old)
 MINGWLIBS += $(MINGWLIBS_WXGUI)
+endif
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \
 	libr $(WATCOMLIBS)$(SLASH)user32.lib \

@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.102 $
+# * $Revision: 1.229.2.103 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.102 2023/10/15 06:52:15 lothar Exp $
+# * $Id: Makefile,v 1.229.2.103 2023/10/15 18:27:56 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.103  2023/10/15 18:27:56  lothar
+# * More wxWidgts version switch support
+# *
 # * Revision 1.229.2.102  2023/10/15 06:52:15  lothar
 # * Missed the parameter to control wxWidgets version being used
 # *
@@ -2270,7 +2273,11 @@ endif
 
 ../Test/GUI/wxPlugins/lbCryptoStream: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbCryptoStream -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../AppDevelopmentDemo/MkBs: dummy
@@ -2459,7 +2466,11 @@ endif
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 endif
 
 ifeq ($(OSTYPE), linux)
@@ -2606,7 +2617,11 @@ endif
 
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 
 ../vendor/wxShapeFramework/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
