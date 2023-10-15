@@ -141,10 +141,10 @@ protected:
 	virtual void DoDrawEllipticArc(wxCoord x, wxCoord y, wxCoord w, wxCoord h, double sa, double ea);
 	virtual void DoDrawIcon(const wxIcon& icon, wxCoord x, wxCoord y);
 	virtual void DoDrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2);
-	virtual void DoDrawLines(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset);
+	virtual void DoDrawLines(int n, const wxPoint points[], wxCoord xoffset, wxCoord yoffset);
 	virtual void DoDrawPoint(wxCoord x, wxCoord y);
 	virtual void DoDrawPolyPolygon(int n, int count[], wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle);
-	virtual void DoDrawPolygon(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle = wxODDEVEN_RULE);
+	virtual void DoDrawPolygon(int n, const wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle = wxODDEVEN_RULE);
 	virtual void DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height);
 	virtual void DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y, double angle);
 	virtual void DoDrawRoundedRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height, double radius);
@@ -518,7 +518,7 @@ public:
 		return m_pOrig->DoGetAsBitmap( subrect );
 	}
 
-    virtual void DoDrawLines(int n, wxPoint points[],
+    virtual void DoDrawLines(int n, const wxPoint points[],
                              wxCoord xoffset, wxCoord yoffset )
 	{
         wxPoint *updPoints = new wxPoint[n];
@@ -553,7 +553,7 @@ public:
 		delete [] pts;
 	}
 
-    virtual void DoDrawPolygon(int n, wxPoint points[],
+    virtual void DoDrawPolygon(int n, const wxPoint points[],
                            wxCoord xoffset, wxCoord yoffset,
                            wxPolygonFillMode fillStyle = wxODDEVEN_RULE)
 	{
