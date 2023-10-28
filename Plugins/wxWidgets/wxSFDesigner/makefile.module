@@ -37,7 +37,12 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 	$(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)wxWrapperDLL.lib, \
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 	
+ifeq ($(LBWXVERSION), current)
+MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT)
+endif
+ifeq ($(LBWXVERSION), old)
 MINGWLIBS += $(MINGWLIBS_WXGUI)
+endif
 MINGWLIBS += -lwxWrapperDLL 
 MINGWLIBS += -lwxShapeFramework
 MINGWLIBS += -llbHook

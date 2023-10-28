@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.103 $
+# * $Revision: 1.229.2.104 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.103 2023/10/15 18:27:56 lothar Exp $
+# * $Id: Makefile,v 1.229.2.104 2023/10/28 09:17:25 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.104  2023/10/28 09:17:25  lothar
+# * Fixed ScaledDC missing const.
+# * Fixed build rule for wxWidgets version selection.
+# *
 # * Revision 1.229.2.103  2023/10/15 18:27:56  lothar
 # * More wxWidgts version switch support
 # *
@@ -2400,11 +2404,10 @@ endif
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
-ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e LBWXVERSION=old
 else
-	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
 
