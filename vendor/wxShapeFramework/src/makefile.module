@@ -39,7 +39,7 @@ LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLAS
 	$(wxBase)$(SLASH)wat_dll$(SLASH)wxmsw$(WX_VERSION)$(WX_DEBUG).lib
 
 ifeq ($(LBWXVERSION), current)
-MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT) -Wl,--subsystem,windows -mthreads -mwindows -lwxPropgrid
+MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT) -Wl,--subsystem,windows -mthreads -mwindows -lwxmsw$(WXBUILDFLAVOUR)$(WX_DEBUG)_propgrid_gcc_custom
 CPP_MINGW_DLLOPS += -DLBWXVERSION_CURRENT
 endif
 ifeq ($(LBWXVERSION), old)
@@ -50,7 +50,12 @@ endif
 MOD_INCL_MINGW=$(STD_INCL_MINGW) -I ../include 
 MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I ../include 
 
+ifeq ($(LBWXVERSION), current)
+MOD_INCL_MINGW_CPP += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/wxaui-0.9.1/include -I $(WXDIR)/include
+endif
+ifeq ($(LBWXVERSION), old)
 MOD_INCL_MINGW_CPP += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/wxaui-0.9.1/include -I $(WXDIR)/include -I $(DEVROOT_MINGW)$(RELPATH)/vendor/propgrid/include
+endif
 CPP_MINGW_DLLOPS += #-D__WXMSW__
 
 LIBRS =	libr $(WATCOMLIBS)$(SLASH)kernel32.lib \

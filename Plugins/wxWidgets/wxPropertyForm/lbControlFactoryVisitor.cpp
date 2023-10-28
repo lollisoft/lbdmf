@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.1 $
+ * $Revision: 1.1.2.2 $
  * $Name:  $
- * $Id: lbControlFactoryVisitor.cpp,v 1.1.2.1 2015/08/27 14:15:20 lollisoft Exp $
+ * $Id: lbControlFactoryVisitor.cpp,v 1.1.2.2 2023/10/28 18:09:17 lothar Exp $
  *
  * $Log: lbControlFactoryVisitor.cpp,v $
+ * Revision 1.1.2.2  2023/10/28 18:09:17  lothar
+ * Fixed more build rules for wxWidgets version selection.
+ *
  * Revision 1.1.2.1  2015/08/27 14:15:20  lollisoft
  * First basic implementation of a property dialog using a visitor factory.
  *
@@ -154,8 +157,13 @@ void LB_STDCALL lbUIElementFactoryAspect::visit(lb_I_Integer* i) {
 	
 	wxStaticText *label = new wxStaticText(parentWindow, -1, currentName->charrep(), wxPoint());
 	label->SetName(currentLabel->charrep());
-	
+
+#ifdef LBWXVERSION_CURRENT
+	sizerField->Add(label, 1, wxALL, 5);
+#endif
+#ifdef LBWXVERSION_OLD
 	sizerField->Add(label, 1, wxALL|wxADJUST_MINSIZE, 5);
+#endif
 	
 	sizerField->Add(text, 1, wxALL, 5);
 	
@@ -178,7 +186,12 @@ void LB_STDCALL lbUIElementFactoryAspect::visit(lb_I_String* s) {
 	wxStaticText *label = new wxStaticText(parentWindow, -1, currentName->charrep(), wxPoint());
 	label->SetName(currentLabel->charrep());
 	
+#ifdef LBWXVERSION_CURRENT
+	sizerField->Add(label, 1, wxALL, 5);
+#endif
+#ifdef LBWXVERSION_OLD
 	sizerField->Add(label, 1, wxALL|wxADJUST_MINSIZE, 5);
+#endif
 	
 	sizerField->Add(text, 1, wxALL, 5);
 	

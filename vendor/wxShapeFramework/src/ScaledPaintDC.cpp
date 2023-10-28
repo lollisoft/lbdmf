@@ -162,7 +162,11 @@ void wxSFScaledPaintDC::DrawLines(int n, wxRealPoint points[], wxCoord xoffset, 
 
 //----------------------------------------------------------------------------------//
 
+#if wxVERSION_NUMBER >= 2900
+void wxSFScaledPaintDC::DrawPolygon(wxList *points, wxCoord xoffset, wxCoord yoffset, wxPolygonFillMode fill_style)
+#else
 void wxSFScaledPaintDC::DrawPolygon(wxList *points, wxCoord xoffset, wxCoord yoffset, int fill_style)
+#endif
 {
 	if(points && (points->GetCount() > 0))
 	{
@@ -186,7 +190,11 @@ void wxSFScaledPaintDC::DrawPolygon(wxList *points, wxCoord xoffset, wxCoord yof
 	}
 }
 
+#if wxVERSION_NUMBER >= 2900
+void wxSFScaledPaintDC::DrawPolygon(size_t n, wxRealPoint points[], wxCoord xoffset, wxCoord yoffset,wxPolygonFillMode fill_style)
+#else
 void wxSFScaledPaintDC::DrawPolygon(size_t n, wxRealPoint points[], wxCoord xoffset, wxCoord yoffset,int fill_style)
+#endif
 {
     if(n > 0)
     {

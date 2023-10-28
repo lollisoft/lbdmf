@@ -161,7 +161,11 @@ public:
     /// <param name="xoffset"> Horizontal offset </param>
     /// <param name="yoffset"> Vertical offset </param>
     /// <param name="fill_style"> Fill style </param>
+#if wxVERSION_NUMBER >= 2900
+	void DrawPolygon(wxList *points, wxCoord xoffset = 0, wxCoord yoffset = 0, wxPolygonFillMode fill_style = wxODDEVEN_RULE);
+#else
 	void DrawPolygon(wxList *points, wxCoord xoffset = 0, wxCoord yoffset = 0, int fill_style = wxODDEVEN_RULE);
+#endif
 	/// <summary> Draws a filled polygon using an array of points of size n,
 	/// adding the optional offset coordinate. </summary>
 	/// <param name="n"> Number of the polygon vertices </param>
@@ -169,7 +173,11 @@ public:
     /// <param name="xoffset"> Horizontal offset </param>
     /// <param name="yoffset"> Vertical offset </param>
     /// <param name="fill_style"> Fill style </param>
+#if wxVERSION_NUMBER >= 2900
+    void DrawPolygon(size_t n, wxRealPoint points[], wxCoord xoffset = 0, wxCoord yoffset = 0,wxPolygonFillMode fill_style = wxODDEVEN_RULE);
+#else
     void DrawPolygon(size_t n, wxRealPoint points[], wxCoord xoffset = 0, wxCoord yoffset = 0,int fill_style = wxODDEVEN_RULE);
+#endif
 
     /// <summary> Draws a text string at the specified point, using the current text font, and the current text
     /// foreground and background colours. </summary>
