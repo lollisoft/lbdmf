@@ -203,7 +203,7 @@ void wxSFScaledDC::DoDrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
     else
          m_pTargetDC->DrawLine(Scale(x1), Scale(y1), Scale(x2), Scale(y2));
 }
-void wxSFScaledDC::DoDrawLines(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset)
+void wxSFScaledDC::DoDrawLines(int n, const wxPoint points[], wxCoord xoffset, wxCoord yoffset)
 {
    if( m_fEnableGC )
     {
@@ -300,7 +300,7 @@ void wxSFScaledDC::DoDrawPolyPolygon(int n, int count[], wxPoint points[], wxCoo
         delete [] updPoints;
     }
 }
-void wxSFScaledDC::DoDrawPolygon(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle)
+void wxSFScaledDC::DoDrawPolygon(int n, const wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle)
 {
     if( m_fEnableGC )
     {
