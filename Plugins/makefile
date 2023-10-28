@@ -222,7 +222,11 @@ wxWidgets/wxUpdateChecker: dummy
 
 wxWidgets/wxSFDesigner: dummy
 	$(MAKE) -C $@ -e MODULE=lbwxSFDesigner -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 
 UserFeedback: dummy
 	$(MAKE) -C $@ -e MODULE=$@ -e TARGET=$(TARGETPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
