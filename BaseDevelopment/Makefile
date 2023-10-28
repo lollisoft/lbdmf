@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.106 $
+# * $Revision: 1.229.2.107 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.106 2023/10/28 13:15:12 lothar Exp $
+# * $Id: Makefile,v 1.229.2.107 2023/10/28 18:09:17 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.107  2023/10/28 18:09:17  lothar
+# * Fixed more build rules for wxWidgets version selection.
+# *
 # * Revision 1.229.2.106  2023/10/28 13:15:12  lothar
 # * Fixed more build rules for wxWidgets version selection.
 # *
@@ -2410,7 +2413,11 @@ endif
 
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
@@ -2456,7 +2463,11 @@ ifeq ($(OSTYPE), solaris)
 
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
@@ -2516,7 +2527,11 @@ ifeq ($(OSTYPE), linux)
 
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
@@ -2564,7 +2579,11 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 	-$(MAKE) -s -C $@ install
 
 ../Test/GUI/wxWrapperDLL: dummy
@@ -2617,7 +2636,11 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSHARED) -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
