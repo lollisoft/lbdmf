@@ -262,7 +262,12 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	*uri += "&version=";
 	*uri += VERSIONINFO;
 	
+#ifdef LBWXVERSION_OLD
 	httpStream = get.GetInputStream(_T(uri->charrep()));
+#endif
+#ifdef LBWXVERSION_CURRENT
+	httpStream = get.GetInputStream(uri->charrep());
+#endif
 	
 	UAP(lb_I_Parameter, UpdateSettings)
 /*	
@@ -360,7 +365,12 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 				*msg += msg_version->charrep();
 			}
 			
+#ifdef LBWXVERSION_OLD
 			if (!silent) wxMessageBox(_T(msg->charrep()));
+#endif
+#ifdef LBWXVERSION_CURRENT
+			if (!silent) wxMessageBox(msg->charrep());
+#endif
 
 			if (!updateDetected) {
 				int temp;

@@ -5567,7 +5567,12 @@ void lbDatabasePanel::OnImageButtonClick(wxCommandEvent& event ) {
 		*newfilename = app->getDirLocation();
 		*newfilename += images->charrep();
 
+#ifdef LBWXVERSION_CURRENT
+		wxFileDialog fileDialog(NULL, _trans("Choose a toolbar image"), newfilename->charrep(), "", wxT("XPM Files (*.xpm)|*.xpm|PNG Files (*.png)|*.png"), wxFD_OPEN);
+#endif
+#ifdef LBWXVERSION_OLD
 		wxFileDialog fileDialog(NULL, _trans("Choose a toolbar image"), newfilename->charrep(), "", wxT("XPM Files (*.xpm)|*.xpm|PNG Files (*.png)|*.png"), wxOPEN);
+#endif
 
 		if (fileDialog.ShowModal() == wxID_OK) {
 			*filename = fileDialog.GetFilename().c_str();

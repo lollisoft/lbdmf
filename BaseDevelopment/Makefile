@@ -1,11 +1,17 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.107 $
+# * $Revision: 1.229.2.108 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.107 2023/10/28 18:09:17 lothar Exp $
+# * $Id: Makefile,v 1.229.2.108 2023/10/29 13:06:01 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.108  2023/10/29 13:06:01  lothar
+# * Fixed more build rules for wxWidgets version selection.
+# * Now it seems to build trough with some skipped errors
+# * for some unit tests. The application starts up with some
+# * ignorable errors at startup and the basic's are running.
+# *
 # * Revision 1.229.2.107  2023/10/28 18:09:17  lothar
 # * Fixed more build rules for wxWidgets version selection.
 # *
@@ -2381,7 +2387,11 @@ endif
 
 ../vendor/wxShapeFramework/samples/wxSFDemo: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 
 ../vendor/wxaui-0.9.1/sample: dummy
 ifeq ($(OSNAME), Panther)
@@ -2669,7 +2679,11 @@ endif
 
 ../vendor/wxShapeFramework/samples/wxSFDemo: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 
 endif
 
