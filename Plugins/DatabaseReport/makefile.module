@@ -130,6 +130,12 @@ ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags`
+ifeq ($(LBWXVERSION), current)
+C_SOOPS_WX += -DLBWXVERSION_CURRENT
+endif
+ifeq ($(LBWXVERSION), old)
+C_SOOPS_WX += -DLBWXVERSION_OLD
+endif
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
 LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs`
@@ -150,6 +156,12 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I $(DEVROOT)$(RELPATH)/Test/GUI/wxWrapperDLL
 OBJDEP=
 C_SOOPS_WX = $(C_OPS) -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+ifeq ($(LBWXVERSION), current)
+C_SOOPS_WX += -DLBWXVERSION_CURRENT
+endif
+ifeq ($(LBWXVERSION), old)
+C_SOOPS_WX += -DLBWXVERSION_OLD
+endif
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=
 LDFLAGS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs` -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
