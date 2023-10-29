@@ -4298,7 +4298,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::remove() {
 
 	_CL_VERBOSE << "Update statement: " << strSQL.c_str() LOG_
 
+#ifdef LBWXVERSION_CURRENT
+	executeDirect((const char*) strSQL.c_str());
+#endif
+#ifdef LBWXVERSION_OLD
 	executeDirect((char*) strSQL.c_str());
+#endif
 
 	reopen();
 
@@ -4538,7 +4543,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		strSQL += " SET ";
 		for (int i = 0; i < queryColumns.Count(); i++) {
 			
+#ifdef LBWXVERSION_CURRENT
+			bool isCharOrDate = getColumnType((const char*) queryColumns[i].c_str()) == lbDBColumnChar || getColumnType((const char*) queryColumns[i].c_str()) == lbDBColumnDate;
+#endif
+#ifdef LBWXVERSION_OLD
 			bool isCharOrDate = getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnChar || getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnDate;
+#endif
 			
 			if (isCharOrDate) {
 				if (i > 0) strSQL += ", ";

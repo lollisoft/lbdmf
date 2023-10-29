@@ -95,7 +95,12 @@ void lbDMFBaseDesignShape::Initialize(wxString imagePath, wxString defaultText)
     if(m_pModelName)
     {
         // set text
+#ifdef LBWXVERSION_CURRENT
+        m_pModelName->SetText(defaultText);
+#endif
+#ifdef LBWXVERSION_OLD
         m_pModelName->SetText(wxT(defaultText));
+#endif
 
         // set alignment
         m_pModelName->SetVAlign(wxSFShapeBase::valignMIDDLE);

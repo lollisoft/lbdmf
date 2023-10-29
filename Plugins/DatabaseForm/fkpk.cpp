@@ -86,8 +86,6 @@ extern "C" {
 
 #include "wx/wizard.h"
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbConfigure_FK_PK_MappingDialog)
@@ -120,7 +118,7 @@ wxDefaultSize, wxRESIZE_BORDER|wxDEFAULT_DIALOG_STYLE)
 	
 	;
 	pass = 0;
-	_FoimularID = _forms->getID(); 
+	_FoimularID = _forms->getFormularID(); 
 	_DBUser = NULL;
 	_DBPass = NULL;
 	_DBName = NULL;
@@ -156,10 +154,7 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
 	UAP_REQUEST(getModuleInstance(), lb_I_Long, FID)
-	UAP(lb_I_SecurityProvider, securityManager)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-	ID->setData(securityManager->getApplicationID());
+	ID->setData(meta->getApplicationID());
 	
 	forms->finishFormularIteration();
 	while (forms->hasMoreFormulars()) {
@@ -180,7 +175,7 @@ bool LB_STDCALL lbConfigure_FK_PK_MappingDialog::haveNotMappedForeignKeyFields(c
 		_LOG << "Didn't not found formular name for application " << ID->getData() << " in datamodel. (" << formName << ")" LOG_
 	}
 	
-	long FormID = forms->getID();
+	long FormID = forms->getFormularID();
 	
 	formularfields->finishFieldsIteration();
 	while (formularfields->hasMoreFields()) {
@@ -315,7 +310,12 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
 
                 *fkName = FKName.c_str();
                 *PKN = PKName.c_str();
+#ifdef LBWXVERSION_CURRENT
+                *fkTable = sourceQuery->getTableName((const char*) FKName.c_str());
+#endif
+#ifdef LBWXVERSION_OLD
                 *fkTable = sourceQuery->getTableName((char*) FKName.c_str());
+#endif
 
                 lb_I_Query::lbDBColumnTypes coltype = sourceQuery->getColumnType(fkName->charrep());
 
@@ -384,7 +384,12 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
         UAP(lb_I_String, PKTable)
         UAP(lb_I_String, T)
                 
+#ifdef LBWXVERSION_CURRENT
+        T = sourceQuery->getTableName((const char*) FKName.c_str());
+#endif
+#ifdef LBWXVERSION_OLD
         T = sourceQuery->getTableName((char*) FKName.c_str());
+#endif
         char* fkTable = strdup(T->charrep());
         
         char* p = strdup(FKName.c_str());

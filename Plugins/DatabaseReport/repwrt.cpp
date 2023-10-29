@@ -1631,10 +1631,18 @@ long wxReportWriter::SetupReport( wxString strFile )
 
 	if ( strFile.IsEmpty() )
 	{
+#ifdef LBWXVERSION_CURRENT
+		wxFileDialog dlg( this, wxT("Loading a report..."),
+			              m_strPathOfReports, wxT(""),
+						  wxT("Report (*.vlp)|*.vlp|All Files (*.*)|*.*"),
+						  wxFD_OPEN );
+#endif
+#ifdef LBWXVERSION_OLD
 		wxFileDialog dlg( this, wxT("Loading a report..."),
 			              m_strPathOfReports, wxT(""),
 						  wxT("Report (*.vlp)|*.vlp|All Files (*.*)|*.*"),
 						  wxOPEN );
+#endif
 
 		if ( wxID_OK != dlg.ShowModal() )
 			return -1L;
@@ -2027,10 +2035,18 @@ bool wxReportWriter::LoadFile( wxString strFile )
 
 	if ( strFile.IsEmpty() )
 	{
+#ifdef LBWXVERSION_CURRENT
+		wxFileDialog dlg( this, wxT("Choose a Text"),
+			              wxT("."), wxT(""),
+						  wxT("Text Files (*.txt)|*.txt|All Files (*.*)|*.*"),
+						  wxFD_OPEN );
+#endif
+#ifdef LBWXVERSION_OLD
 		wxFileDialog dlg( this, wxT("Choose a Text"),
 			              wxT("."), wxT(""),
 						  wxT("Text Files (*.txt)|*.txt|All Files (*.*)|*.*"),
 						  wxOPEN );
+#endif
 
 		if ( wxID_OK != dlg.ShowModal() )
 			return false;
