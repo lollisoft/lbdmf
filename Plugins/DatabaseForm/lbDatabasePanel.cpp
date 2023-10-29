@@ -2152,7 +2152,12 @@ void LB_STDCALL lbDatabasePanel::addLabel(const char* text, wxSizer* sizer, bool
 	wxStaticText *label = new wxStaticText(this, -1, _trans(tLabel), wxPoint());
 	tLabel = strcat(tLabel, "_lbl");
 	label->SetName(_trans(tLabel));
+#ifdef LBWXVERSION_CURRENT
+	if (hideThisColumn == false) sizer->Add(label, 1, wxALL, 5);
+#endif
+#ifdef LBWXVERSION_OLD
 	if (hideThisColumn == false) sizer->Add(label, 1, wxALL|wxADJUST_MINSIZE, 5);
+#endif
 
 	free(tLabel);
 }
