@@ -236,7 +236,7 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 	
 	UpdateSettings->getUAPInteger(*&name, *&LastCheckWeek);
 
-	wxDateTime dt;
+	wxDateTime dt = wxDateTime::Now();
 	
 	if (LastCheckWeek->getData() == 0) {
 		wxDateTime::wxDateTime_t week = dt.GetWeekOfYear();
