@@ -230,7 +230,7 @@ REM This stuff is added due to integrate Doxygen into my console
 REM ------------------------------------------------------------
 
 set BISON_SIMPLE=%DEVROOT_MAKE%/projects/bin/bison.simple
-set path=%path%;%DEVLW%\develop\Tools\Perl\bin\
+set path=%path%;%DEVLW%\develop\Tools\Perl\bin\;%DEVLW%\develop\Tools\doxygen\bin
 
 REM ------------------------------------------------------------
 REM This stuff is related to integrate the ACE libraries from
