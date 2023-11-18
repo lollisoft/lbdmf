@@ -56,6 +56,7 @@ rem set lbDMFPasswd=
 rem set lbDMFUser=
 
 if "%2"=="JENKINS" goto JENKINSBUILD:
+if "%2"=="APPVEYOR" goto APPVEYORBUILD:
 
 if "%COMPUTERNAME%"=="ANAKIN" goto NODIST:
 if "%COMPUTERNAME%"=="T43" goto NODIST:
@@ -119,6 +120,32 @@ goto BEGINENVIRONMENT:
 set DEVLW=%CD:~0,2%
 set BASE=%WORKSPACE:~3%
 set BASE_MAKE=%BASE:\=/%
+
+set DEVROOT=%DEVLW%\%BASE%
+set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%
+set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
+
+@REM Try to fix path for Jenkins environment
+set PATH=%PATH%;%DEVLW%\Q\develop\Tools\MkMk
+set PATH=%PATH%;%DEVLW%\Q\develop\Tools\bin
+
+REM Current location for the dependent wx library (subst Q: C:\Q - thus C:\Q ...)
+set WXWIN=C:\Q\develop\wxwin\wx
+set wxBase_Win=%WXWIN%\lib
+set wxBase=%wxBase_Win:\=/%
+
+goto BEGINENVIRONMENT:
+
+:APPVEYORBUILD
+
+set DEVLW=%CD:~0,2%
+set BASE=%WORKSPACE:~3%
+set BASE_MAKE=%BASE:\=/%
+
+echo %DEVLW%
+echo %BASE%
+echo %BASE_MAKE%
+
 
 set DEVROOT=%DEVLW%\%BASE%
 set DEVROOT_MAKE=%DEVLW%/%BASE_MAKE%

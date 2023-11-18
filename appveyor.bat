@@ -4,7 +4,7 @@ echo ---------------------------------------------------------------------------
 echo * Appveyor                                                                      * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 
-call watcomenv.bat none JENKINS
+call watcomenv.bat none APPVEYOR
 
 if "%1" == "release" (
 
