@@ -155,6 +155,11 @@ set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
 set PATH=%PATH%;%DEVLW%\Q\develop\Tools\MkMk
 set PATH=%PATH%;%DEVLW%\Q\develop\Tools\bin
 
+@REM Add MinGW PATH of Appveyor Buildhost
+@REM Assume most recent worker image is used
+set PATH=%PATH%;%DEVLW%\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\bin
+
+
 REM Current location for the dependent wx library (subst Q: C:\Q - thus C:\Q ...)
 set WXWIN=C:\Q\develop\wxwin\wx
 set wxBase_Win=%WXWIN%\lib
