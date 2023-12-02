@@ -40,8 +40,11 @@
 //#define USE_PROPGRID_1_2_2
 #endif
 
-//#define USE_WXAUI
+#ifdef LBWXVERSION_CURRENT
 #define USE_WXAUI_TOOLBAR
+#else
+#define USE_WXAUI
+#endif
 
 #ifdef OSX
 //#define IN_PANEL
