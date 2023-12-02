@@ -33,11 +33,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.6 $
+ * $Revision: 1.43.2.7 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.6 2015/10/25 18:13:18 lollisoft Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.7 2023/12/02 12:06:44 lothar Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.7  2023/12/02 12:06:44  lothar
+ * Adoptions for new wxWidgets version to use wxAuiToolBar.
+ * Small fixes for toolbar ordering to keep main toolbar at most
+ * left.
+ *
  * Revision 1.43.2.6  2015/10/25 18:13:18  lollisoft
  * Fixed form cleanup code to better support new property forms.
  *
@@ -345,6 +350,12 @@ public:
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);
 #endif
+#ifdef USE_WXAUI_TOOLBAR
+	void OnSize(wxSizeEvent& event);
+	void OnEraseBackground(wxEraseEvent& event);
+#endif
+
+
 
 	void OnPropertyGridChange (wxPropertyGridEvent& event);
 
@@ -377,6 +388,9 @@ public:
 	void LB_STDCALL enableTimer(bool enable);
 	
 #ifdef USE_WXAUI
+	wxAuiManager& getAUIManager() { return m_mgr; }
+#endif		
+#ifdef USE_WXAUI_TOOLBAR
 	wxAuiManager& getAUIManager() { return m_mgr; }
 #endif		
 
@@ -508,6 +522,11 @@ public:
 	ToolCountList myToolCountList;
 	
 #ifdef USE_WXAUI
+private:
+	wxAuiManager m_mgr;
+	DECLARE_EVENT_TABLE()
+#endif		
+#ifdef USE_WXAUI_TOOLBAR
 private:
 	wxAuiManager m_mgr;
 	DECLARE_EVENT_TABLE()

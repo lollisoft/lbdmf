@@ -40,7 +40,8 @@
 //#define USE_PROPGRID_1_2_2
 #endif
 
-#define USE_WXAUI
+//#define USE_WXAUI
+#define USE_WXAUI_TOOLBAR
 
 #ifdef OSX
 //#define IN_PANEL
@@ -601,7 +602,10 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
 
 #ifdef USE_WXAUI
         m_mgr.SetFrame(this);
-//      SetMinSize(wxSize(500,400));
+#endif
+
+#ifdef USE_WXAUI_TOOLBAR
+        m_mgr.SetManagedWindow(this);
 #endif
 
         eman->registerEvent("switchPanelUse", on_panel_usage);
@@ -982,6 +986,10 @@ lbErrCodes LB_STDCALL lb_wxGUI::openWebPage(const char* pagename, const char* ur
                         frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
                         frame->getAUIManager().Update();
 #endif
+#ifdef USE_WXAUI_TOOLBAR
+                        frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
+                        frame->getAUIManager().Update();
+#endif
                 }
         }
 
@@ -1040,7 +1048,12 @@ lb_I_Form* LB_STDCALL lb_wxGUI::addCustomForm(lb_I_Form* form, const char* formN
                         sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
 
                         frame->SetSizer(sizerMain);
+
 #ifdef USE_WXAUI
+                        frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
+                        frame->getAUIManager().Update();
+#endif
+#ifdef USE_WXAUI_TOOLBAR
                         frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
                         frame->getAUIManager().Update();
 #endif
@@ -1178,7 +1191,12 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
                         sizerMain->Add(notebook, 1, wxEXPAND | wxALL, 0);
 
                         frame->SetSizer(sizerMain);
+
 #ifdef USE_WXAUI
+                        frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
+                        frame->getAUIManager().Update();
+#endif
+#ifdef USE_WXAUI_TOOLBAR
                         frame->getAUIManager().AddPane(notebook,   wxCENTER, wxT("Workplace"));
                         frame->getAUIManager().Update();
 #endif
@@ -1821,7 +1839,19 @@ lb_wxFrame::~lb_wxFrame() {
         metaApp->setGUIMaximized(IsMaximized());
         metaApp->save();
 
+
 #ifdef USE_WXAUI
+        wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
+
+        if (oldpg) {
+                m_mgr.DetachPane(oldpg);
+                oldpg->Close();
+        }
+
+        // deinitialize the frame manager
+        m_mgr.UnInit();
+#endif
+#ifdef USE_WXAUI_TOOLBAR
         wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
 
         if (oldpg) {
@@ -2033,6 +2063,48 @@ void lb_wxFrame::OnSize(wxSizeEvent& event)
 }
 
 #endif
+#ifdef USE_WXAUI_TOOLBAR
+
+//IMPLEMENT_CLASS(lb_wxFrame, wxFrame)
+
+BEGIN_EVENT_TABLE(lb_wxFrame, wxFrame)
+	EVT_TIMER(wxID_ANY, lb_wxFrame::OnTimer)
+	EVT_IDLE(lb_wxFrame::OnIdle)
+	EVT_PG_CHANGED( PGID, lb_wxFrame::OnPropertyGridChange )
+    EVT_ERASE_BACKGROUND(lb_wxFrame::OnEraseBackground)
+    EVT_SIZE(lb_wxFrame::OnSize)
+END_EVENT_TABLE()
+
+
+void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
+{
+        _CL_LOG << "OnEraseBackground() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
+    event.Skip();
+}
+
+void lb_wxFrame::OnSize(wxSizeEvent& event)
+{
+        _CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
+        //SetMinSize(event.GetSize());
+
+#ifdef SOLARIS
+#ifdef bla
+        if (skipfirstResizeEvent == false) {
+                m_mgr.Update();
+                event.Skip();
+        }
+        skipfirstResizeEvent = false;
+#endif
+#endif
+#ifndef SOLARIS
+        m_mgr.Update();
+        event.Skip();
+#endif
+
+}
+
+#endif
+
 /*...slb_wxFrame\58\\58\OnCheck\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnCheck(wxCommandEvent& WXUNUSED(event) ) {
         char ptr[200] = "";
@@ -2688,8 +2760,12 @@ wxPoint lb_wxFrame::GetStartPosition()
 
 lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+#ifndef USE_WXAUI_TOOLBAR
         wxToolBar* tb;
-
+#endif
+#ifdef USE_WXAUI_TOOLBAR
+        wxAuiToolBar* tb;
+#endif
         UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
         UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
@@ -2710,6 +2786,14 @@ lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
 					tb->Destroy();
 				}
 #endif
+#ifdef USE_WXAUI_TOOLBAR
+                tb = (wxAuiToolBar*) m_mgr.GetPane(name->charrep()).window;
+				if (tb != NULL) {
+					m_mgr.DetachPane(tb);
+					m_mgr.Update();
+					tb->Destroy();
+				}
+#endif
         }
 
         return ERR_NONE;
@@ -2718,7 +2802,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addToolBar\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+#ifndef USE_WXAUI_TOOLBAR
         wxToolBar* tb;
+#endif
+#ifdef USE_WXAUI_TOOLBAR
+        wxAuiToolBar* tb;
+#endif
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
         UAP_REQUEST(getModuleInstance(), lb_I_String, name)
@@ -2734,20 +2823,47 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
         }
 
 /*...sInit main toolbar \40\exit tool\41\:8:*/
+#ifdef USE_WXAUI_TOOLBAR
+        wxAuiToolBar* maintb;
+#endif
+#ifndef USE_WXAUI_TOOLBAR
         wxToolBar* maintb;
-#ifdef USE_WXAUI
+#endif
+
+#ifdef USE_WXAUI_TOOLBAR
+        maintb = (wxAuiToolBar*) m_mgr.GetPane("Main Toolbar").window;
+#endif
+#ifndef USE_WXAUI_TOOLBAR
         maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
 #endif
+
         if (maintb == NULL) {
+#ifdef USE_WXAUI_TOOLBAR
+				wxAuiToolBarItemArray prepend_items;
+				wxAuiToolBarItemArray append_items;
+
+				maintb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                         wxAUI_TB_DEFAULT_STYLE); // | wxAUI_TB_OVERFLOW);
+				maintb->SetCustomOverflowItems(prepend_items, append_items);
+#endif
+#ifdef USE_WXAUI
                 maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
+#endif
 
 #ifdef USE_WXAUI
                 m_mgr.AddPane(maintb, wxAuiPaneInfo().
-                          Name(wxT("Main Toolbar")).Caption("Main Toolbar").
-                          ToolbarPane().Top().
-                          Fixed().
-                          LeftDockable(false).RightDockable(false));
+							Name(wxT("Main Toolbar")).Caption("Main Toolbar").
+							ToolbarPane().Top().
+							Fixed().
+							LeftDockable(false).RightDockable(false));
                 m_mgr.Update();
+#endif
+#ifdef USE_WXAUI_TOOLBAR
+				m_mgr.AddPane(maintb, wxAuiPaneInfo().
+							Name("Main Toolbar").Caption("Main Toolbar").
+							ToolbarPane().Top().
+							Fixed().
+							LeftDockable(false).RightDockable(false));
 #endif
 
                 wxImage::AddHandler(new wxXPMHandler);
@@ -2815,17 +2931,34 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 #endif
                 maintb->Realize();
 
+#ifdef USE_WXAUI_TOOLBAR
+                wxSize s = wxSize(maintb->GetToolBitmapSize().GetWidth()*maintb->GetToolCount(), maintb->GetToolBitmapSize().GetHeight());
+#endif
+#ifdef USE_WXAUI
                 wxSize s = wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight());
+#endif
 
                 maintb->SetSize(s);
                 maintb->SetMinSize(s);
                 maintb->Fit();
 
 #ifndef USE_WXAUI
+#ifndef USE_WXAUI_TOOLBAR
                 SetToolBar(maintb);
+#endif
 #endif
 
 #ifdef USE_WXAUI
+                m_mgr.DetachPane(maintb);
+
+                m_mgr.AddPane(maintb, wxAuiPaneInfo().
+                          Name("Main Toolbar").Caption("Main Toolbar").
+                          ToolbarPane().Top().
+                          Fixed().
+                          LeftDockable(false).RightDockable(false));
+                m_mgr.Update();
+#endif
+#ifdef USE_WXAUI_TOOLBAR
                 m_mgr.DetachPane(maintb);
 
                 m_mgr.AddPane(maintb, wxAuiPaneInfo().
@@ -2839,14 +2972,29 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 /*...e*/
 
 #ifndef USE_WXAUI
+#ifndef USE_WXAUI_TOOLBAR
         tb = GetToolBar();
+#endif
 #endif
 #ifdef USE_WXAUI
         tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
 #endif
+#ifdef USE_WXAUI_TOOLBAR
+        tb = (wxAuiToolBar*) m_mgr.GetPane(name->charrep()).window;
+#endif
 
         if ((tb == NULL) && (params != NULL)) {
+#ifdef USE_WXAUI_TOOLBAR
+				wxAuiToolBarItemArray prepend_items;
+				wxAuiToolBarItemArray append_items;
+
+				tb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                         wxAUI_TB_DEFAULT_STYLE); // | wxAUI_TB_OVERFLOW);
+				tb->SetCustomOverflowItems(prepend_items, append_items);
+#endif
+#ifdef USE_WXAUI
                 tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
+#endif
 
                 wxImage::AddHandler(new wxXPMHandler);
                 wxImage::AddHandler(new wxPNGHandler);
@@ -2862,15 +3010,27 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
                 wxImage::AddHandler(new wxPNGHandler);
 
 #ifndef USE_WXAUI
+#ifndef USE_WXAUI_TOOLBAR
                 SetToolBar(tb);
 #endif
+#endif
+
+				//tb->Realize();
 
 #ifdef USE_WXAUI
                 m_mgr.AddPane(tb, wxAuiPaneInfo().
-                                          Name(name->charrep()).Caption(name->charrep()).
-                                          ToolbarPane().Top().
-                                          //Fixed().
-                                          LeftDockable(false).RightDockable(false));
+										Name(name->charrep()).Caption(name->charrep()).
+										ToolbarPane().Top().
+										//Fixed().
+										LeftDockable(false).RightDockable(false));
+                m_mgr.Update();
+#endif
+#ifdef USE_WXAUI_TOOLBAR
+				m_mgr.AddPane(tb, wxAuiPaneInfo().
+										Name(name->charrep()).Caption(name->charrep()).
+										ToolbarPane().Top().
+										//Fixed().
+										LeftDockable(false).RightDockable(false));
                 m_mgr.Update();
 #endif
 
@@ -2914,10 +3074,20 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
             return ERR_NONE;
         }
 
+#ifdef USE_WXAUI_TOOLBAR
+                wxAuiToolBar* tb;
+#endif
+#ifdef USE_WXAUI
                 wxToolBar* tb;
+#endif
 
 #ifndef USE_WXAUI
+#ifndef USE_WXAUI_TOOLBAR
                 tb = GetToolBar();
+#endif
+#endif
+#ifdef USE_WXAUI_TOOLBAR
+                tb = (wxAuiToolBar*) m_mgr.GetPane(name->charrep()).window;
 #endif
 #ifdef USE_WXAUI
                 tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
@@ -3005,34 +3175,53 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 #endif
                         tb->Realize();
 
+#ifdef USE_WXAUI_TOOLBAR
+                        _LOG << "Toolbar size is " << (long) tb->GetToolCount() << "." LOG_
+#endif
+#ifdef USE_WXAUI
                         _LOG << "Toolbar size is " << (long) tb->GetToolsCount() << "." LOG_
+#endif
 
                         //wxSize s = wxSize(tb->GetSize().GetHeight()*tb->GetToolsCount(), tb->GetSize().GetHeight());
-						tb->Fit();
-                        tb->SetSize(wxSize(tb->GetSize().GetWidth()+5, tb->GetSize().GetHeight()+5));
-						tb->Fit();
+						//tb->Fit();
+                        //tb->SetSize(wxSize(tb->GetSize().GetWidth()+5, tb->GetSize().GetHeight()+5));
+						//tb->Fit();
 
 #ifdef USE_WXAUI
-                        m_mgr.DetachPane(tb);
+                        wxToolBar* maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
+                        m_mgr.DetachPane(maintb);
 
+						// Keep Main Toolbar the most left one
+                        m_mgr.AddPane(maintb, wxAuiPaneInfo().
+								Name("Main Toolbar").Caption("Main Toolbar").
+								ToolbarPane().Top().
+								LeftDockable(false).RightDockable(false));
+
+                        m_mgr.DetachPane(tb);
                         m_mgr.AddPane(tb, wxAuiPaneInfo().
                                   Name(name->charrep()).Caption(name->charrep()).
                                   ToolbarPane().Top().
-                                                  //Fixed().
-                                                  //MinSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight())).
                                   LeftDockable(false).RightDockable(false));
 
-                        wxToolBar* maintb = tb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
+						m_mgr.Update();
+#endif
+#ifdef USE_WXAUI_TOOLBAR
+                        wxAuiToolBar* maintb = (wxAuiToolBar*) m_mgr.GetPane("Main Toolbar").window;
                         m_mgr.DetachPane(maintb);
 
-                        m_mgr.AddPane(maintb, wxAuiPaneInfo().
-                                  Name("Main Toolbar").Caption("Main Toolbar").
-                                  ToolbarPane().Top().
-                                                  //Fixed().
-                                                  //MinSize(wxSize(tb->GetToolSize().GetWidth()*tb->GetToolsCount(), tb->GetToolSize().GetHeight())).
-                                  LeftDockable(false).RightDockable(false));
+						// Keep Main Toolbar the most left one
+						m_mgr.AddPane(maintb, wxAuiPaneInfo().
+								Name("Main Toolbar").Caption("Main Toolbar").
+								ToolbarPane().Top().
+								LeftDockable(false).RightDockable(false));
 
-                        m_mgr.Update();
+                        m_mgr.DetachPane(tb);
+                        m_mgr.AddPane(tb, wxAuiPaneInfo().
+                                  Name(name->charrep()).Caption(name->charrep()).
+                                  ToolbarPane().Top().
+                                  LeftDockable(false).RightDockable(false));
+                        
+						m_mgr.Update();
 #endif
 
                 }
@@ -3410,6 +3599,23 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
         }
 
 
+#ifdef USE_WXAUI_TOOLBAR
+        wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
+
+        if (oldpg != NULL) {
+                _LOG << "Replace old property values..." LOG_
+
+                UAP(lb_I_Container, parameter)
+                parameter = currentProperties->getParameterList();
+                populateProperties(oldpg, *&parameter);
+
+                m_mgr.GetPane("Properties").Show();
+
+                m_mgr.Update();
+
+                return ERR_NONE;
+        }
+#endif
 #ifdef USE_WXAUI
         wxPropertyGrid* oldpg = (wxPropertyGrid*) m_mgr.GetPane("Properties").window;
 
@@ -3430,6 +3636,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 
 /*...sNo wxAUI:0:*/
 #ifndef USE_WXAUI
+#ifndef USE_WXAUI_TOOLBAR
         if (m_splitter == NULL) {
                 m_splitter = new wxSplitterWindow(this, wxID_ANY,
                           wxDefaultPosition, wxDefaultSize,
@@ -3502,6 +3709,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
                 }
         }
 #endif
+#endif
 /*...e*/
 
 #ifdef USE_WXAUI
@@ -3545,6 +3753,48 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 
                 m_mgr.Update();
 #endif
+#ifdef USE_WXAUI_TOOLBAR
+                wxList children = GetChildren();
+                wxNode* node = children.GetFirst();
+
+                wxWindow* leftPanel = NULL;
+#ifdef IN_PANEL
+                wxScrolledWindow* panel = new wxScrolledWindow(this, -1);
+#endif
+
+
+#ifdef IN_PANEL
+                wxPropertyGrid* pg = CreatePropertyGrid(panel);
+                leftPanel = panel;
+#endif
+#ifndef IN_PANEL
+                wxPropertyGrid* pg = CreatePropertyGrid(this);
+                leftPanel = pg;
+#endif
+
+                leftPanel->SetAutoLayout(TRUE);
+                pg->SetAutoLayout(TRUE);
+/*
+                wxSizer* s = GetSizer();
+
+                if (s != NULL) {
+                        _CL_LOG << "Got the sizer object..." LOG_
+                        s->Add(leftPanel, 1, wxEXPAND | wxALL, 0);
+                }
+
+                pg->SetSizeHints(leftPanel->GetSize());
+*/
+
+
+                m_mgr.AddPane(pg, wxAuiPaneInfo().
+                        Name(wxT("Properties")).Caption(wxT("Properties")).
+                        //Float().FloatingPosition(GetStartPosition()).
+                        Left().
+                        FloatingSize(wxSize(300,200)));
+
+                m_mgr.Update();
+#endif
+
         return ERR_NONE;
 }
 /*...e*/
