@@ -4,7 +4,7 @@ echo dummy > readme.txt
 
 rem The batch files are intented only to build on distribution mode.
 rem Developer hosts using Q: are untested.
-call watcomenv.bat exit NODIST
+call watcomenv.bat exit DISTMODE
 
 @rem Override WXDIR from this point on. wxWidgets uses Windows backslash for path separators. 
 set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx

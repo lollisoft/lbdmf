@@ -59,7 +59,7 @@ if "%2"=="JENKINS" goto JENKINSBUILD:
 if "%2"=="APPVEYOR" goto APPVEYORBUILD:
 
 rem explicite distribution mode
-if "%2"=="NODIST" goto NODIST:
+if "%2"=="DISTMODE" goto DISTMODE:
 
 if "%COMPUTERNAME%"=="ANAKIN" goto NODIST:
 if "%COMPUTERNAME%"=="T43" goto NODIST:
