@@ -58,6 +58,9 @@ rem set lbDMFUser=
 if "%2"=="JENKINS" goto JENKINSBUILD:
 if "%2"=="APPVEYOR" goto APPVEYORBUILD:
 
+rem explicite distribution mode
+if "%2"=="NODIST" goto NODIST:
+
 if "%COMPUTERNAME%"=="ANAKIN" goto NODIST:
 if "%COMPUTERNAME%"=="T43" goto NODIST:
 if "%COMPUTERNAME%"=="DESKTOP-D1P98N4" goto NODIST:
