@@ -28,6 +28,11 @@ echo del readme.txt > doBuildWx.bat
 echo set DRIVE=%DEVLW% >> doBuildWx.bat
 echo set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
 echo %DEVLW% >> doBuildWx.bat
+
+echo echo First try Windows 10 supplied cUrl >> doBuildWx.bat
+echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-1.1.34.tar.gz ( >> doBuildWx.bat
+echo %Systemroot%\System32\curl -k -L -o %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-1.1.34.tar.gz ftp://xmlsoft.org/libxml2/libxslt-1.1.34.tar.gz >> doBuildWx.bat
+echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-1.1.34.tar.gz ( >> doBuildWx.bat
 echo curl -k -L -o %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-1.1.34.tar.gz ftp://xmlsoft.org/libxml2/libxslt-1.1.34.tar.gz >> doBuildWx.bat
 echo ) >> doBuildWx.bat
@@ -37,8 +42,16 @@ rem echo copy /Y %DEVLW%\lbDMF\commctrl-wxWidgets-patch.h Develop\Tools\MinGW\in
 rem echo copy /Y %DEVLW%\lbDMF\w32api-Wcpp-patch.h Develop\Tools\MinGW\include\w32api.h >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\bin\bison.exe ( >> doBuildWx.bat
+echo %Systemroot%\System32\curl -k -L -o lbDMF-BinbuildTools-1.3.3-vc.exe http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.3.3/lbDMF-BinbuildTools-1.3.3-vc.exe/download >> doBuildWx.bat
+echo lbDMF-BinbuildTools-1.3.3-vc.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
+echo ) >> doBuildWx.bat
+echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\bin\bison.exe ( >> doBuildWx.bat
 echo curl -k -L -o lbDMF-BinbuildTools-1.3.3-vc.exe http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.3.3/lbDMF-BinbuildTools-1.3.3-vc.exe/download >> doBuildWx.bat
 echo lbDMF-BinbuildTools-1.3.3-vc.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
+echo ) >> doBuildWx.bat
+echo IF NOT EXIST %WXDIR%\build\msw ( >> doBuildWx.bat
+echo %Systemroot%\System32\curl -k -L -o wxMSW-%WX_VERSION%-Setup.exe %WX_DOWNLOAD% >> doBuildWx.bat
+echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR% >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %WXDIR%\build\msw ( >> doBuildWx.bat
 echo curl -k -L -o wxMSW-%WX_VERSION%-Setup.exe %WX_DOWNLOAD% >> doBuildWx.bat
