@@ -80,4 +80,4 @@ echo IF EXIST %DEVLW%\lbDMF\GetACE.txt ( call %DEVLW%\lbDMF\InstallACE.bat ) >> 
 echo IF EXIST %DEVLW%\lbDMF\GetDoUMLBin.txt ( call %DEVLW%\lbDMF\InstallDoUMLBin.bat ) >> doBuildWx.bat
 echo IF EXIST %DEVLW%\lbDMF\GetDoUMLSrc.txt ( call %DEVLW%\lbDMF\InstallDoUMLSrc.bat ) >> doBuildWx.bat
 echo cd %DEVLW%\lbDMF >> doBuildWx.bat
-call watcomenv.bat %DEVLW%\lbDMF\doBuildWx.bat
+call watcomenv.bat %DEVLW%\lbDMF\doBuildWx.bat DISTMODE
