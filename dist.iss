@@ -60,15 +60,15 @@ Source: "TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysove
 Source: "w32api-Wcpp-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 [Icons]
-Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
-Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
+Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat cmd DISTMODE"; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
+Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat cmd DISTMODE"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
 Filename: "http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=24"; Flags: shellexec
 Filename: "{app}\installODBC.bat"; Description: "Install ODBC driver settings"; Flags: shellexec postinstall unchecked
 Filename: "{app}\activateACE.bat"; Description: "Get and build ACE framework (ca. 2.4GByte disk usage!)"; Flags: shellexec postinstall unchecked
-Filename: "{app}\buildwxWidgets_MinGW.bat"; Description: "Get MinGW, wxWidgets (and ACE when flagged) and build it"; Flags: shellexec postinstall unchecked
+;Filename: "{app}\buildwxWidgets_MinGW.bat"; Description: "Get MinGW, wxWidgets (and ACE when flagged) and build it"; Flags: shellexec postinstall unchecked
 Filename: "{app}\buildwxWidgets_MinGW_debug.bat"; Description: "Get MinGW, wxWidgets (and ACE when flagged) and build it with debug"; Flags: shellexec postinstall unchecked
-Filename: "{app}\buildwxWidgets_Custom_MinGW.bat"; Description: "Get repackaged jenkins MinGW, wxWidgets (and ACE when flagged) and build it"; Flags: shellexec postinstall unchecked
-Filename: "{app}\buildwxWidgets_Custom_MinGW_debug.bat"; Description: "Get repackaged jenkins MinGW, wxWidgets (...) and build it with debug"; Flags: shellexec postinstall unchecked
+;Filename: "{app}\buildwxWidgets_Custom_MinGW.bat"; Description: "Get repackaged jenkins MinGW, wxWidgets (and ACE when flagged) and build it"; Flags: shellexec postinstall unchecked
+;Filename: "{app}\buildwxWidgets_Custom_MinGW_debug.bat"; Description: "Get repackaged jenkins MinGW, wxWidgets (...) and build it with debug"; Flags: shellexec postinstall unchecked
