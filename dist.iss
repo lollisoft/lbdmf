@@ -38,6 +38,7 @@ Source: "dist\dist_iss_BinBuildTools\test.exe"; DestDir: "{app}\Develop\Projects
 
 Source: "Database\*.*"; DestDir: "{app}\Database"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 Source: "watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
+Source: "watcomenvc.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "buildwxWidgets_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "buildwxWidgets_MinGW_debug.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "buildwxWidgets_Custom_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
@@ -60,8 +61,8 @@ Source: "TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysove
 Source: "w32api-Wcpp-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
 [Icons]
-Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat cmd DISTMODE"; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
-Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenv.bat cmd DISTMODE"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
+Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenvc.bat"; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
+Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenvc.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
 
 [Run]
 ;Filename: "{app}\watcomenv.bat"; Description: "Launch My Program"; Flags: shellexec postinstall skipifsilent
