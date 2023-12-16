@@ -2,25 +2,25 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="744.09448819"
    height="1052.3622047"
    id="svg7255"
    sodipodi:version="0.32"
-   inkscape:version="0.91 r13725"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    sodipodi:docname="Splash Screen.svg"
-   inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
+   inkscape:export-filename="..\splash.png"
    inkscape:export-xdpi="27.999004"
    inkscape:export-ydpi="27.999004"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   version="1.1">
+   version="1.1"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs7257">
     <inkscape:perspective
@@ -1255,16 +1255,19 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.61580177"
-     inkscape:cx="114.28591"
-     inkscape:cy="530.39998"
+     inkscape:cx="134.78363"
+     inkscape:cy="481.48611"
      inkscape:document-units="px"
-     inkscape:current-layer="g3653"
+     inkscape:current-layer="layer1"
      inkscape:window-width="1920"
-     inkscape:window-height="1058"
-     inkscape:window-x="1280"
-     inkscape:window-y="0"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
      showgrid="false"
-     inkscape:window-maximized="1" />
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
   <metadata
      id="metadata7260">
     <rdf:RDF>
@@ -1283,7 +1286,7 @@
      id="layer1">
     <g
        id="g3200"
-       inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
+       inkscape:export-filename="..\splash.png"
        inkscape:export-xdpi="34.624123"
        inkscape:export-ydpi="34.624123">
       <g
@@ -1550,9 +1553,8 @@
         <image
            id="image10470"
            height="143.25259"
-           width="168.48628"
-           sodipodi:absref="/Users/lothar/develop/Projects/CPP/Doc/Imported UML definition.png"
-           xlink:href="/Users/lothar/develop/Projects/CPP/Doc/Imported UML definition.png"
+           width="179.06574"
+           xlink:href="..%5C..%5C..%5C..%5CDoc%5CImported%20UML%20definition.png"
            x="140.194"
            y="483.47852"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
@@ -1639,7 +1641,8 @@
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
            inkscape:export-xdpi="34.66547"
            inkscape:export-ydpi="34.66547"
-           transform="translate(0.549799,-2.953574)">
+           transform="translate(0.549799,-2.953574)"
+           inkscape:label="g3169">
           <g
              transform="matrix(0.3815885,0,0,0.405549,130.13012,167.65498)"
              id="g8139">
@@ -1833,14 +1836,13 @@
              transform="translate(-213.09945,-186.66851)"
              id="g4">
             <text
-               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000"
                id="text6"
                y="556"
                x="714"
                font-style="italic"
                xml:space="preserve"
-               font-size="24"
-               sodipodi:linespacing="125%">Name</text>
+               font-size="24">Name</text>
           </g>
           <g
              style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica;-inkscape-font-specification:Helvetica"
@@ -1863,14 +1865,13 @@
              transform="translate(-213.09945,-186.66851)"
              id="g14">
             <text
-               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000"
                id="text16"
                y="446"
                x="548"
                font-style="italic"
                xml:space="preserve"
-               font-size="24"
-               sodipodi:linespacing="125%">Stadt</text>
+               font-size="24">Stadt</text>
           </g>
           <g
              style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica;-inkscape-font-specification:Helvetica"
@@ -1916,8 +1917,7 @@
              x="420.24527"
              y="475.33148"
              id="text32"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Kunde</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Kunde</text>
           <line
              x1="339.90054"
              y1="483.33148"
@@ -1931,24 +1931,21 @@
              x="346.90054"
              y="510.33148"
              id="text36"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Kundennummer : int</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Kundennummer : int</text>
           <text
              font-size="24"
              xml:space="preserve"
              x="346.90054"
              y="538.33148"
              id="text38"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Firmenname : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Firmenname : string</text>
           <text
              font-size="24"
              xml:space="preserve"
              x="346.90054"
              y="566.33148"
              id="text40"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Notiz : bigstring</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Notiz : bigstring</text>
           <line
              x1="339.90054"
              y1="570.33148"
@@ -1961,26 +1958,24 @@
              transform="translate(-213.09945,-186.66851)"
              id="g44">
             <text
-               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000"
                id="text46"
                y="583"
                x="617"
                xml:space="preserve"
-               font-size="24"
-               sodipodi:linespacing="125%">&lt;&lt;masterdetail_action&gt;&gt;</text>
+               font-size="24">&lt;&lt;masterdetail_action&gt;&gt;</text>
           </g>
           <g
              style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica;-inkscape-font-specification:Helvetica"
              transform="translate(-213.09945,-186.66851)"
              id="g48">
             <text
-               style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000"
                id="text50"
                y="475"
                x="434"
                xml:space="preserve"
-               font-size="24"
-               sodipodi:linespacing="125%">&lt;&lt;masterdetail_action&gt;&gt;</text>
+               font-size="24">&lt;&lt;masterdetail_action&gt;&gt;</text>
           </g>
           <rect
              x="367.90054"
@@ -2004,14 +1999,13 @@
              id="rect58"
              style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffc0;stroke:#000000;stroke-width:1;stroke-opacity:1;font-family:Helvetica;-inkscape-font-specification:Helvetica" />
           <text
-             sodipodi:linespacing="125%"
              font-size="24"
              xml:space="preserve"
              font-weight="bold"
              x="212.43765"
              y="68.33149"
              id="text60"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica">Adresse</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Adresse</text>
           <line
              x1="135.90054"
              y1="76.33149"
@@ -2020,37 +2014,33 @@
              id="line62"
              style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;stroke:#000000;stroke-opacity:1;font-family:Helvetica;-inkscape-font-specification:Helvetica" />
           <text
-             sodipodi:linespacing="125%"
              font-size="24"
              xml:space="preserve"
              x="142.90054"
              y="103.33149"
              id="text64"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica">Strasse : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Strasse : string</text>
           <text
-             sodipodi:linespacing="125%"
              font-size="24"
              xml:space="preserve"
              x="142.90054"
              y="131.3315"
              id="text66"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica">Hausnummer : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Hausnummer : string</text>
           <text
-             sodipodi:linespacing="125%"
              font-size="24"
              xml:space="preserve"
              x="142.90054"
              y="159.3315"
              id="text68"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica">Stadt : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Stadt : string</text>
           <text
-             sodipodi:linespacing="125%"
              font-size="24"
              xml:space="preserve"
              x="142.90054"
              y="187.3315"
              id="text70"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica">Plz : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Plz : string</text>
           <line
              x1="135.90054"
              y1="191.3315"
@@ -2086,8 +2076,7 @@
              x="607.56561"
              y="64.33149"
              id="text82"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Kontakte</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Kontakte</text>
           <line
              x1="555.90057"
              y1="72.33149"
@@ -2101,56 +2090,49 @@
              x="562.90057"
              y="99.33149"
              id="text86"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Name : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Name : string</text>
           <text
              font-size="24"
              xml:space="preserve"
              x="562.90057"
              y="127.33149"
              id="text88"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Vorname : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Vorname : string</text>
           <text
              font-size="24"
              xml:space="preserve"
              x="562.90057"
              y="155.3315"
              id="text90"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Telefon : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Telefon : string</text>
           <text
              font-size="24"
              xml:space="preserve"
              x="562.90057"
              y="183.3315"
              id="text92"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Fax : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Fax : string</text>
           <text
              font-size="24"
              xml:space="preserve"
              x="562.90057"
              y="211.3315"
              id="text94"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">eMail : string</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">eMail : string</text>
           <text
              font-size="24"
              xml:space="preserve"
              x="562.90057"
              y="239.3315"
              id="text96"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Bild : image</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Bild : image</text>
           <text
              font-size="24"
              xml:space="preserve"
              x="562.90057"
              y="267.33148"
              id="text98"
-             style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;font-family:Helvetica;-inkscape-font-specification:Helvetica"
-             sodipodi:linespacing="125%">Notiz : bigstring</text>
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:0%;font-family:Helvetica;-inkscape-font-specification:Helvetica;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000">Notiz : bigstring</text>
           <line
              x1="555.90057"
              y1="271.33148"
@@ -2161,101 +2143,85 @@
         </g>
         <text
            xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:85.77037048px;line-height:125%;font-family:'Courier New';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
-           x="10.262201"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Courier New';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+           x="29.427998"
            y="66.510239"
            id="text2289"
-           sodipodi:linespacing="125%"
            transform="scale(0.90334905,1.1069918)"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
            inkscape:export-xdpi="34.66547"
            inkscape:export-ydpi="34.66547"><tspan
              sodipodi:role="line"
-             x="10.262201"
+             x="29.427998"
              y="66.510239"
-             id="tspan2293">wxWrapper 1.3.2</tspan><tspan
+             id="tspan2293"
+             style="font-size:85.7704px;line-height:1.25">wxWrapper 1.3.3</tspan><tspan
              sodipodi:role="line"
-             x="10.262201"
-             y="173.72321"
-             id="tspan2295" /><tspan
+             x="29.427998"
+             y="173.72324"
+             id="tspan2295"
+             style="font-size:85.7704px;line-height:1.25"> </tspan><tspan
              sodipodi:role="line"
-             x="10.262201"
-             y="280.93616"
-             id="tspan1565" /><tspan
+             x="29.427998"
+             y="280.93625"
+             id="tspan1565"
+             style="font-size:85.7704px;line-height:1.25"> </tspan><tspan
              sodipodi:role="line"
-             x="10.262201"
-             y="388.14914"
-             id="tspan2297" /><tspan
+             x="29.427998"
+             y="388.14923"
+             id="tspan2297"
+             style="font-size:85.7704px;line-height:1.25"> </tspan><tspan
              sodipodi:role="line"
-             x="10.262201"
-             y="495.36209"
-             id="tspan2301" /><tspan
+             x="29.427998"
+             y="495.36224"
+             id="tspan2301"
+             style="font-size:85.7704px;line-height:1.25"> </tspan><tspan
              sodipodi:role="line"
-             x="10.262201"
-             y="602.57507"
-             id="tspan2307" /><tspan
+             x="29.427998"
+             y="602.57526"
+             id="tspan2307"
+             style="font-size:85.7704px;line-height:1.25"> </tspan><tspan
              sodipodi:role="line"
-             x="10.262201"
-             y="709.78802"
-             id="tspan2311">From ideas to</tspan><tspan
+             x="29.427998"
+             y="709.78827"
+             id="tspan2311"
+             style="font-size:85.7704px;line-height:1.25">From ideas to</tspan><tspan
              sodipodi:role="line"
-             x="10.262201"
-             y="817.00098"
-             id="tspan2303">Prototypes in </tspan><tspan
+             x="29.427998"
+             y="817.00122"
+             id="tspan2303"
+             style="font-size:85.7704px;line-height:1.25">Prototypes in </tspan><tspan
              sodipodi:role="line"
-             x="10.262201"
-             y="924.21393"
-             id="tspan2305">minutes.</tspan></text>
+             x="29.427998"
+             y="924.21423"
+             id="tspan2305"
+             style="font-size:85.7704px;line-height:1.25">minutes.</tspan></text>
         <text
            xml:space="preserve"
-           style="font-size:28.42238045px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Courier New"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Courier New';text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
            x="445.59824"
            y="1024.7449"
            id="text1571"
-           sodipodi:linespacing="125%"
            inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
            inkscape:export-xdpi="34.66547"
            inkscape:export-ydpi="34.66547"><tspan
              sodipodi:role="line"
              id="tspan1573"
              x="445.59824"
-             y="1024.7449">www.lollisoft.de</tspan></text>
+             y="1024.7449"
+             style="font-size:28.4224px;line-height:1.25">www.lollisoft.de</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+           x="549.39087"
+           y="121.86792"
+           id="text3497"><tspan
+             sodipodi:role="line"
+             x="549.39087"
+             y="121.86792"
+             style="font-size:40px;line-height:1.25"
+             id="tspan1">preview</tspan></text>
       </g>
-      <text
-         id="text3380"
-         y="152.95193"
-         x="914.15607"
-         style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-         xml:space="preserve"><tspan
-           y="152.95193"
-           x="914.15607"
-           id="tspan3382"
-           sodipodi:role="line" /></text>
-      <text
-         xml:space="preserve"
-         style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         x="-233.02306"
-         y="274.36584"
-         id="text3592"
-         sodipodi:linespacing="125%"
-         inkscape:export-filename="/Users/lothar/develop/Projects/CPP/Test/GUI/wxWrapper/splash.png"
-         inkscape:export-xdpi="34.665359"
-         inkscape:export-ydpi="34.665359"><tspan
-           sodipodi:role="line"
-           id="tspan3594"
-           x="-233.02306"
-           y="274.36584" /></text>
-      <text
-         xml:space="preserve"
-         style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Courier New;-inkscape-font-specification:Courier New"
-         x="896.39233"
-         y="84.518242"
-         id="text3497"
-         sodipodi:linespacing="125%"><tspan
-           sodipodi:role="line"
-           id="tspan3499"
-           x="896.39233"
-           y="84.518242">final</tspan></text>
     </g>
   </g>
 </svg>
