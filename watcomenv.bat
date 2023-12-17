@@ -203,9 +203,11 @@ rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
 set BINROOT=%RUNROOT%\bin;%RUNROOT%\%REPO_NAME%\bin
 
+@REM PATH GETS OVERRIDDEN
+
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 set Path=%Path%;q:\develop\tools\bin;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
-set Path=%Path%;Q:\develop\Tools\TP;Q:\develop\Tools\TP\TPU
+set Path=%Path%;Q:\develop\Tools\TP;Q:\develop\Tools\TP\TPU;Z:\Q\develop\Tools\doxygen\bin
 set Path=%path%;G:\FPC\2.0.4\bin\i386-win32;C:\Programme\Graphviz2.26.3\bin
 
 set Path=%Path%;%MINGWBIN%
