@@ -131,6 +131,7 @@ set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
 @REM Try to fix path for Jenkins environment
 set PATH=%PATH%;%DEVLW%\Q\develop\Tools\MkMk
 set PATH=%PATH%;%DEVLW%\Q\develop\Tools\bin
+set PATH=%PATH%;%DEVLW%\Q\develop\Tools\doxygen\bin
 
 REM Current location for the dependent wx library (subst Q: C:\Q - thus C:\Q ...)
 set WXWIN=C:\Q\develop\wxwin\wx
