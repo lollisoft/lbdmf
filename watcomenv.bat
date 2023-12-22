@@ -132,6 +132,7 @@ set DEVROOT_MAKE_BASE=%DEVLW%/%BASE_MAKE%
 set PATH=%PATH%;%DEVLW%\Q\develop\Tools\MkMk
 set PATH=%PATH%;%DEVLW%\Q\develop\Tools\bin
 set PATH=%PATH%;%DEVLW%\Q\develop\Tools\doxygen\bin
+set PATH=%PATH%;%DEVLW%\Q\develop\Tools\Graphviz2.26.3\bin
 
 REM Current location for the dependent wx library (subst Q: C:\Q - thus C:\Q ...)
 set WXWIN=C:\Q\develop\wxwin\wx
@@ -208,7 +209,7 @@ set BINROOT=%RUNROOT%\bin;%RUNROOT%\%REPO_NAME%\bin
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 set Path=%Path%;q:\develop\tools\bin;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
 set Path=%Path%;Q:\develop\Tools\TP;Q:\develop\Tools\TP\TPU;Z:\Q\develop\Tools\doxygen\bin
-set Path=%path%;G:\FPC\2.0.4\bin\i386-win32;C:\Programme\Graphviz2.26.3\bin
+set Path=%path%;G:\FPC\2.0.4\bin\i386-win32;Z:\Q\develop\Tools\Graphviz2.26.3\bin
 
 set Path=%Path%;%MINGWBIN%
 
