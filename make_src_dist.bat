@@ -29,6 +29,7 @@ if not EXIST "dist\dist_iss_MinGW" mkdir dist\dist_iss_MinGW
 if not EXIST "dist\dist_iss_MinGW_Get" mkdir dist\dist_iss_MinGW_Get
 if not EXIST "dist\dist_iss_psqlodbc" mkdir dist\dist_iss_psqlodbc
 if not EXIST "dist\dist_iss_BinBuildTools" mkdir dist\dist_iss_BinBuildTools
+if not EXIST "dist\dist_iss_BinBuildTools\Graphviz2.26.3" mkdir dist\dist_iss_BinBuildTools\Graphviz2.26.3
 if not EXIST "dist\dist_iss_wxLua_dist" mkdir dist\dist_iss_wxLua_dist
 if not EXIST "dist\dist_iss_MkMk" mkdir dist\dist_iss_MkMk
 
@@ -61,6 +62,8 @@ copy %TOOLSFOLDER%\XSLTProc\libxslt.dll dist\bindist_iss\dll
 copy %TOOLSFOLDER%\XSLTProc\libexslt.dll dist\bindist_iss\dll
 copy %TOOLSFOLDER%\PostgreSQL\psqlodbc.dll dist\dist_iss_psqlodbc
 copy %TOOLSFOLDER%\BinBuildTools\*.* dist\dist_iss_BinBuildTools
+xcopy /S /E %TOOLSFOLDER%\Doxygen\*.* dist\dist_iss_BinBuildTools
+xcopy /S /E %TOOLSFOLDER%\Graphviz2.26.3\*.* dist\dist_iss_BinBuildTools\Graphviz2.26.3
 
 copy C:\Q\develop\wxwin\wx\lib\gcc_dll\*.dll dist\bindist_iss\dll
 
