@@ -63,7 +63,7 @@ copy %TOOLSFOLDER%\XSLTProc\libexslt.dll dist\bindist_iss\dll
 copy %TOOLSFOLDER%\PostgreSQL\psqlodbc.dll dist\dist_iss_psqlodbc
 copy %TOOLSFOLDER%\BinBuildTools\*.* dist\dist_iss_BinBuildTools
 xcopy /S /E %TOOLSFOLDER%\Doxygen\*.* dist\dist_iss_BinBuildTools
-xcopy /S /E %TOOLSFOLDER%\Graphviz2.26.3\*.* dist\dist_iss_BinBuildTools\Graphviz2.26.3
+xcopy /S /E Z:\Q\develop\Tools\Graphviz2.26.3\*.* dist\dist_iss_BinBuildTools\Graphviz2.26.3
 
 copy C:\Q\develop\wxwin\wx\lib\gcc_dll\*.dll dist\bindist_iss\dll
 
