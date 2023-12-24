@@ -30,6 +30,7 @@ if not EXIST "dist\dist_iss_MinGW_Get" mkdir dist\dist_iss_MinGW_Get
 if not EXIST "dist\dist_iss_psqlodbc" mkdir dist\dist_iss_psqlodbc
 if not EXIST "dist\dist_iss_BinBuildTools" mkdir dist\dist_iss_BinBuildTools
 if not EXIST "dist\dist_iss_BinBuildTools\Graphviz2.26.3" mkdir dist\dist_iss_BinBuildTools\Graphviz2.26.3
+if not EXIST "dist\dist_iss_BinBuildTools\doxygen" mkdir dist\dist_iss_BinBuildTools\doxygen
 if not EXIST "dist\dist_iss_wxLua_dist" mkdir dist\dist_iss_wxLua_dist
 if not EXIST "dist\dist_iss_MkMk" mkdir dist\dist_iss_MkMk
 
