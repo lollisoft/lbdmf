@@ -193,10 +193,11 @@ set BINROOT=%RUNROOT%\bin;%RUNROOT%\%REPO_NAME%\bin
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 set Path=%Path%;q:\develop\tools\bin;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
 set Path=%Path%;Q:\develop\Tools\TP;Q:\develop\Tools\TP\TPU
-set Path=%path%;G:\FPC\2.0.4\bin\i386-win32;"C:\Program Files (x86)\Graphviz\bin";C:\Programme\Graphviz2.26.3\bin
-set Path=%path%;"C:\Program Files (x86)\Graphviz\bin"
+set Path=%path%;G:\FPC\2.0.4\bin\i386-win32
 set Path=%path%;C:\Programme\Graphviz2.26.3\bin
 set Path=%path%;%DEVLW%\lbDMF\Develop\Tools\doxygen\bin
+set Path=%path%;%DEVLW%\lbDMF\Develop\Tools\Graphviz2.26.3\bin
+
 
 set Path=%Path%;%MINGWBIN%
 
