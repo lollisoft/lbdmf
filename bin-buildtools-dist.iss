@@ -49,7 +49,7 @@ Source: "dist\dist_iss_BinBuildTools\cygattr-1.dll"; DestDir: "{app}\Develop\Pro
 Source: "dist\dist_iss_BinBuildTools\ls.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 Source: "dist\dist_iss_BinBuildTools\pwd.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
-Source: "dist\dist_iss_BinBuildTools\Graphviz2.26.3"; DestDir: "{app}\Develop\Tools"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
+Source: "dist\dist_iss_BinBuildTools\Graphviz2.26.3"; DestDir: "{app}\Develop\Tools\Graphviz2.26.3"; CopyMode: alwaysoverwrite; Flags: recursesubdirs;
 
 
 ;Dependency (VC Build)
