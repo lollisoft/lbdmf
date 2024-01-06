@@ -26,7 +26,7 @@ pipeline {
                     }
                     steps {
                         unstash "thirdparty"
-                        sh "cp thirdparty/* ./Projects/CPP/vendor"
+                        sh "cp thirdparty/* ./Projects/lbdmf/vendor"
                     }
                 }
                 stage('Windows Build') {
@@ -35,7 +35,7 @@ pipeline {
                     }
                     steps {
                         unstash "thirdparty"
-                        bat "copy thirdparty\\* .\\Projects\\CPP\\vendor\\*"
+                        bat "copy thirdparty\\* .\\Projects\\lbdmf\\vendor\\*"
                     }
                 }
                 stage('Mac_OS_X_Intel Build') {
@@ -44,12 +44,12 @@ pipeline {
                     }
                     steps {
                         unstash "thirdparty"
-                        sh "cp thirdparty/boost_1_59_0.tar.gz ./Projects/CPP/vendor"
-                        sh "cp thirdparty/boost_1_59_0.7z ./Projects/CPP/vendor"
-                        sh "cp thirdparty/log4cplus-1.2.0-rc5.tar.gz ./Projects/CPP/vendor"
-                        sh "cp thirdparty/libxslt-1.1.21.tar.gz ./Projects/CPP/vendor"
-                        sh "cp thirdparty/libxml2-2.8.0.tar.gz ./Projects/CPP/vendor"
-                        sh "./Projects/CPP/jenkinsbuild-osx.sh"
+                        sh "cp thirdparty/boost_1_59_0.tar.gz ./Projects/lbdmf/vendor"
+                        sh "cp thirdparty/boost_1_59_0.7z ./Projects/lbdmf/vendor"
+                        sh "cp thirdparty/log4cplus-1.2.0-rc5.tar.gz ./Projects/lbdmf/vendor"
+                        sh "cp thirdparty/libxslt-1.1.21.tar.gz ./Projects/lbdmf/vendor"
+                        sh "cp thirdparty/libxml2-2.8.0.tar.gz ./Projects/lbdmf/vendor"
+                        sh "./Projects/lbdmf/jenkinsbuild-osx.sh"
                     }
                 }
             }
