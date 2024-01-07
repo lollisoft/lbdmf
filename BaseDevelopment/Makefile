@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.108 $
+# * $Revision: 1.229.2.109 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.108 2023/10/29 13:06:01 lothar Exp $
+# * $Id: Makefile,v 1.229.2.109 2024/01/07 10:38:45 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.109  2024/01/07 10:38:45  lothar
+# * Added support for builds on Mac OS X Mojave
+# *
 # * Revision 1.229.2.108  2023/10/29 13:06:01  lothar
 # * Fixed more build rules for wxWidgets version selection.
 # * Now it seems to build trough with some skipped errors
@@ -1173,6 +1176,11 @@ OSNAME=Leopard
 endif
 
 ifeq ($(OSVERSION_), 10.8.0)
+OSNAME=Leopard
+endif
+
+# Anyhow Mojave uname -r reports this instead 10.14.3 as of my mac tells
+ifeq ($(OSVERSION_), 18.2.0)
 OSNAME=Leopard
 endif
 
