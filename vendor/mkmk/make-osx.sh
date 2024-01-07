@@ -56,6 +56,11 @@ if [ $OSVERSION = 10.8.0 ]; then
 OSNAME=Leopard
 fi
 
+# Anyhow Mojave uname -r reports this instead 10.14.3 as of my mac tells
+if [ $OSVERSION = 18.2.0 ]; then
+OSNAME=Leopard
+fi
+
 fi
 
 echo $OSNAME
