@@ -651,7 +651,13 @@ protected:
 	 * it will indicated by SQL_NULL_DATA.
 	 */
 	long*		cbBufferLength;
-	SQLUINTEGER     ColumnSize; //new (long);
+#ifdef CPUARCH_64
+	SQLULEN
+#else	
+	SQLUINTEGER
+#endif
+			ColumnSize; //new (long);
+	
 	int		rows;
 	HSTMT 		hstmt;
 };
@@ -2325,13 +2331,20 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	BinaryLenOrInd = value->getSize();
 
 	BinaryLenOrIndCurrentOf = strlen(cursorname)+1;
+#ifdef CPUARCH_64
+	//TODO: Handle too big values by a not found and return empty string.
+	SQLUSMALLINT sql_column = column;
+	SQLLEN sql_len = BinaryLenOrIndCurrentOf;
 
-	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, (void *)BinaryPtrCur, BinaryLenOrIndCurrentOf, &BinaryLenOrIndCurrentOf);
-
+	rc = SQLBindCol(hstmt, sql_column, SQL_C_BINARY, (void *)BinaryPtrCur, sql_len, &sql_len);
+	memcpy(BinaryPtrCur, cursorname, sql_len);
+#else
+	rc = SQLBindCol(hstmt, column, SQL_C_BINARY, (void *)BinaryPtrCur, BinaryLenOrIndCurrentOf, &BinaryLenOrIndCurrentOf);	
 	memcpy(BinaryPtrCur, cursorname, BinaryLenOrIndCurrentOf);
+#endif
 
 	update();
-	retcode = SQLBindCol(hstmt, column, SQL_C_BINARY, NULL, BinaryLenOrIndCurrentOf, &BinaryLenOrIndCurrentOf);
+	retcode = SQLBindCol(hstmt, column, SQL_C_BINARY, NULL, sql_len, &sql_len);
 	if (retcode != SQL_SUCCESS) {
 		_LOG << "lbQuery:setBinaryData() Failed to unbind column!" LOG_
 	}
@@ -2378,15 +2391,34 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 
 	_CL_VERBOSE << "Call SQLBindParameter with a length indicator value of " << BinaryLenOrInd << "." LOG_
 
+#ifdef CPUARCH_64
+
+	sql_len = BinaryLenOrInd;
+
+	retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
+			  SQL_C_BINARY, SQL_LONGVARBINARY,
+			  value->getSize(), 0, (SQLPOINTER) 1, 0, &sql_len);
+
+#else
+
 	retcode = SQLBindParameter(hupdatestmt, 1, SQL_PARAM_INPUT,
 			  SQL_C_BINARY, SQL_LONGVARBINARY,
 			  value->getSize(), 0, (SQLPOINTER) 1, 0, &BinaryLenOrInd);
 
+#endif
 	if (retcode != SQL_SUCCESS) {
 		_LOG << "Binding update parameter failed." LOG_
 	}
 
+#ifdef CPUARCH_64
+
+	_CL_VERBOSE << "Executing positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << sql_len LOG_
+
+#else
+
 	_CL_VERBOSE << "Executing positioned BLOB update: '" << update_query->charrep() << "' with length of data = " << BinaryLenOrInd LOG_
+
+#endif
 
 	retcode = SQLSetPos(hstmt, 1, SQL_REFRESH, SQL_LOCK_NO_CHANGE);
 	retcode = SQLExecute(hupdatestmt);
@@ -2698,11 +2730,23 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(const char* FKName) {
 	}
 
 /*...sBind columns:16:*/
+#ifdef CPUARCH_64
+
+	SQLLEN cbPkTable64, cbPkCol64, cbFkTable64, cbFkCol64, cbKeySeq64;
+
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable64);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol64);
+	SQLBindCol(hstmt, 5, SQL_C_CHAR, &iKeySeq, TAB_LEN, &cbKeySeq64); //SSHORT
+	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable64);
+	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol64);
+#else
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
 	SQLBindCol(hstmt, 5, SQL_C_CHAR, &iKeySeq, TAB_LEN, &cbKeySeq); //SSHORT
 	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
+
+#endif
 /*...e*/
 
 	UAP(lb_I_String, T)
@@ -2852,11 +2896,29 @@ void LB_STDCALL lbQuery::prepareFKList() {
 	}
 
 /*...sBind columns:16:*/
+
+#ifdef CPUARCH_64
+
+	SQLLEN	cbPkTable64 = TAB_LEN;
+	SQLLEN 	cbPkCol64 = TAB_LEN;
+	SQLLEN	cbFkTable64 = TAB_LEN;
+	SQLLEN	cbFkCol64 = TAB_LEN;
+	SQLLEN	cbKeySeq64 = TAB_LEN;
+
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable64);
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol64);
+	SQLBindCol(hstmt, 5, SQL_C_CHAR, &iKeySeq, TAB_LEN, &cbKeySeq64); //SSHORT
+	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable64);
+	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol64);
+#else
+
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
 	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol);
 	SQLBindCol(hstmt, 5, SQL_C_CHAR, &iKeySeq, TAB_LEN, &cbKeySeq); //SSHORT
 	SQLBindCol(hstmt, 7, SQL_C_CHAR, szFkTable, TAB_LEN, &cbFkTable);
 	SQLBindCol(hstmt, 8, SQL_C_CHAR, szFkCol, COL_LEN, &cbFkCol);
+
+#endif
 /*...e*/
 
 	UAP(lb_I_String, T)
@@ -3136,7 +3198,28 @@ int LB_STDCALL lbQuery::getPKColumns() {
 	SQLRETURN         retcode;
 
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
+#ifdef CPUARCH_64
 
+	SQLLEN      cbPkTable64, cbPkCol64, cbFkTable64, cbFkCol64, cbKeySeq64;
+
+	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable64);
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError("SQLAllocStmt()", hstmt);
+	}
+
+	SQLBindCol(hstmt, 4, SQL_C_CHAR, szPkCol, COL_LEN, &cbPkCol64);
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError("SQLAllocStmt()", hstmt);
+	}
+
+	SQLBindCol(hstmt, 5, SQL_C_SSHORT, &iKeySeq, TAB_LEN, &cbKeySeq64);
+	if (retcode != SQL_SUCCESS)
+	{
+	        dbError("SQLAllocStmt()", hstmt);
+	}
+#else
 	SQLBindCol(hstmt, 3, SQL_C_CHAR, szPkTable, TAB_LEN, &cbPkTable);
 	if (retcode != SQL_SUCCESS)
 	{
@@ -3154,6 +3237,8 @@ int LB_STDCALL lbQuery::getPKColumns() {
 	{
 	        dbError("SQLAllocStmt()", hstmt);
 	}
+
+#endif
 
 	UAP(lb_I_String, T)
 	UAP(lb_I_String, C)
@@ -3300,7 +3385,12 @@ bool LB_STDCALL lbQuery::hasDefaultValue(const char* columnname) {
 
 
 	if (retcode == SQL_SUCCESS || retcode == SQL_SUCCESS_WITH_INFO) {
+#ifdef CPUARCH_64
+		SQLLEN cbColumnDefault64;
+		retcode = SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault64);
+#else
 		retcode = SQLBindCol(hstmt, 13, SQL_C_CHAR, szColumnDefault, TAB_LEN, &cbColumnDefault);
+#endif
 		if (retcode == SQL_SUCCESS) {
 			retcode = SQLFetch(hstmt);
 			if (retcode == SQL_ERROR/* || retcode == SQL_SUCCESS_WITH_INFO*/) {
@@ -3457,6 +3547,23 @@ lb_I_String* LB_STDCALL lbQuery::getTableName(const char* columnName) {
 
 		retcode = SQLGetInfo(hdbc, SQL_IDENTIFIER_CASE, (SQLPOINTER)&fFuncs, sizeof(fFuncs), NULL);
 
+#ifdef CPUARCH_64
+
+		SQLLEN	NumericAttributePtr64 = 0;
+
+		retcode = SQLColAttribute(
+				  hstmt,
+				  index,
+				  SQL_DESC_TABLE_NAME,
+				  // SQL_DESC_BASE_TABLE_NAME would make problems
+				  // under Mac OS X and Linux
+				  CharacterAttributePtr,
+				  100,
+				  &StringLengthPtr,
+				  &NumericAttributePtr64);
+
+#else
+
 		retcode = SQLColAttribute(
 				  hstmt,
 				  index,
@@ -3467,6 +3574,8 @@ lb_I_String* LB_STDCALL lbQuery::getTableName(const char* columnName) {
 				  100,
 				  &StringLengthPtr,
 				  NumericAttributePtr);
+
+#endif
 
 		if ((retcode == SQL_ERROR) || (retcode == SQL_SUCCESS_WITH_INFO)) {
 			_LOG << "ERROR: SQLColAttribute('" << columnName << "') failed." LOG_
@@ -3535,9 +3644,22 @@ lb_I_String* LB_STDCALL lbQuery::getColumnName(int col) {
 	SQLSMALLINT     Nullable = 0;
 	SQLUINTEGER     ColumnSize;
 
-	SQLRETURN ret = SQLDescribeCol( hstmt, col, ColumnName,
+#ifdef CPUARCH_64
+	SQLULEN		ColumnSize64;
+
+	SQLRETURN ret = 
+			SQLDescribeCol( hstmt, col, ColumnName,
+                      BufferLength, &NameLength, &DataType,
+                      &ColumnSize64, &DecimalDigits, &Nullable);
+
+#else
+
+	SQLRETURN ret = 
+			SQLDescribeCol( hstmt, col, ColumnName,
                       BufferLength, &NameLength, &DataType,
                       &ColumnSize, &DecimalDigits, &Nullable);
+
+#endif
 
 	if (ret != SQL_SUCCESS) {
 		_CL_LOG << "Error: lbQuery::getColumnName('" << col << "') failed. (" << ColumnName << ")" LOG_
@@ -3620,7 +3742,15 @@ lbErrCodes LB_STDCALL lbQuery::absolute(int pos) {
 	fetchstatus = -1;
 
 #ifndef USE_FETCH_SCROLL
+#ifdef CPUARCH_64
+        SQLULEN  RowsFetched64 = 0;
+
+        retcode = SQLExtendedFetch(hstmt, SQL_FETCH_ABSOLUTE, pos, &RowsFetched64, &RowStat[0]);
+#else
+
         retcode = SQLExtendedFetch(hstmt, SQL_FETCH_ABSOLUTE, pos, &RowsFetched, &RowStat[0]);
+
+#endif
 
 	CHECK_ROWSTAT()
 
@@ -3647,12 +3777,28 @@ lbErrCodes LB_STDCALL lbQuery::absolute(int pos) {
 
                 return ERR_DB_FETCHFIRST;
         }
+#ifdef CPUARCH_64
+
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched64, &RowStat[0]);
+
+#else
+
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
+
+#endif
 
 		//CHECK_ROWSTAT()
 
 		if (retcode == SQL_NO_DATA) {
+#ifdef CPUARCH_64
+
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched64, &RowStat[0]);
+
+#else
+
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+
+#endif
 
 			//CHECK_ROWSTAT()
 
@@ -3664,7 +3810,15 @@ lbErrCodes LB_STDCALL lbQuery::absolute(int pos) {
 			fetchstatus = 1;
 			return WARN_DB_NODATA;
 		} else {
+#ifdef CPUARCH_64
+
+			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched64, &RowStat[0]);
+
+#else
+
 			retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+
+#endif
 
 			//CHECK_ROWSTAT()
 
@@ -3694,7 +3848,15 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 	fetchstatus = -1;
 
 #ifndef USE_FETCH_SCROLL
+#ifdef CPUARCH_64
+	SQLULEN RowsFetched64;
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched64, &RowStat[0]);
+
+#else
+
 	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, &RowStat[0]);
+
+#endif
 
 	CHECK_ROWSTAT()
 
@@ -3715,7 +3877,7 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 	if (retcode == SQL_NO_DATA) {
 		_dataFetched = false;
 		return ERR_DB_NODATA;
-	}
+	}	
 
 	if (retcode == SQL_ERROR || retcode == SQL_SUCCESS_WITH_INFO) {
 		_LOG << "lbQuery::first(): Error while fetching next row. Query is '" << szSql << "'" LOG_
@@ -3729,10 +3891,25 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 		_dataFetched = false;
 		return ERR_DB_FETCHFIRST;
 	}
+#ifdef CPUARCH_64
+
+	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched64, &RowStat[0]);
+#else
+
 	retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
 
+#endif
+
 	if (retcode == SQL_NO_DATA) {
+#ifdef CPUARCH_64
+
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched64, &RowStat[0]);
+
+#else
+
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+
+#endif
 
 		if (retcode == SQL_NO_DATA) {
 			_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
@@ -3744,7 +3921,15 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 		_dataFetched = true;
 		return WARN_DB_NODATA;
 	} else {
+#ifdef CPUARCH_64
+
+		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched64, &RowStat[0]);
+
+#else
 		retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
+
+#endif
+
 
 		if (retcode == SQL_NO_DATA) {
 			_LOG << "FATAL ERROR: Resultset indication for no data has been failed!" LOG_
@@ -3761,7 +3946,13 @@ lbErrCodes LB_STDCALL lbQuery::first() {
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\next\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::next() {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched = 0;
+#ifdef CPUARCH_64
+	SQLULEN
+#else
+	UDWORD  
+#endif
+		RowsFetched = 0;
+
 	databound = 0; // Indicate, that data must prebound to a buffer
 
 	memset(&RowStat[0], 0, sizeof(UWORD)*20);
@@ -3828,7 +4019,12 @@ lbErrCodes LB_STDCALL lbQuery::next() {
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\previous\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::previous() {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched = 0;
+#ifdef CPUARCH_64
+        SQLULEN
+#else
+        UDWORD
+#endif          
+                RowsFetched = 0;
 
 	memset(&RowStat[0], 0, sizeof(UWORD)*20);
 
@@ -3896,7 +4092,12 @@ lbErrCodes LB_STDCALL lbQuery::previous() {
 /*...slbErrCodes LB_STDCALL lbQuery\58\\58\last\40\\41\:0:*/
 lbErrCodes LB_STDCALL lbQuery::last() {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched = 0;
+#ifdef CPUARCH_64
+        SQLULEN
+#else
+        UDWORD
+#endif          
+                RowsFetched = 0;
 
 	cursor = -1;
 
@@ -4941,7 +5142,12 @@ void       LB_STDCALL lbBoundColumn::checkReadonly(int column)
 		SQLSMALLINT	StringLengthPtr = 0;
 		SQLPOINTER	NumericAttributePtr;
 
-		SQLINTEGER	Int = 0;
+#ifdef CPUARCH_64
+		SQLLEN
+#else
+		SQLINTEGER	
+#endif
+				Int = 0;
 
 		CharacterAttributePtr = (void*) malloc(101);
 		memset(CharacterAttributePtr, 0, 101);
@@ -6289,12 +6495,19 @@ lb_I_Container* LB_STDCALL lbDatabase::getTables(const char* connectionname) {
 	UCHAR			szTableRemarks[REM_LEN];
 
 	SQLHSTMT		hstmt;
-
+#ifdef CPUARCH_64
+	SQLLEN			cbTableCatalog = TAB_LEN;
+	SQLLEN			cbTableSchema = TAB_LEN;
+	SQLLEN			cbTableName = TAB_LEN;
+	SQLLEN			cbTableType = TAB_LEN;
+	SQLLEN			cbTableRemarks = REM_LEN;
+#else
 	SQLINTEGER		cbTableCatalog = TAB_LEN;
 	SQLINTEGER		cbTableSchema = TAB_LEN;
 	SQLINTEGER		cbTableName = TAB_LEN;
 	SQLINTEGER		cbTableType = TAB_LEN;
 	SQLINTEGER		cbTableRemarks = REM_LEN;
+#endif
 	SQLRETURN		retcode;
 
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
@@ -6481,11 +6694,39 @@ lb_I_Container* LB_STDCALL lbDatabase::getColumns(const char* connectionname) {
 
 	/* Declare buffers for bytes available to return */
 
-	SQLINTEGER cbCatalog, cbSchema, cbTableName, cbColumnName;
-	SQLINTEGER cbDataType, cbTypeName, cbColumnSize, cbBufferLength;
-	SQLINTEGER cbDecimalDigits, cbNumPrecRadix, cbNullable, cbRemarks;
-	SQLINTEGER cbColumnDefault, cbSQLDataType, cbDatetimeSubtypeCode, cbCharOctetLength;
-	SQLINTEGER cbOrdinalPosition, cbIsNullable;
+#ifdef CPUARCH_64
+	SQLLEN
+#else
+	SQLINTEGER
+#endif
+ 	cbCatalog, cbSchema, cbTableName, cbColumnName;
+
+#ifdef CPUARCH_64
+        SQLLEN
+#else
+        SQLINTEGER
+#endif
+	cbDataType, cbTypeName, cbColumnSize, cbBufferLength;
+
+#ifdef CPUARCH_64
+        SQLLEN
+#else
+        SQLINTEGER 
+#endif
+	cbDecimalDigits, cbNumPrecRadix, cbNullable, cbRemarks;
+#ifdef CPUARCH_64
+        SQLLEN
+#else
+        SQLINTEGER 
+#endif
+	cbColumnDefault, cbSQLDataType, cbDatetimeSubtypeCode, cbCharOctetLength;
+
+#ifdef CPUARCH_64
+        SQLLEN
+#else
+        SQLINTEGER 
+#endif
+	cbOrdinalPosition, cbIsNullable;
 
 	retcode = SQLAllocStmt(hdbc, &hstmt); /* Statement handle */
 
@@ -6808,12 +7049,17 @@ lb_I_Container* LB_STDCALL lbDatabase::getPrimaryKeys(const char* connectionname
 
 	SQLSMALLINT KeySequence;
 
-	SQLINTEGER cbTableCatalog;
-	SQLINTEGER cbTableSchema;
-	SQLINTEGER cbTableName;
-	SQLINTEGER cbColumnName;
-	SQLINTEGER cbColumnName_V2;
-	SQLINTEGER cbKeySequence;
+#ifdef CPUARCH_64
+	SQLLEN
+#else
+	SQLINTEGER
+#endif
+	cbTableCatalog,
+	cbTableSchema,
+	cbTableName,
+	cbColumnName,
+	cbColumnName_V2,
+	cbKeySequence;
 
 
 	SQLHSTMT      hstmt;
@@ -6988,20 +7234,23 @@ lb_I_Container* LB_STDCALL lbDatabase::getForeignKeys(const char* connectionname
 	SQLSMALLINT UpdateRule;
 	SQLSMALLINT DeleteRule;
 
-	SQLINTEGER cbKeySequence;
-	SQLINTEGER cbUpdateRule;
-	SQLINTEGER cbDeleteRule;
+#ifdef CPUARCH_64
+	SQLLEN
+#else
+	SQLINTEGER 
+#endif
+	cbKeySequence,
+	cbUpdateRule,
+	cbDeleteRule,
+	cbPKTableCatalog,
+	cbPKTableSchema,
+	cbPKTableName,
+	cbPKTableColumnName,
 
-
-	SQLINTEGER cbPKTableCatalog;
-	SQLINTEGER cbPKTableSchema;
-	SQLINTEGER cbPKTableName;
-	SQLINTEGER cbPKTableColumnName;
-
-	SQLINTEGER cbFKTableCatalog;
-	SQLINTEGER cbFKTableSchema;
-	SQLINTEGER cbFKTableName;
-	SQLINTEGER cbFKTableColumnName;
+	cbFKTableCatalog,
+	cbFKTableSchema,
+	cbFKTableName,
+	cbFKTableColumnName;
 
 	SQLHSTMT		hstmt;
 

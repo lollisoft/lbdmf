@@ -913,6 +913,17 @@ PRIMARY KEY (id),
 #error LB_CDECL is not defined !
 #endif
 
+// I need a proper way to detect 32 or 64 bit target builts. But also on all platforms and not only for Mac OS X that forces me now.
+
+#ifdef OSX
+#ifdef __LP64__
+// Even, if I have not passed this as a parameter explicitely, https://github.com/mesonbuild/meson/issues/6187 notes __LP64__,
+// thus make use of that propably correct way. My goal is indeed to keep most changes centralized exept otherwise needed.
+#define CPUARCH_64
+
+#endif
+#endif
+
 
 #ifndef __BASE_TYPES_DEFINED__
 #define __BASE_TYPES_DEFINED__
@@ -932,12 +943,20 @@ PRIMARY KEY (id),
 	typedef unsigned short u_short;
 #endif
 #ifdef OSX
-#if (OSNAME == Panther)
+#ifdef Panther
 	typedef unsigned long DWORD;
 #endif
-#if (OSTYPE == Leopard)
-	//typedef unsigned int DWORD; // Leopard with IODBC
+#ifdef Leopard
+//typedef unsigned int DWORD; // Leopard with IODBC
+#ifndef CPUARCH_64
 	typedef unsigned long DWORD;
+#endif
+#ifdef CPUARCH_64
+	typedef unsigned int DWORD;
+// To use proper known types like int16_t
+#include <cstdint>
+
+#endif
 #endif
 #endif
 #ifndef OSX

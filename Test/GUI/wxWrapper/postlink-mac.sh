@@ -33,6 +33,8 @@ cp toolbarimages/*.png wxWrapper.app/Contents/Resources/toolbarimages
 cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.*.dylib wxWrapper.app/Contents/lib
 cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib wxWrapper.app/Contents/lib
 
+cp Info.plist wxWrapper.app/Contents
+
 # Creating a new diskimage
 
 hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+

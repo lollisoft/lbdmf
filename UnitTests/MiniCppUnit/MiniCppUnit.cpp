@@ -21,8 +21,7 @@
 #include "MiniCppUnit.hxx"
 
 #include <cmath>
-#include <iostream>
-#include <fstream>
+
 #ifdef _MSC_VER
 #include <float.h>
 namespace std
@@ -81,8 +80,7 @@ void sig_handler(int signr) {
 #endif
 }
 
-TestResults TestsListener::_testResults;
-TestResult* TestsListener::_currentTestResult = NULL;
+
 TestsListener& TestsListener::theInstance()
 {
 	static TestsListener instancia;
@@ -102,43 +100,17 @@ std::string TestsListener::logString()
 	_log.str("");
 	return aRetornar;
 }
-
-void TestsListener::currentTestClass( std::string& _class) {
-	_currentTestClass = &_class;
-}
-
-void TestsListener::currentTestMsg( std::string& msg) {
-	_currentTestMsg = &msg;
-}
-
-void TestsListener::currentTestType( std::string& _type) {
-	_currentTestType = &_type;
-}
-
 void TestsListener::currentTestName( std::string& name)
 {
 	_currentTestName = &name;
 }
-
-void TestsListener::currentTestMethodName( std::string& methodname)
-{
-	_currentTestMethodName = &methodname;
-}
-
 void TestsListener::testHasRun()
 {
 	std::cout << ".";
-	theInstance().createTestResult();
-	TestResult* t = theInstance().currentTestResult();
-	t->Failed = false;
-	t->Thrown = false;
-	_testResults.push_back( t );
 	theInstance()._executed++;
 }
 void TestsListener::testHasFailed()
 {
-	TestResult* t = theInstance().currentTestResult();
-	t->Failed = true;
 	printf("%s", Assert::blue());
 	printf("%s", "F");
 	printf("%s\n", Assert::normal());
@@ -148,8 +120,6 @@ void TestsListener::testHasFailed()
 }
 void TestsListener::testHasThrown()
 {
-	TestResult* t = theInstance().currentTestResult();
-	t->Thrown = true;
 	printf("%s", Assert::yellow());
 	printf("%s", "E");
 	printf("%s\n", Assert::normal());
@@ -157,26 +127,6 @@ void TestsListener::testHasThrown()
 }
 std::string TestsListener::summary()
 {
-	TestResults results = theInstance().getTestResults();
-	std::list<TestResult*>::iterator it;
-	
-	std::ofstream xmlstream ("testresult.xml");
-	
-	xmlstream << "<testsuite>" << std::endl;
-	for(it=results.begin(); it!=results.end(); it++)
-	{
-		TestResult* testResult = *it;
-		if (!testResult->Failed && !testResult->Thrown) {
-			xmlstream << "<testcase classname=\"" << testResult->TestClass << "\" name=\"" << testResult->TestMethodName << "\"/>" << std::endl;
-		} else {
-			xmlstream << "<testcase classname=\"" << testResult->TestClass << "\" name=\"" << testResult->TestMethodName << "\">" << std::endl;
-			xmlstream << "<failure type=\"" << testResult->TestType << "\">" << testResult->TestMsg << "</failure>" << std::endl;
-			xmlstream << "</testcase>" << std::endl;
-		}
-	}
-	xmlstream << "</testsuite>" << std::endl;
-	xmlstream.close();
-
 
 	printf("\nSummary:\n");
 	printf("%s%s%d%s\n", Assert::bold(), "\tExecuted Tests:\t", _executed, Assert::normal());
@@ -268,7 +218,7 @@ double scaledEpsilon(const double& expected, const double& fuzzyEpsilon )
 #endif
 #ifdef OSX
 	//return (__isinf(aa))? fuzzyEpsilon: fuzzyEpsilon * aa;
-	return (__fpclassify(aa) == FP_INFINITE)? fuzzyEpsilon: fuzzyEpsilon * aa;
+	return (fpclassify(aa) == FP_INFINITE)? fuzzyEpsilon: fuzzyEpsilon * aa;
 #endif
 }
 bool fuzzyEquals(double expected, double result, double fuzzyEpsilon)

@@ -143,6 +143,14 @@ MOD_INCL=$(STD_INCL)
 OBJDEP=
 C_SOOPS_WX =-DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
+
+ifeq ($(OSNAME), Panther)
+C_SOOPS+= -DPanther
+endif
+ifeq ($(OSNAME), Leopard)
+C_SOOPS+= -DLeopard
+endif
+
 VENDORLIBS=
 LDFLAGS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif

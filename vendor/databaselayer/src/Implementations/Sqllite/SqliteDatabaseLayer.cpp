@@ -313,9 +313,11 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
       {
         SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
         strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-	printf("\n");
+/*
+    printf("\n");
 	printf(strErrorMessage);
 	printf("\nSQL: \n%s", rewrittenQuery.c_str());
+ */
         sqlite3_free(szErrorMessage);
           ThrowDatabaseException();
         return NULL;
@@ -330,7 +332,7 @@ DatabaseResultSet* SqliteDatabaseLayer::RunQueryWithResults(const wxString& strQ
 			{
 				SetErrorCode(SqliteDatabaseLayer::TranslateErrorCode(sqlite3_errcode(m_pDatabase)));
 				strErrorMessage = ConvertFromUnicodeStream(szErrorMessage);
-				printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
+				//printf("SqliteDatabaseLayer::RunQueryWithResults(...) Error: %s\n", strErrorMessage.c_str());
 				sqlite3_free(szErrorMessage);
 				ThrowDatabaseException();
 				return NULL;

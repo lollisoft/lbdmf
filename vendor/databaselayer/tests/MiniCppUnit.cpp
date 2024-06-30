@@ -173,7 +173,7 @@ double scaledEpsilon(const double& expected, const double& fuzzyEpsilon )
 #endif
 #ifdef OSX
 	//return (__isinf(aa))? fuzzyEpsilon: fuzzyEpsilon * aa;
-	return (__fpclassify(aa) == FP_INFINITE)? fuzzyEpsilon: fuzzyEpsilon * aa;
+	return (fpclassify(aa) == FP_INFINITE)? fuzzyEpsilon: fuzzyEpsilon * aa;
 #endif
 }
 bool fuzzyEquals(double expected, double result, double fuzzyEpsilon)

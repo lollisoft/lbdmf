@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.109 $
+# * $Revision: 1.229.2.110 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.109 2024/01/07 10:38:45 lothar Exp $
+# * $Id: Makefile,v 1.229.2.110 2024/06/30 19:09:20 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.110  2024/06/30 19:09:20  lothar
+# * Many changes to get Mac OS X build in 64 Bit
+# *
 # * Revision 1.229.2.109  2024/01/07 10:38:45  lothar
 # * Added support for builds on Mac OS X Mojave
 # *
@@ -1382,7 +1385,6 @@ ALLTARGETS = \
 	lbPluginManager \
 	lbcs \
 	lbtransfer \
-	../vendor/propgrid \
 	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
@@ -1392,7 +1394,6 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../vendor/sqlite \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/databaselayer/tests \
 	../vendor/antlr3/src \
 	../Test/Console/XML \
 	../vendor/wxShapeFramework/src \
@@ -1401,11 +1402,13 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/MkBs \
 	../vendor/wxShapeFramework/samples/wxSFDemo
 
+#	../vendor/propgrid \
 #	../vendor/goldparserengine/src \
 #	../vendor/goldparserengine/samples/engine \
 #	../vendor/goldparserengine/samples/gptest \
 #	../vendor/wxARG/src \
 #	../vendor/databaselayer/src/Implementations/ODBC \
+#	../vendor/databaselayer/tests \
 #	../vendor/cryptostream/src/crypstrm \
 #	../vendor/dbwrapcontrols \
 #	../vendor/databaselayer/tests \
@@ -2152,8 +2155,13 @@ ifneq ($(OSTYPE), Windows_NT)
 	@echo Build Lexer make
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 	@echo Build Main makefile
+ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 	$(MAKE) -s -C $@ install
 endif
 
@@ -2409,7 +2417,11 @@ endif
 
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@ -e prefix=$(prefix)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e prefix=$(prefix) -e LBWXVERSION=old
+else
+	$(MAKE) -s -C $@ -e prefix=$(prefix) -e LBWXVERSION=current
+endif
 	cp ../Test/GUI/wxWrapper/wxWrapper $(prefix)/bin
 
 ../vendor/wxARG/src: dummy

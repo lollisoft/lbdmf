@@ -163,6 +163,13 @@ ifeq ($(LBWXVERSION), old)
 C_SOOPS_WX += -DLBWXVERSION_OLD
 endif
 C_SOOPS= $(C_SOOPS_WX)
+
+ifeq ($(OSNAME), Panther)
+C_SOOPS+= -DPanther
+else
+C_SOOPS+= -DLeopard
+endif
+
 VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 LDFLAGS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs` 
 endif    
