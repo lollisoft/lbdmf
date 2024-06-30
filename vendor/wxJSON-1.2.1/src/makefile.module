@@ -154,8 +154,15 @@ endif
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 
+ifeq ($(LBWXVERSION), current)
+PROPGRID_INCL=
+endif
+ifeq ($(LBWXVERSION), old)
+PROPGRID_INCL=$(DEVROOT)/Projects/$(REPO_NAME)/vendor/propgrid/include
+endif
+
 ifeq ($(OSTYPE), osx)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/propgrid/include -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include -I $(DEVROOT)$(RELPATH)/vendor/wxJSON-1.2.1/include
+MOD_INCL=$(STD_INCL) -I $(PROPGRID_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/wxaui-0.9.1/include -I $(DEVROOT)$(RELPATH)/vendor/wxJSON-1.2.1/include
 OBJDEP=
 ifeq (($DEBUG), no)
 C_OPS=
@@ -183,11 +190,22 @@ endif
 VENDORLIBS=
 
 ifeq ($(DEBUG), yes)
+ifeq ($(LBWXVERSION), current)
+LDFLAGS=$(L_SOOPS) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
+endif
+ifeq ($(LBWXVERSION), old)
 LDFLAGS=$(L_SOOPS) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib 
 endif
+endif
 ifeq ($(DEBUG), no)
+ifeq ($(LBWXVERSION), current)
+LDFLAGS=$(L_SOOPS) $(MPATROL) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifeq ($(LBWXVERSION), old)
 LDFLAGS=$(L_SOOPS) $(MPATROL) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
+endif
+
 endif
 
 endif

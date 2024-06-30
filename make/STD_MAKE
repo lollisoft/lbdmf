@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.27 $
+# * $Revision: 1.148.2.28 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.27 2023/10/08 12:25:53 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.28 2024/06/30 19:09:20 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.28  2024/06/30 19:09:20  lothar
+# * Many changes to get Mac OS X build in 64 Bit
+# *
 # * Revision 1.148.2.27  2023/10/08 12:25:53  lothar
 # * Made changes to enable building wxWrapperDll on Windows10
 # * against wxWidgets 3.2.2.1 and hopefully on XP Jenkins against
@@ -1484,6 +1487,7 @@ OSPLATFORM_=$(OSPLATFORM)
 #OSPLATFORM=ppc
 
 OSNAME=Panther
+ADDIDIONAL_SYS_INCL= -I /usr/include/objc
 
 ifeq ($(OSVERSION_), 9.0.0)
 OSNAME=Leopard
@@ -1525,6 +1529,15 @@ ifeq ($(OSVERSION_), 10.8.0)
 OSNAME=Leopard
 endif
 
+# Definition for intel architecture defaults to i386 until before 18.2.0
+ARCHOVERRIDE=no
+
+ifeq ($(OSVERSION_), 18.2.0)
+OSNAME=Leopard
+ADDIDIONAL_SYS_INCL= -I /usr/include/malloc
+ARCHOVERRIDE=yes
+endif
+
 COMPILER_VERSION=
 #COMPILER_VERSION=-4
 
@@ -1555,6 +1568,7 @@ STD_INCL = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
 	-I /usr/include \
 	$(INCLDEBUGMEM) \
+	$(ADDIDIONAL_SYS_INCL) \
 	-I . 
 
 STD_INCL_NODBGMEM = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
@@ -1562,6 +1576,7 @@ STD_INCL_NODBGMEM = -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbHook/linuxCode \
 	-I $(DEVROOT)$(RELPATH)/include \
 	-I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbclasses \
 	-I /usr/include \
+	$(ADDIDIONAL_SYS_INCL) \
 	-I . 
 
 ####################################################################
@@ -1575,9 +1590,23 @@ ifeq ($(OSPLATFORM_), powerpc)
 OSX_ARCH=-arch ppc
 endif
 
+# Detecting OS Bit size for LONG: https://stackoverflow.com/questions/4096173/how-do-i-create-a-single-makefile-for-both-32-and-64-bit
+
+# There is a CPUARCH_64 define within the lbInterfaces.h that disables the
+# configurability to build for 64 or 32 bit systems. The following setting
+# will automate the configurability better, but still disables fallback by
+# explicite 32 bit cross building.
+# This may be needed to externalize into environment setting batch files or similar
+CPUARCH_BITS=$(shell getconf LONG_BIT)
+
 ifneq ($(OSPLATFORM_), powerpc)
 #OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
-OSX_ARCH=-arch i386
+ifeq ($(ARCHOVERRIDE), no)
+OSX_ARCH=-arch i386 -DCPUARCH_32
+endif
+ifneq ($(ARCHOVERRIDE), no)
+OSX_ARCH=-arch x86_64 -DCPUARCH_64
+endif
 endif
 
 endif
