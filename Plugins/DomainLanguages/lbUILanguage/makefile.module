@@ -135,6 +135,15 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/antlr3/include -
 OBJDEP=
 C_SOOPS_WX =-g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
+
+ifeq ($(OSNAME), Panther)
+C_SOOPS+= -DPanther
+endif
+
+ifeq ($(OSNAME), Leopard)
+C_SOOPS+= -DLeopard
+endif
+
 VENDORLIBS=-L$(prefix)/lib -llbantlr3
 LIBS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
 endif    

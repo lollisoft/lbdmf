@@ -110,6 +110,13 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../.. -I $(DEVROOT)$(RELPATH)/vendor/sqlite
 C_SOOPS_WX = $(C_OPS) `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA -DDONT_USE_DATABASE_LAYER_EXCEPTIONS -DSUPPORT_FOREIGN_KEYS -DBUILD_LIBRARY
 C_SOOPS= $(C_SOOPS_WX)
+ifeq ($(LBWXVERSION), current)
+C_SOOPS += -DLBWXVERSION_CURRENT
+endif
+ifeq ($(LBWXVERSION), old)
+C_SOOPS += -DLBWXVERSION_OLD
+endif
+
 VENDORLIBS=
 LDFLAGS=-lc /usr/lib/libgcc_s.1.dylib -L$(HOME)/lib -llbsqlite3
 #LDFLAGS=-lc /usr/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib 

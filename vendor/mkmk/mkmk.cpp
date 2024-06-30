@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.35 $
+ * $Revision: 1.114.2.36 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.35 2023/09/03 09:44:49 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.36 2024/06/30 19:09:20 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.36  2024/06/30 19:09:20  lothar
+ * Many changes to get Mac OS X build in 64 Bit
+ *
  * Revision 1.114.2.35  2023/09/03 09:44:49  lothar
  * OSX dd_findnext
  *
@@ -1365,7 +1368,8 @@ void writeBundleTarget(char* modulename) {
 #undef UNIX
         fprintf(stderr, "Writing osx executable target\n");
         printf("PROGRAM=%s\n", modulename);
-        printf("MKMK_WX_VERSION=`wx-config --version`\n");
+        printf("MKMK_WX_VERSION=`wx-config --version-full`\n");
+        printf("MKMK_WX_NAME=wxWidgets\n");
         printf("\n%s: $(OBJS)\n", modulename);
         
         change_install_names(true);
@@ -1374,8 +1378,8 @@ void writeBundleTarget(char* modulename) {
         
         // Write Mac OS X Bundle
         printf("\t\t#/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
-        printf("\t\t/Developer/Tools/SetFile -a C %s\n", modulename);
-        printf("\t\t-$(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/change-install-names $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
+        printf("\t\t$(DEVELOPER_TOOLS_PATH)/SetFile -a C %s\n", modulename);
+        printf("\t\t-$(HOME)/develop/$(MKMK_WX_NAME)-$(MKMK_WX_VERSION)/change-install-names $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
         printf("\t\trm -Rf %s.app\n", modulename);
         printf("\t\tmkdir -p %s.app\n", modulename);
         printf("\t\tmkdir -p %s.app/Contents\n", modulename);
@@ -1390,18 +1394,27 @@ void writeBundleTarget(char* modulename) {
 #ifdef OSNAME_Panther
         printf("\t\t-rm -Rf %s.app/Contents/Frameworks/wxAUI.framework\n", modulename);
 #endif
+#ifndef LBWXVERSION_CURRENT
         printf("\t\trm -Rf %s.app/Contents/Frameworks/wxPropgrid.framework\n", modulename);
-        
+#endif
+    
         printf("\t\tcp -R $(prefix)/Library/Frameworks/lbHook.framework %s.app/Contents/Frameworks\n", modulename);
         printf("\t\tcp -R $(prefix)/Library/Frameworks/wxJson.framework %s.app/Contents/Frameworks\n", modulename);
         printf("\t\tcp -R $(prefix)/Library/Frameworks/wxWrapperDLL.framework %s.app/Contents/Frameworks\n", modulename);
 #ifdef OSNAME_Panther
         printf("\t\t-cp -R $(prefix)/Library/Frameworks/wxAUI.framework %s.app/Contents/Frameworks\n", modulename);
 #endif
+#ifndef LBWXVERSION_CURRENT
         printf("\t\tcp -R $(prefix)/Library/Frameworks/wxPropgrid.framework %s.app/Contents/Frameworks\n", modulename);
+#endif
         printf("\t\tmkdir -p %s.app/Contents/Resources\n", modulename);
         printf("\t\tcp wxmac.icns %s.app/Contents/Resources/wxmac.icns\n", modulename, modulename);
-        printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
+#ifndef LBWXVERSION_CURRENT
+        printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/develop/$(MKMK_WX_NAME)-$(MKMK_WX_VERSION)/src/mac/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
+#endif
+#ifdef LBWXVERSION_CURRENT
+        printf("\t\tsed -e \"s/IDENTIFIER/`echo . | sed -e 's,\\.\\./,,g' | sed -e 's,/,.,g'`/\" -e \"s/EXECUTABLE/%s/\" -e \"s/VERSION/$(MKMK_WX_VERSION)/\" $(HOME)/develop/$(MKMK_WX_NAME)-$(MKMK_WX_VERSION)/src/osx/carbon/Info.plist.in >%s.app/Contents/Info.plist\n", modulename, modulename);
+#endif
         printf("\t\techo -n \"APPL????\" >%s.app/Contents/PkgInfo\n", modulename);
         printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
 
@@ -2670,7 +2683,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.35 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.36 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");

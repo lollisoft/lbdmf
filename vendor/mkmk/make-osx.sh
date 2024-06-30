@@ -56,16 +56,19 @@ if [ $OSVERSION = 10.8.0 ]; then
 OSNAME=Leopard
 fi
 
+LBWXVERSION=LBWXVERSION_OLD
+
 # Anyhow Mojave uname -r reports this instead 10.14.3 as of my mac tells
 if [ $OSVERSION = 18.2.0 ]; then
 OSNAME=Leopard
+LBWXVERSION=LBWXVERSION_CURRENT
 fi
 
 fi
 
 echo $OSNAME
 
-$CPP mkmk.cpp -c -DOSX -DOSNAME_$OSNAME \
+$CPP mkmk.cpp -c -DOSX -DOSNAME_$OSNAME -D$LBWXVERSION \
     -I /usr/include \
     -I ../dosdir
 

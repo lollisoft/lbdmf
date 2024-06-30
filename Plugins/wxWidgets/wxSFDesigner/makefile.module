@@ -151,6 +151,21 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/wxShapeFramework/include
 OBJDEP=
 C_SOOPS_WX = -g -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
+
+ifeq ($(OSNAME), Panther)
+C_SOOPS+= -DPanther
+else
+C_SOOPS+= -DLeopard
+endif
+
+ifeq ($(LBWXVERSION), current)
+C_SOOPS+= -DLBWXVERSION_CURRENT
+endif
+ifeq ($(LBWXVERSION), old)
+C_SOOPS+= -DLBWXVERSION_OLD
+endif
+
+
 VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 LDFLAGS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook -framework wxShapeFramework `wx-config --inplace --libs` 
 endif    

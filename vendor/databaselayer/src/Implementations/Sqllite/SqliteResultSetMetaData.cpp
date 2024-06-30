@@ -41,7 +41,7 @@ int SqliteResultSetMetaData::GetColumnType(int i)
 
   if (returnType == COLUMN_UNKNOWN)
   {
-	  printf("Warning: Unknown column: %s\n", columnTypeString.c_str());
+	  //printf("Warning: Unknown column: %s\n", columnTypeString.c_str());
     int columnType = sqlite3_column_type(m_pSqliteStatement, i-1);
     switch (columnType)
     {

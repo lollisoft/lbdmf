@@ -417,8 +417,12 @@ void lbConfigure_FK_PK_MappingDialog::OnPKComboBoxSelected( wxCommandEvent &even
         
         buffer[0] = 0;
         
-        sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
-        
+#ifdef LBWXVERSION_CURRENT
+    sprintf(buffer, buf, (const char*) FKName.char_str(), fkTable, (const char*) PKName.char_str(), PKTable->charrep());
+#else
+    sprintf(buffer, buf, FKName.c_str(), fkTable, PKName.c_str(), PKTable->charrep());
+#endif
+    
         sourceQuery->close();
         database->close();
 

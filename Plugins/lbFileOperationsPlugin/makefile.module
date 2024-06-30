@@ -131,6 +131,13 @@ MOD_INCL=$(STD_INCL) -I `xslt-config --prefix`/include -I `xml2-config --prefix`
 OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
+
+ifeq ($(OSNAME), Panther)
+C_SOOPS+= -DPanther
+else
+C_SOOPS+= -DLeopard
+endif
+
 VENDORLIBS= 
 LIBS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `xslt-config --libs` -lexslt
 endif    

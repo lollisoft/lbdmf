@@ -162,8 +162,13 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::registerBaseEventHandler(lb_I_Dispatcher
 
 	for( size_t i = 0; i < arrLayouts.GetCount(); ++i )
 	{
-		sprintf(eventName, "%pModeLayout%s", evHandler, arrLayouts[i].c_str());
-		ev->registerEvent(eventName, temp);
+#ifdef LBWXVERSION_CURRENT
+        sprintf(eventName, "%pModeLayout%s", evHandler, (const char*)arrLayouts[i].char_str());
+#else
+        sprintf(eventName, "%pModeLayout%s", evHandler, arrLayouts[i].c_str());
+#endif
+
+        ev->registerEvent(eventName, temp);
 		metaapp->addMenuEntry("Layout", arrLayouts[i].c_str(), eventName, "");
 		dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSetAutoLayout, eventName);
 	}

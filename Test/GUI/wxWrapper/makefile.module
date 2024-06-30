@@ -185,11 +185,28 @@ endif
 
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
+
+ifeq ($(LBWXVERSION), current)
+C_ELFOPS += -DLBWXVERSION_CURRENT
+endif
+ifeq ($(LBWXVERSION), old)
+C_ELFOPS += -DLBWXVERSION_OLD
+endif
+
 LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load
 endif
 
 ifeq ($(DEBUG), no)
+
+ifeq ($(LBWXVERSION), current)
+LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+C_ELFOPS += -DLBWXVERSION_CURRENT
+endif
+ifeq ($(LBWXVERSION), old)
 LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+C_ELFOPS += -DLBWXVERSION_OLD
+endif
+
 endif
 VENDORLIBS=
 endif

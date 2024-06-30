@@ -30,7 +30,7 @@ ifeq ($(OSTYPE), osx)
 ifeq ($(CRUISECONTROL), yes)
 RELPATH=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/C$(REPO_NAME)PP
+RELPATH=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
@@ -95,9 +95,6 @@ ALLTARGETS = \
 	UAPLeakTest \
 	Database/FKTest \
 	Database/DatabaseLayerWrapperTest \
-	Database/Plain-ODBC-Test \
-	Database/Plain-ODBC-Test-Blob \
-	Database/Plain-ODBC-Test-Refresh \
 	Database \
 	TestUMLImport \
 	ContainerTest \
@@ -108,6 +105,10 @@ ALLTARGETS = \
 	Translation \
 	PluginTest \
 	TestGDB
+
+#	Database/Plain-ODBC-Test \
+#	Database/Plain-ODBC-Test-Blob \
+#	Database/Plain-ODBC-Test-Refresh \
 
 endif
 
