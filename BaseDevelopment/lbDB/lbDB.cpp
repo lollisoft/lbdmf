@@ -2331,10 +2331,10 @@ lbErrCodes LB_STDCALL lbQuery::setBinaryData(int column, lb_I_BinaryData* value)
 	BinaryLenOrInd = value->getSize();
 
 	BinaryLenOrIndCurrentOf = strlen(cursorname)+1;
+	SQLLEN sql_len = BinaryLenOrIndCurrentOf;
 #ifdef CPUARCH_64
 	//TODO: Handle too big values by a not found and return empty string.
 	SQLUSMALLINT sql_column = column;
-	SQLLEN sql_len = BinaryLenOrIndCurrentOf;
 
 	rc = SQLBindCol(hstmt, sql_column, SQL_C_BINARY, (void *)BinaryPtrCur, sql_len, &sql_len);
 	memcpy(BinaryPtrCur, cursorname, sql_len);
