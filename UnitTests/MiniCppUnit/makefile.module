@@ -126,7 +126,7 @@ LDFLAGS= -L. -F$(prefix)/lib -framework Security -framework Carbon
 
 
 ifeq ($(CRUISECONTROL), yes)
-C_SOOPS+= -DCRUISECRONTROL
+C_SOOPS+= -DCRUISECONTROL
 endif    
 
 endif    
