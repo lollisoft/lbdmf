@@ -334,7 +334,11 @@ endif
 ifeq ($(OSTYPE), osx)
 
 MiniCppUnit: dummy
+ifeq ($(CRUISECRONTROL), yes)
+	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -e CRUISECRONTROL=$(CRUISECRONTROL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+else
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+endif
 	$(MAKE) -C $@
 
 UIWrapper: dummy
