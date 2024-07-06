@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.110 $
+# * $Revision: 1.229.2.111 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.110 2024/06/30 19:09:20 lothar Exp $
+# * $Id: Makefile,v 1.229.2.111 2024/07/06 06:18:18 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.111  2024/07/06 06:18:18  lothar
+# * Added special OS X build settings for propgid
+# *
 # * Revision 1.229.2.110  2024/06/30 19:09:20  lothar
 # * Many changes to get Mac OS X build in 64 Bit
 # *
@@ -1368,6 +1371,45 @@ TARGETWXFRAMEWORK=wxframework
 TARGETYACC=yacc
 TARGETLEX=lex
 
+ifeq ($(CRUISECONTROL), yes)
+
+ALLTARGETS = \
+	$(prefix)/bin \
+	$(prefix)/Library \
+	$(prefix)/Library/Frameworks \
+	$(prefix)/lib \
+	$(prefix)/plugins \
+	../vendor/dosdir \
+	../vendor/mkmk \
+	lbHook \
+	lbModule \
+	lbMetaApplication \
+	lbclasses \
+	lbWorkflowEngine \
+	lbDB \
+	lbPluginManager \
+	lbcs \
+	lbtransfer \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/propgrid \
+	../vendor/wxJSON-1.2.1/src \
+	../AppDevelopmentDemo/App \
+	../AppDevelopmentDemo/DynamicApp/App \
+	../Test/GUI/wxWrapperDLL \
+	../Test/GUI/wxPlugins/lbLoginWizard \
+	../Test/GUI/wxPlugins/lbCryptoStream \
+	../vendor/sqlite \
+	../vendor/databaselayer/src/Implementations/Sqllite \
+	../vendor/antlr3/src \
+	../Test/Console/XML \
+	../vendor/wxShapeFramework/src \
+	$(BASEDIRECTORIES) \
+	../Test/GUI/wxWrapper \
+	../AppDevelopmentDemo/MkBs \
+	../vendor/wxShapeFramework/samples/wxSFDemo
+
+else
+
 ALLTARGETS = \
 	$(prefix)/bin \
 	$(prefix)/Library \
@@ -1401,6 +1443,8 @@ ALLTARGETS = \
 	../Test/GUI/wxWrapper \
 	../AppDevelopmentDemo/MkBs \
 	../vendor/wxShapeFramework/samples/wxSFDemo
+
+endif
 
 #	../vendor/propgrid \
 #	../vendor/goldparserengine/src \
