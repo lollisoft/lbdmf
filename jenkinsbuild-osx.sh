@@ -19,6 +19,7 @@ echo export LD_LIBRARY_PATH=`pwd`/lib: >> Projects/$REPO_NAME/makefile
 echo export OSTYPE=osx >> Projects/$REPO_NAME/makefile
 echo export OSVERSION=`uname -r` >> Projects/$REPO_NAME/makefile
 echo export OSPLATFORM=`uname -p` >> Projects/$REPO_NAME/makefile
+echo export DEVELOPER_TOOLS_PATH=/Developer/Tools >> Projects/$REPO_NAME/makefile
 
 i=0
 while [ $# -gt 0 ]
@@ -49,6 +50,8 @@ OSPLATFORM=`uname -p`
 export OSPLATFORM
 CRUISECONTROL=yes
 export CRUISECONTROL
+DEVELOPER_TOOLS_PATH=/Developer/Tools
+export DEVELOPER_TOOLS_PATH
 make -C Projects/$REPO_NAME -f makefile
 make -C Projects/$REPO_NAME -f makefile install
 
