@@ -9,7 +9,7 @@
 #.PHONY: dummy
 
 ifeq ($(OSTYPE), solaris)
-ifeq ($(CRUISECRONTROL), yes)
+ifeq ($(CRUISECONTROL), yes)
 RELPATH=
 else
 RELPATH=/Projects/$(REPO_NAME)
@@ -334,8 +334,8 @@ endif
 ifeq ($(OSTYPE), osx)
 
 MiniCppUnit: dummy
-ifeq ($(CRUISECRONTROL), yes)
-	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -e CRUISECRONTROL=$(CRUISECRONTROL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -e CRUISECONTROL=$(CRUISECONTROL) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 else
 	$(MAKE) -C $@ -e MODULE=MiniCppUnit -e TARGET=$(TARGETFRAMEWORK) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 endif
