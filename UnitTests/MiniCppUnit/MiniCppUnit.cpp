@@ -218,7 +218,7 @@ double scaledEpsilon(const double& expected, const double& fuzzyEpsilon )
 #endif
 #ifdef OSX
 	//return (__isinf(aa))? fuzzyEpsilon: fuzzyEpsilon * aa;
-#ifdef CRUISECRONTROL
+#ifdef CRUISECONTROL
 	return (__fpclassify(aa) == FP_INFINITE)? fuzzyEpsilon: fuzzyEpsilon * aa;
 #else
 	return (fpclassify(aa) == FP_INFINITE)? fuzzyEpsilon: fuzzyEpsilon * aa;
