@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.36 $
+ * $Revision: 1.114.2.37 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.36 2024/06/30 19:09:20 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.37 2024/07/07 09:38:40 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.37  2024/07/07 09:38:40  lothar
+ * Added support for specifying wx library name correctly
+ *
  * Revision 1.114.2.36  2024/06/30 19:09:20  lothar
  * Many changes to get Mac OS X build in 64 Bit
  *
@@ -1368,8 +1371,15 @@ void writeBundleTarget(char* modulename) {
 #undef UNIX
         fprintf(stderr, "Writing osx executable target\n");
         printf("PROGRAM=%s\n", modulename);
-        printf("MKMK_WX_VERSION=`wx-config --version-full`\n");
+
+#ifdef LBWXVERSION_CURRENT
         printf("MKMK_WX_NAME=wxWidgets\n");
+        printf("MKMK_WX_VERSION=`wx-config --version-full`\n");
+#endif
+#ifndef LBWXVERSION_CURRENT
+        printf("MKMK_WX_NAME=wxMac\n");
+        printf("MKMK_WX_VERSION=`wx-config --version`\n");
+#endif
         printf("\n%s: $(OBJS)\n", modulename);
         
         change_install_names(true);
@@ -1379,7 +1389,7 @@ void writeBundleTarget(char* modulename) {
         // Write Mac OS X Bundle
         printf("\t\t#/Developer/Tools/Rez -d __DARWIN__ -t APPL -d __WXMAC__ -i . -d WXUSINGDLL -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/samples -i $(HOME)/wxMac-$(MKMK_WX_VERSION)/include -o %s Carbon.r sample.r\n", modulename);
         printf("\t\t$(DEVELOPER_TOOLS_PATH)/SetFile -a C %s\n", modulename);
-        printf("\t\t-$(HOME)/develop/$(MKMK_WX_NAME)-$(MKMK_WX_VERSION)/change-install-names $(HOME)/develop/wxMac-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
+        printf("\t\t-$(HOME)/develop/$(MKMK_WX_NAME)-$(MKMK_WX_VERSION)/change-install-names $(HOME)/develop/$(MKMK_WX_NAME)-$(MKMK_WX_VERSION)/lib /usr/local %s\n", modulename);
         printf("\t\trm -Rf %s.app\n", modulename);
         printf("\t\tmkdir -p %s.app\n", modulename);
         printf("\t\tmkdir -p %s.app/Contents\n", modulename);
@@ -2683,7 +2693,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.36 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.37 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
