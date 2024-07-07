@@ -2,8 +2,8 @@
 
 set PACKAGINGROOT=%CD%
 set BINARIESROOT=%CD%\..
-set TOOLSFOLDER=C:\Q\develop\Tools
-set VENDORFOLDER=C:\Q\develop\Projects\lbdmf\vendor
+set TOOLSFOLDER=Z:\Q\develop\Tools
+set VENDORFOLDER=Z:\Q\develop\Projects\lbdmf\vendor
 set DEVROOT=dist\dist_iss_src\Develop\Projects\lbdmf
 
 del /Q /S dist
@@ -66,7 +66,7 @@ copy %TOOLSFOLDER%\BinBuildTools\*.* dist\dist_iss_BinBuildTools
 xcopy /S /E Z:\Q\develop\Tools\doxygen\*.* dist\dist_iss_BinBuildTools\doxygen
 xcopy /S /E Z:\Q\develop\Tools\Graphviz2.26.3\*.* dist\dist_iss_BinBuildTools\Graphviz2.26.3
 
-copy C:\Q\develop\wxwin\wx\lib\gcc_dll\*.dll dist\bindist_iss\dll
+copy Z:\Q\develop\wxwin\wx\lib\gcc_dll\*.dll dist\bindist_iss\dll
 
 @REM Copy binary files
 copy %BINARIESROOT%\bin dist\bindist_iss\bin
