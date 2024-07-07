@@ -322,7 +322,7 @@ goto EXIT:
 SET CABUNDLEFILE=%DEVLW%\Q\develop\Tools\curl\ca-bundle.crt
 
 REM Tools used but are prerequisites and may be located anywhere.
-SET PATH=c:\q\develop\tools\tar;c:\q\develop\tools\bison;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\MkMk;%DEVLW%\Q\develop\Tools\BinBuildTools;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin;%DEVLW%\Q\develop\Tools\curl;%PATH%
+SET PATH=z:\q\develop\tools\tar;z:\q\develop\tools\bison;%DEVLW%\Q\develop\Tools\mingw\bin;%DEVLW%\Q\develop\Tools\MkMk;%DEVLW%\Q\develop\Tools\BinBuildTools;%DEVLW%\Q\develop\Tools\bin;%DEVLW%\Q\develop\Projects\bin;%DEVLW%\Q\develop\Tools\curl;%PATH%
 
 cd %DEVROOT%\Projects\%REPO_NAME%\BaseDevelopment
 
