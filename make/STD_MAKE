@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.29 $
+# * $Revision: 1.148.2.30 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.29 2024/07/08 10:46:11 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.30 2024/07/08 10:58:14 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.30  2024/07/08 10:58:14  lothar
+# * The wxWidgets libraries are indeed compiled with -arch i386. That was not the problem
+# *
 # * Revision 1.148.2.29  2024/07/08 10:46:11  lothar
 # * It seems that selecting arch i386 needs all libraries do the same. Try without
 # *
@@ -1605,8 +1608,7 @@ CPUARCH_BITS=$(shell getconf LONG_BIT)
 ifneq ($(OSPLATFORM_), powerpc)
 #OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
 ifeq ($(ARCHOVERRIDE), no)
-#OSX_ARCH=-arch i386 -DCPUARCH_32
-OSX_ARCH=-DCPUARCH_32
+OSX_ARCH=-arch i386 -DCPUARCH_32
 endif
 ifneq ($(ARCHOVERRIDE), no)
 OSX_ARCH=-arch x86_64 -DCPUARCH_64
