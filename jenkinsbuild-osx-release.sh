@@ -19,6 +19,7 @@ echo export LD_LIBRARY_PATH=`pwd`/lib: >> Projects/$REPO_NAME/makefile
 echo export OSTYPE=osx >> Projects/$REPO_NAME/makefile
 echo export OSVERSION=`uname -r` >> Projects/$REPO_NAME/makefile
 echo export OSPLATFORM=`uname -p` >> Projects/$REPO_NAME/makefile
+echo export DEVELOPER_TOOLS_PATH=/Developer/Tools >> Projects/$REPO_NAME/makefile
 
 i=0
 while [ $# -gt 0 ]
@@ -36,20 +37,20 @@ done
 echo dummy: >> Projects/$REPO_NAME/makefile
 echo \ >> Projects/$REPO_NAME/makefile
 echo BaseDevelopment: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C \$\@ -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C \$\@ -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
 
 echo \ >> Projects/$REPO_NAME/makefile
 echo install: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) install >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) install >> Projects/$REPO_NAME/makefile
 
 echo \ >> Projects/$REPO_NAME/makefile
 echo clean: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C BaseDevelopment -e DEVROOT=\$\(DEVROOT\) clean >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) clean >> Projects/$REPO_NAME/makefile
 
 echo \ >> Projects/$REPO_NAME/makefile
 echo wxWrapper: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e DEVROOT=\$\(DEVROOT\) clean >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) clean >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
 OSTYPE=osx
 export OSTYPE
 OSVERSION=`uname -r`
@@ -59,6 +60,6 @@ export OSPLATFORM
 CRUISECONTROL=yes
 export CRUISECONTROL
 make -C Projects/$REPO_NAME -f makefile clean
-make -C Projects/$REPO_NAME -f makefile
-make -C Projects/$REPO_NAME -f makefile install
-make -C Projects/$REPO_NAME -f makefile wxWrapper 
+make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile
+make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile install
+make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile wxWrapper 
