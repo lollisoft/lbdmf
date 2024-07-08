@@ -151,7 +151,7 @@ if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\docdist.iss
 if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\bin-buildtools-dist.iss
-if %errorlevel% neq 0 exit /b %errorlevel%
-"%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\MinGW-3.4.5-Repackaged.iss
+@REM if %errorlevel% neq 0 exit /b %errorlevel%
+@REM "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\MinGW-3.4.5-Repackaged.iss
 if %errorlevel% neq 0 exit /b %errorlevel%
 "%TOOLSFOLDER%\Inno Setup\iscc" %PACKAGINGROOT%\templatedist.iss
