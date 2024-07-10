@@ -170,8 +170,13 @@ else
 C_SOOPS+= -DLeopard
 endif
 
-VENDORLIBS=
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs` #-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
 LDFLAGS=$(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs` -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+VENDORLIBS=
 endif    
 
 endif

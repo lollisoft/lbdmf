@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.31 $
+# * $Revision: 1.148.2.32 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.31 2024/07/08 18:47:13 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.32 2024/07/10 17:38:25 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.32  2024/07/10 17:38:25  lothar
+# * Added support for Mac OS X on Apple Silicon (M2)
+# *
 # * Revision 1.148.2.31  2024/07/08 18:47:13  lothar
 # * Finally activated 64Bit target for Mac OS X 18.2.0 ud´sing ARCHOVERRIDE=yes
 # *
@@ -1547,6 +1550,12 @@ ADDIDIONAL_SYS_INCL= -I /usr/include/malloc
 ARCHOVERRIDE=yes
 endif
 
+ifeq ($(OSVERSION_), 22.6.0)
+OSNAME=Leopard
+ADDIDIONAL_SYS_INCL= -I /usr/include/malloc
+ARCHOVERRIDE=yes
+endif
+
 COMPILER_VERSION=
 #COMPILER_VERSION=-4
 
@@ -1609,6 +1618,9 @@ endif
 CPUARCH_BITS=$(shell getconf LONG_BIT)
 
 ifneq ($(OSPLATFORM_), powerpc)
+
+ifneq ($(OSPLATFORM_), arm)
+
 #OSX_ARCH=-arch i386 -mmacosx-version-min=10.5 -isysroot /Developer/SDKs/MacOSX10.5.sdk
 ifeq ($(ARCHOVERRIDE), no)
 OSX_ARCH=-arch i386 -DCPUARCH_32
@@ -1616,6 +1628,15 @@ endif
 ifneq ($(ARCHOVERRIDE), no)
 OSX_ARCH=-arch x86_64 -DCPUARCH_64
 endif
+
+endif
+
+ifeq ($(OSPLATFORM_), arm)
+
+OSX_ARCH= -DCPUARCH_64
+
+endif
+
 endif
 
 endif

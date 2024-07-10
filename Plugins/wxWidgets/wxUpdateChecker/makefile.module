@@ -164,7 +164,13 @@ C_SOOPS+= -DLeopard
 endif
 
 VENDORLIBS=
-LDFLAGS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook -framework wxJson `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook -framework wxJson `wx-config --inplace --libs` # -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
+LDFLAGS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook -framework wxJson `wx-config --inplace --libs` -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+
 endif
 
 endif

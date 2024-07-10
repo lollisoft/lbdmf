@@ -93,7 +93,7 @@ extern "C" {
 
 #ifdef OSX
 extern "C" {
-#include <malloc.h>
+#include <sys/malloc.h>
 }
 #endif
 /*...e*/
