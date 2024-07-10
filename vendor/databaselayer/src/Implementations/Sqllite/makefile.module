@@ -118,8 +118,13 @@ C_SOOPS += -DLBWXVERSION_OLD
 endif
 
 VENDORLIBS=
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS=-L$(HOME)/lib -llbsqlite3
+endif
+ifneq ($(OSPLATFORM_), arm)
 LDFLAGS=-lc /usr/lib/libgcc_s.1.dylib -L$(HOME)/lib -llbsqlite3
-#LDFLAGS=-lc /usr/lib/libodbc.dylib -lc /usr/lib/libgcc_s.1.dylib 
+endif
+
 LIBS=$(L_SOOPS) $(MPATROL) -F$(HOME)/lib -framework lbHook
 endif    
 

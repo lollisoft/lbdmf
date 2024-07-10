@@ -199,7 +199,13 @@ endif
 ifeq ($(DEBUG), no)
 
 ifeq ($(LBWXVERSION), current)
-LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  #-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
+LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+
 C_ELFOPS += -DLBWXVERSION_CURRENT
 endif
 ifeq ($(LBWXVERSION), old)
