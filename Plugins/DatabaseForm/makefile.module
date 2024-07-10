@@ -169,8 +169,12 @@ C_SOOPS+= -DPanther
 else
 C_SOOPS+= -DLeopard
 endif
-
+ifeq ($(OSPLATFORM_), arm)
+VENDORLIBS=#-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
 VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
 LDFLAGS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs` 
 endif    
 

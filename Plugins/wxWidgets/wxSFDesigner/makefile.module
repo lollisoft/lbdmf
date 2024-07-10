@@ -165,8 +165,13 @@ ifeq ($(LBWXVERSION), old)
 C_SOOPS+= -DLBWXVERSION_OLD
 endif
 
-
+ifeq ($(OSPLATFORM_), arm)
+VENDORLIBS=#-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
 VENDORLIBS=-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+
 LDFLAGS=$(MPATROL) $(L_SOOPS) -F$(prefix)/Library/Frameworks -framework lbHook -framework wxShapeFramework `wx-config --inplace --libs` 
 endif    
 

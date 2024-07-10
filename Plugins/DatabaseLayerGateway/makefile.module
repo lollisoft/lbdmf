@@ -167,9 +167,15 @@ C_SOOPS+= -DPanther
 else
 C_SOOPS+= -DLeopard
 endif
+ifeq ($(OSPLATFORM_), arm)
+VENDORLIBS=-lc -L$(prefix)/lib -llbdatabaselayer_sqllite #-lc $(prefix)/lib/sqlite3.so
+endif
+ifneq ($(OSPLATFORM_), arm)
+VENDORLIBS=-lc -L$(prefix)/lib -llbdatabaselayer_sqllite -lc $(prefix)/lib/sqlite3.so
+endif
 
 VENDORLIBS=-lc -L$(prefix)/lib -llbdatabaselayer_sqllite #-lc $(prefix)/lib/sqlite3.so
-LDFLAGS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+LDFLAGS=$(L_SOOPS) -L. -F$(prefix)/Library/Frameworks -framework lbHook `wx-config --inplace --libs`  #-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
 endif
 
 endif

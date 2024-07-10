@@ -199,7 +199,13 @@ endif
 endif
 ifeq ($(DEBUG), no)
 ifeq ($(LBWXVERSION), current)
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS=$(L_SOOPS) $(MPATROL) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook #-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
 LDFLAGS=$(L_SOOPS) $(MPATROL) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+
 endif
 ifeq ($(LBWXVERSION), old)
 LDFLAGS=$(L_SOOPS) $(MPATROL) -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework lbHook -framework wxPropgrid -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib

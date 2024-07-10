@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.111 $
+# * $Revision: 1.229.2.112 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.111 2024/07/06 06:18:18 lothar Exp $
+# * $Id: Makefile,v 1.229.2.112 2024/07/10 17:38:25 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.112  2024/07/10 17:38:25  lothar
+# * Added support for Mac OS X on Apple Silicon (M2)
+# *
 # * Revision 1.229.2.111  2024/07/06 06:18:18  lothar
 # * Added special OS X build settings for propgid
 # *
@@ -1187,6 +1190,10 @@ endif
 
 # Anyhow Mojave uname -r reports this instead 10.14.3 as of my mac tells
 ifeq ($(OSVERSION_), 18.2.0)
+OSNAME=Leopard
+endif
+
+ifeq ($(OSVERSION_), 22.6.0)
 OSNAME=Leopard
 endif
 

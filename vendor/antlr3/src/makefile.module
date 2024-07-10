@@ -143,7 +143,13 @@ OBJDEP=
 C_SOOPS_WX =-DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` -DSQLITE_ENABLE_COLUMN_METADATA
 C_SOOPS= $(OSX_ARCH) $(C_SOOPS_WX)
 VENDORLIBS= 
-LDFLAGS=$(OSX_ARCH) $(L_SOOPS)  -lc /usr/lib/libgcc_s.1.dylib
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS=$(OSX_ARCH) $(L_SOOPS)  #-lc /usr/lib/libgcc_s.1.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
+LDFLAGS=$(OSX_ARCH) $(L_SOOPS) -lc /usr/lib/libgcc_s.1.dylib
+endif
+
 endif
 
 endif
