@@ -349,6 +349,13 @@ rem call %DEVROOT%\Projects\lbdmf\buildwxWidgets_MinGW_CC.bat
 cd %DEVROOT%\Projects\lbdmf\BaseDevelopment
 )
 
+@echo ********************************************************
+@echo Start building on Jenkins.
+@echo %INCLUDE%
+@echo %WXWIN%
+@echo ********************************************************
+
+
 mingw32-make
 
 
