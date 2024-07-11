@@ -157,11 +157,21 @@ C_ELFOPS += `wx-config --inplace --cxxflags` -DwxUSE_COLOURPICKERCTRL -DUSE_WXWR
 
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS = -L. -F$(prefix)/Library/Frameworks -framework wxShapeFramework `wx-config --inplace --libs`  #-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
 LDFLAGS = -L. -F$(prefix)/Library/Frameworks -framework wxShapeFramework `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
 endif
 
 ifeq ($(DEBUG), no)
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS = -L. -F$(prefix)/Library/Frameworks -framework wxShapeFramework `wx-config --inplace --libs`  #-lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
+ifneq ($(OSPLATFORM_), arm)
 LDFLAGS = -L. -F$(prefix)/Library/Frameworks -framework wxShapeFramework `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib
+endif
 endif
 VENDORLIBS=
 endif
