@@ -376,7 +376,7 @@ clean:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target clean; done 
 
 install:
-	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install; done 
+	for sub_target in $(ALLTARGETS); do -$(MAKE) -C $$sub_target install; done 
 
 install-strip:
 	for sub_target in $(ALLTARGETS); do $(MAKE) -C $$sub_target install-strip; done
