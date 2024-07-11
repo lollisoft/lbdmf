@@ -34,7 +34,7 @@ endif
 
 LBWXVERSION_CC_DEFAULT=old
 
-Ifeq ($(OSPLATFORM), arm)
+ifeq ($(OSPLATFORM), arm)
 LBWXVERSION_CC_DEFAULT=current
 endif
 
