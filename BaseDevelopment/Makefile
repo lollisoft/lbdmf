@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.113 $
+# * $Revision: 1.229.2.114 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.113 2024/07/11 01:27:52 lothar Exp $
+# * $Id: Makefile,v 1.229.2.114 2024/07/11 06:12:06 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.114  2024/07/11 06:12:06  lothar
+# * Fixed error with wx version selection
+# *
 # * Revision 1.229.2.113  2024/07/11 01:27:52  lothar
 # * Added better switch for wx Version
 # *
@@ -1101,9 +1104,12 @@
 #
 #.PHONY: dummy
 
+
 ifeq ($(CRUISECONTROL), yes)
+LBWXVERSION_CC_DEFAULT=old
 RELPATH=/Projects/$(REPO_NAME)
 else
+LBWXVERSION_CC_DEFAULT=current
 RELPATH=/Projects/$(REPO_NAME)
 endif
 
@@ -1195,8 +1201,6 @@ endif
 ifeq ($(OSVERSION_), 18.2.0)
 OSNAME=Leopard
 endif
-
-LBWXVERSION_CC_DEFAULT=old
 
 ifeq ($(OSVERSION_), 22.6.0)
 OSNAME=Leopard
