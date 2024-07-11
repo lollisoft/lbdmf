@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.112 $
+# * $Revision: 1.229.2.113 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.112 2024/07/10 17:38:25 lothar Exp $
+# * $Id: Makefile,v 1.229.2.113 2024/07/11 01:27:52 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.113  2024/07/11 01:27:52  lothar
+# * Added better switch for wx Version
+# *
 # * Revision 1.229.2.112  2024/07/10 17:38:25  lothar
 # * Added support for Mac OS X on Apple Silicon (M2)
 # *
@@ -1193,8 +1196,11 @@ ifeq ($(OSVERSION_), 18.2.0)
 OSNAME=Leopard
 endif
 
+LBWXVERSION_CC_DEFAULT=old
+
 ifeq ($(OSVERSION_), 22.6.0)
 OSNAME=Leopard
+LBWXVERSION_CC_DEFAULT=current
 endif
 
 endif
@@ -2208,7 +2214,7 @@ ifneq ($(OSTYPE), Windows_NT)
 	@echo Build Main makefile
 ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e MODULE=liblbdatabaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
@@ -2224,7 +2230,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.lex
 ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e MODULE=databaselayer_sqllite -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES='../../*.cpp sqlitefk/src/*.c' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
@@ -2360,7 +2366,7 @@ endif
 ../Test/GUI/wxPlugins/lbCryptoStream: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbCryptoStream -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2455,7 +2461,7 @@ endif
 ../vendor/wxShapeFramework/samples/wxSFDemo: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2469,7 +2475,7 @@ endif
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e prefix=$(prefix) -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e prefix=$(prefix) -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e prefix=$(prefix) -e LBWXVERSION=current
 endif
@@ -2483,7 +2489,7 @@ endif
 ../vendor/wxShapeFramework/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXFRAMEWORK) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2495,7 +2501,7 @@ endif
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2504,7 +2510,7 @@ endif
 ../Test/GUI/wxWrapperDLL: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETWXFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2545,7 +2551,7 @@ ifeq ($(OSTYPE), solaris)
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2554,7 +2560,7 @@ endif
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
@@ -2572,7 +2578,7 @@ endif
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2609,7 +2615,7 @@ ifeq ($(OSTYPE), linux)
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2618,7 +2624,7 @@ endif
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
@@ -2661,7 +2667,7 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=libwxJson -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2670,7 +2676,7 @@ endif
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e MODULE=libwxWrapperDLL -e TARGET=$(TARGETWXSO) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
@@ -2694,7 +2700,7 @@ ifeq ($(OSTYPE), Windows_NT)
 ../Test/GUI/wxWrapper: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2718,7 +2724,7 @@ $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 ../vendor/wxJSON-1.2.1/src: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxJson -e TARGET=$(TARGETWXSHARED) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2726,7 +2732,7 @@ endif
 ../Test/GUI/wxWrapperDLL: dummy
 ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e MODULE=wxWrapperDLL -e TARGET=$(TARGETSHARED) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
@@ -2735,7 +2741,7 @@ endif
 ../Test/GUI/wxPlugins/lbLoginWizard: dummy
 	$(MAKE) -s -C $@ -e MODULE=lbLoginWizard -e TARGET=$(TARGETWXPLUGIN) -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2743,7 +2749,7 @@ endif
 ../vendor/wxShapeFramework/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXSHARED) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -2751,7 +2757,7 @@ endif
 ../vendor/wxShapeFramework/samples/wxSFDemo: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
