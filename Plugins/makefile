@@ -32,6 +32,12 @@ ifeq ($(OSTYPE), osx)
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
+LBWXVERSION_CC_DEFAULT=old
+
+Ifeq ($(OSPLATFORM), arm)
+LBWXVERSION_CC_DEFAULT=current
+endif
+
 
 Path=$(PATH)
 
@@ -215,7 +221,7 @@ dummy:
 wxWidgets/wxPropertyForm: dummy
 	$(MAKE) -C $@ -e MODULE=lbwxPropertyForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -223,7 +229,7 @@ endif
 wxWidgets/wxUpdateChecker: dummy
 	$(MAKE) -C $@ -e MODULE=lbwxUpdateChecker -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -231,7 +237,7 @@ endif
 wxWidgets/wxSFDesigner: dummy
 	$(MAKE) -C $@ -e MODULE=lbwxSFDesigner -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -344,7 +350,7 @@ TestPlugin: dummy
 DatabaseForm: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseForm -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -352,7 +358,7 @@ endif
 DatabaseLayerGateway: dummy
 	$(MAKE) -C $@ -e MODULE=DatabaseLayerGateway -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
@@ -364,7 +370,7 @@ lbDMFDataModel: dummy
 DatabaseReport: dummy
 	$(MAKE) -C $@ -e MODULE=lbDatabaseReport -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=old
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
