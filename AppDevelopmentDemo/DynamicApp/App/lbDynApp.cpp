@@ -2306,10 +2306,30 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
 
         *filename = "";
 #ifdef OSX
+    
         lb_I_GUI* g = NULL;
         meta->getGUI(&g);
         if (g) {
-                *filename += "./wxWrapper.app/Contents/Resources/";
+            char* home = getenv("HOME");
+
+            UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
+            UAP_REQUEST(getModuleInstance(), lb_I_String, dynamicAppFilePath)
+
+            _LOGERROR << "Check for location to save daf file" LOG_
+            
+            *testSQLFile = home;
+            *testSQLFile += "/.lbDMF";
+            if (DirectoryExists(testSQLFile->charrep())) {
+                _LOGERROR << "Daf file is to be stored in .lbDMF user path" LOG_
+                *dynamicAppFilePath = home;
+                *dynamicAppFilePath += "/.lbDMF/";
+            } else {
+                _LOGERROR << "Daf file is to be stored in app bundle" LOG_
+                *dynamicAppFilePath = home;
+                *dynamicAppFilePath = "./wxWrapper.app/Contents/Resources/";
+            }
+            
+            *filename += dynamicAppFilePath->charrep();
         }
 #endif
         *filename += LogonApplication->charrep();

@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.12 $
+ * $Revision: 1.188.2.13 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.12 2015/01/01 19:06:51 lollisoft Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.13 2024/07/12 18:41:47 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.13  2024/07/12 18:41:47  lothar
+ * Changes to get application running on Ventura when it was downloaded. Code signing is needed.
+ *
  * Revision 1.188.2.12  2015/01/01 19:06:51  lollisoft
  * Added initial json based update check plugin.
  *
@@ -1054,7 +1057,21 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	lb_I_GUI* g = NULL;
 	getGUI(&g);
 	if (g) {
-		if (!fOp1->begin("./wxWrapper.app/Contents/Resources/MetaApp.mad")) {
+        char* home = getenv("HOME");
+
+        UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
+        UAP_REQUEST(getModuleInstance(), lb_I_String, metaAppFile)
+
+        *testSQLFile = home;
+        *testSQLFile += "/.lbDMF/lbDMF-Sqlite-SystemDB.sql";
+        if (FileExists(testSQLFile->charrep())) {
+            *metaAppFile = home;
+            *metaAppFile += "/.lbDMF/MetaApp.mad";
+        } else {
+            *metaAppFile = "./wxWrapper.app/Contents/Resources/MetaApp.mad";
+        }
+
+        if (!fOp1->begin(metaAppFile->charrep())) {
 			// Fallback
 			if (!fOp1->begin("MetaApp.mad")) {
 				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
