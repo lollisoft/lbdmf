@@ -13,5 +13,5 @@ wget http://ci-master.behrens.de:8080/job/lbDMF-Release_1_0_4_stable_rc1_branch_
 
 wget http://ci-master.behrens.de:8080/job/lbDMF-Release_1_0_4_stable_rc1_branch_OSX_Release/ws/Projects/lbdmf/Test/GUI/wxWrapper/lbDMF-1.3.4-i386.dmg.zip
 
-wget http://ci-master.behrens.de:8080/job/lbDMF-Release_1_0_4_stable_rc1_branch_PPC/ws/Projects/lbdmf/Test/GUI/wxWrapper/lbDMF-1.3.4-powerpc.dmg.zip
-wget http://ci-master.behrens.de:8080/job/lbDMF-Release_1_0_4_stable_rc1_branch_OSXArm/ws/Projects/lbdmf/Test/GUI/wxWrapper/lbDMF-1.3.4-arm.dmg.zip
+wget http://ci-master.behrens.de:8080/job/lbDMF-Release_1_0_4_stable_rc1_branch_PPC_Release/ws/Projects/lbdmf/Test/GUI/wxWrapper/lbDMF-1.3.4-powerpc.dmg.zip
+wget http://ci-master.behrens.de:8080/job/lbDMF-Release_1_0_4_stable_rc1_branch_OSXArm_Release/ws/Projects/lbdmf/Test/GUI/wxWrapper/lbDMF-1.3.4-arm.dmg.zip
