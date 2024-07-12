@@ -64,4 +64,4 @@ make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile
 make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile install
 rm -rf Projects/lbdmf/Test/GUI/wxWrapper/wxWrapper
 rm -rf Projects/lbdmf/Test/GUI/wxWrapper/wxWrapper.app
-make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile wxWrapper 
+make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile 
