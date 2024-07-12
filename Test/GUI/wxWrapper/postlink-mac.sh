@@ -35,6 +35,18 @@ cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.d
 
 cp Info.plist wxWrapper.app/Contents
 
+codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
+codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
+codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
+codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/lib/*
+codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Resources/plugins/*
+xattr -cr wxWrapper.app
+codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/MacOS/wxWrapper
+codesign -dvv wxWrapper.app
+codesign -f -v -s "Lothar Behrens" wxWrapper.app
+#spctl -a -t exec -vvvv wxWrapper.app
+
+
 # Creating a new diskimage
 
 hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+
