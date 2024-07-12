@@ -65,16 +65,3 @@ make -C Projects/$REPO_NAME -e LBWXVERSION=current -f makefile install
 rm -rf Projects/lbdmf/Test/GUI/wxWrapper/wxWrapper
 rm -rf Projects/lbdmf/Test/GUI/wxWrapper/wxWrapper.app
 make -C Projects/$REPO_NAME -e LBWXVERSION=current -f makefile
-
-cd Projects/$REPO_NAME/Test/GUI/wxWrapper
-
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/lib/*
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Resources/plugins/*
-xattr -cr wxWrapper.app
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/MacOS/wxWrapper
-codesign -dvv wxWrapper.app
-codesign -f -v -s "Lothar Behrens" wxWrapper.app
-spctl -a -t exec -vvvv wxWrapper.app
