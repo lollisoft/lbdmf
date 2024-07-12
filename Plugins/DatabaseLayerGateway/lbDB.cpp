@@ -3665,13 +3665,35 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		lb_I_GUI* g = NULL;
 		meta->getGUI(&g);
-		if (g) *connName = "./wxWrapper.app/Contents/Resources/";
+        if (g) {
+            char* home = getenv("HOME");
+
+            UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
+
+            *testSQLFile = home;
+            *testSQLFile += "/.lbDMF";
+            _LOGERROR << "lbDatabaseLayerQuery::open() Check for location to save DB3 file" LOG_
+            if (DirectoryExists(testSQLFile->charrep())) {
+                _LOGERROR << "DB3 file is to be stored in .lbDMF user path" LOG_
+                *testSQLFile = home;
+                *testSQLFile += "/.lbDMF/";
+                *connName = testSQLFile->charrep();
+            } else {
+                _LOGERROR << "DB3 file is to be stored in app bundle" LOG_
+                *connName = "./wxWrapper.app/Contents/Resources/";
+            }
+        }
 #endif
 		*connName += dbName;
 		*connName += ".db3";
-		currentdbLayer->Open(connName->charrep());
+
+        currentdbLayer->Open(connName->charrep());
+        _LOGERROR << "Finally opened DB3 in " << connName->charrep() LOG_
 		_CL_VERBOSE << "lbDatabaseLayerQuery::open() Opened database." LOG_
 	}
+    else {
+        _LOGERROR << "currentdbLayer is opem" LOG_
+    }
 
 	if (skipAutoQuery) return ERR_NONE;
 
@@ -4542,12 +4564,12 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::update() {
 		strSQL += tables[0];
 		strSQL += " SET ";
 		for (int i = 0; i < queryColumns.Count(); i++) {
-			
+            bool isCharOrDate = FALSE;
 #ifdef LBWXVERSION_CURRENT
-			bool isCharOrDate = getColumnType((const char*) queryColumns[i].c_str()) == lbDBColumnChar || getColumnType((const char*) queryColumns[i].c_str()) == lbDBColumnDate;
+			isCharOrDate = getColumnType((const char*) queryColumns[i].c_str()) == lbDBColumnChar || getColumnType((const char*) queryColumns[i].c_str()) == lbDBColumnDate;
 #endif
 #ifdef LBWXVERSION_OLD
-			bool isCharOrDate = getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnChar || getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnDate;
+			isCharOrDate = getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnChar || getColumnType((char*) queryColumns[i].c_str()) == lbDBColumnDate;
 #endif
 			
 			if (isCharOrDate) {

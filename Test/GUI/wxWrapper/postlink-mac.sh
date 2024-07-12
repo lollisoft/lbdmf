@@ -63,6 +63,10 @@ cp ../../../AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentatio
 cp -R wxWrapper.app/Contents/Resources/XSLT /Volumes/lbDMF-$VERSION/
 cp -R wxWrapper.app/Contents/Resources/UMLSamples /Volumes/lbDMF-$VERSION/
 
+mkdir /Volumes/lbDMF-$VERSION/.lbDMF
+cp -R wxWrapper.app/Contents/Resources/*.sql /Volumes/lbDMF-$VERSION/.lbDMF
+
+
 cat <<EOF >> /Volumes/lbDMF-$VERSION/Readme.txt
 Dear Mac user!
 
