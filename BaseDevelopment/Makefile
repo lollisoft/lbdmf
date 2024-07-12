@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.114 $
+# * $Revision: 1.229.2.115 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.114 2024/07/11 06:12:06 lothar Exp $
+# * $Id: Makefile,v 1.229.2.115 2024/07/12 18:41:47 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.115  2024/07/12 18:41:47  lothar
+# * Changes to get application running on Ventura when it was downloaded. Code signing is needed.
+# *
 # * Revision 1.229.2.114  2024/07/11 06:12:06  lothar
 # * Fixed error with wx version selection
 # *

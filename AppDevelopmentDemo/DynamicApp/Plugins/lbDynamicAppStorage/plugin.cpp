@@ -267,16 +267,19 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	}
 #endif
 #ifdef OSX
+    _LOGERROR << "Check for location to save db3 files" LOG_
 	*testSQLFile = home;
-	*testSQLFile += "/.lbDMF/lbDMF-Sqlite-SystemDB.sql";
-	localInitialisation = FileExists(testSQLFile->charrep());
+	*testSQLFile += "/.lbDMF";
+	localInitialisation = DirectoryExists(testSQLFile->charrep());
 	if (localInitialisation) {
+        _LOGERROR << "Save db3 files in .lbDMF" LOG_
 		*initialDatabaseLocation = home;
 		*initialDatabaseLocation += "/.lbDMF/";
 	} else {
 		/// \todo Check if bundle is always as expected.
 		// The application could be renamed.
-		
+
+        _LOGERROR << "Save db3 files in application bundle" LOG_
 		*testSQLFile = "./wxWrapper.app/Contents/Resources/lbDMF-Sqlite-SystemDB.sql";
 		if (FileExists(testSQLFile->charrep())) {
 			*initialDatabaseLocation = "./wxWrapper.app/Contents/Resources/";
@@ -348,7 +351,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #endif
 #endif
 	
-	_LOG << "Have path to initial database files: " << initialDatabaseLocation->charrep() LOG_
+	_LOGERROR << "Have path to initial database files: " << initialDatabaseLocation->charrep() LOG_
 	
 	char* dbbackend = meta->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
