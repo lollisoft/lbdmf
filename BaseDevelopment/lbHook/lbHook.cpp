@@ -130,6 +130,7 @@ bool lbLogActivated = FALSE;
 int instances = 0;
 char* lbLogDirectory = NULL;
 char* lbLogFile = NULL;
+char* lbDataDirectory = NULL;
 #ifdef LINUX
 lb_I_Log *lb_log = NULL;
 int lb_isInitializing = 0;
@@ -198,8 +199,10 @@ extern "C" DLLEXPORT void 		LB_CDECL _InstanceCount(int inst) { InstanceCount(in
 extern "C" DLLEXPORT void 		LB_CDECL _Instances() { Instances(); }
 extern "C" DLLEXPORT lbErrCodes		LB_CDECL _lbGetFunctionPtr(const char* name, HINSTANCE hinst, void** pfn) { return lbGetFunctionPtr(name, hinst, pfn); }
 extern "C" DLLEXPORT lbStringKey*	LB_CDECL _getStringKey(char* buf) { return getStringKey(buf); }
-extern "C" DLLEXPORT char* 		LB_CDECL _getLogDirectory() { return getLogDirectory(); }
-extern "C" DLLEXPORT char* 		LB_CDECL _setLogDirectory(char* name) { return setLogDirectory(name); }
+extern "C" DLLEXPORT char*         LB_CDECL _getLogDirectory() { return getLogDirectory(); }
+extern "C" DLLEXPORT char*         LB_CDECL _setLogDirectory(char* name) { return setLogDirectory(name); }
+extern "C" DLLEXPORT char*         LB_CDECL _getDataDirectory() { return getDataDirectory(); }
+extern "C" DLLEXPORT char*         LB_CDECL _setDataDirectory(char* name) { return setDataDirectory(name); }
 extern "C" DLLEXPORT bool 		LB_CDECL _FileExists(char *filename) { return FileExists(filename);}
 extern "C" DLLEXPORT bool 		LB_CDECL _DirectoryExists(char *filename) { return DirectoryExists(filename);}
 extern "C" DLLEXPORT DWORD 		LB_CDECL _lbGetCurrentProcessId() { return lbGetCurrentProcessId(); }
@@ -353,6 +356,40 @@ DLLEXPORT char* LB_CDECL getLogDirectory() {
 }
 /*...e*/
 
+DLLEXPORT char* LB_CDECL setDataDirectory(char* name) {
+    if (lbDataDirectory != NULL) free(lbDataDirectory);
+    lbDataDirectory = strdup(name);
+}
+
+/*...sDLLEXPORT char\42\ LB_CDECL getLogDirectory\40\\41\:0:*/
+DLLEXPORT char* LB_CDECL getDataDirectory() {
+    if (lbDataDirectory == NULL) {
+        char* home =
+        #if defined(WINDOWS)
+        getenv("USERPROFILE");
+        #endif
+        #if defined(UNIX) || defined(LINUX) || defined(OSX)
+        getenv("HOME");
+        #endif
+
+        lbDataDirectory = (char*) malloc(strlen(home)+10);
+        lbDataDirectory[0] = 0;
+        strcat(lbDataDirectory, home);
+        strcat(lbDataDirectory, SLASH);
+        strcat(lbDataDirectory, ".lbDMF");
+
+        // Don't ask for failure.
+        #ifdef __WATCOMC__
+        mkdir(lbDataDirectory);
+        #endif
+        #if defined(OSX) || defined(LINUX) || defined(UNIX)
+        mkdir(lbDataDirectory, S_IRWXU);
+        #endif
+    }
+
+    return lbDataDirectory;
+}
+/*...e*/
 /** \brief Return the operating system type.
 * On windows it will return "Windows".
 * On Mac it will return "Mac".

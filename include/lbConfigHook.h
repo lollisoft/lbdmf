@@ -522,6 +522,15 @@ extern "C" DLLEXPORT void LB_CDECL logMessage(const char *msg, const char *f, in
 extern "C" DLLEXPORT char* LB_CDECL getLogDirectory();
 extern "C" DLLEXPORT char* LB_CDECL setLogDirectory(char* name);
 
+/** \brief Get the data directory.
+ * Returns the data directory.
+ *
+ * The directory is user based and so, located in the home directory of the user.
+ * Value is based on $(HOME)/.lbDMF.
+ */
+extern "C" DLLEXPORT char* LB_CDECL getDataDirectory();
+extern "C" DLLEXPORT char* LB_CDECL setDataDirectory(char* name);
+
 extern "C" DLLEXPORT void LB_CDECL createDirectory(const char* name);
 extern "C" DLLEXPORT void LB_CDECL deleteDirectory(const char* name);
 

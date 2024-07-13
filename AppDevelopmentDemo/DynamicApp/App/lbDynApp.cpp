@@ -2315,16 +2315,16 @@ lbErrCodes LB_STDCALL lbDynamicApplication::uninitialize() {
             UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
             UAP_REQUEST(getModuleInstance(), lb_I_String, dynamicAppFilePath)
 
-            _LOGERROR << "Check for location to save daf file" LOG_
+            _LOGERROR << "lbDynamicApplication::uninitialize() Check for location to save daf file" LOG_
             
             *testSQLFile = home;
             *testSQLFile += "/.lbDMF";
             if (DirectoryExists(testSQLFile->charrep())) {
-                _LOGERROR << "Daf file is to be stored in .lbDMF user path" LOG_
+                _LOGERROR << "lbDynamicApplication::uninitialize() Daf file is to be stored in .lbDMF user path" LOG_
                 *dynamicAppFilePath = home;
                 *dynamicAppFilePath += "/.lbDMF/";
             } else {
-                _LOGERROR << "Daf file is to be stored in app bundle" LOG_
+                _LOGERROR << "lbDynamicApplication::uninitialize() Daf file is to be stored in app bundle" LOG_
                 *dynamicAppFilePath = home;
                 *dynamicAppFilePath = "./wxWrapper.app/Contents/Resources/";
             }
@@ -2554,7 +2554,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
          * If not, at least a local Sqlite database should be setup with the use of the UML import feature.
          */
 
-        _LOG << "lbDynamicApplication::initialize('" << LogonUser->charrep() << "', '" << LogonApplication->charrep() << "') called." LOG_
+        _LOGALWAYS << "lbDynamicApplication::initialize('" << LogonUser->charrep() << "', '" << LogonApplication->charrep() << "') called." LOG_
 
         UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
         UAP(lb_I_Plugin, pl)
@@ -2569,7 +2569,18 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
         lb_I_GUI* g = NULL;
         meta->getGUI(&g);
         if (g) {
+            char* home = getenv("HOME");
+
+
+            _LOGERROR << "lbDynamicApplication::uninitialize() Check for location to save daf file" LOG_
+            
+            if (DirectoryExists(getDataDirectory())) {
+                *filename += getDataDirectory();
+                *filename += "/";
+            } else {
                 *filename += "./wxWrapper.app/Contents/Resources/";
+            }
+            
         }
 #endif
         *filename += LogonApplication->charrep();

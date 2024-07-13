@@ -42,10 +42,11 @@ codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/lib/*
 codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Resources/plugins/*
 xattr -cr wxWrapper.app
 codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/MacOS/wxWrapper
-codesign -dvv wxWrapper.app
+#codesign -dvv wxWrapper.app
 codesign -f -v -s "Lothar Behrens" wxWrapper.app
 #spctl -a -t exec -vvvv wxWrapper.app
-
+#codesign -dvv wxWrapper.app
+#codesign -vv --deep-verify wxWrapper.app 
 
 # Creating a new diskimage
 
