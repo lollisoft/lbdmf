@@ -3673,6 +3673,7 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
             if (DirectoryExists(getDataDirectory())) {
                 _LOGERROR << "DB3 file is to be stored in .lbDMF user path" LOG_
                 *connName = getDataDirectory();
+                *connName += "/";
             } else {
                 _LOGERROR << "DB3 file is to be stored in app bundle" LOG_
                 *connName = "./wxWrapper.app/Contents/Resources/";
