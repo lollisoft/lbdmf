@@ -237,7 +237,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	UAP(lb_I_Query, sysSchemaQuery)
 	UAP(lb_I_Database, database)
 	
-	UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, dataLocationDirectory)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, initialDatabaseLocation)
 	
 	const char* lbDMFPasswd = getenv("lbDMFPasswd");
@@ -267,21 +267,19 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	}
 #endif
 #ifdef OSX
-    _LOGERROR << "Check for location to save db3 files" LOG_
-	*testSQLFile = home;
-	*testSQLFile += "/.lbDMF";
-	localInitialisation = DirectoryExists(testSQLFile->charrep());
+    _LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Check for location to save db3 files" LOG_
+    *dataLocationDirectory = getDataDirectory();
+	localInitialisation = DirectoryExists(dataLocationDirectory->charrep());
 	if (localInitialisation) {
-        _LOGERROR << "Save db3 files in .lbDMF" LOG_
-		*initialDatabaseLocation = home;
-		*initialDatabaseLocation += "/.lbDMF/";
+        _LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Save db3 files in .lbDMF" LOG_
+		*initialDatabaseLocation = dataLocationDirectory->charrep();
+        *initialDatabaseLocation += "/";
 	} else {
 		/// \todo Check if bundle is always as expected.
 		// The application could be renamed.
 
-        _LOGERROR << "Save db3 files in application bundle" LOG_
-		*testSQLFile = "./wxWrapper.app/Contents/Resources/lbDMF-Sqlite-SystemDB.sql";
-		if (FileExists(testSQLFile->charrep())) {
+        _LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Save db3 files in application bundle" LOG_
+		if (FileExists("./wxWrapper.app/Contents/Resources/lbDMF-Sqlite-SystemDB.sql")) {
 			*initialDatabaseLocation = "./wxWrapper.app/Contents/Resources/";
 		} else {
 			_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Application is not properly installed. Could not find SQL scripts for initial database setup." LOG_
@@ -351,7 +349,8 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #endif
 #endif
 	
-	_LOGERROR << "Have path to initial database files: " << initialDatabaseLocation->charrep() LOG_
+	_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Have path to initial database files: " <<
+    initialDatabaseLocation->charrep() LOG_
 	
 	char* dbbackend = meta->getSystemDatabaseBackend();
 	if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
@@ -379,7 +378,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	}
 	
 	if (database == NULL) {
-		_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Could not load database backend for system db, either plugin or built in version." LOG_
+		_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Error: Could not load database backend for system db, either plugin or built in version." LOG_
 		
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_BACKEND;
 		
@@ -387,7 +386,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	}
 
 	if (database->init() != ERR_NONE) {
-		_LOG << "lbPluginModuleDynamicAppStorage::installDatabase() Failed to initialize database." LOG_
+		_LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() Failed to initialize database." LOG_
 		
 		_check_for_databases_failure_step = META_DB_FAILURE_SYS_DB_INITIALIZE;
 		
@@ -429,6 +428,9 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #ifdef OSX
 			// Create data directory, if not available
 			*applicationDatabaseName += "lbDMF-Sqlite-ApplicationDB.sql";
+            if (!FileExists(applicationDatabaseName->charrep())) {
+                *applicationDatabaseName = "./wxWrapper.app/Contents/Resources/lbDMF-Sqlite-ApplicationDB.sql";
+            }
 #endif
 #ifdef SOLARIS
 			// Create data directory, if not available
@@ -442,10 +444,13 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #endif
 #endif
 #endif
-			_LOG << "Apply the SQL file to the lbDMF application database: " << applicationDatabaseName->charrep() LOG_
-			inputApp->setFileName(applicationDatabaseName->charrep());
+			_LOGALWAYS << "lbPluginModuleDynamicAppStorage::installDatabase() Apply the SQL file to the lbDMF application database: " <<
+            applicationDatabaseName->charrep() LOG_
+			
+            inputApp->setFileName(applicationDatabaseName->charrep());
 			
 			if (!inputApp->open()) {
+                _LOGERROR << "lbPluginModuleDynamicAppStorage::installDatabase() SQL file open failed" LOG_
 #ifdef WINDOWS
 				// Try the path for a typical Windows installation
 				inputApp->setFileName("Database\\lbDMF-Sqlite-ApplicationDB.sql");
@@ -459,7 +464,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			SQL = inputApp->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
-				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOGERROR << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
 				_LOG << "== SQL Start ==" LOG_
 				_LOG << "SQL query was: " << SQL->charrep() LOG_
 				_LOG << "== SQL End ==" LOG_
@@ -474,6 +479,9 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 #endif
 #ifdef OSX
 			*systemDatabaseName += "lbDMF-Sqlite-SystemDB.sql";
+            if (!FileExists(systemDatabaseName->charrep())) {
+                *systemDatabaseName = "./wxWrapper.app/Contents/Resources/lbDMF-Sqlite-SystemDB.sql";
+            }
 #endif
 #ifdef SOLARIS
 			*systemDatabaseName += "lbDMF-Sqlite-SystemDB.sql";
@@ -503,7 +511,7 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 			SQL = inputSys->getAsString();
 			sysSchemaQuery->skipFKCollecting();
 			if (sysSchemaQuery->query(SQL->charrep()) != ERR_NONE) {
-				_LOG << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
+				_LOGERROR << "lb_MetaApplication::installDatabase() Failed to install initial system database." LOG_
 				_LOG << "== SQL Start ==" LOG_
 				_LOG << "SQL query was: " << SQL->charrep() LOG_
 				_LOG << "== SQL End ==" LOG_
