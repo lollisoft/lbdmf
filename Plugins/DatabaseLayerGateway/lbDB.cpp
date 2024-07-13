@@ -1533,6 +1533,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 UAP(lb_I_Integer, key)
 
 lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) {
+    _LOGALWAYS << "lbDatabaseLayerQuery::lbDatabaseLayerQuery(int readonly) called" LOG_
 	peeking = true;
 	
 	_readonly = readonly;
@@ -3687,8 +3688,8 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
 		*connName += dbName;
 		*connName += ".db3";
 
-        currentdbLayer->Open(connName->charrep());
         _LOGERROR << "Finally opened DB3 in " << connName->charrep() LOG_
+        currentdbLayer->Open(connName->charrep());
 		_CL_VERBOSE << "lbDatabaseLayerQuery::open() Opened database." LOG_
 	}
     else {
@@ -5684,6 +5685,7 @@ DatabaseLayer* LB_STDCALL lbDatabaseLayerDatabase::getBackend(const char* connec
 
 void	LB_STDCALL lbDatabaseLayerDatabase::open(const char* connectionname) {
 	lbErrCodes err = ERR_NONE;
+    _LOGALWAYS << "lbDatabaseLayerDatabase::open(const char* connectionname) called" LOG_
 	if (connectionname == NULL) {
 		_LOG << "lbDatabaseLayerDatabase::getQuery() Error: Did not got a connection name." LOG_
 		return;
@@ -5702,7 +5704,17 @@ void	LB_STDCALL lbDatabaseLayerDatabase::open(const char* connectionname) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	lb_I_GUI* g = NULL;
 	meta->getGUI(&g);
-	if (g) *connName = "./wxWrapper.app/Contents/Resources/";
+    if (g) {
+        UAP_REQUEST(getModuleInstance(), lb_I_String, dataLocationDirectory)
+        *dataLocationDirectory = getDataDirectory();
+        if (DirectoryExists(dataLocationDirectory->charrep())) {
+            *connName = dataLocationDirectory->charrep();
+            *connName += "/";
+        } else {
+            *connName = "./wxWrapper.app/Contents/Resources/";
+        }
+
+    }
 #endif
 
 	*connName += connectionname;
@@ -5796,7 +5808,7 @@ lb_I_Query* LB_STDCALL lbDatabaseLayerDatabase::getQuery(const char* connectionn
 	open(connectionname);
 
 	if (query->init(dbl, connectionname) != ERR_NONE) {
-		_LOG << "ERROR: Initializion of query has been failed!" LOG_
+		_LOGERROR << "ERROR: Initializion of query has been failed!" LOG_
 
 		//return NULL;
 	}

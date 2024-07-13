@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.13 $
+ * $Revision: 1.188.2.14 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.13 2024/07/12 18:41:47 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.14 2024/07/13 10:41:09 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.14  2024/07/13 10:41:09  lothar
+ * Changed default data directory for Mac OS X to be /Users/lothar/.lbDMF for changing data files
+ *
  * Revision 1.188.2.13  2024/07/12 18:41:47  lothar
  * Changes to get application running on Ventura when it was downloaded. Code signing is needed.
  *
@@ -1059,12 +1062,9 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	if (g) {
         char* home = getenv("HOME");
 
-        UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
         UAP_REQUEST(getModuleInstance(), lb_I_String, metaAppFile)
 
-        *testSQLFile = home;
-        *testSQLFile += "/.lbDMF/lbDMF-Sqlite-SystemDB.sql";
-        if (FileExists(testSQLFile->charrep())) {
+        if (DirectoryExists(getDataDirectory())) {
             *metaAppFile = home;
             *metaAppFile += "/.lbDMF/MetaApp.mad";
         } else {
@@ -1207,14 +1207,30 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			lb_I_GUI* g = NULL;
 			getGUI(&g);
 			if (g) {
-				if (!fOp->begin("./wxWrapper.app/Contents/Resources/MetaApp.mad")) {
-					// Fallback
-					if (!fOp->begin("MetaApp.mad")) {
-						_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+                if (DirectoryExists(getDataDirectory())) {
+                    UAP_REQUEST(getModuleInstance(), lb_I_String, metaAppFile)
 
-						return ERR_FILE_READ;
-					}
-				}
+                    *metaAppFile = getDataDirectory();
+                    *metaAppFile += "/MetaApp.mad";
+                    
+                    if (!fOp->begin(metaAppFile->charrep())) {
+                        // Fallback
+                        if (!fOp->begin("MetaApp.mad")) {
+                            _CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+
+                            return ERR_FILE_READ;
+                        }
+                    }
+                } else {
+                    if (!fOp->begin("./wxWrapper.app/Contents/Resources/MetaApp.mad")) {
+                        // Fallback
+                        if (!fOp->begin("MetaApp.mad")) {
+                            _CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
+
+                            return ERR_FILE_READ;
+                        }
+                    }
+                }
 			} else if (!fOp->begin("MetaApp.mad")) {
 				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
