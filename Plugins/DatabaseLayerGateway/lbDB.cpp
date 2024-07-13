@@ -3669,16 +3669,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerQuery::open() {
         if (g) {
             char* home = getenv("HOME");
 
-            UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile)
-
-            *testSQLFile = home;
-            *testSQLFile += "/.lbDMF";
             _LOGERROR << "lbDatabaseLayerQuery::open() Check for location to save DB3 file" LOG_
-            if (DirectoryExists(testSQLFile->charrep())) {
+            if (DirectoryExists(getDataDirectory())) {
                 _LOGERROR << "DB3 file is to be stored in .lbDMF user path" LOG_
-                *testSQLFile = home;
-                *testSQLFile += "/.lbDMF/";
-                *connName = testSQLFile->charrep();
+                *connName = getDataDirectory();
             } else {
                 _LOGERROR << "DB3 file is to be stored in app bundle" LOG_
                 *connName = "./wxWrapper.app/Contents/Resources/";
