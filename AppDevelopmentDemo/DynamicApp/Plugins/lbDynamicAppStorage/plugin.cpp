@@ -237,7 +237,8 @@ bool LB_STDCALL lbPluginModuleDynamicAppStorage::installDatabase() {
 	UAP(lb_I_Query, sysSchemaQuery)
 	UAP(lb_I_Database, database)
 	
-	UAP_REQUEST(getModuleInstance(), lb_I_String, dataLocationDirectory)
+    UAP_REQUEST(getModuleInstance(), lb_I_String, testSQLFile) // For non OSX still needed.
+    UAP_REQUEST(getModuleInstance(), lb_I_String, dataLocationDirectory)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, initialDatabaseLocation)
 	
 	const char* lbDMFPasswd = getenv("lbDMFPasswd");
