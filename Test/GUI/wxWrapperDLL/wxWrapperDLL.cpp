@@ -152,7 +152,8 @@
 
 #include <wxWrapperDLL.h>
 
-#define DYNAMIC_QUIT            1000
+#define DYNAMIC_QUIT        1000
+#define DYNAMIC_TOOL_QUIT   1007
 
 /*...swxAppSelectPage:0:*/
 class wxAppSelectPage :
@@ -678,9 +679,13 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                         &lb_wxFrame::OnDispatch );
 
+        Connect( DYNAMIC_TOOL_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
+                        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                        &lb_wxFrame::OnDispatch );
+
         Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
-                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                         &lb_wxFrame::OnDispatch );
+                        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                        &lb_wxFrame::OnDispatch );
 
         Connect( DYNAMIC_ABOUT, -1, wxEVT_COMMAND_MENU_SELECTED,
                          (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -2292,6 +2297,12 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
                                 }
                         }
                 break;
+        case DYNAMIC_TOOL_QUIT:
+                {
+                    wxCommandEvent wxEv = wxCommandEvent(wxEVT_MENU, DYNAMIC_QUIT);
+                    AddPendingEvent(wxEv);
+                }
+                break;
         case DYNAMIC_QUIT:
                 OnQuit(event);
                 break;
@@ -2943,7 +2954,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
                 wxBitmap bm = wxBitmap(*im);
 				bitmaps.push_back(bm);
 
-                maintb->AddTool(DYNAMIC_QUIT, (const char*) _trans("Exit"), bm);
+                // DYNAMIC_TOOL_QUIT indirection workaround for wxAuiToolBar::OnLeftUp(wxMouseEvent& evt) issue
+                maintb->AddTool(DYNAMIC_TOOL_QUIT, (const char*) _trans("Exit"), bm);
 #else
                 wxBitmap bm = wxBitmap(*im);
 
