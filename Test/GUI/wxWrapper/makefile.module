@@ -193,7 +193,22 @@ ifeq ($(LBWXVERSION), old)
 C_ELFOPS += -DLBWXVERSION_OLD
 endif
 
-LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs`  -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load
+ifeq ($(LBWXVERSION), current)
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -bind_at_load
+endif
+ifneq ($(OSPLATFORM_), arm)
+LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load
+endif
+endif
+ifeq ($(LBWXVERSION), old)
+ifeq ($(OSPLATFORM_), arm)
+LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -bind_at_load
+endif
+ifneq ($(OSPLATFORM_), arm)
+LDFLAGS = $(MPATROL) -L. -F$(prefix)/Library/Frameworks -framework wxPropgrid $(AUIFRAMEWORK) -framework wxWrapperDLL -framework lbHook `wx-config --inplace --libs` -lc /usr/lib/libgcc_s.1.dylib -lc /usr/lib/libstdc++.6.dylib -bind_at_load
+endif
+endif
 endif
 
 ifeq ($(DEBUG), no)
