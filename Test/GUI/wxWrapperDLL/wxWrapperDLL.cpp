@@ -105,9 +105,9 @@
 #include <wx/menuitem.h>
 #include "wx/propgrid/propdev.h"
 #endif
-#ifdef LBWXVERSION_CURRENT
-#include <wx/menu.h>
-#endif
+//#ifdef LBWXVERSION_CURRENT
+//#include <wx/menu.h>
+//#endif
 
 // This defines wxPropertyGridManager.
 #include <wx/propgrid/manager.h>
@@ -2302,12 +2302,14 @@ void lb_wxFrame::OnDispatch(wxCommandEvent& event ) {
                                 }
                         }
                 break;
+#ifdef LBWXVERSION_CURRENT
         case DYNAMIC_TOOL_QUIT:
                 {
                     wxCommandEvent wxEv = wxCommandEvent(wxEVT_MENU, DYNAMIC_QUIT);
                     AddPendingEvent(wxEv);
                 }
                 break;
+#endif
         case DYNAMIC_QUIT:
                 OnQuit(event);
                 break;
