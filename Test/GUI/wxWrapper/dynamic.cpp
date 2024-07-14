@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.16 2024/07/14 10:30:48 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.17 2024/07/14 21:35:27 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.16 $
+ * $Revision: 1.174.2.17 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.16 2024/07/14 10:30:48 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.17 2024/07/14 21:35:27 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.17  2024/07/14 21:35:27  lothar
+ * Made exit tool use post event to avoid crash.
+ *
  * Revision 1.174.2.16  2024/07/14 10:30:48  lothar
  * Tewaked the update check not to interfere with the splash screen
  *
@@ -711,13 +714,14 @@
 /*...e*/
 
 // ID for the menu commands
-#define DYNAMIC_QUIT		1000
-#define DYNAMIC_TEXT		1001
-#define DYNAMIC_ABOUT		1002
-#define DYNAMIC_BUILDMENU	1003
+//#define DYNAMIC_QUIT		1000
+//#define DYNAMIC_TEXT		1001
+//#define DYNAMIC_ABOUT		1002
+//#define DYNAMIC_BUILDMENU	1003
 #define DYNAMIC_TEST1		1004
 #define DYNAMIC_TEST2       1005
-#define DYNAMIC_VERBOSE		1006
+//#define DYNAMIC_VERBOSE   1006
+//#define DYNAMIC_TOOL_QUIT 1007
 
 #ifdef USE_WXWRAPPER_DLL
 #include "wx/propgrid/propgrid.h"
@@ -1314,7 +1318,7 @@ lbErrCodes LB_STDCALL MyApp::HandleAddMenu(lb_I_Unknown* uk) {
 	QI(uk, lb_I_String, string)
 
 	wxMenu *menu = new wxMenu;
-
+    // The complete code in this function seems to be stone age and not anymore relevant
 	menu->Append(DYNAMIC_TEST1, "&About");
 	menu->Append(DYNAMIC_TEST2, "E&xit");
 
