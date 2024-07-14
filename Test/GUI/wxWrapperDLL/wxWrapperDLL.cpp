@@ -1798,18 +1798,25 @@ void LB_STDCALL lb_wxGUI::registerDBForm(const char* formName, lb_I_DatabaseForm
 }
 
 void LB_STDCALL lb_wxGUI::splashDestroyed() {
-        splashOpened = false;
+    splashOpened = false;
 
-        if (frame) {
-                _LOG << "Add a pending event..." LOG_
-                wxCommandEvent event( wxEVT_NULL, SHOW_PENDING_MESSAGES );
-                event.SetEventObject( frame );
-                frame->GetEventHandler()->AddPendingEvent(event);
-        }
+    if (frame) {
+        _LOG << "Add a pending event..." LOG_
+        // Will activate update chechs starting after splash screen
+        frame->enableTimer(true);
+
+        wxCommandEvent event( wxEVT_NULL, SHOW_PENDING_MESSAGES );
+        event.SetEventObject( frame );
+        frame->GetEventHandler()->AddPendingEvent(event);
+    }
 }
 
 void LB_STDCALL lb_wxGUI::splashCreated() {
-        splashOpened = true;
+    splashOpened = true;
+    
+    if (frame) {
+        frame->enableTimer(false);
+    }
 }
 
 void LB_STDCALL lb_wxGUI::showPendingMessages() {
