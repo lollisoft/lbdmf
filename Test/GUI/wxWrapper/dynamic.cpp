@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.15 2023/10/14 21:10:07 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.16 2024/07/14 10:30:48 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.15 $
+ * $Revision: 1.174.2.16 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.15 2023/10/14 21:10:07 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.16 2024/07/14 10:30:48 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.16  2024/07/14 10:30:48  lothar
+ * Tewaked the update check not to interfere with the splash screen
+ *
  * Revision 1.174.2.15  2023/10/14 21:10:07  lothar
  * Adopted dynamic.cpp to new wxWidgets library
  *
@@ -1239,7 +1242,8 @@ bool MyApp::OnInit(void)
 	
     if (metaApp != NULL) metaApp->run();
 
-	frame->enableTimer(true);
+    // Splash screen initially handles this
+	//frame->enableTimer(true);
 	
     return TRUE;
 }
