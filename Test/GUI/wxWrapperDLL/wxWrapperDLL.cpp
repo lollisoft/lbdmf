@@ -97,14 +97,18 @@
 #include <wx/file.h>
 #include <wx/splash.h>
 #include <wx/treebase.h>
-#include <wx/menu.h>
 #include <wx/html/htmlwin.h>
 #ifdef USE_PROPGRID
 // Necessary header file
 #include "wx/propgrid/propgrid.h"
 #ifndef LBWXVERSION_CURRENT
+#include <wx/menuitem.h>
 #include "wx/propgrid/propdev.h"
 #endif
+#ifdef LBWXVERSION_CURRENT
+#include <wx/menu.h>
+#endif
+
 // This defines wxPropertyGridManager.
 #include <wx/propgrid/manager.h>
 
