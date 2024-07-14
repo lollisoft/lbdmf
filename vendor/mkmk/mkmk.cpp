@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.37 $
+ * $Revision: 1.114.2.38 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.37 2024/07/07 09:38:40 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.38 2024/07/14 21:33:57 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.38  2024/07/14 21:33:57  lothar
+ * Made mkmk not use full version.
+ *
  * Revision 1.114.2.37  2024/07/07 09:38:40  lothar
  * Added support for specifying wx library name correctly
  *
@@ -1374,7 +1377,7 @@ void writeBundleTarget(char* modulename) {
 
 #ifdef LBWXVERSION_CURRENT
         printf("MKMK_WX_NAME=wxWidgets\n");
-        printf("MKMK_WX_VERSION=`wx-config --version-full`\n");
+        printf("MKMK_WX_VERSION=`wx-config --version`\n");
 #endif
 #ifndef LBWXVERSION_CURRENT
         printf("MKMK_WX_NAME=wxMac\n");
@@ -2693,7 +2696,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.37 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.38 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
