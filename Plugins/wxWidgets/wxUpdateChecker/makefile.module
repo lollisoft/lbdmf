@@ -157,6 +157,10 @@ C_SOOPS_WX += -DLBWXVERSION_OLD
 endif
 C_SOOPS= $(C_SOOPS_WX)
 
+ifeq (($DEBUG), yes)
+C_SOOPS+= -g
+endif
+
 ifeq ($(OSNAME), Panther)
 C_SOOPS+= -DPanther
 else
