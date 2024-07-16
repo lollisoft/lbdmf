@@ -92,7 +92,7 @@ public:
 	void LB_STDCALL visit(lb_I_Frame*) { _CL_LOG << "visit(lb_I_Frame*)" LOG_ }
 	void LB_STDCALL visit(lb_I_KeyBase*) { _CL_LOG << "visit(lb_I_KeyBase*)" LOG_ } 
 	void LB_STDCALL visit(lb_I_String*); // { _CL_LOG << "visit(lb_I_String*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Integer*) { _CL_LOG << "visit(lb_I_Integer*)" LOG_ } 
+    void LB_STDCALL visit(lb_I_Integer*); // { _CL_LOG << "visit(lb_I_Integer*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Long*) { _CL_LOG << "visit(lb_I_Long*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Container*) { _CL_LOG << "visit(lb_I_Container*)" LOG_ } 
 	void LB_STDCALL visit(lb_I_Database*) { _CL_LOG << "visit(lb_I_Database*)" LOG_ } 
@@ -293,6 +293,12 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_String* s) {
 	free(buffer);
 }
 
+void LB_STDCALL lbInputStreamOpr::visit(lb_I_Integer* i) {
+    int _i = 0;
+    *iStream >> _i;
+    i->setData(_i);
+}
+
 void LB_STDCALL lbInputStreamOpr::visit(lb_I_Boolean* b) {
 	bool _b = NULL;
 	*iStream >> _b;
@@ -400,9 +406,14 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 		}
 		else
 		if (strcmp(ParameterClassName, ii->getClassName()) == 0) {
+            char* key;
 			int _i;
-			*iStream >> _i;
+            key = (char*) malloc(100);
+			*iStream >> key;
+            int result = sscanf(key, "%d", &_i);
+            free(key);
 			ii->setData(_i);
+            _LOGALWAYS << "Have read an integer parameter " << ii->charrep() LOG_
 			params->setUAPInteger(*&paramname, *&ii);
 		}
 		else
