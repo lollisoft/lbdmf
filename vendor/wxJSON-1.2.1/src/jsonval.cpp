@@ -3,7 +3,7 @@
 // Purpose:     the wxJSON class that holds a JSON value
 // Author:      Luciano Cattani
 // Created:     2007/10/01
-// RCS-ID:      $Id: jsonval.cpp,v 1.1.2.1 2015/01/01 19:06:53 lollisoft Exp $
+// RCS-ID:      $Id: jsonval.cpp,v 1.1.2.2 2024/07/16 00:13:14 lothar Exp $
 // Copyright:   (c) 2007 Luciano Cattani
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
@@ -1814,8 +1814,8 @@ wxJSONValue::Item( unsigned index )
 wxJSONValue&
 wxJSONValue::Item( const wxString& key )
 {
-    wxLogTrace( traceMask, _T("(%s) searched key=\'%s\'"), __PRETTY_FUNCTION__, key.c_str());
-    wxLogTrace( traceMask, _T("(%s) actual object: %s"), __PRETTY_FUNCTION__, GetInfo().c_str());
+    //wxLogTrace( traceMask, _T("(%s) searched key=\'%s\'"), __PRETTY_FUNCTION__, key.c_str());
+    //wxLogTrace( traceMask, _T("(%s) actual object: %s"), __PRETTY_FUNCTION__, GetInfo().c_str());
 
     wxJSONRefData* data = COW();
     wxJSON_ASSERT( data );
