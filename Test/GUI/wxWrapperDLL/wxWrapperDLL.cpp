@@ -2962,7 +2962,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
 				bitmaps.push_back(bm);
 
                 // DYNAMIC_TOOL_QUIT indirection workaround for wxAuiToolBar::OnLeftUp(wxMouseEvent& evt) issue
-                maintb->AddTool(DYNAMIC_TOOL_QUIT, (const char*) _trans("Exit"), bm);
+                maintb->AddTool(DYNAMIC_TOOL_QUIT, (const char*) _trans("Exit"), bm, _trans("Exit"));
 #else
                 wxBitmap bm = wxBitmap(*im);
 
@@ -3206,7 +3206,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
 						wxBitmap bm = wxBitmap(*im);
 						bitmaps.push_back(bm);
 
-                        tb->AddTool(EvNr, entry->charrep(), bm);
+                        tb->AddTool(EvNr, entry->charrep(), bm, entry->charrep());
 #else
 						wxBitmap bm = wxBitmap(*im);
 
