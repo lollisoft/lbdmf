@@ -243,21 +243,21 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 		
 		LastCheckWeek->setData(week + 1);
 
-		UpdateSettings->setUAPInteger(*&name, *&LastCheckWeek);
-		
-		meta->addPropertySet(*&UpdateSettings, "UpdateSettings");
+        UpdateSettings->setUAPInteger(*&name, *&LastCheckWeek);
+
+        meta->addPropertySet(*&UpdateSettings, "UpdateSettings");
 		
 		doCheck = true;
 	} else {
 		wxDateTime::wxDateTime_t week = dt.GetWeekOfYear();
-		
+
 		if (week > LastCheckWeek->getData()) {
 			doCheck = true;
 		
 			LastCheckWeek->setData(week + 1);
 			
 			UpdateSettings->setUAPInteger(*&name, *&LastCheckWeek);
-		}
+        }
 	}
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
@@ -282,11 +282,9 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 	
 	if (!doCheck) {
 		dispatcher->dispatch("RunSilentUpdateCheck", uk.getPtr(), &uk_result);
-		return ERR_NONE;
-	}
-	
-	dispatcher->dispatch("RunUpdateCheck", uk.getPtr(), &uk_result);
-
+    } else {
+        dispatcher->dispatch("RunUpdateCheck", uk.getPtr(), &uk_result);
+    }
 	return ERR_NONE;
 }
 
