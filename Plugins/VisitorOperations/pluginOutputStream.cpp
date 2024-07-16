@@ -90,8 +90,8 @@ public:
 	void LB_STDCALL visit(lb_I_GUIApp*) { _CL_LOG << "visit(lb_I_GUIApp*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Frame*) { _CL_LOG << "visit(lb_I_Frame*)" LOG_ }
 	void LB_STDCALL visit(lb_I_KeyBase*) { _CL_LOG << "visit(lb_I_KeyBase*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_String*); // { _CL_LOG << "visit(lb_I_String*)" LOG_ } 
-	void LB_STDCALL visit(lb_I_Integer*) { _CL_LOG << "visit(lb_I_Integer*)" LOG_ } 
+	void LB_STDCALL visit(lb_I_String*); // { _CL_LOG << "visit(lb_I_String*)" LOG_ }
+    void LB_STDCALL visit(lb_I_Integer*); //{ _LOG << "visit(lb_I_Integer*)" << i->charrep() LOG_ }
 	void LB_STDCALL visit(lb_I_Long*) { _CL_LOG << "visit(lb_I_Long*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Container*) { _CL_LOG << "visit(lb_I_Container*)" LOG_ } 
 	void LB_STDCALL visit(lb_I_Database*) { _CL_LOG << "visit(lb_I_Database*)" LOG_ } 
@@ -305,7 +305,11 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Boolean* b) {
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_String* s) {
-	*oStream << s->charrep();
+    *oStream << s->charrep();
+}
+
+void LB_STDCALL lbOutputStream::visit(lb_I_Integer* i) {
+    *oStream << i->charrep();
 }
 
 void LB_STDCALL lbOutputStream::visit(lb_I_ActionStep_Parameters* actionstepparameters) {
@@ -398,7 +402,7 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 		*oStream << key->charrep();
 		*oStream << uk->getClassName();
 
-		_LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_ 
+		_LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_
 
 		if (strcmp(uk->getClassName(), c->getClassName()) == 0) {
 			c->setData(*&uk);
