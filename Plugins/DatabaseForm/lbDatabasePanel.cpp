@@ -5491,10 +5491,19 @@ lbErrCodes LB_STDCALL lbDatabasePanel::OnActionButton(lb_I_Unknown* uk) {
 			v->setData(s->charrep());
 			param->setUAPString(*&parameter, *&v);
 
-			parameter->setData("source value");
-			v->setData(value.c_str());
-			param->setUAPString(*&parameter, *&v);
-		}
+            parameter->setData("source value");
+            v->setData(value.c_str());
+            param->setUAPString(*&parameter, *&v);
+
+            // The action does not nessecary is based upon an application name but it works for now.
+            // The code generator is yet only capable to work at application level, thus that is ok.
+            // Better would be changing the model to base the parameter to display on the source value
+            // and check if the action has been modelled at the right model element.
+            parameter->setData("SaveApplicationID");
+            v->setData(value.c_str());
+            param->setUAPString(*&parameter, *&v);
+            
+        }
 
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 		parameter->setData("application");
