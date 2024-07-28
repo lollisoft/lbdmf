@@ -1,6 +1,21 @@
 #!/bin/sh
 # Copies together files for the Mac OS X application bundle and created a disk image
 
+#https://federicoterzi.com/blog/automatic-code-signing-and-notarization-for-macos-apps-using-github-actions/
+# wxWrapper *********** Team ID 3MPMMGXYRY
+# xcrun notarytool store-credentials "wxWrapper" --apple-id "********" --team-id "3MPMMGXYRY" --password "**********"
+#
+
+# ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
+# xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
+# xcrun stapler staple wxWrapper.app
+#
+# xcrun notarytool log f8ec56ec-2884-4582-ac9a-0931f896b2ea --keychain-profile "wxWrapper"
+
+
+
+export DEVELOPERIDAPP=Developer\ ID\ Application:\ Lothar\ Behrens\ \(3MPMMGXYRY\)
+
 export prefix=$1
 
 export VERSION=1.3.4
@@ -35,18 +50,45 @@ cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.d
 
 cp Info.plist wxWrapper.app/Contents
 
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/lib/*
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/Resources/plugins/*
+
+#otool -D wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook 
+#otool -D wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
+#otool -D wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL 
+#otool -D wxWrapper.app/Contents/lib/*
+#otool -D wxWrapper.app/Contents/Resources/plugins/*
+
+
+#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook 
+#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
+#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
+#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/lib/* 
+#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/Resources/plugins/*
+
+#export RUNTIMEOPTIONS=
+export RUNTIMEOPTIONS=--options=runtime\ --option=library
+export ENTITLEMENTS=--entitlements\ Entitlements.plist
+# --option=library
+
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.so
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.dylib
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Resources/plugins/*.so
 xattr -cr wxWrapper.app
-codesign -f -v -s "Lothar Behrens" wxWrapper.app/Contents/MacOS/wxWrapper
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/MacOS/wxWrapper
 #codesign -dvv wxWrapper.app
-codesign -f -v -s "Lothar Behrens" wxWrapper.app
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app
 #spctl -a -t exec -vvvv wxWrapper.app
 #codesign -dvv wxWrapper.app
-#codesign -vv --deep-verify wxWrapper.app 
+#codesign -vv --deep-verify "$ENTITLEMENTS" $RUNTIMEOPTIONS wxWrapper.app 
+
+# Starting the notarization step
+ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
+
+xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
+
+xcrun stapler staple wxWrapper.app
 
 # Creating a new diskimage
 
