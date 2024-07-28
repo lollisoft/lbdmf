@@ -1,4 +1,4 @@
-format 73
+format 224
 
 activitynodecanvas 141058 activitynode_ref 141698 // initial_node
   xyz 120.853 9.54387 2000
@@ -7,42 +7,42 @@ activitynodecanvas 141186 activitynode_ref 141826 // activity_final
   xyz 698.562 789.107 2000
 end
 activityactioncanvas 141314 activityaction_ref 147970 // activity action Generate TurboVision (Mac)
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 426.026 341.858 2000 197 49
 end
 activityactioncanvas 141570 activityaction_ref 148226 // activity action exportApplicationToXMLBuffer
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 28.1479 50.7798 2000 205 39
 end
 activityactioncanvas 141698 activityaction_ref 154754 // activity action write memorybuffer to file
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 51.7031 128.957 2000 161 39
 end
 activityactioncanvas 141826 activityaction_ref 167810 // activity action Not yet supported
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 331.775 643.332 2000 127 39
 end
 activityactioncanvas 141954 activityaction_ref 167938 // activity action Generate TurboVision (Windows)
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 436.401 463.328 2006 209 49
 end
 activityactioncanvas 142082 activityaction_ref 168066 // activity action Generate TurboVision (Unix)
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 423.566 261.291 2000 207 53
 end
 activityactioncanvas 142210 activityaction_ref 168194 // activity action NOP
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 660.112 633.197 2000 101 61
 end
 activityactioncanvas 142338 activityaction_ref 174722 // activity action Show OS Type and AppId
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 41.5731 187.506 2000 181 51
 end
@@ -56,7 +56,7 @@ activitynodecanvas 142722 activitynode_ref 148610 // decision
   xyz 120.108 412.122 2000
 end
 activityactioncanvas 146690 activityaction_ref 181250 // activity action IsMyDevEnvironment
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 208.186 412.268 2000 155 39
 end
@@ -64,25 +64,25 @@ activitynodecanvas 147074 activitynode_ref 155138 // decision
   xyz 381.109 414.693 2000
 end
 activityactioncanvas 147458 activityaction_ref 181378 // activity action Generate TurboVision (Windows installed)
-  show_infonote default drawing_language default show_stereotype_properties default
+  
   show_opaque_action_definition default
   xyzwh 295.109 551.538 2005 197 53
 end
 flowcanvas 142850 flow_ref 184194 // <flow>
   
   from ref 141058 z 2001 to ref 141570
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 142978 flow_ref 183682 // <flow>
   
-  from ref 141314 z 2001 to point 657.17 452.02
+  from ref 141314 z 2001 to point 657 452
   line 148610 z 2001 to ref 142210
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 143106 flow_ref 169090 // 
   
   from ref 141570 z 2001 to ref 141698
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
   transformation 
   information 143234 "<<transformation>>
 file = lala.xml"
@@ -91,28 +91,28 @@ end
 flowcanvas 143618 flow_ref 190722 // <flow>
   
   from ref 141698 z 2001 to ref 142338
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 143746 flow_ref 183554 // <flow>
   
   from ref 141826 z 2001 to ref 142210
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 143874 flow_ref 183810 // <flow>
   
   from ref 141954 z 2001 to ref 142210
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 144002 flow_ref 183938 // <flow>
   
-  from ref 142082 z 2001 to point 707.67 284.18
+  from ref 142082 z 2001 to point 707 284
   line 146306 z 2001 to ref 142210
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 144130 flow_ref 184066 // <flow>
   
   from ref 142210 z 2001 to ref 141186
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
   transformation 
   information 144258 "<<transformation>>
 result = 1"
@@ -121,60 +121,60 @@ end
 flowcanvas 144514 flow_ref 197250 // <flow>
   
   from ref 142338 z 2001 to ref 142466
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 144642 flow_ref 197378 // <flow>
   
   from ref 142466 z 2001 to ref 142594
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 144770 flow_ref 197762 // <flow>
   
   from ref 142466 z 2001 label "[OSType == \"Unix\"]" xyz 231 266 2001 to ref 142082
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 144898 flow_ref 197506 // <flow>
   
   from ref 142594 z 2001 to ref 142722
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 145026 flow_ref 197890 // <flow>
   
   from ref 142594 z 2001 label "[OSType == \"Mac\"]" xyz 233 343 2001 to ref 141314
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 145282 flow_ref 198274 // <flow>
   
-  from ref 142722 z 2001 to point 129.53 659.43
+  from ref 142722 z 2001 to point 129 659
   line 148738 z 2001 to ref 141826
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 146946 flow_ref 204802 // <flow>
   
   from ref 142722 z 2001 label "[OSType == \"Windows\"]" xyz 142 391 2001 to ref 146690
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 147202 flow_ref 204930 // <flow>
   
   from ref 146690 z 2001 to ref 147074
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 147330 flow_ref 205058 // <flow>
   
-  from ref 147074 z 2007 label "[result == 1]" xyz 431 412 2007 to point 538.2 429.53
+  from ref 147074 z 2007 label "[result == 1]" xyz 431 412 2007 to point 538 429
   line 148354 z 2007 to ref 141954
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 147714 flow_ref 205186 // <flow>
   
   from ref 147074 z 2006 label "[result == 0]" xyz 322 491 2006 to ref 147458
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 flowcanvas 147842 flow_ref 205314 // <flow>
   decenter_begin 953
   
   from ref 147458 z 2006 to ref 142210
-  show_infonote default drawing_language default show_stereotype_properties default write_horizontally default
+   write_horizontally default
 end
 line 143362 -_-_
   from ref 143106 z 2002 to ref 143234
