@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.91.2.1 $
+* $Revision: 1.91.2.2 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.91.2.1 2013/10/26 04:39:11 lollisoft Exp $
+* $Id: lbPluginManager.cpp,v 1.91.2.2 2024/08/03 12:40:32 lothar Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.91.2.2  2024/08/03 12:40:32  lothar
+* Got it working to harden and run that hardened application successfully and sign and notarize the application.
+*
 * Revision 1.91.2.1  2013/10/26 04:39:11  lollisoft
 * Fixes on Linux related to socket and transfer classes.
 *
@@ -697,7 +700,11 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 #endif
 #endif
 #ifdef OSX
-	strcat(pluginModule, "/");
+    // I should reach avoiding to pass a path within the module name.
+    // This is because I try all ways within module manager. This is
+    // because a hardened application could not really look at any
+    // path for plugins. The API therefore may make no real sense.
+    if (strlen(pluginDir) > 0) strcat(pluginModule, "/");
 #endif
 	strcat(pluginModule, module);
 
@@ -814,7 +821,7 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(const char* module, const c
 #endif
 #endif
 #ifdef OSX
-	strcat(pluginModule, "/");
+	//strcat(pluginModule, "/");
 #endif
 	strcat(pluginModule, module);
 
@@ -934,7 +941,7 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(const char* module, const
 #endif
 #endif
 #ifdef OSX
-	strcat(pluginModule, "/");
+	//strcat(pluginModule, "/");
 #endif
 	strcat(pluginModule, module);
 
@@ -1366,10 +1373,15 @@ void LB_STDCALL lbPluginManager::initialize() {
 				const char* pwd = getenv("PWD");
 				if (pwd == NULL) pwd = ".";
 				///\todo Rework this.
-				pluginDir = (char*) malloc(strlen(pwd)+strlen("/wxWrapper.app/Contents/Resources")+strlen("/plugins")+1);
+				pluginDir = (char*) malloc(
+                                           strlen(pwd)+
+                                           strlen("/wxWrapper.app/Contents")+
+                                           strlen("/Plugins")+
+                                           1);
 				pluginDir[0] = 0;
 				strcat(pluginDir, pwd);
-				strcat(pluginDir, "/wxWrapper.app/Contents/Resources/plugins");
+                strcat(pluginDir, "/wxWrapper.app/Contents/Plugins");
+                //strcat(pluginDir, "/plugins");
 
 				_LOG << "Check for plugin directory at '" << pluginDir << "'." LOG_
 				if ((dir = opendir(pluginDir)) == NULL) {
@@ -1396,16 +1408,19 @@ void LB_STDCALL lbPluginManager::initialize() {
 
 #define PREFIX ""
 
+    //char* plugin_Dir = "Contents/PlugIns/";
+    char* plugin_Dir = "";
+
 	if (dir_info != NULL) {
-		tryLoad(dir_info->d_name, pluginDir);
-		tryLoadServerModule(dir_info->d_name, pluginDir);
-		tryLoadUnitTestModule(dir_info->d_name, pluginDir);
+		tryLoad(dir_info->d_name, plugin_Dir);
+		tryLoadServerModule(dir_info->d_name, plugin_Dir);
+		tryLoadUnitTestModule(dir_info->d_name, plugin_Dir);
 
 		while ((dir_info = readdir(dir)) != NULL) {
 			if (strstr(dir_info->d_name, ".so") != NULL) {
-				tryLoad(dir_info->d_name, pluginDir);
-				tryLoadServerModule(dir_info->d_name, pluginDir);
-				tryLoadUnitTestModule(dir_info->d_name, pluginDir);
+				tryLoad(dir_info->d_name, plugin_Dir);
+				tryLoadServerModule(dir_info->d_name, plugin_Dir);
+				tryLoadUnitTestModule(dir_info->d_name, plugin_Dir);
 			}
 		}
 	} else {

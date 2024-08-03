@@ -39,7 +39,10 @@ cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples wxWrapper.app/Contents/R
 mkdir wxWrapper.app/Contents/Resources/toolbarimages
 # UGLY! Using environment that also is properly defined while jenkins build is better
 cp -R $prefix/lib wxWrapper.app/Contents
-cp -R $prefix/plugins wxWrapper.app/Contents/Resources
+#cp -R $prefix/plugins wxWrapper.app/Contents/Resources
+cp -R $prefix/plugins wxWrapper.app/Contents
+mv wxWrapper.app/Contents/plugins wxWrapper.app/Contents/PlugIns
+
 # How to access them?
 cp toolbarimages/*.xpm wxWrapper.app/Contents/Resources/toolbarimages
 cp toolbarimages/*.png wxWrapper.app/Contents/Resources/toolbarimages
@@ -51,30 +54,17 @@ cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.d
 cp Info.plist wxWrapper.app/Contents
 
 
-#otool -D wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook 
-#otool -D wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
-#otool -D wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL 
-#otool -D wxWrapper.app/Contents/lib/*
-#otool -D wxWrapper.app/Contents/Resources/plugins/*
-
-
-#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook 
-#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
-#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
-#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/lib/* 
-#install_name_tool -add_rpath @rpath/. wxWrapper.app/Contents/Resources/plugins/*
-
 #export RUNTIMEOPTIONS=
-export RUNTIMEOPTIONS=--options=runtime\ --option=library
+#export ENTITLEMENTS=
+export RUNTIMEOPTIONS=--options=runtime
 export ENTITLEMENTS=--entitlements\ Entitlements.plist
-# --option=library
 
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.so
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.dylib
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Resources/plugins/*.so
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/PlugIns/*.so
 xattr -cr wxWrapper.app
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/MacOS/wxWrapper
 #codesign -dvv wxWrapper.app
