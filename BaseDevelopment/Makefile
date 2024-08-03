@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.115 $
+# * $Revision: 1.229.2.116 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.115 2024/07/12 18:41:47 lothar Exp $
+# * $Id: Makefile,v 1.229.2.116 2024/08/03 12:40:32 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.116  2024/08/03 12:40:32  lothar
+# * Got it working to harden and run that hardened application successfully and sign and notarize the application.
+# *
 # * Revision 1.229.2.115  2024/07/12 18:41:47  lothar
 # * Changes to get application running on Ventura when it was downloaded. Code signing is needed.
 # *

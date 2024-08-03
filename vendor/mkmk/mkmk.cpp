@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.38 $
+ * $Revision: 1.114.2.39 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.38 2024/07/14 21:33:57 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.39 2024/08/03 12:40:32 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.39  2024/08/03 12:40:32  lothar
+ * Got it working to harden and run that hardened application successfully and sign and notarize the application.
+ *
  * Revision 1.114.2.38  2024/07/14 21:33:57  lothar
  * Made mkmk not use full version.
  *
@@ -1362,9 +1365,9 @@ void change_install_names(bool included) {
         //printf("\t\tINSTALLNAMETOOL_WX_BASENAME=`wx-config --basename`\n");
         //printf("\t\tINSTALLNAMETOOL_WX_VERSION=`wx-config --version`\n");
         if (included) {
-                printf("\t\tinstall_name_tool `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib -id @executable_path/../lib/lib`wx-config --basename`-`wx-config --release`.dylib\n");     
+            printf("\t\tinstall_name_tool `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib -id @executable_path/../lib/lib`wx-config --basename`-`wx-config --release`.dylib\n");
         } else {
-                printf("\t\tinstall_name_tool `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib -id `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib\n");    
+            printf("\t\tinstall_name_tool `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib -id `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib\n");
         }
 }
 
@@ -1432,6 +1435,10 @@ void writeBundleTarget(char* modulename) {
         printf("\t\tln -f %s %s.app/Contents/MacOS/%s\n", modulename, modulename, modulename);
 
         change_install_names(false);
+
+        //TODO: This is propably wrong or the wrong place to enable proper notaryzation
+        //printf("install_name_tool -add_rpath @executable_path/. %.app\n");
+
 
         printf("\t\t-./postlink-mac.sh $(prefix)\n");
         //  printf("\t\t\n", modulename);
@@ -2696,7 +2703,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.38 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.39 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");

@@ -321,6 +321,18 @@ void logMessage(const char *msg) {
 }
 /*...e*/
 
+void logModuleLoaded(const char* msgformat, const char* modulename, const char* file, const int line) {
+    char* msg = (char*) malloc(strlen(msgformat) + strlen(modulename) + 10);
+    msg[0] = 0;
+    
+    sprintf(msg, msgformat, file, line, modulename);
+
+    logMessage(msg);
+    
+    free(msg);
+}
+
+
 DLLEXPORT char* LB_CDECL setLogDirectory(char* name) {
 	if (lbLogDirectory != NULL) free(lbLogDirectory);
 	lbLogDirectory = strdup(name);
@@ -831,6 +843,14 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 #endif
 #ifdef LINUX
 
+#ifndef __WATCOMC__
+        // Quick hack
+#define MAX_PATH 512
+#endif
+
+    char appcwd[MAX_PATH+1] = "";
+    getcwd(appcwd, sizeof(appcwd));
+
 	_Modules *m = findModule(name);
 
 	if (m != NULL) {
@@ -842,8 +862,11 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 		m->libreferences = 1;
 	}
 
+    logModuleLoaded("%s:%d Try load module in '%s'.\n", appcwd, __FILE__, __LINE__);
+    logModuleLoaded("%s:%d Try load module '%s'.\n", name, __FILE__, __LINE__);
 	if ((hinst = dlopen(name, RTLD_LAZY)) == NULL)
 	{
+        logModuleLoaded("%s:%d Module not loaded '%s'.\n", name, __FILE__, __LINE__);
 		const char* home = NULL;//(char*) malloc(100);
 		char* newname = NULL;
 
@@ -867,13 +890,16 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 			strcat(newname, name);
 
 			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+                logModuleLoaded("%s:%d Module loaded '%s'.\n", newname, __FILE__, __LINE__);
 				m->lib = hinst;
 				m->skip = skipAutoUnload;
 				free(newname);
 
 				return ERR_NONE;
 			} else {
-				char* errmsg = dlerror();
+                logModuleLoaded("%s:%d Module not loaded '%s'.\n", newname, __FILE__, __LINE__);
+
+                char* errmsg = dlerror();
 
 				if (errmsg != NULL) {
 					printf("DLERROR: %s\n", errmsg);
@@ -902,31 +928,33 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 		strcat(newname, name);
 
 		if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+            logModuleLoaded("%s:%d Module loaded '%s'.\n", newname, __FILE__, __LINE__);
 			m->lib = hinst;
 			m->skip = skipAutoUnload;
 			free(newname);
 
 			return ERR_NONE;
 		} else {
+            logModuleLoaded("%s:%d Module not loaded '%s'.\n", newname, __FILE__, __LINE__);
 			free(newname);
 
-			newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("lib")+strlen(name)+6);
-			//newname = (char*) malloc(strlen(".")+strlen(SLASH)*5+strlen("wxWrapper.app")+strlen("Contents")+strlen("Resources")+strlen("lib")+strlen(name)+6);
+            
+            
+			newname = (char*) malloc(strlen(appcwd)+strlen(SLASH)*4+strlen("wxWrapper.app")+strlen("Contents")+strlen("lib")+strlen(name)+6);
 			newname[0] = 0;
 
-			strcat(newname, ".");
+			strcat(newname, appcwd); // Important to use absolute path, as this has even worked in hardened app with /Users/lothar/lib
 			strcat(newname, SLASH);
 			strcat(newname, "wxWrapper.app");
 			strcat(newname, SLASH);
 			strcat(newname, "Contents");
-			//strcat(newname, SLASH);
-			//strcat(newname, "Resources");
 			strcat(newname, SLASH);
 			strcat(newname, "lib");
 			strcat(newname, SLASH);
 			strcat(newname, name);
 
 			if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+                logModuleLoaded("%s:%d Module loaded '%s'.\n", newname, __FILE__, __LINE__);
 				m->lib = hinst;
 				m->skip = skipAutoUnload;
 				free(newname);
@@ -942,18 +970,26 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 
 		free(newname);
 
-		newname = (char*) malloc(strlen("..")+strlen(SLASH)+strlen("plugins")+strlen(SLASH)+strlen(name)+6);
+		newname = (char*) malloc(
+                                 strlen(appcwd)+
+                                 strlen(SLASH)+
+                                 strlen("wxWrapper.app")+
+                                 strlen(SLASH)+
+                                 strlen("Contents")+
+                                 strlen(SLASH)+
+                                 strlen("PlugIns")+
+                                 strlen(SLASH)+
+                                 strlen(name)+6);
 		newname[0] = 0;
-		strcat(newname, "..");
-		strcat(newname, SLASH);
-		strcat(newname, "plugins");
+        strcat(newname, appcwd);
+        strcat(newname, SLASH);
+        strcat(newname, "wxWrapper.app");
+        strcat(newname, SLASH);
+        strcat(newname, "Contents");
+        strcat(newname, SLASH);
+		strcat(newname, "PlugIns");
 		strcat(newname, SLASH);
 		strcat(newname, name);
-
-#ifndef __WATCOMC__
-		// Quick hack
-#define MAX_PATH 512
-#endif
 
 		// Try a trick
 		char oldcwd[MAX_PATH+1] = "";
@@ -965,10 +1001,15 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 		strcat(newcwd, SLASH);
 		strcat(newcwd, "Contents");
 		strcat(newcwd, SLASH);
-		strcat(newcwd, "lib");
+		strcat(newcwd, "PlugIns");
 
-		chdir(newcwd);
-		if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+		//chdir(newcwd);
+
+        logModuleLoaded("%s:%d Try load module in '%s'.\n", newcwd, __FILE__, __LINE__);
+        logModuleLoaded("%s:%d Try load module '%s'.\n", newname, __FILE__, __LINE__);
+
+        if ((hinst = dlopen(newname, RTLD_LAZY)) != NULL) {
+            logModuleLoaded("%s:%d Module loaded '%s'.\n", newname, __FILE__, __LINE__);
 			m->lib = hinst;
 			m->skip = skipAutoUnload;
 			free(newname);
@@ -980,14 +1021,17 @@ DLLEXPORT lbErrCodes LB_CDECL lbLoadModule(const char* name, HINSTANCE & hinst, 
 		errmsg = dlerror();
 
 		if (errmsg != NULL) {
-			printf("DLERROR: %s\n", errmsg);
-		}
+            char *bufDLERROR = (char*) malloc(strlen(errmsg)+100);
+            bufDLERROR[0] = 0;
+			sprintf(bufDLERROR, "DLERROR: %s\n", errmsg);
+            free(bufDLERROR);
+        }
 
 		char *buffer = (char*) malloc(strlen(name)+strlen(__FILE__)+100);
 		buffer[0] = 0;
 
 		sprintf(buffer, "%s:%d Kann SO module '%s' nicht laden.\n", __FILE__, __LINE__, name);
-
+        
 		logMessage(buffer);
 		free(buffer);
 		return ERR_MODULE_NOT_FOUND;
