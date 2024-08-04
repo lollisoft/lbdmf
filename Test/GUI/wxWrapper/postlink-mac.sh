@@ -59,6 +59,8 @@ cp Info.plist wxWrapper.app/Contents
 export RUNTIMEOPTIONS=--options=runtime
 export ENTITLEMENTS=--entitlements\ Entitlements.plist
 
+rm -rf `find wxWrapper.app -name CVS -print`
+
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
 codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
@@ -86,14 +88,14 @@ hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.
 
 sleep 5
 
-hdiutil attach lbDMF-$VERSION-`uname -p`.dmg
+hdiutil attach lbDMF-$VERSION-`uname -p`.dmg && sleep 5 && cp -R wxWrapper.app /Volumes/lbDMF-$VERSION
 
 # Copy stuff
 
 #mkdir /Volumes/lbDMF-$VERSION/`uname -p`
 
 #cp -R wxWrapper.app /Volumes/lbDMF-$VERSION/`uname -p`
-cp -R wxWrapper.app /Volumes/lbDMF-$VERSION
+
 mkdir /Volumes/lbDMF-$VERSION/toolbarimages
 cp toolbarimages/*.xpm /Volumes/lbDMF-$VERSION/toolbarimages
 cp toolbarimages/*.png /Volumes/lbDMF-$VERSION/toolbarimages
@@ -129,9 +131,19 @@ EOF
 
 rm -rf `find /Volumes/lbDMF-$VERSION -name CVS -print`
 
-ditto -c -k --keepParent /Volumes/lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.zip
+#export OLDPWD = `pwd`
+#cd /Volumes/lbDMF-$VERSION
 
 hdiutil detach /Volumes/lbDMF-$VERSION
+
+codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
+
+hdiutil convert lbDMF-$VERSION-`uname -p`.dmg -format UDZO -o lbDMF-$VERSION-`uname -p`-dist.dmg
+
+xcrun notarytool submit lbDMF-$VERSION-`uname -p`-dist.dmg --keychain-profile wxWrapper --wait
+
+xcrun stapler staple lbDMF-$VERSION lbDMF-$VERSION-`uname -p`-dist.dmg
+
 rm lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg.zip
 zip lbDMF.dmg.zip lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg
 mv lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`.dmg.zip
