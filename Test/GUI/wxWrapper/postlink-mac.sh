@@ -129,6 +129,8 @@ EOF
 
 rm -rf `find /Volumes/lbDMF-$VERSION -name CVS -print`
 
+ditto -c -k --keepParent /Volumes/lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.zip
+
 hdiutil detach /Volumes/lbDMF-$VERSION
 rm lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg.zip
 zip lbDMF.dmg.zip lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg
