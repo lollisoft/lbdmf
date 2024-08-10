@@ -63,7 +63,7 @@ rm -rf `find wxWrapper.app -name CVS -print`
 
 mkdir dmgdist
 cp -R wxWrapper.app dmgdist
-
+cp Entitlements.plist dmgdist
 # Copy stuff
 mkdir dmgdist/toolbarimages
 cp toolbarimages/*.xpm dmgdist/toolbarimages
@@ -118,6 +118,8 @@ xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
 xcrun stapler staple wxWrapper.app
 
 cd ..
+
+rm dmgdist/Entitlements.plist
 
 hdiutil create -fs HFS+ -srcfolder dmgdist -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg & sleep 5
 
