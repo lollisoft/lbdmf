@@ -115,11 +115,12 @@ ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
 
 xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
 
-xcrun stapler staple wxWrapper.app
+xcrun stapler staple wxWrapper.app & sleep 5
 
 cd ..
 
 rm dmgdist/Entitlements.plist
+rm dmgdist/notarization.zip
 
 hdiutil create -fs HFS+ -srcfolder dmgdist -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg & sleep 5
 
