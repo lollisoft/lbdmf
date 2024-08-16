@@ -122,7 +122,7 @@ cd ..
 rm dmgdist/Entitlements.plist
 rm dmgdist/notarization.zip
 
-hdiutil create -fs HFS+ -srcfolder dmgdist -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg & sleep 5
+hdiutil create lbDMF-$VERSION-`uname -p`.dmg -ov -volname lbDMF-$VERSION -fs HFS+ -srcfolder "`pwd`/dmgdist/" & sleep 5
 
 codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
 
