@@ -111,11 +111,11 @@ codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app
 #codesign -vv --deep-verify "$ENTITLEMENTS" $RUNTIMEOPTIONS wxWrapper.app 
 
 # Starting the notarization step
-#ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
+ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
 
-#xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
+xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
 
-#xcrun stapler staple wxWrapper.app & sleep 5
+xcrun stapler staple wxWrapper.app & sleep 5
 
 cd ..
 
@@ -124,13 +124,13 @@ rm dmgdist/notarization.zip
 
 hdiutil create lbDMF-$VERSION-`uname -p`.dmg -ov -volname lbDMF-$VERSION -fs HFS+ -srcfolder "`pwd`/dmgdist/" & sleep 5
 
-#codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
+codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
 
-#hdiutil convert lbDMF-$VERSION-`uname -p`.dmg -format UDZO -o lbDMF-$VERSION-`uname -p`-dist.dmg
+hdiutil convert lbDMF-$VERSION-`uname -p`.dmg -format UDZO -o lbDMF-$VERSION-`uname -p`-dist.dmg
 
-#xcrun notarytool submit lbDMF-$VERSION-`uname -p`-dist.dmg --keychain-profile wxWrapper --wait
+xcrun notarytool submit lbDMF-$VERSION-`uname -p`-dist.dmg --keychain-profile wxWrapper --wait
 
-#xcrun stapler staple lbDMF-$VERSION lbDMF-$VERSION-`uname -p`-dist.dmg
+xcrun stapler staple lbDMF-$VERSION lbDMF-$VERSION-`uname -p`-dist.dmg
 
 rm lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg.zip
 zip lbDMF.dmg.zip lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg
