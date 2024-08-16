@@ -61,23 +61,30 @@ export ENTITLEMENTS=--entitlements\ Entitlements.plist
 
 rm -rf `find wxWrapper.app -name CVS -print`
 
-mkdir dmgdist
-cp -R wxWrapper.app dmgdist
-cp Entitlements.plist dmgdist
-# Copy stuff
-mkdir dmgdist/toolbarimages
-cp toolbarimages/*.xpm dmgdist/toolbarimages
-cp toolbarimages/*.png dmgdist/toolbarimages
-cp ../../../COPYING dmgdist
-cp ../../../license-bindist.txt dmgdist
-cp ../../../AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf dmgdist
-# Copying templates to an accessable place
-cp -R wxWrapper.app/Contents/Resources/XSLT dmgdist
-cp -R wxWrapper.app/Contents/Resources/UMLSamples dmgdist
-mkdir dmgdist/.lbDMF
-cp -R wxWrapper.app/Contents/Resources/*.sql dmgdist/.lbDMF
+hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+ & sleep 5
+hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 5
 
-cat <<EOF >> dmgdist/Readme.txt
+
+#export DMGPATH=dmgdist
+export DMGPATH=/volumes/lbDMF-$VERSION
+
+#mkdir $DMGPATH
+cp -R wxWrapper.app $DMGPATH
+cp Entitlements.plist $DMGPATH
+# Copy stuff
+mkdir $DMGPATH/toolbarimages
+cp toolbarimages/*.xpm $DMGPATH/toolbarimages
+cp toolbarimages/*.png $DMGPATH/toolbarimages
+cp ../../../COPYING $DMGPATH
+cp ../../../license-bindist.txt $DMGPATH
+cp ../../../AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf $DMGPATH
+# Copying templates to an accessable place
+cp -R wxWrapper.app/Contents/Resources/XSLT $DMGPATH
+cp -R wxWrapper.app/Contents/Resources/UMLSamples $DMGPATH
+mkdir $DMGPATH/.lbDMF
+cp -R wxWrapper.app/Contents/Resources/*.sql $DMGPATH/.lbDMF
+
+cat <<EOF >> $DMGPATH/Readme.txt
 Dear Mac user!
 
 If you start designing your database applications on one platform (either Intel or PPC) and switch over to a later time, then set the switch to prefer database. This let you update the locally cached files.
@@ -92,45 +99,47 @@ Thanks
 Lothar Behrens
 EOF
 
-rm -rf `find dmgdist -name CVS -print`
+rm -rf `find $DMGPATH -name CVS -print`
+export OLDPATH=`pwd`
+cd $DMGPATH
 
-cd dmgdist
-
-#codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
-#codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
-#codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
-#codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.so
-#codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.dylib
-#codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/PlugIns/*.so
-#xattr -cr wxWrapper.app
-#codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/MacOS/wxWrapper
-##codesign -dvv wxWrapper.app
-#codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app
-##spctl -a -t exec -vvvv wxWrapper.app
-##codesign -dvv wxWrapper.app
-##codesign -vv --deep-verify "$ENTITLEMENTS" $RUNTIMEOPTIONS wxWrapper.app
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.so
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.dylib
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/PlugIns/*.so
+xattr -cr wxWrapper.app
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/MacOS/wxWrapper
+#codesign -dvv wxWrapper.app
+codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app
+#spctl -a -t exec -vvvv wxWrapper.app
+#codesign -dvv wxWrapper.app
+#codesign -vv --deep-verify "$ENTITLEMENTS" $RUNTIMEOPTIONS wxWrapper.app
 
 # Starting the notarization step
-#ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
+ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
 
-#xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
+xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
 
-#xcrun stapler staple wxWrapper.app & sleep 5
+xcrun stapler staple wxWrapper.app & sleep 5
 
-cd ..
+cd $OLDPATH
 
-rm dmgdist/Entitlements.plist
-rm dmgdist/notarization.zip
+rm $DMGPATH/Entitlements.plist
+rm $DMGPATH/notarization.zip
 
-hdiutil create lbDMF-$VERSION-`uname -p`.dmg -ov -volname lbDMF-$VERSION -fs HFS+ -srcfolder "`pwd`/dmgdist/" & sleep 5
+hdiutil detach /Volumes/lbDMF-$VERSION & sleep 5
 
-#codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
+#hdiutil create lbDMF-$VERSION-`uname -p`.dmg -ov -volname lbDMF-$VERSION -fs HFS+ -srcfolder "`pwd`/dmgdist/" & sleep 5
 
-#hdiutil convert lbDMF-$VERSION-`uname -p`.dmg -format UDZO -o lbDMF-$VERSION-`uname -p`-dist.dmg
+codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
 
-#xcrun notarytool submit lbDMF-$VERSION-`uname -p`-dist.dmg --keychain-profile wxWrapper --wait
+hdiutil convert lbDMF-$VERSION-`uname -p`.dmg -format UDZO -o lbDMF-$VERSION-`uname -p`-dist.dmg
 
-#xcrun stapler staple lbDMF-$VERSION lbDMF-$VERSION-`uname -p`-dist.dmg
+xcrun notarytool submit lbDMF-$VERSION-`uname -p`-dist.dmg --keychain-profile wxWrapper --wait
+
+xcrun stapler staple lbDMF-$VERSION lbDMF-$VERSION-`uname -p`-dist.dmg
 
 rm lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg.zip
 zip lbDMF.dmg.zip lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg
