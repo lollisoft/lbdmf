@@ -111,11 +111,11 @@ codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app
 #codesign -vv --deep-verify "$ENTITLEMENTS" $RUNTIMEOPTIONS wxWrapper.app 
 
 # Starting the notarization step
-ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
+#ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
 
-xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
+#xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
 
-xcrun stapler staple wxWrapper.app & sleep 5
+#xcrun stapler staple wxWrapper.app & sleep 5
 
 cd ..
 
