@@ -61,12 +61,12 @@ export ENTITLEMENTS=--entitlements\ Entitlements.plist
 
 rm -rf `find wxWrapper.app -name CVS -print`
 
-hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+ & sleep 5
-hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 5
+#hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+ & sleep 5
+#hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 5
 
 
-#export DMGPATH=dmgdist
-export DMGPATH=/volumes/lbDMF-$VERSION
+export DMGPATH=dmgdist
+#export DMGPATH=/volumes/lbDMF-$VERSION
 
 #mkdir $DMGPATH
 cp -R wxWrapper.app $DMGPATH
@@ -129,9 +129,9 @@ cd $OLDPATH
 rm $DMGPATH/Entitlements.plist
 rm $DMGPATH/notarization.zip
 
-hdiutil detach /Volumes/lbDMF-$VERSION & sleep 5
+#hdiutil detach /Volumes/lbDMF-$VERSION & sleep 5
 
-#hdiutil create lbDMF-$VERSION-`uname -p`.dmg -ov -volname lbDMF-$VERSION -fs HFS+ -srcfolder "`pwd`/dmgdist/" & sleep 5
+hdiutil create lbDMF-$VERSION-`uname -p`.dmg -ov -volname lbDMF-$VERSION -fs HFS+ -srcfolder "`pwd`/dmgdist/" & sleep 5
 
 codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
 
