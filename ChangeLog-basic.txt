@@ -1,3 +1,1553 @@
+2024-08-17 14:33  lothar
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Doc/ApplicationprototypingDokumentation.pdf:
+	  Added information about new release
+
+2024-08-17 14:30  lothar
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt: Added information about
+	  new release
+
+2024-08-17 13:56  lothar
+
+	* Test/GUI/wxWrapper/notarize_dmg.sh: Small fixes
+
+2024-08-17 13:52  lothar
+
+	* Test/GUI/wxWrapper/: notarize_dmg.sh, postlink-mac.sh: Small
+	  fixes
+
+2024-08-17 13:30  lothar
+
+	* Test/GUI/wxWrapper/: notarize_application.sh, notarize_dmg.sh:
+	  Added detection for support of notarization
+
+2024-08-17 11:50  lothar
+
+	* collect_releases.sh: Fixed names for collecting and restructured
+	  it a bit
+
+2024-08-17 03:41  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Moved location of application
+	  back to root of dmg
+
+2024-08-17 03:22  lothar
+
+	* Test/GUI/wxWrapper/notarize_dmg.sh: Renamed notarized dmg to
+	  indicate the distribution dmg
+
+2024-08-17 02:55  lothar
+
+	* Test/GUI/wxWrapper/: notarize_application.sh, notarize_dmg.sh,
+	  postlink-mac.sh: Ended up to configure full disk access
+
+2024-08-16 23:04  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Slightly changed the process
+	  for creating a dmg.
+
+2024-08-16 22:47  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Slightly changed the process
+	  for creating a dmg.
+
+2024-08-16 22:17  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Slightly changed the process
+	  for creating a dmg.
+
+2024-08-16 22:06  lothar
+
+	* Test/GUI/wxWrapper/: postlink-mac-arm.sh, postlink-mac.sh:
+	  Slightly changed the process for creating a dmg.
+
+2024-08-16 21:48  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Slightly changed the process
+	  for creating a dmg.
+
+2024-08-16 21:32  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Slightly changed the process
+	  for creating a dmg.
+
+2024-08-16 21:11  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Slightly changed the process
+	  for creating a dmg.
+
+2024-08-10 11:56  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Missing Entitlements.plist in
+	  dmgdist
+
+2024-08-10 11:38  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Changed flow to create dmg
+	  image
+
+2024-08-04 15:26  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Got a working disk image with
+	  notarization
+
+2024-08-04 12:46  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Try to use ditto for creating
+	  a zip file distribution as a first solution witout signing the dmg
+
+2024-08-03 23:20  lothar
+
+	* Test/GUI/wxWrapper/Entitlements.plist: Missing entitlement file
+
+2024-08-03 14:40  lothar
+
+	* BaseDevelopment/Makefile, BaseDevelopment/lbHook/lbHook.cpp,
+	  BaseDevelopment/lbPluginManager/lbPluginManager.cpp,
+	  make/STD_MAKE, Test/GUI/wxWrapper/postlink-mac.sh,
+	  vendor/mkmk/mkmk.cpp: Got it working to harden and run that
+	  hardened application successfully and sign and notarize the
+	  application.
+
+2024-07-28 18:59  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Added code to produce
+	  notarized app
+
+2024-07-28 09:36  lothar
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMF
+	  Manager.xmi,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/128130,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/152962.diagram,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/generation_settings,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/stereotypes,
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/SecondStageModels/lbDMFManager/tools,
+	  Database/lbDMF-Sqlite-SystemDB.sql: Fixed UML settings and base
+	  project path name
+
+2024-07-27 20:46  lothar
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Added another parameter
+	  as an interim fix to enable parameter passing into the message box
+	  of the workflow. Model must rather be changed and a workflow
+	  validation must be included to detect the correct model element to
+	  act upon or reject the action execution at all.
+
+2024-07-16 12:09  lothar
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Added support for
+	  tooltips on wxAuiToolItems
+
+2024-07-16 02:19  lothar
+
+	* Plugins/VisitorOperations/: pluginInputStream.cpp,
+	  pluginOutputStream.cpp: Bugfix for not correctly writing
+	  configuration of LastCheckWeek
+
+2024-07-16 02:16  lothar
+
+	* Plugins/wxWidgets/wxUpdateChecker/makefile.module: Support debug
+
+2024-07-16 02:15  lothar
+
+	* Plugins/wxWidgets/wxUpdateChecker/timerEventInterceptor.cpp:
+	  Format text
+
+2024-07-15 00:18  lothar
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Removed menu include
+	  trials for old wxWidgets and placed code only for current wxWidgets
+
+2024-07-15 00:11  lothar
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Fixed includes per old
+	  and current wxWidgets
+
+2024-07-14 23:51  lothar
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Missing header for
+	  wxEVT_MENU
+
+2024-07-14 23:35  lothar
+
+	* Test/GUI/: wxWrapper/dynamic.cpp, wxWrapperDLL/wxWrapperDLL.cpp:
+	  Made exit tool use post event to avoid crash.
+
+2024-07-14 23:33  lothar
+
+	* vendor/mkmk/mkmk.cpp: Made mkmk not use full version.
+
+2024-07-14 20:31  lothar
+
+	* Test/GUI/wxWrapper/makefile.module: Added definition for debug
+	  build on OS X Arm
+
+2024-07-14 12:30  lothar
+
+	* Test/GUI/: wxWrapper/dynamic.cpp, wxWrapperDLL/wxWrapperDLL.cpp:
+	  Tewaked the update check not to interfere with the splash screen
+
+2024-07-13 17:09  lothar
+
+	* include/lbConfigHook.h: Fixed missing *DataDirectory functions.
+
+2024-07-13 13:25  lothar
+
+	* Plugins/DatabaseLayerGateway/lbDB.cpp: Fixed a missing path
+	  separator bug.
+
+2024-07-13 13:03  lothar
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
+	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp: The testSQLFile is still
+	  not completely removed
+
+2024-07-13 12:41  lothar
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
+	  BaseDevelopment/lbHook/lbHook.cpp,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
+	  include/lbConfigHook.h, Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  Test/GUI/wxWrapper/postlink-mac.sh: Changed default data
+	  directory for Mac OS X to be /Users/lothar/.lbDMF for changing data
+	  files
+
+2024-07-12 22:17  lothar
+
+	* jenkinsbuild-osxarm-release.sh,
+	  Test/GUI/wxWrapper/postlink-mac.sh: Moved code signing
+
+2024-07-12 20:41  lothar
+
+	* jenkinsbuild-osxarm-release.sh,
+	  AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp,
+	  BaseDevelopment/Makefile,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  Test/GUI/wxWrapper/postlink-mac.sh: Changes to get application
+	  running on Ventura when it was downloaded. Code signing is needed.
+
+2024-07-12 10:15  lothar
+
+	* collect_releases.sh: Wrong source for collecting PPC and ARM
+	  builds
+
+2024-07-12 02:34  lothar
+
+	* jenkinsbuild-osx-release.sh, jenkinsbuild-osxarm-release.sh:
+	  Fixed build wxWrapper after install stage
+
+2024-07-11 22:56  lothar
+
+	* buildwxWidgets_MinGW_debug.bat: Fixed bin build tools version
+
+2024-07-11 21:31  lothar
+
+	* jenkinsbuild-osx-release.sh, jenkinsbuild-osxarm-release.sh:
+	  Added extra app deletion to ensure correct build
+
+2024-07-11 13:32  lothar
+
+	* jenkinsrelease.sh: Missed one version change
+
+2024-07-11 12:24  lothar
+
+	* collect_releases.sh: Added missing cvs2cl tool. Changes for
+	  collect_releases.sh to new version.
+
+2024-07-11 12:10  lothar
+
+	* BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
+	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Updated
+	  splash screen
+
+2024-07-11 11:05  lothar
+
+	* bin-buildtools-dist.iss, bindist.iss, dist.iss, docdist.iss,
+	  lbdmf-jenkins.spec, lbdmf.spec, include/lbVersionInfo.h,
+	  interfaces/lbInterfaces.h, Test/GUI/wxWrapper/postlink-mac.sh:
+	  Changed version to 1.3.4
+
+2024-07-11 08:12  lothar
+
+	* BaseDevelopment/Makefile: Fixed error with wx version selection
+
+2024-07-11 07:00  lothar
+
+	* watcomenv.bat: Try to check WXWIN settings.
+
+2024-07-11 04:27  lothar
+
+	* jenkinsbuild-osxarm-release.sh: Added OS X Arm (M2) build release
+	  script
+
+2024-07-11 04:14  lothar
+
+	* UnitTests/makefile: Made installing non mandatory - second try
+
+2024-07-11 04:11  lothar
+
+	* UnitTests/makefile: Made installing non mandatory
+
+2024-07-11 04:07  lothar
+
+	* UnitTests/makefile: Fixed version detection at least for Mac OS x
+	  M2
+
+2024-07-11 03:44  lothar
+
+	* jenkinsbuild-osxarm.sh: Fixed developer tools path
+
+2024-07-11 03:39  lothar
+
+	* Plugins/makefile: Added better switch for wx Version
+
+2024-07-11 03:35  lothar
+
+	* Plugins/makefile: Added better switch for wx Version
+
+2024-07-11 03:27  lothar
+
+	* BaseDevelopment/Makefile: Added better switch for wx Version
+
+2024-07-11 03:12  lothar
+
+	* jenkinsbuild-osxarm.sh: Added new build file configured for OS X
+	  on M2 builds with new wxWidgets
+
+2024-07-10 19:38  lothar
+
+	* BaseDevelopment/Makefile, BaseDevelopment/lbHook/lbHook.cpp,
+	  make/STD_MAKE, Plugins/DatabaseForm/makefile.module,
+	  Plugins/DatabaseLayerGateway/makefile.module,
+	  Plugins/DatabaseReport/makefile.module,
+	  Plugins/wxWidgets/wxPropertyForm/makefile.module,
+	  Plugins/wxWidgets/wxSFDesigner/makefile.module,
+	  Plugins/wxWidgets/wxUpdateChecker/makefile.module,
+	  Test/GUI/wxPlugins/lbCryptoStream/makefile.module,
+	  Test/GUI/wxPlugins/lbLoginWizard/makefile.module,
+	  Test/GUI/wxWrapper/makefile.module,
+	  Test/GUI/wxWrapperDLL/makefile.module, vendor/mkmk/make-osx.sh:
+	  Added support for Mac OS X on Apple Silicon (M2)
+
+2024-07-08 20:47  lothar
+
+	* make/STD_MAKE: Finally activated 64Bit target for Mac OS X 18.2.0
+	  ud´sing ARCHOVERRIDE=yes
+
+2024-07-08 18:09  lothar
+
+	* jenkinsbuild-osx-release.sh: There seems to be also missing here
+	  to pass -e LBWXVERSION=old
+
+2024-07-08 16:04  lothar
+
+	* jenkinsbuild-osx.sh: There seems to be missing to pass -e
+	  LBWXVERSION=old
+
+2024-07-08 12:58  lothar
+
+	* make/STD_MAKE: The wxWidgets libraries are indeed compiled with
+	  -arch i386. That was not the problem
+
+2024-07-08 12:46  lothar
+
+	* make/STD_MAKE: It seems that selecting arch i386 needs all
+	  libraries do the same. Try without
+
+2024-07-08 11:12  lothar
+
+	* make_src_dist.bat: Removed MinGW repackaged installer
+
+2024-07-07 17:26  lothar
+
+	* watcomenv.bat: Fixed hard path to bison. Yet still a hard path.
+
+2024-07-07 15:44  lothar
+
+	* watcomenv.bat: Fixed path. Jenkins dependencies moved to drive Z:
+
+2024-07-07 14:29  lothar
+
+	* make_src_dist.bat: Fixed path to tools
+
+2024-07-07 11:38  lothar
+
+	* vendor/mkmk/mkmk.cpp: Added support for specifying wx library
+	  name correctly
+
+2024-07-06 13:15  lothar
+
+	* UnitTests/MiniCppUnit/MiniCppUnit.cpp: Fixed typo in cpp
+
+2024-07-06 12:54  lothar
+
+	* UnitTests/: makefile, MiniCppUnit/makefile.module: Fixed typo
+
+2024-07-06 10:34  lothar
+
+	* UnitTests/MiniCppUnit/makefile.module: Added support to detect
+	  CRUISECRONTROL - missing forwarding
+
+2024-07-06 10:03  lothar
+
+	* UnitTests/: makefile, MiniCppUnit/MiniCppUnit.cpp: Added support
+	  to detect CRUISECRONTROL
+
+2024-07-06 08:18  lothar
+
+	* BaseDevelopment/Makefile: Added special OS X build settings for
+	  propgid
+
+2024-07-06 08:08  lothar
+
+	* jenkinsbuild-osx.sh: Added DEVELOPER_TOOLS_PATH settings for old
+	  OS X
+
+2024-07-06 07:08  lothar
+
+	* BaseDevelopment/lbDB/lbDB.cpp: Moved sql_len out of CPUARCH_64
+	  scope to fix 32 Bit builds
+
+2024-06-30 21:09  lothar
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/makefile.module,
+	  BaseDevelopment/Makefile, BaseDevelopment/lbDB/lbDB.cpp,
+	  BaseDevelopment/lbHook/lbHook.cpp, interfaces/lbInterfaces.h,
+	  make/STD_MAKE, Plugins/DatabaseForm/fkpk.cpp,
+	  Plugins/DatabaseForm/makefile.module,
+	  Plugins/DatabaseLayerGateway/makefile.module,
+	  Plugins/DatabaseReport/makefile.module,
+	  Plugins/DomainLanguages/lbUILanguage/makefile.module,
+	  Plugins/TestPlugin/makefile.module,
+	  Plugins/UserFeedback/makefile.module,
+	  Plugins/VisitorOperations/makefile.module,
+	  Plugins/lbANTLR3/makefile.module,
+	  Plugins/lbBasicEventHandlers/makefile.module,
+	  Plugins/lbDMFDataModel/makefile.module,
+	  Plugins/lbFileOperationsPlugin/makefile.module,
+	  Plugins/lbXSLTTransformer/makefile.module,
+	  Plugins/wxWidgets/wxPropertyForm/makefile.module,
+	  Plugins/wxWidgets/wxSFDesigner/makefile.module,
+	  Plugins/wxWidgets/wxSFDesigner/wxSFDesignerBase.cpp,
+	  Plugins/wxWidgets/wxUpdateChecker/makefile.module,
+	  RegressionTests/makefile,
+	  Test/GUI/wxPlugins/lbCryptoStream/makefile.module,
+	  Test/GUI/wxPlugins/lbLoginWizard/makefile.module,
+	  Test/GUI/wxWrapper/Info.plist,
+	  Test/GUI/wxWrapper/makefile.module,
+	  Test/GUI/wxWrapper/postlink-mac.sh,
+	  Test/GUI/wxWrapperDLL/makefile.module,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp,
+	  UnitTests/MiniCppUnit/MiniCppUnit.cpp, vendor/mkmk/make-osx.sh,
+	  vendor/mkmk/mkmk.cpp: Many changes to get Mac OS X build in 64
+	  Bit
+
+2024-01-07 11:38  lothar
+
+	* BaseDevelopment/Makefile, vendor/mkmk/make-osx.sh: Added support
+	  for builds on Mac OS X Mojave
+
+2024-01-06 15:37  lothar
+
+	* Jenkinsfile: Changed definition of base directory
+
+2024-01-06 13:14  lothar
+
+	* Jenkinsfile: Added new Jenkins pipeline definition
+
+2023-12-25 21:53  lothar
+
+	* collect_releases.sh: Changed version informations in preparation
+	  for release.  Windows works well, Mac works most, but some crashes.
+	  Linux yet untested.
+
+2023-12-25 17:29  lothar
+
+	* lbdmf-jenkins.spec, lbdmf.spec, jenkinsrelease.sh,
+	  Test/GUI/wxWrapper/postlink-mac.sh: Changed version informations
+	  in preparation for release.  Windows works well, Mac works most, but
+	  some crashes.  Linux yet untested.
+
+2023-12-25 13:05  lothar
+
+	* interfaces/lbInterfaces.h: Changed version in documentation
+
+2023-12-24 23:12  lothar
+
+	* make_src_dist.bat: Added doxygen into bin build tools setup.
+
+2023-12-24 21:14  lothar
+
+	* make_src_dist.bat, bin-buildtools-dist.iss: Added doxygen into
+	  bin build tools setup.
+
+2023-12-24 11:06  lothar
+
+	* bin-buildtools-dist.iss: Fixed missing wildcard file filter
+
+2023-12-24 05:28  lothar
+
+	* watcomenvc.bat, bin-buildtools-dist.iss: Fixed path for Graphviz
+
+2023-12-23 21:16  lothar
+
+	* make_src_dist.bat: Modified source path for Graphwiz
+
+2023-12-22 23:07  lothar
+
+	* make_src_dist.bat, watcomenvc.bat, bin-buildtools-dist.iss: Some
+	  changes to get doxygen working again.  Also integrated it into the
+	  bin build tools setup.
+
+2023-12-22 20:26  lothar
+
+	* doxygen.conf, watcomenv.bat: Corrected path for Graphviz2.26.3
+
+2023-12-17 17:35  lothar
+
+	* watcomenv.bat: Path gets overridden
+
+2023-12-17 09:03  lothar
+
+	* watcomenv.bat: Add a new path for doxygen.
+
+2023-12-16 22:59  lothar
+
+	* watcomenvc.bat, dist.iss: Using separate watcomenv batch file for
+	  distribution
+
+2023-12-16 18:47  lothar
+
+	* include/lbVersionInfo.h: no message
+
+2023-12-16 18:40  lothar
+
+	* dist.iss: Adopted explicite distmode
+
+2023-12-16 14:44  lothar
+
+	* Test/GUI/wxWrapper/splash.png, Test/GUI/wxWrapper/Inkscape
+	  Icons/Splash Screen.svg, BaseDevelopment/splash.png: Changed
+	  version of splash screen
+
+2023-12-09 12:31  lothar
+
+	* buildwxWidgets_MinGW_debug.bat: Also needs calling generated
+	  batch fle with DISTMODE parameter
+
+2023-12-07 06:07  lothar
+
+	* installMinGW.bat, buildwxWidgets_MinGW_debug.bat: Added
+	  alternative Windows 10 supplied cUrl first
+
+2023-12-03 18:21  lothar
+
+	* watcomenv.bat, buildwxWidgets_MinGW_debug.bat: Choosen the wrong
+	  parameter
+
+2023-12-03 13:51  lothar
+
+	* buildwxWidgets_MinGW.bat, watcomenv.bat,
+	  buildwxWidgets_MinGW_debug.bat: Added parameter support to run in
+	  dist mode explicitely
+
+2023-12-02 13:37  lothar
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Querying for
+	  LBWXVERSION_CURRENT to activate usage of new wxAuiToolBar
+
+2023-12-02 13:06  lothar
+
+	* Test/GUI/wxWrapperDLL/: wxWrapperDLL.cpp, wxWrapperDLL.h:
+	  Adoptions for new wxWidgets version to use wxAuiToolBar.  Small
+	  fixes for toolbar ordering to keep main toolbar at most left.
+
+2023-11-18 12:16  lothar
+
+	* watcomenv.bat: Added path to Appveyor mingw
+
+2023-11-18 12:07  lothar
+
+	* appveyor.bat, watcomenv.bat: Changed call parameter under what
+	  the build runs (APPVEYOR) Added portion of configs for it and some
+	  debug output
+
+2023-11-15 12:42  lothar
+
+	* appveyor.bat: Added new build script to be used within Appveyor
+
+2023-11-05 19:16  lothar
+
+	* watcomenv.bat: Try to reactivate building helpfiles (doxygen)
+
+2023-11-04 12:08  lothar
+
+	* Plugins/wxWidgets/wxUpdateChecker/timerEventInterceptor.cpp:
+	  Probably had the uninitialized date issue since the beginning with
+	  an uninitialized wxDateTime instance.
+
+2023-10-29 19:51  lothar
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Fixed more build rules
+	  for wxWidgets version selection.
+
+2023-10-29 15:46  lothar
+
+	* Plugins/makefile: Fixed more build rules for wxWidgets version
+	  selection.
+
+2023-10-29 14:57  lothar
+
+	* Plugins/DatabaseReport/makefile.module: Fixed more build rules
+	  for wxWidgets version selection.
+
+2023-10-29 14:30  lothar
+
+	* Plugins/: DatabaseForm/makefile.module,
+	  DatabaseLayerGateway/makefile.module,
+	  wxWidgets/wxUpdateChecker/makefile.module: Fixed more build rules
+	  for wxWidgets version selection.
+
+2023-10-29 14:06  lothar
+
+	* BaseDevelopment/Makefile, Plugins/makefile,
+	  Plugins/DatabaseForm/fkpk.cpp,
+	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
+	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
+	  Plugins/DatabaseForm/makefile.module,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  Plugins/DatabaseLayerGateway/makefile.module,
+	  Plugins/DatabaseReport/makefile.module,
+	  Plugins/DatabaseReport/repwrt.cpp,
+	  Plugins/wxWidgets/wxSFDesigner/lbDMFBaseDesignShape.cpp,
+	  Plugins/wxWidgets/wxSFDesigner/makefile.module,
+	  Plugins/wxWidgets/wxUpdateChecker/makefile.module,
+	  Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Fixed more
+	  build rules for wxWidgets version selection.  Now it seems to build
+	  trough with some skipped errors for some unit tests. The application
+	  starts up with some ignorable errors at startup and the basic's are
+	  running.
+
+2023-10-28 20:09  lothar
+
+	* BaseDevelopment/Makefile, Plugins/makefile,
+	  Plugins/wxWidgets/wxPropertyForm/lbControlFactoryVisitor.cpp,
+	  Plugins/wxWidgets/wxPropertyForm/makefile.module: Fixed more
+	  build rules for wxWidgets version selection.
+
+2023-10-28 15:15  lothar
+
+	* BaseDevelopment/Makefile: Fixed more build rules for wxWidgets
+	  version selection.
+
+2023-10-28 14:18  lothar
+
+	* BaseDevelopment/Makefile, Plugins/makefile: Fixed more build
+	  rules for wxWidgets version selection.
+
+2023-10-28 11:17  lothar
+
+	* BaseDevelopment/Makefile,
+	  Plugins/wxWidgets/wxSFDesigner/makefile.module: Fixed ScaledDC
+	  missing const.  Fixed build rule for wxWidgets version selection.
+
+2023-10-15 20:27  lothar
+
+	* BaseDevelopment/Makefile,
+	  Test/GUI/wxPlugins/lbCryptoStream/makefile.module,
+	  Test/GUI/wxPlugins/lbLoginWizard/makefile.module: More wxWidgts
+	  version switch support
+
+2023-10-15 11:53  lothar
+
+	* Test/GUI/wxWrapper/makefile.module: Used wrong (DLL) options
+
+2023-10-15 08:52  lothar
+
+	* BaseDevelopment/Makefile: Missed the parameter to control
+	  wxWidgets version being used
+
+2023-10-14 23:10  lothar
+
+	* Test/GUI/wxWrapper/: dynamic.cpp, makefile.module: Adopted
+	  dynamic.cpp to new wxWidgets library
+
+2023-10-14 19:12  lothar
+
+	* BaseDevelopment/Makefile: The mkmk tool doesn't cope with the
+	  LBWXVERSION parameter.
+
+2023-10-14 18:52  lothar
+
+	* make/makefile.configure: The mkmk tool doesn't cope with the
+	  LBWXVERSION parameter.
+
+2023-10-14 15:38  lothar
+
+	* BaseDevelopment/Makefile: Integrated custom wx rules yet on wrong
+	  place
+
+2023-10-14 13:42  lothar
+
+	* BaseDevelopment/Makefile: Made changes to get Sqlite Database
+	  Layer buiding on current wxWidgets
+
+2023-10-08 15:05  lothar
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Missed the toolbar
+	  changes
+
+2023-10-08 14:25  lothar
+
+	* make/STD_MAKE, Test/GUI/wxWrapperDLL/makefile.module,
+	  Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Made changes to enable
+	  building wxWrapperDll on Windows10 against wxWidgets 3.2.2.1 and
+	  hopefully on XP Jenkins against wxWidgets 2.8.12
+
+2023-10-03 13:51  lothar
+
+	* BaseDevelopment/Makefile: Propably missed passing configuration
+	  also for making
+
+2023-10-02 16:36  lothar
+
+	* make/makefile.configure: Added control how to build against
+	  wxWidgets (current vs old)
+
+2023-10-02 15:42  lothar
+
+	* BaseDevelopment/Makefile, Test/GUI/wxWrapperDLL/makefile.module:
+	  Added control how to build against wxWidgets (current vs old)
+
+2023-10-02 12:26  lothar
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: Accidantly deleted too
+	  much
+
+2023-10-02 10:55  lothar
+
+	* Test/GUI/wxWrapperDLL/wxWrapperDLL.cpp: First small changes
+	  porting to wxWidgets 3.2.2.1
+
+2023-10-01 15:14  lothar
+
+	* BaseDevelopment/Makefile: Tweaked location, when to build
+	  wxPropgrid as extra library.  On Windows build only when not running
+	  within my Jenkins.  Assuming the wxWidgets library is current and
+	  includes it.
+
+2023-10-01 14:11  lothar
+
+	* BaseDevelopment/: Makefile, lbtransfer/transfer.cpp: Fixed a char
+	  to char* casting error.  No longer build the extra propgrid library
+	  on Windows as it is now included in wxWidgets build.
+
+2023-10-01 11:25  lothar
+
+	* watcomenv.bat, buildwxWidgets_MinGW_debug.bat: Adopted path
+	  variable to point to new mingw32 installation location
+
+2023-09-30 22:51  lothar
+
+	* installMinGW.bat: Tricky link in batch file with space
+
+2023-09-30 20:33  lothar
+
+	* installMinGW.bat: Link sligthly wrong
+
+2023-09-30 16:50  lothar
+
+	* installMinGW.bat: Custom location not yet in path here
+
+2023-09-30 13:44  lothar
+
+	* installMinGW.bat: Using a new install method for MinGW.
+	  Explicitely targeting 32Bit DWarf 7z package
+
+2023-09-17 11:28  lothar
+
+	* wxWidgets-config-debug.gcc, wxWidgets-config.gcc: Non unicode
+	  doesn't compile
+
+2023-09-16 21:37  lothar
+
+	* buildwxWidgets_MinGW.bat, wxWidgets-config.gcc,
+	  buildwxWidgets_MinGW_debug.bat: Corrected build script creation
+	  and copied wx config file to non debug version with changes
+	  regarding release settings
+
+2023-09-16 15:56  lothar
+
+	* wxWidgets-config-debug.gcc: Taken the freshly adopted config file
+	  from wx 3.2.2.1 and activated shared build and disabled unicode
+
+2023-09-10 11:33  lothar
+
+	* buildwxWidgets_MinGW_debug.bat: Wrong path checked for mingw
+
+2023-09-09 16:37  lothar
+
+	* buildwxWidgets_Custom_MinGW_debug.bat, installMinGW.bat,
+	  buildwxWidgets_MinGW_debug.bat: No installation of msys. Using
+	  TAO needs to pull this but it may interfere with wxWidgets.
+	  Corrected one rem line
+
+2023-09-09 13:35  lothar
+
+	* buildwxWidgets_Custom_MinGW_debug.bat: Deactivating copying of
+	  configuration. Build issues needs reharvest.
+
+2023-09-09 11:25  lothar
+
+	* buildwxWidgets_MinGW_debug.bat: Changed link for wxWidgets to be
+	  better configurable and used the current stable version.
+
+2023-09-03 11:44  lothar
+
+	* vendor/mkmk/mkmk.cpp: OSX dd_findnext
+
+2023-09-03 11:41  lothar
+
+	* vendor/mkmk/mkmk.cpp: OSX malloc.h issue
+
+2023-09-03 11:15  lothar
+
+	* vendor/mkmk/mkmk.cpp: Mac OSX also depends on dosdir.h with
+	  different parameters
+
+2023-09-03 10:52  lothar
+
+	* vendor/mkmk/mkmk.cpp: Small differences within call
+
+2023-09-03 10:36  lothar
+
+	* vendor/mkmk/mkmk.cpp: Corrections related to dosdir definitions
+
+2023-09-03 10:20  lothar
+
+	* vendor/mkmk/mkmk.cpp: Using dosdir.h for Linux/Unix
+
+2023-09-02 16:34  lothar
+
+	* vendor/mkmk/mkmk.cpp: More changes for file and directory find
+	  functions
+
+2023-09-02 16:19  lothar
+
+	* vendor/mkmk/mkmk.cpp: Using UNIX and OSX defines to detect OSX
+	  and Linux build as defined in shell scripts
+
+2023-09-02 15:30  lothar
+
+	* vendor/mkmk/mkmk.cpp: Added include for LINUX and OSX - probably
+	  the simplest way
+
+2023-09-02 15:12  lothar
+
+	* TODO, buildwxWidgets_Custom_MinGW.bat,
+	  buildwxWidgets_Custom_MinGW_debug.bat, buildwxWidgets_MinGW.bat,
+	  readme, bin-buildtools-dist.iss, bindist.iss, dist.iss,
+	  docdist.iss, buildwxWidgets_MinGW_debug.bat: Changed versions in
+	  preparation of a new intermediate release to show a sign of live for
+	  the project. Furter work is described in the TODO file.
+
+2023-08-29 06:54  lothar
+
+	* watcomenv.bat: Fixed conflict and activated both PC names.
+
+2023-08-29 06:53  lothar
+
+	* vendor/mkmk/mkmk.cpp: Added missing log entry. There is probably
+	  missing something else. Placed the msvc mkmk.exe for deployment.
+
+2023-08-09 20:44  lothar
+
+	* vendor/mkmk/: mkmk.cpp, .cvsignore, vcprj/mkmk.dsp,
+	  vcprj/mkmk.dsw, vcprj/mkmk.ncb, vcprj/mkmk.opt, vcprj/mkmk.plg:
+	  Attempt to use Microsoft Visual C 6.0 to build it on Windows XP
+	  seems to produce a stable and usable tool. Some quick hacks, but a
+	  first usage on Windows 10 showed up with a successful complete
+	  build.
+
+	  There is indeed much work yet to do :-)
+
+2023-08-09 01:40  lothar
+
+	* watcomenv.bat: Added L15 notebook as NODIST setup
+
+2023-08-07 00:30  lothar
+
+	* vendor/mkmk/mkmk.cpp: Literally the watcom compiled code crashes
+	  in some wired __FiniRtns code while trying to free memory. One
+	  possible bug indeed found.
+
+2023-08-06 15:40  lothar
+
+	* BaseDevelopment/Makefile: Deactivated build rules of mkmk for
+	  Windows_NT
+
+2023-07-30 18:53  lothar
+
+	* BaseDevelopment/Makefile: The MinGW mkmk build is unstable. Try
+	  to stick on OW yet
+
+2023-07-23 11:07  lothar
+
+	* installMinGW.bat: Maybe the msys pulls libbfd and header
+
+2023-07-16 11:30  lothar
+
+	* BaseDevelopment/Makefile: Fix in building libxslt. Missing
+	  commands
+
+2023-07-15 15:21  lothar
+
+	* make_src_dist.bat: Missing copying xsltconfig-1.1.34.h
+
+2023-07-15 13:25  lothar
+
+	* buildwxWidgets_Custom_MinGW.bat,
+	  buildwxWidgets_Custom_MinGW_debug.bat, buildwxWidgets_MinGW.bat,
+	  buildwxWidgets_MinGW_debug.bat, BaseDevelopment/Makefile:
+	  Replaced gnome libxslt library with xmlsoft.org version.  That
+	  version (1.1.34) compiles after fixing one config issue in
+	  xsltconfig.h at line 120. Propably some remains of missing configure
+	  script conditoinal (WITH_PROFILER).  There was a @WITH_PROFILER@.
+
+2023-07-09 22:05  lothar
+
+	* buildwxWidgets_Custom_MinGW.bat,
+	  buildwxWidgets_Custom_MinGW_debug.bat, buildwxWidgets_MinGW.bat,
+	  make_src_dist.bat, buildwxWidgets_MinGW_debug.bat: Missing file
+	  and wrong path fixed
+
+2023-07-09 18:12  lothar
+
+	* make_src_dist.bat: File makefile.module.libxslt handled as folder
+	  propably caused the build release failure
+
+2023-07-09 16:25  lothar
+
+	* BaseDevelopment/Makefile: Missing separator
+
+2023-07-09 16:16  lothar
+
+	* BaseDevelopment/Makefile: Building
+	  ../vendor/libxslt-1.1.21/libxslt on build server until the new one
+	  passes on end user test machine building
+
+2023-07-09 14:34  lothar
+
+	* vendor/mkmk/stringtools.cpp: Basically mixing string and string.h
+	  only for memcpy?
+
+2023-07-09 14:30  lothar
+
+	* vendor/mkmk/: stringtools.cpp: Hopefully a version that compiles
+
+2023-07-09 14:20  lothar
+
+	* vendor/mkmk/: stringtools.cpp: Non MINGW version without regex
+
+2023-07-09 14:10  lothar
+
+	* vendor/mkmk/stringtools.cpp: Non MINGW version without regex
+
+2023-07-09 14:03  lothar
+
+	* vendor/mkmk/: make.sh, stringtools.cpp: Non MINGW version without
+	  regex
+
+2023-07-09 13:51  lothar
+
+	* vendor/mkmk/: stringtools.cpp, make.sh: Non MINGW version without
+	  regex
+
+2023-07-09 13:41  lothar
+
+	* vendor/mkmk/: stringtools.cpp, make.sh: Non MINGW version without
+	  regex
+
+2023-07-09 13:13  lothar
+
+	* vendor/mkmk/make.sh: Try using -std=c++11 for stringtools.cpp
+
+2023-06-18 19:05  lothar
+
+	* BaseDevelopment/Makefile: Let mkmk failure pass for Windows.
+
+2023-06-18 15:04  lothar
+
+	* vendor/mkmk/: make-osx.sh, make.sh: Reworked mkmk, added
+	  dependency to and download libxslt-v1.1.38 and included
+	  bootstrapping it.
+
+2023-06-18 14:52  lothar
+
+	* buildwxWidgets_Custom_MinGW.bat,
+	  buildwxWidgets_Custom_MinGW_debug.bat, buildwxWidgets_MinGW.bat,
+	  make_src_dist.bat, dist.iss, buildwxWidgets_MinGW_debug.bat,
+	  BaseDevelopment/Makefile, make/makefile.configure,
+	  vendor/mkmk/makefile.mkmk, vendor/mkmk/mkmk.cpp,
+	  vendor/mkmk/stringtools.cpp, vendor/mkmk/stringtools.h: Reworked
+	  mkmk, added dependency to and download libxslt-v1.1.38 and included
+	  bootstrapping it.
+
+2023-06-17 20:50  lothar
+
+	* vendor/mkmk/mkmk.cpp: Some code parts related to the old
+	  parameter passing are becoming obsolete.
+
+2023-06-17 19:51  lothar
+
+	* BaseDevelopment/lbclasses/lbInputStream.cpp: MinGW 6.3.0 is now
+	  more strict with size_t to bool assignments.
+
+2023-06-17 18:36  lothar
+
+	* make/makefile.configure: Changes to distinguish between Jenkins
+	  (CRUISECONTROL) and non Jenkins for usage of owmkmk vs mkmk. The
+	  wxWidgets library seems to compile with recent MinGW, but my code
+	  needs changes.
+
+2023-06-17 16:47  lothar
+
+	* installMinGW.bat: Fixed missing path.
+
+2023-06-17 16:02  lothar
+
+	* buildwxWidgets_MinGW.bat, buildwxWidgets_MinGW_debug.bat: Fixed
+	  missing path.
+
+2023-06-17 14:51  lothar
+
+	* dist.iss: Added missing files and set options unchecked
+
+2023-06-17 10:45  lothar
+
+	* make/makefile.configure: Made switches completely platform
+	  specific about mkmk usage
+
+2023-06-17 10:38  lothar
+
+	* make/makefile.configure: Missed second point to change as well.
+	  But why two places?
+
+2023-06-17 10:29  lothar
+
+	* make/makefile.configure: Configure owmkmk. On non Jenkins, this
+	  needs to be tweaked
+
+2023-06-17 10:14  lothar
+
+	* BaseDevelopment/Makefile: Jenkins does not like REM
+
+2023-06-17 10:03  lothar
+
+	* BaseDevelopment/Makefile: The mkmk tool crashes, when I just call
+	  it. But it showed that it would be used and the previous check
+	  showed the Path configuration and location of the Open Watcom mkmk
+	  version was correct.
+
+2023-06-17 09:39  lothar
+
+	* BaseDevelopment/Makefile: Can't switch back to Open Watcom mkmk
+	  version without more tweaking of the makefiles.
+
+2023-06-17 09:26  lothar
+
+	* BaseDevelopment/Makefile: Path config works. But what is missing?
+
+2023-06-17 09:15  lothar
+
+	* BaseDevelopment/Makefile: Try to get the info in another way
+
+2023-06-17 09:10  lothar
+
+	* BaseDevelopment/Makefile: Add some debug info
+
+2023-06-17 08:52  lothar
+
+	* watcomenv.bat: Fix a path issue. I don't know, where mkmk before
+	  was placed.
+
+2023-06-15 01:38  lothar
+
+	* buildwxWidgets_Custom_MinGW.bat,
+	  buildwxWidgets_Custom_MinGW_debug.bat, watcomenv.bat, dist.iss,
+	  buildwxWidgets_MinGW_debug.bat, BaseDevelopment/Makefile,
+	  vendor/mkmk/mkmk.cpp, installMinGW.bat: Adopted setup to support
+	  custom MinGW (repackaged jenkins build system).  Made attempts to
+	  fix issues with mkmk when built with MinGW. Needs a test with the
+	  most current MinGW compiler.
+
+2023-06-11 13:41  lothar
+
+	* vendor/mkmk/mkmk.cpp: More debug output
+
+2023-06-11 12:27  lothar
+
+	* vendor/mkmk/mkmk.cpp: Adding some debug output
+
+2023-06-11 11:23  lothar
+
+	* BaseDevelopment/Makefile, make/makefile.configure: Activated new
+	  include path parameter again. It probably was the shifting
+	  algorythm.
+
+2023-06-11 11:07  lothar
+
+	* vendor/mkmk/mkmk.cpp: Added a different shift calculation. It was
+	  otherwise missing the first source file and produced missing symbols
+	  at link time.
+
+2023-06-11 10:21  lothar
+
+	* make/makefile.configure: Reactivated old include path param for
+	  mkmk to see, if the remaining changes are compilable within jenkins.
+
+2023-06-10 18:08  lothar
+
+	* make/makefile.configure, vendor/mkmk/mkmk.cpp: There are issues
+	  with sh and mkmk command when using large command parameter values.
+	  Added support for -I based include parameter passing and an
+	  automatic shift for the remaining parameter's start index. That
+	  seems to work partly.
+
+2023-06-10 10:35  lothar
+
+	* vendor/mkmk/mkmk.cpp: Probably found the issue for the crash.
+
+2023-06-09 14:53  lothar
+
+	* vendor/mkmk/mkmk.cpp: Some corrections
+
+2023-06-09 14:46  lothar
+
+	* vendor/mkmk/mkmk.cpp: Changed some stack based strings to memory
+	  based
+
+2023-06-09 11:45  lothar
+
+	* vendor/mkmk/mkmk.cpp: Probably a buffer overrun
+
+2023-06-09 09:14  lothar
+
+	* buildwxWidgets_MinGW_debug.bat: Missed the redirect
+
+2023-06-09 07:22  lothar
+
+	* buildwxWidgets_MinGW_debug.bat: Fixed doBuildWx call
+
+2023-06-09 07:17  lothar
+
+	* buildwxWidgets_MinGW_debug.bat: Added repackaged MinGW as a
+	  sourcing for a compiler.
+
+2023-06-08 17:29  lothar
+
+	* MinGW-3.4.5-Repackaged.iss: Changed the target install folder and
+	  changed the version to the current
+
+2023-06-08 15:50  lothar
+
+	* make_src_dist.bat: Again a path issue. 7z requires a -o switch
+
+2023-06-08 14:14  lothar
+
+	* make_src_dist.bat: Fixed path again
+
+2023-06-08 13:13  lothar
+
+	* make_src_dist.bat: Fixed path
+
+2023-06-08 11:54  lothar
+
+	* MinGW-3.4.5-Repackaged.iss, make_src_dist.bat: Added repackaging
+	  of my MinGW compiler I assume last worked with my code.  This hould
+	  ensure getting a proper working compiler until the current gets
+	  supported again (compiles my code after required changes)
+
+2023-05-14 13:03  lothar
+
+	* buildwxWidgets_MinGW.bat, buildwxWidgets_MinGW_debug.bat:
+	  Temporally ignore certificates. Probably curl I use, is too old
+
+2023-05-13 10:24  lothar
+
+	* bindist.iss: Added debug version libraries of wxWidgets to enable
+	  debug builds
+
+2023-05-07 11:13  lothar
+
+	* dist.iss: Added new debug preconfiguration and build files
+
+2023-05-07 10:59  lothar
+
+	* wxWidgets-config-debug.gcc, dist.iss,
+	  buildwxWidgets_MinGW_debug.bat, BaseDevelopment/Makefile,
+	  make/STD_MAKE, vendor/mkmk/mkmk.cpp: Some changes to get the
+	  build process further improved
+
+2023-04-18 15:30  anonymous
+
+	* collect_releases.sh: Added PPC target and structured it a bit
+
+2023-04-18 14:52  lothar
+
+	* collect_releases.sh: Initial release collector
+
+2023-04-18 10:24  lothar
+
+	* configure: Added an extra parameter -e REPO_NAME=lbdmf
+
+2023-04-18 00:22  lothar
+
+	* configure: Moce CPP to lbdmf stuff
+
+2023-04-17 21:59  lothar
+
+	* make_src_dist.bat: Moce CPP to lbdmf stuff
+
+2023-04-17 21:42  lothar
+
+	* make_src_dist.sh: Reactivated CVS parts, but using anonymous
+
+2023-04-17 20:13  lothar
+
+	* make_src_dist.sh, jenkinsrelease.sh: Changed more CPP to lbdmf,
+	  not refactored...
+
+2023-04-17 01:40  lothar
+
+	* BaseDevelopment/Makefile: Missing target ../../bin on Windows_NT.
+	  Caused failure with bison.simple not found in bin.
+
+2023-04-17 00:31  lothar
+
+	* UnitTests/makefile: Using
+
+2023-04-16 23:47  lothar
+
+	* BaseDevelopment/Makefile: Deactivated dbwrapcontrols
+
+2023-04-16 23:34  lothar
+
+	* make/STD_MAKE: Changed linux g++ to gcc
+
+2023-04-16 23:16  lothar
+
+	* vendor/mkmk/make.sh: Added -lstdc++
+
+2023-04-16 23:14  lothar
+
+	* vendor/mkmk/make.sh: Changed g++ to gcc
+
+2023-04-16 23:11  lothar
+
+	* BaseDevelopment/Makefile: Revert to use shell script
+
+2023-04-16 22:43  lothar
+
+	* BaseDevelopment/Makefile: Changed mkmk rule for linux
+
+2023-04-16 21:47  lothar
+
+	* RegressionTests/makefile: Using $(REPO_NAME)
+
+2023-04-16 21:38  lothar
+
+	*
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/plugin.cpp:
+	  Using lbdmf in path
+
+2023-04-16 21:32  lothar
+
+	* AppDevelopmentDemo/DynamicApp/:
+	  UMLSamples/InitialModels/CDKatalog/CDKatalog.prj,
+	  UMLSamples/InitialModels/CRM/CRM.prj,
+	  UMLSamples/InitialModels/DatabaseLogging/DatabaseLogging.prj,
+	  UMLSamples/InitialModels/LoRa/LoRa.prj,
+	  UMLSamples/InitialModels/OpenSourceStoreReview/OpenSourceStoreReview.prj,
+	  UMLSamples/InitialModels/OpenSourceStoreReviewBrazil/OpenSourceStoreReviewBrazil.prj,
+	  UMLSamples/InitialModels/StsManagement/StsManagement.prj,
+	  UMLSamples/SecondStageModels/CRM/CRM.prj,
+	  UMLSamples/SecondStageModels/Postbooks/Postbooks.prj,
+	  UMLSamples/SecondStageModels/lbDMFManager/lbDMFManager.prj,
+	  XSLT_Templates/TurboVision/TurboVisionApplicationModul.xsl,
+	  XSLT_Templates/XMIToDMFCS/ProxyMakefileModule.xsl,
+	  XSLT_Templates/XMIToDMFCS/ServerMakefileModule.xsl,
+	  XSLT_Templates/lbDMFDataViewModel/lbDMFApplicationModul.xsl,
+	  XSLT_Templates/lbDMFFixedFormular/lbDMFApplicationModul.xsl,
+	  XSLT_Templates/wxActiveRecords/wxARGApplicationModul.xsl: Using
+	  lbdmf in path
+
+2023-04-16 21:29  lothar
+
+	* BaseDevelopment/lbHook/makefile.module,
+	  BaseDevelopment/lbXMLConfig/lbDOMConfig/makefile.module,
+	  BaseDevelopment/lbcs/makefile.module,
+	  Plugins/DomainLanguages/lbUILanguage/makefile.module,
+	  Plugins/wxWidgets/wxPropertyForm/makefile.module,
+	  Plugins/wxWidgets/wxSFDesigner/makefile.module,
+	  Plugins/wxWidgets/wxUpdateChecker/makefile.module,
+	  UnitTests/MiniCppUnit/makefile.module,
+	  UnitTests/UIWrapper/makefile.module: Using $(REPO_NAME)
+
+2023-04-16 21:24  lothar
+
+	* AppDevelopmentDemo/DynamicApp/App/makefile.module,
+	  AppDevelopmentDemo/DynamicApp/Plugins/makefile,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFBasicActionSteps/makefile.module,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDMFXslt/makefile.module,
+	  AppDevelopmentDemo/DynamicApp/Plugins/lbDynamicAppStorage/makefile.module,
+	  Plugins/makefile: Using $(REPO_NAME)
+
+2023-04-16 21:02  lothar
+
+	* Test/GUI/wxWrapper/makefile.module: Using $(REPO_NAME)
+
+2023-04-16 20:37  lothar
+
+	* BaseDevelopment/Makefile: Use commands with path direct
+
+2023-04-16 20:27  lothar
+
+	* BaseDevelopment/Makefile: Dir -> pwd
+
+2023-04-16 20:23  lothar
+
+	* BaseDevelopment/Makefile: Problems with cp makefile.mkmk
+
+2023-04-16 20:03  lothar
+
+	* BaseDevelopment/Makefile: Changed dependency path
+
+2023-04-16 19:58  lothar
+
+	* BaseDevelopment/Makefile: Wrong parameter to change directory
+
+2023-04-16 19:28  lothar
+
+	* BaseDevelopment/Makefile: Another trial
+
+2023-04-16 19:16  lothar
+
+	* BaseDevelopment/Makefile: Batch file calling impossible. Maybe do
+	  it within makefile only
+
+2023-04-16 19:06  lothar
+
+	* BaseDevelopment/Makefile: Using backslash was indeed wrong
+
+2023-04-16 18:58  lothar
+
+	* BaseDevelopment/Makefile: Try to cd into directory, create the
+	  makefile with makefile.bat
+
+2023-04-16 18:45  lothar
+
+	* vendor/mkmk/makefile.bat, BaseDevelopment/Makefile: Try a
+	  bootstrap mechanism
+
+2023-04-16 18:37  lothar
+
+	* vendor/mkmk/makefile.mkmk: Added a precreated makefile as a
+	  bootstrapper.
+
+2023-04-16 17:43  lothar
+
+	* watcomenv.bat: Wrong command
+
+2023-04-16 17:25  lothar
+
+	* watcomenv.bat: Output path now is wrong. Removed extra path
+	  parameter and added a rmdir after.
+
+2023-04-16 17:12  lothar
+
+	* watcomenv.bat: Copied the path containing CPP. Corrected to
+	  containing lbdmf.
+
+2023-04-16 16:47  lothar
+
+	* watcomenv.bat: Used the wrong parameter
+
+2023-04-16 16:34  lothar
+
+	* watcomenv.bat: Added extraction command using 7z
+
+2023-04-16 16:12  lothar
+
+	* watcomenv.bat: Added first trial to unzip the downloaded
+	  dependency wxMSW-2.8.12.zip to the desired path
+
+2023-04-16 13:08  lothar
+
+	* ccbuild.bat: Changed some CPP path usages to use lbdmf directly.
+	  REPO_NAME gets defined in watcomenv.bat later.
+
+2023-04-16 12:46  lothar
+
+	* jenkinsbuild-osx.sh, jenkinsbuild.sh,
+	  jenkinsbuild-osx-release.sh: Changed some CPP path usages to use
+	  REPO_NAME
+
+2023-04-10 19:11  lothar
+
+	* watcomenv.bat, Test/GUI/wxWrapperDLL/makefile.module: Got
+	  reasonable far compiling on my new developer box.  But still
+	  dependencies to tools I need to fix. Actually there occurs bison
+	  errors.
+
+2023-04-10 17:12  lothar
+
+	* watcomenv.bat, BaseDevelopment/Makefile, make/makefile.configure:
+	  Some more changes to get compiling to start
+
+2023-04-10 16:51  lothar
+
+	* make/: STD_MAKE, makefile.configure, makefile.template,
+	  makefile.template.mkmk: Made mkmk compile with MinGW
+
+2023-04-10 16:06  lothar
+
+	* vendor/mkmk/: makefile.bat, makefile.module, mkmk.cpp: Made mkmk
+	  compile with MinGW
+
+2023-04-10 15:20  lothar
+
+	* vendor/mkmk/makefile.bat: Using new REPO_NAME variable
+
+2023-04-10 15:17  lothar
+
+	* watcomenv.bat: Added my new VM to the list of dev systems and
+	  moved repo name to be lbdmf
+
+2017-10-01 09:28  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/LoRA.png:
+	  Initial LoRA UML model.
+
+2017-09-30 12:07  lollisoft
+
+	* Plugins/DatabaseForm/lbDatabasePanel.cpp: Added code to save
+	  double values.
+
+2017-08-13 11:54  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/LoRa.png: Initial LoRa model
+
+2017-08-13 10:52  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  LoRa.xmi, LoRa/128002, LoRa/128002.diagram, LoRa/LoRa.prj: Added
+	  a node entity the telemetry data belongs to
+
+2017-07-09 10:23  lollisoft
+
+	* BaseDevelopment/lbDB/lbDB.cpp,
+	  BaseDevelopment/lbModule/lbModule.cpp,
+	  BaseDevelopment/lbclasses/lbobject.cpp,
+	  BaseDevelopment/lbclasses/lbobject.h,
+	  Plugins/DatabaseForm/lbDatabaseForm.h,
+	  Plugins/DatabaseForm/lbDatabasePanel.cpp,
+	  Plugins/DatabaseForm/lbDatabaseTableViewPanel.cpp,
+	  Plugins/DatabaseLayerGateway/lbDB.cpp,
+	  UnitTests/BaseDevelopment/BaseDevelopment.cpp,
+	  interfaces/lbInterfaces-sub-classes.h,
+	  interfaces/lbInterfaces-sub-db.h, interfaces/lbInterfaces.h:
+	  Added new data type mappings. Hopefully first usable version.
+
+2017-07-09 10:20  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  LoRa.xmi, LoRa/128002, LoRa/128002.diagram, LoRa/LoRa.prj,
+	  LoRa/cpp_includes, LoRa/generation_settings, LoRa/idl_includes,
+	  LoRa/java_imports, LoRa/python_imports, LoRa/stereotypes,
+	  LoRa/tools: New LoRa model.
+
+2017-06-24 12:42  lollisoft
+
+	* interfaces/lbInterfaces-sub-db.h,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMIImport.CreateDBSchema.Sqlite.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.CreateFormularDefinition.Sqlite.xsl,
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.FillSchemaTables.Sqlite.xsl:
+	  New basic data types
+
+2017-04-22 10:27  lollisoft
+
+	* Database/lbDMF-Sqlite-SystemDB.sql: Updated SQL script to reflect
+	  version information for generated code (installers).
+
+2017-04-18 10:43  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/:
+	  InitialModels/DatabaseLogging.xmi,
+	  InitialModels/OpenSourceStoreReviewApp.xmi,
+	  InitialModels/OpenSourceStoreReviewBrazilApp.xmi,
+	  InitialModels/StsManagement.xmi,
+	  InitialModels/DatabaseLogging/128002,
+	  InitialModels/DatabaseLogging/DatabaseLogging.prj,
+	  InitialModels/OpenSourceStoreReview/128258,
+	  InitialModels/OpenSourceStoreReview/OpenSourceStoreReview.prj,
+	  InitialModels/OpenSourceStoreReviewBrazil/128258,
+	  InitialModels/OpenSourceStoreReviewBrazil/OpenSourceStoreReviewBrazil.prj,
+	  InitialModels/StsManagement/128002,
+	  InitialModels/StsManagement/StsManagement.prj,
+	  SecondStageModels/lbDMF Manager.xmi,
+	  SecondStageModels/lbDMFManager/128130,
+	  SecondStageModels/lbDMFManager/lbDMFManager.prj: Updated version
+	  numbers to comply with a major upgrade (WIX).  Changed namings,
+	  added missing config values and changed product id's.
+
+2017-04-15 12:17  lollisoft
+
+	*
+	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/DatabaseLogging/DatabaseLogging.prj:
+	  Copy pasta bug, the second checkin
+
+2017-04-15 12:12  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  DatabaseLogging.xmi, DatabaseLogging/128002: Copy pasta bug
+
+2017-04-13 09:59  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  DatabaseLogging.xmi, DatabaseLogging/128002,
+	  DatabaseLogging/DatabaseLogging.prj: Database logging service
+	  version change.
+
+2017-03-19 12:15  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  DatabaseLogging.xmi, DatabaseLogging/128002,
+	  DatabaseLogging/DatabaseLogging.prj: Some renamings regarding
+	  logging service product name and version information.
+
+2017-03-18 23:09  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
+	  DatabaseLogging.xmi, DatabaseLogging/128002,
+	  DatabaseLogging/DatabaseLogging.prj: Changed version for the
+	  logging model.
+
+2016-06-05 16:40  lollisoft
+
+	* ChangeLog-basic.txt: Preparing new release
+
 2016-05-26 11:59  lollisoft
 
 	* AppDevelopmentDemo/DynamicApp/Doc/:
@@ -5,138 +1555,3 @@
 	  ApplicationprototypingDokumentation.pdf: Added documentation for
 	  the new logging feature.
 
-2016-05-26 09:37  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/Doc/LoggingApplicationRunning.png:
-	  Added a screenshot for the running logging application.
-
-2016-05-26 08:55  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/Doc/LoggingModelDocumentation.png:
-	  A logging model at the time of documenting it.
-
-2016-05-22 07:08  lollisoft
-
-	* BaseDevelopment/splash.png, Test/GUI/wxWrapper/splash.png,
-	  Test/GUI/wxWrapper/Inkscape Icons/Splash Screen.svg: Changed
-	  splash screen version.
-
-2016-05-21 15:52  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
-	  Fixed import issues. Added missing application id and missing filter
-	  over application id.
-
-2016-05-16 19:32  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
-	  OpenSourceStoreReviewBrazilApp.xmi, OpenSourceStoreReview/128258,
-	  OpenSourceStoreReview/134530.diagram,
-	  OpenSourceStoreReviewBrazil/128258,
-	  OpenSourceStoreReviewBrazil/134530.diagram,
-	  OpenSourceStoreReviewBrazil/OpenSourceStoreReviewBrazil.prj:
-	  Changed endpoint address, product id and upgrade code.  (To fully
-	  simulate a customer)
-
-2016-05-16 00:46  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/XMISysImport.xsl:
-	  Bugfix: Copies of UML models with different application name only
-	  failed at import. Actions were deleted globally, where detail data
-	  was deleted only application wide.  Delete them also at application
-	  level.
-
-2016-05-15 22:16  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
-	  OpenSourceStoreReviewApp.xmi, OpenSourceStoreReviewBrazilApp.xmi,
-	  OpenSourceStoreReview/OpenSourceStoreReview.prj,
-	  OpenSourceStoreReviewBrazil/128258,
-	  OpenSourceStoreReviewBrazil/134530.diagram,
-	  OpenSourceStoreReviewBrazil/OpenSourceStoreReviewBrazil.prj,
-	  OpenSourceStoreReviewBrazil/cpp_includes,
-	  OpenSourceStoreReviewBrazil/generation_settings,
-	  OpenSourceStoreReviewBrazil/idl_includes,
-	  OpenSourceStoreReviewBrazil/java_imports,
-	  OpenSourceStoreReviewBrazil/python_imports,
-	  OpenSourceStoreReviewBrazil/stereotypes,
-	  OpenSourceStoreReviewBrazil/tools: Added new Brazil UML sample to
-	  represent model for a different location and website that trusts the
-	  STS.
-
-2016-05-14 08:52  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
-	  OpenSourceStoreReviewApp.xmi, OpenSourceStoreReview/128258:
-	  Updated OpenSourceStoreReviewApp version to make a release using the
-	  new XPO database ORM version 15.2.  The version is at least
-	  incompatible with version 13.2.
-
-2016-05-09 18:50  lollisoft
-
-	* ChangeLog-basic.txt, bindist.iss, dist.iss, docdist.iss,
-	  jenkinsrelease.sh, lbdmf-jenkins.spec, lbdmf.spec,
-	  Database/lbDMF-Sqlite-SystemDB.sql, include/lbVersionInfo.h,
-	  interfaces/lbInterfaces.h, Test/GUI/wxWrapper/postlink-mac.sh:
-	  Increased version. Regenerated initial SQL script.
-
-2016-04-30 11:17  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/:
-	  InitialModels/DatabaseLogging.xmi,
-	  InitialModels/OpenSourceStoreReviewApp.xmi,
-	  InitialModels/StsManagement.xmi,
-	  InitialModels/DatabaseLogging/DatabaseLogging.prj,
-	  InitialModels/OpenSourceStoreReview/OpenSourceStoreReview.prj,
-	  InitialModels/StsManagement/StsManagement.prj,
-	  SecondStageModels/lbDMF Manager.xmi,
-	  SecondStageModels/lbDMFManager/lbDMFManager.prj: Added properties
-	  to control logging behaviour and corresponding code generation.
-
-2016-04-30 07:29  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/:
-	  InitialModels/DatabaseLogging/128002,
-	  InitialModels/DatabaseLogging/128002.diagram,
-	  InitialModels/OpenSourceStoreReview/128258,
-	  InitialModels/OpenSourceStoreReview/134530.diagram,
-	  InitialModels/OpenSourceStoreReview/OpenSourceStoreReview.prj,
-	  InitialModels/StsManagement/128002,
-	  SecondStageModels/lbDMFManager/128130: Added properties to
-	  control logging behaviour and corresponding code generation.
-
-2016-04-25 18:42  lollisoft
-
-	* buildwxWidgets_MinGW.bat: Added parameter to follow redirect.
-
-2016-04-23 22:25  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/XSLT_Templates/XMIToDMF/:
-	  XMIImport.CreateDBSchema.Sqlite.xsl,
-	  XMISysImport.CreateFormularDefinition.Sqlite.xsl,
-	  XMISysImport.FillSchemaTables.Sqlite.xsl: Added new datetime
-	  mapping and differentiate it to date.
-
-2016-04-23 15:23  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/DatabaseLogging/DatabaseLogging.prj:
-	  Some bugfixes, added version information and endpoints.
-
-2016-04-23 15:20  lollisoft
-
-	* AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/:
-	  DatabaseLogging.xmi, DatabaseLogging/128002,
-	  DatabaseLogging/128002.diagram,
-	  DatabaseLogging/DatabaseLogging.prj: Some bugfixes, added version
-	  information and endpoints.
-
-2016-04-23 09:07  lollisoft
-
-	*
-	  AppDevelopmentDemo/DynamicApp/UMLSamples/InitialModels/DatabaseLogging/:
-	  128002, 128002.diagram, DatabaseLogging.prj, cpp_includes,
-	  generation_settings, idl_includes, java_imports, python_imports,
-	  stereotypes, tools: New database logging model.
