@@ -1,21 +1,6 @@
 #!/bin/sh
 # Copies together files for the Mac OS X application bundle and created a disk image
 
-#https://federicoterzi.com/blog/automatic-code-signing-and-notarization-for-macos-apps-using-github-actions/
-# wxWrapper *********** Team ID 3MPMMGXYRY
-# xcrun notarytool store-credentials "wxWrapper" --apple-id "********" --team-id "3MPMMGXYRY" --password "**********"
-#
-
-# ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
-# xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
-# xcrun stapler staple wxWrapper.app
-#
-# xcrun notarytool log f8ec56ec-2884-4582-ac9a-0931f896b2ea --keychain-profile "wxWrapper"
-
-
-
-export DEVELOPERIDAPP=Developer\ ID\ Application:\ Lothar\ Behrens\ \(3MPMMGXYRY\)
-
 export prefix=$1
 
 export VERSION=1.3.4
@@ -39,38 +24,31 @@ cp -R ../../../AppDevelopmentDemo/DynamicApp/UMLSamples wxWrapper.app/Contents/R
 mkdir wxWrapper.app/Contents/Resources/toolbarimages
 # UGLY! Using environment that also is properly defined while jenkins build is better
 cp -R $prefix/lib wxWrapper.app/Contents
-#cp -R $prefix/plugins wxWrapper.app/Contents/Resources
 cp -R $prefix/plugins wxWrapper.app/Contents
 mv wxWrapper.app/Contents/plugins wxWrapper.app/Contents/PlugIns
 
 # How to access them?
 cp toolbarimages/*.xpm wxWrapper.app/Contents/Resources/toolbarimages
 cp toolbarimages/*.png wxWrapper.app/Contents/Resources/toolbarimages
-#cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.0.6.0.dylib wxWrapper.app/Contents/lib
-#cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.0.dylib wxWrapper.app/Contents/lib
 cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.*.dylib wxWrapper.app/Contents/lib
 cp -R `wx-config --prefix`/lib/lib`wx-config --basename`-`wx-config --release`.dylib wxWrapper.app/Contents/lib
 
 cp Info.plist wxWrapper.app/Contents
 
+./notarize_application.sh
 
-#export RUNTIMEOPTIONS=
-#export ENTITLEMENTS=
-export RUNTIMEOPTIONS=--options=runtime
-export ENTITLEMENTS=--entitlements\ Entitlements.plist
+# ****************
+# Create dmg image
+# ****************
 
-rm -rf `find wxWrapper.app -name CVS -print`
+hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+ & sleep 5
+hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 5
 
-#hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+ & sleep 5
-#hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 5
+export DMGPATH=/Volumes/lbDMF-$VERSION
 
-
-export DMGPATH=dmgdist
-#export DMGPATH=/volumes/lbDMF-$VERSION
-
-#mkdir $DMGPATH
-cp -R wxWrapper.app $DMGPATH
-cp Entitlements.plist $DMGPATH
+#cp -R wxWrapper.app /Volumes/lbDMF-$VERSION
+mkdir $DMGPATH/Application
+ditto wxWrapper.app $DMGPATH/Application/wxWrapper.app
 # Copy stuff
 mkdir $DMGPATH/toolbarimages
 cp toolbarimages/*.xpm $DMGPATH/toolbarimages
@@ -100,47 +78,10 @@ Lothar Behrens
 EOF
 
 rm -rf `find $DMGPATH -name CVS -print`
-export OLDPATH=`pwd`
-cd $DMGPATH
 
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/lbHook.framework/Versions/A/lbHook
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxJson.framework/Versions/A/wxJson
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/Frameworks/wxWrapperDLL.framework/Versions/A/wxWrapperDLL
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.so
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/lib/*.dylib
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/PlugIns/*.so
-xattr -cr wxWrapper.app
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app/Contents/MacOS/wxWrapper
-#codesign -dvv wxWrapper.app
-codesign -f -v -s "$DEVELOPERIDAPP" $ENTITLEMENTS $RUNTIMEOPTIONS wxWrapper.app
-#spctl -a -t exec -vvvv wxWrapper.app
-#codesign -dvv wxWrapper.app
-#codesign -vv --deep-verify "$ENTITLEMENTS" $RUNTIMEOPTIONS wxWrapper.app
-
-# Starting the notarization step
-ditto -c -k --keepParent "wxWrapper.app" "notarization.zip"
-
-xcrun notarytool submit "notarization.zip" --keychain-profile wxWrapper --wait
-
-xcrun stapler staple wxWrapper.app & sleep 5
-
-cd $OLDPATH
-
-rm $DMGPATH/Entitlements.plist
-rm $DMGPATH/notarization.zip
-
-#hdiutil detach /Volumes/lbDMF-$VERSION & sleep 5
-
-hdiutil create lbDMF-$VERSION-`uname -p`.dmg -ov -volname lbDMF-$VERSION -fs HFS+ -srcfolder "`pwd`/dmgdist/" & sleep 5
-
-codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
-
-hdiutil convert lbDMF-$VERSION-`uname -p`.dmg -format UDZO -o lbDMF-$VERSION-`uname -p`-dist.dmg
-
-xcrun notarytool submit lbDMF-$VERSION-`uname -p`-dist.dmg --keychain-profile wxWrapper --wait
-
-xcrun stapler staple lbDMF-$VERSION lbDMF-$VERSION-`uname -p`-dist.dmg
-
-rm lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg.zip
-zip lbDMF.dmg.zip lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg
-mv lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`.dmg.zip
+hdiutil detach /Volumes/lbDMF-$VERSION
+echo sleep 20
+sleep 20
+echo sleep over
+ls /Volumes/lbDMF-$VERSION
+./notarize_dmg.sh
