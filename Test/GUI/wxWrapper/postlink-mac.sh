@@ -46,8 +46,6 @@ hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 5
 
 export DMGPATH=/Volumes/lbDMF-$VERSION
 
-#cp -R wxWrapper.app /Volumes/lbDMF-$VERSION
-mkdir $DMGPATH
 ditto wxWrapper.app $DMGPATH/wxWrapper.app
 # Copy stuff
 mkdir $DMGPATH/toolbarimages
@@ -83,5 +81,4 @@ hdiutil detach /Volumes/lbDMF-$VERSION
 echo sleep 20
 sleep 20
 echo sleep over
-ls /Volumes/lbDMF-$VERSION
 ./notarize_dmg.sh
