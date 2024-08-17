@@ -2,7 +2,7 @@
 
 export ARCH_CODESIGNING=`uname -p`
 
-if [ $ARCH_CODESIGNING = ppc ]; then
+if [ $ARCH_CODESIGNING = powerpc ]; then
     echo Notarizing dmg not supported on $ARCH_CODESIGNING
     rm lbDMF-$VERSION-`uname -p`-dist.dmg
     hdiutil convert lbDMF-$VERSION-`uname -p`.dmg -format UDZO -o lbDMF-$VERSION-`uname -p`-dist.dmg
