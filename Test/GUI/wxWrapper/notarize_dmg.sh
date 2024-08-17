@@ -1,5 +1,16 @@
 #!/bin/sh
 
+export ARCH_CODESIGNING=`uname -p`
+
+if [ $ARCH_CODESIGNING = ppc ]; then
+    echo Notarizing dmg not supported on $ARCH_CODESIGNING
+    exit
+fi
+if [ $ARCH_CODESIGNING = i386 ]; then
+    echo Notarizing dmg not supported on $ARCH_CODESIGNING
+    exit
+fi
+
 #https://federicoterzi.com/blog/automatic-code-signing-and-notarization-for-macos-apps-using-github-actions/
 # wxWrapper *********** Team ID 3MPMMGXYRY
 # xcrun notarytool store-credentials "wxWrapper" --apple-id "********" --team-id "3MPMMGXYRY" --password "**********"
