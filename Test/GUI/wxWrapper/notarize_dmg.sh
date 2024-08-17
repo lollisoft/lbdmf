@@ -26,6 +26,6 @@ xcrun notarytool submit lbDMF-$VERSION-`uname -p`-dist.dmg --keychain-profile wx
 xcrun stapler staple lbDMF-$VERSION lbDMF-$VERSION-`uname -p`-dist.dmg
 
 rm lbDMF-$VERSION-`uname -p`.dmg.zip
-zip lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`.dmg
-mv lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`.dmg.zip
+zip lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`-dist.dmg
+mv lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`-dist.dmg.zip
 
