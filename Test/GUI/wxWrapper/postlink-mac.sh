@@ -47,8 +47,8 @@ hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 5
 export DMGPATH=/Volumes/lbDMF-$VERSION
 
 #cp -R wxWrapper.app /Volumes/lbDMF-$VERSION
-mkdir $DMGPATH/Application
-ditto wxWrapper.app $DMGPATH/Application/wxWrapper.app
+mkdir $DMGPATH
+ditto wxWrapper.app $DMGPATH/wxWrapper.app
 # Copy stuff
 mkdir $DMGPATH/toolbarimages
 cp toolbarimages/*.xpm $DMGPATH/toolbarimages
