@@ -17,7 +17,7 @@ wget $SERVER/job/$LINUX/SRPMS/lbdmf-$VERSION-1.src.rpm
 wget $SERVER/job/$LINUX/RPMS/i586/lbdmf-$VERSION-1.i586.rpm
 wget $SERVER/job/$LINUX/SOURCES/lbdmf-$VERSION.tgz
 
-wget $SERVER/job/$OSX/lbDMF-$VERSION-i386.dist.dmg.zip
+wget $SERVER/job/$OSX/lbDMF-$VERSION-i386-dist.dmg.zip
 
-wget $SERVER/job/$PPC/lbDMF-$VERSION-powerpc.dist.dmg.zip
-wget $SERVER/job/$OSXArm/lbDMF-$VERSION-arm.dist.dmg.zip
+wget $SERVER/job/$PPC/lbDMF-$VERSION-powerpc-dist.dmg.zip
+wget $SERVER/job/$OSXArm/lbDMF-$VERSION-arm-dist.dmg.zip
