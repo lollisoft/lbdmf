@@ -2,7 +2,7 @@
 
 export ARCH_CODESIGNING=`uname -p`
 
-if [ $ARCH_CODESIGNING = ppc ]; then
+if [ $ARCH_CODESIGNING = powerpc ]; then
     echo Notarizing application not supported on $ARCH_CODESIGNING
     exit
 fi
