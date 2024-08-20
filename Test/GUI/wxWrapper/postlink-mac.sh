@@ -77,8 +77,13 @@ EOF
 
 rm -rf `find $DMGPATH -name CVS -print`
 
+echo sleep 20
+sleep 20
+
 hdiutil detach /Volumes/lbDMF-$VERSION
+
 echo sleep 20
 sleep 20
 echo sleep over
+
 ./notarize_dmg.sh
