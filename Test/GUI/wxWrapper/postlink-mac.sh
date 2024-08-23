@@ -41,8 +41,8 @@ cp Info.plist wxWrapper.app/Contents
 # Create dmg image
 # ****************
 
-hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+ & sleep 5
-hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 5
+hdiutil create -ov -size 200m -volname lbDMF-$VERSION lbDMF-$VERSION-`uname -p`.dmg -fs HFS+ & sleep 60
+hdiutil attach lbDMF-$VERSION-`uname -p`.dmg & sleep 60
 
 export DMGPATH=/Volumes/lbDMF-$VERSION
 
@@ -77,13 +77,13 @@ EOF
 
 rm -rf `find $DMGPATH -name CVS -print`
 
-echo sleep 20
-sleep 20
+echo sleep 60
+sleep 60
 
 hdiutil detach /Volumes/lbDMF-$VERSION
 
-echo sleep 20
-sleep 20
+echo sleep 60
+sleep 60
 echo sleep over
 
 ./notarize_dmg.sh
