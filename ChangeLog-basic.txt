@@ -1,3 +1,37 @@
+2024-08-23 02:23  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: It seems that building a dmg
+	  on my old PPC takes too long. Even the anded sleep seems not to work
+	  as it seems to work in background. Need to check the command line
+	  params.
+
+2024-08-20 17:32  lothar
+
+	* Test/GUI/wxWrapper/postlink-mac.sh: Do I have a somewhat async
+	  commands sync error? Or is that hdutil becoming unreliable?
+
+2024-08-20 11:09  lothar
+
+	* Test/GUI/wxWrapper/notarize_application.sh: Missing query for
+	  powerpc here
+
+2024-08-19 11:46  lothar
+
+	* collect_releases.sh: Fixed names again
+
+2024-08-17 18:40  lothar
+
+	* Test/GUI/wxWrapper/notarize_dmg.sh: Fix for powerpc target
+
+2024-08-17 16:34  lothar
+
+	* Test/GUI/wxWrapper/notarize_dmg.sh: Missing deletion of
+	  previously created dmg
+
+2024-08-17 14:41  lothar
+
+	* ChangeLog-basic.txt: Updated changelog
+
 2024-08-17 14:33  lothar
 
 	*
@@ -1554,4 +1588,9 @@
 	  ApplicationprototypingDokumentation.odt,
 	  ApplicationprototypingDokumentation.pdf: Added documentation for
 	  the new logging feature.
+
+2016-05-26 09:37  lollisoft
+
+	* AppDevelopmentDemo/DynamicApp/Doc/LoggingApplicationRunning.png:
+	  Added a screenshot for the running logging application.
 
