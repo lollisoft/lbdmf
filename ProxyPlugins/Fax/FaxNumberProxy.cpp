@@ -45,11 +45,10 @@ FaxNumberProxy::FaxNumberProxy() {
 
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
-        char* connStr;
         UAP_REQUEST(getModuleInstance(), lb_I_ApplicationBus, Busmaster)
-        
-        Busmaster->getServiceForProtocol("FaxNumber", connStr);
-        ABSConnection->init(connStr);
+        UAP_REQUEST(getModuleInstance(), lb_I_String, connStr)
+        *&connStr = Busmaster->findBackend("FaxNumber");
+        ABSConnection->init(connStr->charrep());
         
         Connect();
     }
@@ -69,7 +68,7 @@ int FaxNumberProxy::Connect() {
 
 	client->add("Connect");
 	client->add("Host");
-	client->add("anakin");
+	client->add("localhost");
 	client->add("Pid");
 	client->add(lbGetCurrentProcessId());
 	client->add("Tid");
@@ -124,7 +123,7 @@ int FaxNumberProxy::Disconnect() {
 
 	client->add("Disconnect");
 	client->add("Host");
-	client->add("anakin");
+	client->add("localhost");
 
     *ABSConnection << *&client;
     *ABSConnection >> *&result;
