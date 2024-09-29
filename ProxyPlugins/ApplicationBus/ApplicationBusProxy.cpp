@@ -48,7 +48,8 @@ ApplicationBusProxy::ApplicationBusProxy() {
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
 		// The name of the lbDMF Busmaster must be defined in hosts or DNS
-        ABSConnection->init("busmaster/busmaster");
+        ABSConnection->init("localhost/busmaster");
+		_CL_LOG << "Connect to localhost/busmaster..." LOG_
         Connect();
 		ABSConnection->close();
     }
@@ -75,7 +76,7 @@ int ApplicationBusProxy::Connect() {
 	
 	client->add("Connect");
 	client->add("Host");
-	client->add(temp->charrep());
+	client->add("localhost"); //temp->charrep());
 	client->add("Pid");
 	client->add(lbGetCurrentProcessId());
 	client->add("Tid");
@@ -251,13 +252,13 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	*ABSConnection << *&user_info;
 	
 	if (ABSConnection->getLastError() != ERR_NONE) {
-	    _LOG << "Error in sending Echo data" LOG_
+	    _CL_LOG << "Error in sending Echo data" LOG_
 	}
 	
 	*ABSConnection >> *&result;
 
 	if (ABSConnection->getLastError() != ERR_NONE) {
-	    _LOG << "Error in recieving Echo answer" LOG_
+	    _CL_LOG << "Error in recieving Echo answer" LOG_
 	}
 
 	ABSConnection->close();
@@ -265,7 +266,7 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	char* temptext;
 	
 	if (result->requestString("text", temptext) != ERR_NONE) {
-		_LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
+		_CL_LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
 		return;
 	} else {
 		_CL_LOG << "Parameter result: 'text' = '" << temptext << "'" LOG_
