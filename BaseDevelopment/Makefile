@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.116 $
+# * $Revision: 1.229.2.117 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.116 2024/08/03 12:40:32 lothar Exp $
+# * $Id: Makefile,v 1.229.2.117 2024/09/29 13:51:19 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.117  2024/09/29 13:51:19  lothar
+# * Passing custom setting DEVROOT_MAKE_APPLICATIONS
+# *
 # * Revision 1.229.2.116  2024/08/03 12:40:32  lothar
 # * Got it working to harden and run that hardened application successfully and sign and notarize the application.
 # *
@@ -2778,7 +2781,7 @@ endif
 	$(MAKE) -C $@
 
 ../AppDevelopment: dummy
-	-$(MAKE) -k -s -C $@
+	-$(MAKE) -k -s -C $@ -e DEVROOT_MAKE_APPLICATIONS=$(DEVLW)/$(BASE_MAKE)
 
 ../Plugins: dummy
 	$(MAKE) -s -C $@
