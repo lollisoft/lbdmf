@@ -1,5 +1,5 @@
 #include <lbConfigHook.h>
-#include <lbinclude.h>
+//#include <lbinclude.h>
 #include <conio.h>
 #include <signal.h>
 
@@ -24,6 +24,21 @@ int main(int argc, char** argv) {
 
 	signal(SIGILL, handler);
 
+		char* LOGGING = getenv("LOGGING");
+
+		// Default
+		setLogActivated(false);
+		if (LOGGING != NULL) {
+			if ((strcmp(LOGGING, "no") != 0) && (strcmp(LOGGING, "NO") != 0) && (strcmp(LOGGING, "No") != 0) && (strcmp(LOGGING, "nO") != 0)) 
+			// Activate
+				setLogActivated(true);
+			else
+				setLogActivated(false);
+		}
+
+		if (argc > 1 && strcmp(argv[1], "-log") == 0) {
+			setLogActivated(true);
+		}
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_ApplicationBus, client)
 	

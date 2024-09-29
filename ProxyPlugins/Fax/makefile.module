@@ -29,8 +29,8 @@
 #			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
-MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
 
 OBJDEP=
 SLASH=/
