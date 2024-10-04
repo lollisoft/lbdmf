@@ -175,11 +175,11 @@ int LogWSAError(char* msg) {
 	   ) { 
 /*...slog it:8:*/
 	  if (strlen(_buf)+strlen(msg) >99) {	
-		  _LOG << "LogWSAError(char* msg) Error: Buffer overflow" LOG_
+		  _CL_LOG << "LogWSAError(char* msg) Error: Buffer overflow" LOG_
 		  return 0;
 	  } else {	
 		  sprintf(buf, "Socket error (%d) at '%s'", lastError, msg);
-		  _LOG << buf LOG_
+		  _CL_LOG << buf LOG_
 	  }
 /*...e*/
 	}
@@ -657,7 +657,7 @@ int lbSocket::startup()
 		/* initialize the Windows Socket DLL */
 		status=WSAStartup(MAKEWORD(1, 1), &Data);
 		if (status != 0) 
-		  _LOG << "lbSocket::startup(): ERROR: WSAStartup unsuccessful" LOG_
+		  _CL_LOG << "lbSocket::startup(): ERROR: WSAStartup unsuccessful" LOG_
 		/* zero the sockaddr_in structure */
 		memset(&serverSockAddr, 0, sizeof(serverSockAddr));
 		startupflag = 1;
@@ -713,12 +713,12 @@ _LOG << "lbSocket::reinit(char *mysockaddr): This function should not be used" L
 }
 /*...e*/
 /*...slbSocket\58\\58\initSymbolic\40\char\42\ host\44\ char\42\ service\41\:0:*/
-bool lbSocket::initSymbolic(char* host, char* service) {
+bool lbSocket::initSymbolic(char* host, char* service, bool asServer) {
 	int serverMode = 0;
 	startup();
 	_LOG << "Initialize for host '" << host << "' and port '" << service << "'" LOG_
 
-	if (strcmp(host, "localhost") == 0)
+	if (asServer == TRUE)
 	{
 		serverMode = 1;
 	} else {
@@ -1221,7 +1221,7 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 		// Send packet size
 		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
-		if (numsnt != sizeof(len)) _LOGERROR << "Error: Packet size not sent correctly" LOG_
+		if (numsnt != sizeof(len)) _CL_LOG << "Error: Packet size not sent correctly" LOG_
     		
 		// Send packet		
 		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
@@ -1230,14 +1230,14 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 		// Send packet size
 		numsnt=::send(socket, (char*)&nlen, sizeof(len), NO_FLAGS_SET);
 		
-		if (numsnt != sizeof(len)) _LOGERROR << "Error: Packet size not sent correctly" LOG_
+		if (numsnt != sizeof(len)) _CL_LOG << "Error: Packet size not sent correctly" LOG_
 			
 		// Send packet		
 		numsnt=::send(socket, buf, len, NO_FLAGS_SET);
 	}
 	
 	
-    if (numsnt == SOCKET_ERROR) _LOGERROR << "lbSocket::send_charbuf(char *buf, int len) Error: Got SOCKET_ERROR" LOG_
+    if (numsnt == SOCKET_ERROR) _CL_LOG << "lbSocket::send_charbuf(char *buf, int len) Error: Got SOCKET_ERROR" LOG_
 		if ((numsnt != len) && (numsnt == SOCKET_ERROR))
 		{
 			if (_isServer == 0) {
@@ -1248,16 +1248,16 @@ lbErrCodes lbSocket::send_charbuf(char *buf, short len)
 			
 			err = mapWSAErrcode(lastError, _isServer);
 			
-			_LOGERROR << "lbSocket::send_charbuf(char *buf, int len): Connection terminated" LOG_
+			_CL_LOG << "lbSocket::send_charbuf(char *buf, int len): Connection terminated" LOG_
 			status=closesocket(socket);
 			if (status == SOCKET_ERROR)
-				_LOGERROR << "ERROR: closesocket unsuccessful" LOG_
+				_CL_LOG << "ERROR: closesocket unsuccessful" LOG_
 				status=WSACleanup();
 			if (status == SOCKET_ERROR)
-				_LOGERROR << "ERROR: WSACleanup unsuccessful" LOG_
+				_CL_LOG << "ERROR: WSACleanup unsuccessful" LOG_
 				return err;  
 		} else if (numsnt != len) {
-	    	_LOGERROR << "lbSocket::send_charbuf(char *buf, int len) Error: Could not send all data at once!" LOG_
+	    	_CL_LOG << "lbSocket::send_charbuf(char *buf, int len) Error: Could not send all data at once!" LOG_
 	    }
 #endif
 #ifdef LINUX
