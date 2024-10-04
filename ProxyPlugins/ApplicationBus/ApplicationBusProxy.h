@@ -27,7 +27,7 @@ public:
       
 		void LB_STDCALL AnounceUser(char* name, char* password);
       
-		void LB_STDCALL Echo(char* text);
+		lb_I_String* LB_STDCALL Echo(char* text);
 		
 		lb_I_String* LB_STDCALL findBackend(char* service);
       
