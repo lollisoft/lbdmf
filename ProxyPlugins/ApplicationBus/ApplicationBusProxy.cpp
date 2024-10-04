@@ -35,11 +35,8 @@ lbErrCodes LB_STDCALL ApplicationBusProxy::setData(lb_I_Unknown* uk) {
 }
 
 ApplicationBusProxy::ApplicationBusProxy() {
-	
 	_CL_LOG << "Init ApplicationBusProxy" LOG_
-	
 	REQUEST(getModuleInstance(), lb_I_String, serverInstance)
-	
     if (ABSConnection == NULL) {
         /**
          * Initialize the tcp connection...
@@ -57,7 +54,11 @@ ApplicationBusProxy::ApplicationBusProxy() {
 }
 
 ApplicationBusProxy::~ApplicationBusProxy() {
-
+	_CL_LOG << "ApplicationBusProxy::~ApplicationBusProxy() called" LOG_
+    if (ABSConnection != NULL) {
+		_CL_LOG << "Call Disconnect" LOG_
+		Disconnect();
+	}
 }
 
 //\todo Remove as it is unused.
@@ -76,7 +77,7 @@ int ApplicationBusProxy::Connect() {
 	
 	client->add("Connect");
 	client->add("Host");
-	client->add("localhost"); //temp->charrep());
+	client->add(temp->charrep());
 	client->add("Pid");
 	client->add(lbGetCurrentProcessId());
 	client->add("Tid");
@@ -134,16 +135,31 @@ int ApplicationBusProxy::Connect() {
 int ApplicationBusProxy::Disconnect() {
 	char* answer;
 	char buf[100] = "";
-	lb_I_Transfer_Data* result;
 
+	_CL_LOG << "Disconnecting..." LOG_
+
+	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
+	client->setServerSide(0);
+	result->setServerSide(0);
+
+	ABSConnection->gethostname(*&temp);
 
 	client->add("Disconnect");
 	client->add("Host");
-	client->add("anakin");
+	client->add(temp->charrep());
+	client->add("Pid");
+	client->add(lbGetCurrentProcessId());
+	client->add("Tid");
+	client->add(lbGetCurrentThreadId());
+
+	ABSConnection->init(NULL);
 
     *ABSConnection << *&client;
     *ABSConnection >> *&result;
+
+	ABSConnection->close();
 
 	int count = result->getPacketCount();
 
@@ -223,9 +239,10 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
 	
 }
       
-void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
+lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, echo)
 	
 	ABSConnection->gethostname(*&temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
@@ -267,14 +284,13 @@ void LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 	
 	if (result->requestString("text", temptext) != ERR_NONE) {
 		_CL_LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
-		return;
 	} else {
 		_CL_LOG << "Parameter result: 'text' = '" << temptext << "'" LOG_
-		text[0] = 0;
-		strcpy(text, temptext);
+		*echo = temptext;
 	}
 	
-	
+	echo++;
+	return echo.getPtr();
 }
       
 lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
