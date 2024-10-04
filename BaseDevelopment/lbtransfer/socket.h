@@ -118,7 +118,7 @@ public:
 
 	char* LB_STDCALL gethostname();
 
-	bool LB_STDCALL initSymbolic(char *host, char* service);
+	bool LB_STDCALL initSymbolic(char *host, char* service, bool asServer);
     void LB_STDCALL reinit(char *mysockaddr="");
 
 	int LB_STDCALL close();

@@ -275,7 +275,7 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbAppServerThread)
 END_IMPLEMENT_LB_UNKNOWN()
 
 lbAppServerThread::lbAppServerThread() {
-	
+	_CL_LOG << "lbAppServerThread::lbAppServerThread() called." LOG_
 }
 
 lbErrCodes LB_STDCALL lbAppServerThread::setData(lb_I_Unknown* uk) {
@@ -289,7 +289,7 @@ bool LB_STDCALL lbAppServerThread::isFinished() {
 
 /*...svoid\42\ lbAppServerThread\58\\58\ThreadFunction\40\lb_I_Thread\42\ threadHost\41\:0:*/
 void lbAppServerThread::ThreadFunction(lb_I_Thread* threadHost) {
-	_LOG << "lbAppServerThread::ThreadFunction(lb_I_Thread* threadHost) called" LOG_
+	_CL_LOG << "lbAppServerThread::ThreadFunction(lb_I_Thread* threadHost) called" LOG_
 
 	// Here should be called the function listen() (Not in initTransfer())
 	
@@ -345,7 +345,8 @@ lbErrCodes lbAppServerThread::init(lb_I_Transfer* _clt, lb_I_ApplicationServer* 
 
 /*...slbAppServerThread\58\\58\\126\lbAppServerThread\40\\41\:0:*/
 lbAppServerThread::~lbAppServerThread() {
-	COUT << "lbAppServerThread::~lbAppServerThread() called" << ENDL;
+	_CL_LOG << "lbAppServerThread::~lbAppServerThread() called" LOG_
+	//COUT << "lbAppServerThread::~lbAppServerThread() called" << ENDL;
 }
 /*...e*/
 
@@ -406,7 +407,7 @@ LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Answer sent");
 		&& (rcin == ERR_NONE) // Recieving failed
 		&& (rCOUT == ERR_NONE)); // Sendback failed
 
-	LOG("Handle connection tests case of ending loop...");
+	_CL_LOG << "Handle connection tests case of ending loop..." LOG_
 	if (rcin != ERR_NONE)  LOG("Thread will be ended because recieving data has failed");
 	if (rCOUT != ERR_NONE) LOG("Thread will be ended because sending data has failed");
 	if (rc_handler != ERR_NONE) LOG("Handling request failed");
@@ -549,6 +550,7 @@ lbErrCodes LB_STDCALL lbAppServerThread::addProtocolHandler(const char* handlern
 		LOG("Service previously added");
 		err = ERR_APP_SERVER_ADDHANDLER;
 	}
+	_CL_LOG << "Added protocol " << handlername LOG_
 	return err;
 }
 /*...e*/
@@ -1138,6 +1140,21 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 
 #ifndef USE_MULTITHREAD_CODE
 	servermodule->registerModul(this, serverInstance);
+
+	protocolHandlers = servermodule->getPlugins();
+
+	while (protocolHandlers->hasMoreElements()) {
+		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_ProtocolTarget, pt)
+				
+		uk = protocolHandlers->nextElement();
+		QI(uk, lb_I_ProtocolTarget, pt)
+		
+		if (pt != NULL) {
+			pt->registerProtocols(this, "BusMaster");
+		}
+	}
+
 #endif
 
 #ifdef USE_MULTITHREAD_CODE
@@ -1171,7 +1188,7 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 	servermodule->registerModul(this); 
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer, transf)
-	transf->init(servermodule->getServiceName());
+	transf->init(servermodule->getServiceName(), TRUE);
 
 	thread_impl->init(*&transf, this);
 
@@ -1187,7 +1204,7 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
 		QI(uk, lb_I_ProtocolTarget, pt)
 		
 		if (pt != NULL) {
-			pt->registerProtocols(this);
+			pt->registerProtocols(this, "BusMaster");
 		}
 	}
 #endif
@@ -1429,10 +1446,10 @@ LOG("lbAppBusServer::_connected(lb_I_Transfer* _clt) Answer sent");
 		&& (rcin == ERR_NONE) // Recieving failed
 		&& (rCOUT == ERR_NONE)); // Sendback failed
 
-	LOG("Handle connection tests case of ending loop...");
+	_CL_LOG << "Handle connection tests case of ending loop..." LOG_
 	if (rcin != ERR_NONE)  LOG("Thread will be ended because recieving data has failed");
 	if (rCOUT != ERR_NONE) LOG("Thread will be ended because sending data has failed");
-	if (rc_handler != ERR_NONE) LOG("Handling request failed");
+	if (rc_handler != ERR_NONE) _CL_LOG << "Handling request failed" LOG_
 	LOG("Tested");
 /*...e*/
 
@@ -1454,7 +1471,7 @@ lbErrCodes LB_STDCALL lbAppServer::dispatch(lb_I_Transfer_Data* request, lb_I_Tr
 	 */
 	_CL_LOG << "lbAppServer: Check for not connected request." LOG_
 
-	if (isConnected(request) == 0) {
+	if (isConnected(request) == FALSE) {
 		err = HandleConnect(request, result);
 		_CL_LOG << "lbAppServer: Handled a nonconnected request." LOG_
 		return err;
@@ -1562,6 +1579,7 @@ lbErrCodes LB_STDCALL lbAppServer::addProtocolHandler(const char* handlername, l
 		_LOG << "Service previously added" LOG_
 		err = ERR_APP_SERVER_ADDHANDLER;
 	}
+	_CL_LOG << "Added protocol " << handlername LOG_
 	return err;
 }
 /*...e*/
@@ -1588,6 +1606,22 @@ lbErrCodes LB_STDCALL lbAppServer::delProtocolHandler(const char* handlername) {
 /*...e*/
 
 
+void printContainer(lb_I_Container* container) {
+	lbErrCodes err = ERR_NONE;
+	while (container->hasMoreElements() == 1) {
+		UAP(lb_I_Unknown, e)
+		e = container->nextElement();
+		if (e != NULL) {
+			UAP(lb_I_String, s)
+			
+			QI(e, lb_I_String, s)
+			
+			printf("String is: %s\n", s->getData());
+		}
+	}
+}
+
+
 // Helpers
 /*...slbAppServer\58\\58\isConnected\40\\46\\46\\46\\41\:0:*/
 bool LB_STDCALL lbAppServer::isConnected(lb_I_Transfer_Data* request) {
@@ -1607,10 +1641,12 @@ bool LB_STDCALL lbAppServer::isConnected(lb_I_Transfer_Data* request) {
 	*key += Tid->charrep();
 	
 
-	
+	_CL_LOG << "Check for connection " << keybase->charrep() LOG_
 	if (connections->exists(&keybase)) {
 		return true;
 	}
+	
+	printContainer(*&connections);
 	
 	return false;
 }
@@ -1702,6 +1738,7 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 		UAP_REQUEST(getModuleInstance(), lb_I_Parameter, conn)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, param)
 		UAP(lb_I_Unknown, uk)
+		UAP(lb_I_Unknown, ukKey)
 		QI(param, lb_I_Unknown, uk)
 
 		*param = "Clienthost";
@@ -1713,7 +1750,13 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 		*param = "Tid";
 		conn->setUAPLong(*&param, *&Tid);
 		
-		connections->insert(&uk, &keybase);
+		QI(key, lb_I_Unknown, ukKey)
+		
+		connections->insert(&ukKey, &keybase);
+		
+		if (!connections->exists(&keybase)) {
+			_CL_LOG << "Connecting client failed: " << keybase->charrep() LOG_
+		}
 	} else {
 		//result->add("Deny");
 		//result->add("Already connected");
@@ -1732,8 +1775,10 @@ lbErrCodes lbAppServer::HandleDisconnect(lb_I_Transfer_Data* request,
           				 lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
 	char *clienthost = NULL;
-	int pid = 0;
-	int tid = 0;
+	unsigned long pid = 0;
+	unsigned long tid = 0;
+
+	_CL_LOG << "HandleDisconnect called" LOG_
 
 /*
 	add("Disconnect")
@@ -1747,30 +1792,53 @@ lbErrCodes lbAppServer::HandleDisconnect(lb_I_Transfer_Data* request,
 
 /*...srequest data:8:*/
 	if (request->requestString("Disconnect") != ERR_NONE) {
+		_CL_LOG << "Disconnect missing" LOG_
 		result->makeProtoErrAnswer("Error: No Connect request", "lbAppServer::HandleConnect(...)");
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
 	
 	if (request->requestString("Host", clienthost) != ERR_NONE) {
+		_CL_LOG << "Host missing" LOG_
 		result->makeProtoErrAnswer("Error: No Hostname in request", "lbAppServer::HandleConnect(...)");
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
 	
-	if (request->requestInteger("Pid", pid) != ERR_NONE) {
+	if (request->requestULong("Pid", pid) != ERR_NONE) {
+		_CL_LOG << "Pid missing" LOG_
 		result->makeProtoErrAnswer("Error: No pid in request", "lbAppServer::HandleConnect(...)");
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
 
-	if (request->requestInteger("Tid", tid) != ERR_NONE) {
+	if (request->requestULong("Tid", tid) != ERR_NONE) {
+		_CL_LOG << "Tid missing" LOG_
 		result->makeProtoErrAnswer("Error: No tid in request", "lbAppServer::HandleConnect(...)");
 		return ERR_APP_SERVER_HANDLECONNECT;
 	}
 /*...e*/
 
 	_CL_LOG << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid LOG_
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, key)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, Clienthost)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Pid)
+	UAP_REQUEST(getModuleInstance(), lb_I_Long, Tid)
+	UAP(lb_I_KeyBase, kbKey)
+	QI(key, lb_I_KeyBase, kbKey)
+
+	Pid->setData(pid);
+	Tid->setData(tid);
+	*Clienthost = clienthost;
+		
+		
+	*key = clienthost;
+	*key += Pid->charrep();
+	*key += Tid->charrep();
+
 	
-	result->add("Accept");
+	result->add("Succeed");
 	result->add(clienthost);
+	
+	connections->remove(&kbKey);
 	
 	return ERR_NONE;
 }

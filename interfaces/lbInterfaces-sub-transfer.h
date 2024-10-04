@@ -401,8 +401,8 @@ public:
 
 	virtual char* LB_STDCALL gethostname() = 0;
 
-	virtual bool LB_STDCALL initSymbolic(char *host, char* service) = 0;
-    	virtual void LB_STDCALL reinit(char *mysockaddr="") = 0;
+	virtual bool LB_STDCALL initSymbolic(char *host, char* service, bool asServer) = 0;
+	virtual void LB_STDCALL reinit(char *mysockaddr="") = 0;
 
 	virtual int LB_STDCALL close() = 0;
 
@@ -431,7 +431,7 @@ public:
 	virtual lbErrCodes LB_STDCALL send(lb_I_Transfer_Data* data) = 0;
 
 
-        virtual lb_I_Socket* LB_STDCALL accept() = 0;
+	virtual lb_I_Socket* LB_STDCALL accept() = 0;
 };
 /*...e*/
 
