@@ -13,7 +13,7 @@ public:
     /** \brief For tests yet only.
 	 *
 	 */
-	virtual void LB_STDCALL Echo(char* text) = 0;
+	virtual lb_I_String* LB_STDCALL Echo(char* text) = 0;
       
     /** \brief Lookup a server backend by given service name.
 	 * The service name is usually a class for that a server exists.

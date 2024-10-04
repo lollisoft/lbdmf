@@ -43,7 +43,7 @@ char* ApplicationBus::getServiceName() {
 }
 
 lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance) {
-		_LOG << "lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr)" LOG_
+		_CL_LOG << "lbErrCodes LB_STDCALL ApplicationBus::registerProtocols(lb_I_ProtocolManager* protoMgr)" LOG_
 
 		UAP_REQUEST(getModuleInstance(), lb_I_String, protocolScope)
 		
@@ -214,7 +214,7 @@ lbErrCodes ApplicationBus::HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Tr
 }
 
 void LB_STDCALL ApplicationBus::AnounceUser(char* name, char* password) {
-	_LOG << "ApplicationBus::AnounceUser(" << name << ", " << password << ") called." LOG_
+	_CL_LOG << "ApplicationBus::AnounceUser(" << name << ", " << password << ") called." LOG_
 }
 lbErrCodes LB_STDCALL ApplicationBus::_AnounceUser(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
 	LB_PACKET_TYPE type;
