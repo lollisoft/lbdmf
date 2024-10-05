@@ -1,11 +1,20 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.117 $
+# * $Revision: 1.229.2.118 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.117 2024/09/29 13:51:19 lothar Exp $
+# * $Id: Makefile,v 1.229.2.118 2024/10/05 19:47:57 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.118  2024/10/05 19:47:57  lothar
+# * Copied yet private code to the public project.
+# * The code contains sample server and cliet (proxy) plugins and
+# * client and server sample implementations. These were developed
+# * in the past privately, but due to publicy available lbcs and lbtransfer
+# * modules, all that it needed were some sample implementations for that.
+# *
+# * Make files have been adopted to propably compile not on windows only.
+# *
 # * Revision 1.229.2.117  2024/09/29 13:51:19  lothar
 # * Passing custom setting DEVROOT_MAKE_APPLICATIONS
 # *
@@ -1339,7 +1348,6 @@ BASEDIRECTORIES= \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
-	../AppDevelopment \
 	../UnitTests
 
 # Don't compile these every time.
@@ -1350,6 +1358,7 @@ BASEDIRECTORIES= \
 #	../vendor/tvision/examples/dlgdsn \
 #	../vendor/tvision/examples/listvi \
 #	../vendor/wxReportWriter \
+#	../AppDevelopment \
 
 endif
 
@@ -1429,6 +1438,10 @@ ALLTARGETS = \
 	../vendor/antlr3/src \
 	../Test/Console/XML \
 	../vendor/wxShapeFramework/src \
+	../ProxyPlugins \
+	../ServerPlugins \
+	../Test/GlobalAppServer/client \
+	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper \
 	../AppDevelopmentDemo/MkBs \
@@ -1465,6 +1478,10 @@ ALLTARGETS = \
 	../vendor/antlr3/src \
 	../Test/Console/XML \
 	../vendor/wxShapeFramework/src \
+	../ProxyPlugins \
+	../ServerPlugins \
+	../Test/GlobalAppServer/client \
+	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper \
 	../AppDevelopmentDemo/MkBs \
@@ -1731,6 +1748,10 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../vendor/wxShapeFramework/src \
+	../ProxyPlugins \
+	../ServerPlugins \
+	../Test/GlobalAppServer/client \
+	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
@@ -1766,6 +1787,10 @@ ALLDIRS = \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../vendor/wxShapeFramework/src \
+	../ProxyPlugins \
+	../ServerPlugins \
+	../Test/GlobalAppServer/client \
+	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES)
 
 #	../vendor/cryptostream/src/crypstrm \
@@ -1844,6 +1869,10 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
 	../vendor/wxShapeFramework/src \
+	../ProxyPlugins \
+	../ServerPlugins \
+	../Test/GlobalAppServer/client \
+	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES) \
 	../Doc/html \
 	../AppDevelopmentDemo/MkBs \
@@ -1882,6 +1911,10 @@ ALLTARGETS = \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
 	../vendor/wxShapeFramework/src \
+	../ProxyPlugins \
+	../ServerPlugins \
+	../Test/GlobalAppServer/client \
+	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES) \
 	../Doc/html \
 	../AppDevelopmentDemo/MkBs \
@@ -2236,7 +2269,7 @@ endif
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-../vendor/databaselayer/src/Implementations/Sqllite: ../../bin/bison.simple
+../vendor/databaselayer/src/Implementations/Sqllite: dummy ../../bin/bison.simple
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@/sqlitefk/src -f makefile.yacc
@@ -2718,6 +2751,20 @@ else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
 
+../ProxyPlugins: dummy
+	$(MAKE) -s -C $@
+
+../ServerPlugins: dummy
+	$(MAKE) -s -C $@
+
+../Test/GlobalAppServer/client: dummy
+	$(MAKE) -s -C $@ -e MODULE=GAppClient -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
+../Test/GlobalAppServer/server: dummy
+	$(MAKE) -s -C $@ -e MODULE=GAppServer -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@
+
 $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@ -e MODULE=report -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
@@ -2786,11 +2833,11 @@ endif
 ../Plugins: dummy
 	$(MAKE) -s -C $@
 
-../ServerPlugins: dummy
-	-$(MAKE) -s -C $@
+#../ServerPlugins: dummy
+#	-$(MAKE) -s -C $@
 
-../ClientPlugins: dummy
-	-$(MAKE) -s -C $@
+#../ClientPlugins: dummy
+#	-$(MAKE) -s -C $@
 
 ../UnitTests: dummy
 	-$(MAKE) -s -C $@
