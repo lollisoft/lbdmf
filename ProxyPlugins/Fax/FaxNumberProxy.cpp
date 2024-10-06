@@ -4,7 +4,9 @@
  */
 
 #include <lbConfigHook.h>
-#include <lbInterfaces-sub-Project.h>
+// This is part from private development not related to here.
+// Due to movement to public repo the code layout will change.
+//#include <lbInterfaces-sub-Project.h>
 
 #undef DLLEXPORT
 
@@ -45,11 +47,10 @@ FaxNumberProxy::FaxNumberProxy() {
 
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
-        char* connStr;
         UAP_REQUEST(getModuleInstance(), lb_I_ApplicationBus, Busmaster)
-        
-        Busmaster->getServiceForProtocol("FaxNumber", connStr);
-        ABSConnection->init(connStr);
+        UAP_REQUEST(getModuleInstance(), lb_I_String, connStr)
+        *&connStr = Busmaster->findBackend("FaxNumber");
+        ABSConnection->init(connStr->charrep());
         
         Connect();
     }
@@ -69,7 +70,7 @@ int FaxNumberProxy::Connect() {
 
 	client->add("Connect");
 	client->add("Host");
-	client->add("anakin");
+	client->add("localhost");
 	client->add("Pid");
 	client->add(lbGetCurrentProcessId());
 	client->add("Tid");
@@ -124,7 +125,7 @@ int FaxNumberProxy::Disconnect() {
 
 	client->add("Disconnect");
 	client->add("Host");
-	client->add("anakin");
+	client->add("localhost");
 
     *ABSConnection << *&client;
     *ABSConnection >> *&result;
@@ -217,6 +218,8 @@ public:
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
 
+	void LB_STDCALL setNamespace(const char* _namespace) { }
+
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Unknown, ukFaxNumberProxy)
@@ -277,7 +280,6 @@ lb_I_Unknown* LB_STDCALL lbPluginFaxNumberProxy::peekImplementation() {
 
 	if (ukFaxNumberProxy == NULL) {
 		FaxNumberProxy* oFaxNumberProxy = new FaxNumberProxy();
-		oFaxNumberProxy->setModuleManager(getModuleInstance(), __FILE__, __LINE__);
 	
 		QI(oFaxNumberProxy, lb_I_Unknown, ukFaxNumberProxy)
 	} else {
@@ -296,7 +298,6 @@ lb_I_Unknown* LB_STDCALL lbPluginFaxNumberProxy::getImplementation() {
 		_CL_VERBOSE << "Warning: peekImplementation() has not been used prior.\n" LOG_
 	
 		FaxNumberProxy* oFaxNumberProxy = new FaxNumberProxy();
-		oFaxNumberProxy->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(oFaxNumberProxy, lb_I_Unknown, ukFaxNumberProxy)
 	}

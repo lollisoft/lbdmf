@@ -27,6 +27,7 @@
             65760 Eschborn (germany)
 */
 
+// This code is inactive since when?
 #ifdef IMPLEMENT_PROXY_PLUGIN
 #define Fax_DLL
 
@@ -34,6 +35,7 @@
 #include <conio.h>
 #include <lbConfigHook.h>
 
+// The headers here are from before complete project redesign as of it is now.
 #include <appcs.h>
 #include <appbus.h>
 
