@@ -13,43 +13,43 @@
 
 ifeq ($(OSTYPE), linux)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
-RELPATH_MAKE=
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/CPP
-RELPATH_MAKE=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
 ifeq ($(OSTYPE), osx)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
-RELPATH_MAKE=
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/CPP
-RELPATH_MAKE=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
-RELPATH_MAKE=
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 else
-RELPATH=\Projects\CPP
-RELPATH_MAKE=/Projects/CPP
+RELPATH=\Projects\$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 endif
 endif
 
 ifeq ($(OSTYPE), solaris)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
-RELPATH_MAKE=
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/CPP
-RELPATH_MAKE=/Projects/CPP
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 endif
 endif
 
@@ -121,11 +121,11 @@ dummy:
 
 ApplicationBus: dummy
 	$(MAKE) -C $@ -e MODULE=ApplicationBusProxy -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -C $@ -e DEVROOT_MAKE_APPLICATIONS=$(DEVLW)/$(BASE_MAKE)
 
 Fax: dummy
 	$(MAKE) -C $@ -e MODULE=FaxProxy -e TARGET=$(TARGETDLL) -f $(DEVROOT_MAKE)$(RELPATH_MAKE)/make/makefile.configure
-	$(MAKE) -C $@
+	$(MAKE) -C $@ -e DEVROOT_MAKE_APPLICATIONS=$(DEVLW)/$(BASE_MAKE)
 
 
 
