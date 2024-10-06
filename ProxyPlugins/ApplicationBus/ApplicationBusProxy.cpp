@@ -4,7 +4,9 @@
  */
 
 #include <lbConfigHook.h>
-#include <lbInterfaces-sub-Project.h>
+// This is part from private development not related to here.
+// Due to movement to public repo the code layout will change.
+//#include <lbInterfaces-sub-Project.h>
 
 #undef DLLEXPORT
 
