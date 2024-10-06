@@ -13,40 +13,43 @@
 
 ifeq ($(OSTYPE), linux)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/lbdmf
-RELPATH_MAKE=/Projects/lbdmf
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
 ifeq ($(OSTYPE), osx)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/lbdmf
-RELPATH_MAKE=/Projects/lbdmf
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 endif
 DEVROOT_MAKE=$(DEVROOT)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
-RELPATH_MAKE=
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 else
-RELPATH=\Projects\lbdmf
-RELPATH_MAKE=/Projects/lbdmf
+RELPATH=\Projects\$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 endif
 endif
 
 ifeq ($(OSTYPE), solaris)
 ifeq ($(CRUISECONTROL), yes)
-RELPATH=
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 else
-RELPATH=/Projects/lbdmf
-RELPATH_MAKE=/Projects/lbdmf
+RELPATH=/Projects/$(REPO_NAME)
+RELPATH_MAKE=/Projects/$(REPO_NAME)
 endif
 endif
 
