@@ -718,7 +718,7 @@ bool lbSocket::initSymbolic(char* host, char* service, bool asServer) {
 	startup();
 	_LOG << "Initialize for host '" << host << "' and port '" << service << "'" LOG_
 
-	if (asServer == TRUE)
+	if (asServer == true)
 	{
 		serverMode = 1;
 	} else {
@@ -728,7 +728,7 @@ bool lbSocket::initSymbolic(char* host, char* service, bool asServer) {
 	servent* s = getservbyname(service, NULL);
 
 	if(s == NULL) {
-		_LOG << "lbSocket::initSymbolic(char* host, char* service): No service entry found" LOG_
+		_CL_LOG << "lbSocket::initSymbolic(char* host, char* service): No service entry found for " << service LOG_
 		return false;
 	}
 

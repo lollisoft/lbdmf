@@ -7,6 +7,7 @@
 // This is part from private development not related to here.
 // Due to movement to public repo the code layout will change.
 //#include <lbInterfaces-sub-Project.h>
+#include <IFaxNumber.h>
 
 #undef DLLEXPORT
 
@@ -47,11 +48,12 @@ FaxNumberProxy::FaxNumberProxy() {
 
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
-        UAP_REQUEST(getModuleInstance(), lb_I_ApplicationBus, Busmaster)
-        UAP_REQUEST(getModuleInstance(), lb_I_String, connStr)
-        *&connStr = Busmaster->findBackend("FaxNumber");
-        ABSConnection->init(connStr->charrep());
-        
+        //UAP_REQUEST(getModuleInstance(), lb_I_ApplicationBus, Busmaster)
+        //UAP_REQUEST(getModuleInstance(), lb_I_String, connStr)
+        //*&connStr = Busmaster->findBackend("FaxNumber");
+        //ABSConnection->init(connStr->charrep());
+        ABSConnection->init("localhost/busmaster");
+
         Connect();
     }
     _CL_LOG << "Initialized" LOG_
