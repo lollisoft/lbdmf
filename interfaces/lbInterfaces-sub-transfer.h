@@ -42,6 +42,7 @@ typedef enum {
         PACKET_LB_SHORT,
         PACKET_LB_LONG,
         PACKET_LB_USHORT,
+        PACKET_LB_UINT,
         PACKET_LB_ULONG,
         PACKET_LB_VOID,
 
@@ -128,6 +129,7 @@ public:
         virtual void LB_STDCALL add(short s) = 0;
         virtual void LB_STDCALL add(long l) = 0;
         virtual void LB_STDCALL add(unsigned short us) = 0;
+        virtual void LB_STDCALL add(unsigned int ui) = 0;
         virtual void LB_STDCALL add(unsigned long ul) = 0;
         virtual void LB_STDCALL add(const void* buf, int len) = 0;
 /*...e*/
@@ -138,6 +140,7 @@ public:
         virtual lbErrCodes LB_STDCALL get(short & s) = 0;
         virtual lbErrCodes LB_STDCALL get(long & l) = 0;
         virtual lbErrCodes LB_STDCALL get(unsigned short & us) = 0;
+        virtual lbErrCodes LB_STDCALL get(unsigned int & ui) = 0;
         virtual lbErrCodes LB_STDCALL get(unsigned long & ul) = 0;
 
         virtual lbErrCodes LB_STDCALL get(void* & v, int & len) = 0;

@@ -134,6 +134,7 @@ public:
 	void LB_STDCALL add(short s);
 	void LB_STDCALL add(long l);
 	void LB_STDCALL add(unsigned short us);
+    void LB_STDCALL add(unsigned int ui);
 	void LB_STDCALL add(unsigned long ul);
 	void LB_STDCALL add(const void* buf, int len);
 /*...e*/
@@ -144,7 +145,8 @@ public:
 	lbErrCodes LB_STDCALL get(short & s);
 	lbErrCodes LB_STDCALL get(long & l);
 	lbErrCodes LB_STDCALL get(unsigned short & us);
-	lbErrCodes LB_STDCALL get(unsigned long & ul);
+    lbErrCodes LB_STDCALL get(unsigned int & ui);
+    lbErrCodes LB_STDCALL get(unsigned long & ul);
 
 	lbErrCodes LB_STDCALL get(void* & v, int & len);
 /*...e*/
