@@ -416,6 +416,11 @@ void LB_STDCALL lbTransferData::add(unsigned long ul) {
         add((void*) &ul, len, PACKET_LB_ULONG);
 }
 /*...e*/
+void LB_STDCALL lbTransferData::add(unsigned int ui) {
+    int len = sizeof(ui);
+    
+    add((unsigned int*) &ui, len, PACKET_LB_ULONG);
+}
 void LB_STDCALL lbTransferData::add(short s) {
 }
 void LB_STDCALL lbTransferData::add(long l) {
@@ -473,6 +478,27 @@ lbErrCodes LB_STDCALL lbTransferData::get(unsigned long& ul) {
 	}
 }
 /*...e*/
+lbErrCodes LB_STDCALL lbTransferData::get(unsigned int& ui) {
+    lbErrCodes err = ERR_NONE;
+    LB_PACKET_TYPE type;
+    
+    getPacketType(type);
+    
+    if (type == PACKET_LB_UINT) {
+        intKey->setData(currentPos);
+        UAP(lb_I_Unknown, uk)
+        UAP(lb_I_Transfer_DataObject, o)
+        uk = elements->getElement(&key);
+        QI(uk, lb_I_Transfer_DataObject, o)
+        
+        memcpy(&ui, (void const*) &(o->getTransferData()->data),
+               o->getTransferData()->packet_size);
+        return ERR_NONE;
+    } else {
+        _LOG << "lbTransferData::get() called with wrong attempt of data type! Type requested is PACKET_LB_CHAR but have " << getStringFromEnumeration(type) LOG_
+        return ERR_TRANSFER_DATA_INCORRECT_TYPE;
+    }
+}
 /*...slbErrCodes lbTransferData\58\\58\get\40\char\42\ \38\ c\41\:0:*/
 lbErrCodes LB_STDCALL lbTransferData::get(char* & c) {
 	lbErrCodes err = ERR_NONE;

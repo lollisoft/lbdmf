@@ -29,8 +29,8 @@
 #			 65760 Eschborn (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
-MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE)/Projects/CPP/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/Interfaces -I$(DEVROOT_MAKE)$(RELPATH_MAKE)/BaseDevelopment/lbcs
 
 OBJDEP=
 SLASH=/
@@ -107,7 +107,7 @@ OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
 endif
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
@@ -115,10 +115,18 @@ ifeq ($(LB_USE_FRAMEWORKS), yes)
 ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/AppDevelopment/Interfaces -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbcs
 OBJDEP=
-C_SOOPS_WX = $(OSX_ARCH) -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
+C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
+
+ifeq ($(OSNAME), Panther)
+C_SOOPS+= -DPanther
+else
+C_SOOPS+= -DLeopard
+endif
+
+
 VENDORLIBS=
-L_OPS=$(OSX_ARCH) -F$(prefix)/Library/Frameworks -framework lbHook
+LDFLAGS=-F$(prefix)/Library/Frameworks -framework lbHook
 endif    
 
 endif
@@ -131,7 +139,7 @@ OBJDEP=
 C_SOOPS_WX = -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --inplace --cxxflags` 
 C_SOOPS= $(C_SOOPS_WX)
 VENDORLIBS=$(HOME)/lib/lbHook.so 
-L_OPS=$(L_SOOPS) `wx-config --inplace --libs`
+LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs`
 endif    
 
 endif

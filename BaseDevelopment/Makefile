@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.118 $
+# * $Revision: 1.229.2.119 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.118 2024/10/05 19:47:57 lothar Exp $
+# * $Id: Makefile,v 1.229.2.119 2024/10/07 18:18:23 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.119  2024/10/07 18:18:23  lothar
+# * Made changes to get client server sample and related code compile and run on Mac OS X
+# *
 # * Revision 1.229.2.118  2024/10/05 19:47:57  lothar
 # * Copied yet private code to the public project.
 # * The code contains sample server and cliet (proxy) plugins and
@@ -1382,10 +1385,10 @@ BASEDIRECTORIES= \
 	../Modules \
 	../RegressionTests \
 	../vendor/wxaui-0.9.1/sample \
-	../AppDevelopment \
 	../ServerPlugins \
 	../ClientPlugins \
-	../UnitTests
+	../UnitTests \
+	../AppDevelopment
 
 #	../vendor/tvision \
 #	../vendor/tvision/examples/lbDMF
@@ -2742,15 +2745,6 @@ endif
 	$(MAKE) -s -C $@
 endif
 
-ifeq ($(OSTYPE), Windows_NT)
-../Test/GUI/wxWrapper: dummy
-	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
-ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
-else
-	$(MAKE) -s -C $@ -e LBWXVERSION=current
-endif
-
 ../ProxyPlugins: dummy
 	$(MAKE) -s -C $@
 
@@ -2764,6 +2758,15 @@ endif
 ../Test/GlobalAppServer/server: dummy
 	$(MAKE) -s -C $@ -e MODULE=GAppServer -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
+
+ifeq ($(OSTYPE), Windows_NT)
+../Test/GUI/wxWrapper: dummy
+	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 
 $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@ -e MODULE=report -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
