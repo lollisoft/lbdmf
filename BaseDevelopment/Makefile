@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.119 $
+# * $Revision: 1.229.2.120 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.119 2024/10/07 18:18:23 lothar Exp $
+# * $Id: Makefile,v 1.229.2.120 2024/10/07 20:22:16 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.120  2024/10/07 20:22:16  lothar
+# * Fixed some issues on Mac OS X (Arm)
+# *
 # * Revision 1.229.2.119  2024/10/07 18:18:23  lothar
 # * Made changes to get client server sample and related code compile and run on Mac OS X
 # *
@@ -1384,11 +1387,10 @@ BASEDIRECTORIES= \
 	../AppDevelopmentDemo/DynamicApp/Plugins \
 	../Modules \
 	../RegressionTests \
-	../vendor/wxaui-0.9.1/sample \
+	../ProxyPlugins \
 	../ServerPlugins \
-	../ClientPlugins \
+	../vendor/wxaui-0.9.1/sample \
 	../UnitTests \
-	../AppDevelopment
 
 #	../vendor/tvision \
 #	../vendor/tvision/examples/lbDMF
@@ -1441,8 +1443,6 @@ ALLTARGETS = \
 	../vendor/antlr3/src \
 	../Test/Console/XML \
 	../vendor/wxShapeFramework/src \
-	../ProxyPlugins \
-	../ServerPlugins \
 	../Test/GlobalAppServer/client \
 	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES) \
@@ -1481,8 +1481,6 @@ ALLTARGETS = \
 	../vendor/antlr3/src \
 	../Test/Console/XML \
 	../vendor/wxShapeFramework/src \
-	../ProxyPlugins \
-	../ServerPlugins \
 	../Test/GlobalAppServer/client \
 	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES) \
