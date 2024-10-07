@@ -43,7 +43,7 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/AppDevelopment/Interfaces -I $(DEVR
 MOD_INCL_CPP=$(STD_INCL_CPP) -I $(DEVROOT)$(RELPATH)/AppDevelopment/Interfaces -I $(DEVROOT)$(RELPATH)/BaseDevelopment/lbcs
 OBJDEP=
 LIBS = -F$(prefix)/Library/Frameworks -framework lbHook
-VENDORLIBS=/usr/lib/libiodbc.dylib
+#VENDORLIBS=/usr/lib/libiodbc.dylib
 endif    
 
 endif
