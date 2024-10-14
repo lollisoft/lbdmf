@@ -1,6 +1,6 @@
 
 /*
-	Automatically created file. Do not modify.
+        Automatically created file. Do not modify.
  */
 
       
@@ -15,7 +15,7 @@ public:
         
         DECLARE_LB_UNKNOWN()
 
-        char* LB_STDCALL getServiceName();
+        const char* LB_STDCALL getServiceName();
         lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance);
 
       
@@ -26,8 +26,8 @@ private:
         UAP(lb_I_Container, connections)
         lbErrCodes LB_STDCALL HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
         lbErrCodes LB_STDCALL HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
-		
-		UAP(lb_I_String, ServerInstance)
+                
+                UAP(lb_I_String, ServerInstance)
       
 };
 
