@@ -21,11 +21,9 @@ MCommand
 0
 5
 MCommand
-246
+77
 copy *.lib $(%DEVROOT)\projects\dll\libs
 copy *.dll $(%DEVROOT)\projects\dll
-attrib -r $(%DEVROOT)\projects\CPP\BaseDevelopment\lbXMLConfig\lbDOMConfig\lbHook.cpp
-copy lbHook.cpp $(%DEVROOT)\projects\CPP\BaseDevelopment\lbXMLConfig\lbDOMConfig
 6
 MItem
 10
@@ -71,8 +69,8 @@ n????Include directories:
 1
 17
 WString
-163
-$(%watcom)\h;$(%watcom)\h\nt;$(%DEVROOT)\projects\cpp\interfaces;$(%DEVROOT)\projects\cpp\include;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
+167
+$(%watcom)\h;$(%watcom)\h\nt;$(%DEVROOT)\projects\lbdmf\interfaces;$(%DEVROOT)\projects\lbdmf\include;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
 0
 18
 MVState

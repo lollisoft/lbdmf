@@ -119,8 +119,8 @@ n????Include directories:
 1
 30
 WString
-181
-$(%watcom)\h;$(%watcom)\h\nt;$(%wxwin)\include;$(%DEVROOT)\projects\cpp\include;$(%DEVROOT)\projects\cpp\interfaces;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
+185
+$(%watcom)\h;$(%watcom)\h\nt;$(%wxwin)\include;$(%DEVROOT)\projects\lbdmf\include;$(%DEVROOT)\projects\lbdmf\interfaces;$(%DEVROOT)\projects\dll\include;$(%DEVROOT)\projects\lib\include
 0
 31
 MRState
