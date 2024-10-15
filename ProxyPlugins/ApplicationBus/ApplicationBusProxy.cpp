@@ -67,9 +67,9 @@ ApplicationBusProxy::~ApplicationBusProxy() {
 
 void ApplicationBusProxy::setServerName(const char* servername, const char* servicename) {
     _CL_LOG << "ApplicationBusProxy::setServerName(" << servername << "," << servicename << ") called" LOG_
-        _CL_LOG << "Initialize the tcp connection to " << servername << ":" << servicename << "..." LOG_
-        REQUEST(getModuleInstance(), lb_I_String, server)
-        REQUEST(getModuleInstance(), lb_I_String, service)
+	_CL_LOG << "Initialize the tcp connection to " << servername << ":" << servicename << "..." LOG_
+	REQUEST(getModuleInstance(), lb_I_String, server)
+	REQUEST(getModuleInstance(), lb_I_String, service)
         
     if (ABSConnection != NULL) {
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
@@ -78,7 +78,7 @@ void ApplicationBusProxy::setServerName(const char* servername, const char* serv
         serverInstance->replace("servername", servername);
         serverInstance->replace("servicename", servicename);
         
-                // The name of the lbDMF Busmaster must be defined in hosts or DNS
+		// The name of the lbDMF Busmaster must be defined in hosts or DNS
         ABSConnection->init(serverInstance->charrep());
         _CL_LOG << "Connect to " << serverInstance->charrep() << "..." LOG_
         Connect();
