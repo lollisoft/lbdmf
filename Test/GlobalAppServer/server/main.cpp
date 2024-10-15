@@ -82,6 +82,8 @@ int main(int argc, char** argv)
                         setLogActivated(true);
                 }
 
+                setLogActivated(true);
+                        
                 UAP_REQUEST(getModuleInstance(), lb_I_String, s)
                 UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
                 UAP_REQUEST(getModuleInstance(), lb_I_ApplicationServer, appServer)
@@ -107,14 +109,9 @@ int main(int argc, char** argv)
         
                 if (appServer != NULL) {
 
-                        char* server = NULL; //"LAPTOP-02RLMPT3";
-                        char* service = NULL; //"busmaster";
+                        char* server = "localhost";
+                        char* service = "busmaster";
 
-                        if (argc > 2 && strcmp(argv[1], "-server") == 0 && strcmp(argv[2], "-log") != 0) {
-                            server = strdup(argv[1]);
-                            service = strdup(argv[2]);
-                        }
-                        else
                         if (argc > 5 &&
                                 strcmp(argv[1], "-server") == 0 &&
                                 strcmp(argv[2], "-log") != 0 &&
@@ -125,12 +122,17 @@ int main(int argc, char** argv)
                             service = strdup(argv[4]);
                             setLogActivated(true);
                         } else
+                        if (argc > 2 && strcmp(argv[1], "-server") == 0 && strcmp(argv[2], "-log") != 0) {
+                            server = strdup(argv[1]);
+                            service = strdup(argv[2]);
+                        }
+                        else
                         if (argc > 1 && strcmp(argv[2], "-log") != 0)
                         {
                                 _CL_LOG << "Call application like " << argv[0] << " [-log]" LOG_
                                 _CL_LOG << "Call application like " << argv[0] << " -server server -service service [-log]" LOG_
                         }
-
+                        printf("Atarting server...\n");
                         appServer->run(server, service);
                         PM->unload();
                 } else {
