@@ -132,7 +132,7 @@ lbErrCodes lbTransfer::init(char *target, bool asServer) {
         char* pch = NULL;
                 
         if (target == NULL) {
-                _LOG << "Reinit with last known parameters." LOG_
+                _CL_LOG << "Reinit with last known parameters." << hostName->charrep() << "/" << portName->charrep() LOG_
                 machine = hostName->charrep();
                 service = portName->charrep();
         } else {

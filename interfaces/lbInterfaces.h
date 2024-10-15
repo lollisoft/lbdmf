@@ -2581,7 +2581,7 @@ public:
 
         virtual void LB_STDCALL autostartServerPlugins(bool start) = 0;
         virtual lbErrCodes LB_STDCALL activateServerPlugin(const char* name) = 0;
-        virtual void LB_STDCALL run() = 0;
+        virtual void LB_STDCALL run(const char* server, const char* service) = 0;
 };
 
 class lb_I_ApplicationClient :
@@ -4964,7 +4964,8 @@ public:
  * The development of such a functionality is not planned.
  */
 class lb_I_Proxy {
-
+public:
+        virtual void setServerName(const char* servername, const char* servicename) = 0;
 };
 /*...e*/
 

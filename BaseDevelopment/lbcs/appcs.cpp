@@ -1235,7 +1235,7 @@ lbErrCodes LB_STDCALL lbAppServer::activateServerPlugin(const char* name) {
 
 // Main server
 /*...slbAppServer\58\\58\run\40\\41\:0:*/
-void LB_STDCALL lbAppServer::run() {
+void LB_STDCALL lbAppServer::run(const char* server, const char* service) {
         _CL_LOG << "lbAppServer::run() called" LOG_
         lbErrCodes err = ERR_NONE;
         char srvname[100] = "";
@@ -1275,10 +1275,24 @@ void LB_STDCALL lbAppServer::run() {
         _LOG << "lbAppServer::lbAppServer(): Initialize lb_I_Transfer object" LOG_
         REQUEST(getModuleInstance(), lb_I_Transfer, transfer)
 
-        if (transfer->init("localhost/busmaster", true) != ERR_NONE) {
-                _CL_LOG << "Can't initialize communication channel." LOG_
-                return;
+
+        if (server != NULL && service != NULL) {
+                UAP_REQUEST(getModuleInstance(), lb_I_String, serverAddress)
+                serverAddress->setData("servername/servicename");
+                serverAddress->replace("servername", server);
+                serverAddress->replace("servicename", service);
+                if (transfer->init(serverAddress->charrep(), true) != ERR_NONE) {
+                        _CL_LOG << "Can't initialize communication channel." LOG_
+                        return;
+                }
+        } else {
+                if (transfer->init("localhost/busmaster", true) != ERR_NONE) {
+                        _CL_LOG << "Can't initialize communication channel." LOG_
+                        return;
+                }
         }
+
+
         _LOG << "lbAppServer::lbAppServer(): Initialized" LOG_
         
         printf("Global application server is started.\n");
