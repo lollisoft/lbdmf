@@ -74,8 +74,6 @@ int main(int argc, char** argv) {
                         setLogActivated(false);
         }
 
-        setLogActivated(true);
-
         if (argc > 1 && strcmp(argv[1], "-log") == 0) {
                 setLogActivated(true);
         }
