@@ -11,7 +11,7 @@ void handler(int sig) {
         exit(0);
 }
 
-void runTest()
+void runTest(const char* servername, const char* servicename)
 {
         int count = 0;
 
@@ -21,6 +21,10 @@ void runTest()
                 char buf[100] = "";
                 
                 _CL_LOG << "Application bus instantiated." LOG_
+
+                if (servername != NULL && servicename != NULL) {
+                    client->setServerName(servername, servicename);
+                }
                 
                 while (count++ < 5) {
                         UAP(lb_I_String, echo)
@@ -68,13 +72,39 @@ int main(int argc, char** argv) {
                         setLogActivated(true);
                 else
                         setLogActivated(false);
-        }       
+        }
+
+        setLogActivated(true);
 
         if (argc > 1 && strcmp(argv[1], "-log") == 0) {
                 setLogActivated(true);
         }
+
+        char* server = NULL; //"LAPTOP-02RLMPT3";
+        char* service = NULL; //"busmaster";
+
+        if (argc > 2 && strcmp(argv[1], "-server") == 0 && strcmp(argv[2], "-log") != 0) {
+            server = strdup(argv[1]);
+            service = strdup(argv[2]);
+        }
+        else
+        if (argc > 5 &&
+                strcmp(argv[1], "-server") == 0 &&
+                strcmp(argv[2], "-log") != 0 &&
+                strcmp(argv[3], "-service") == 0 &&
+                strcmp(argv[4], "-log") != 0 &&
+                strcmp(argv[5], "-log") == 0) {
+            server = strdup(argv[2]);
+            service = strdup(argv[4]);
+            setLogActivated(true);
+        } else
+        if (argc > 1 && strcmp(argv[2], "-log") != 0)
+        {
+                _CL_LOG << "Call application like " << argv[0] << " [-log]" LOG_
+                _CL_LOG << "Call application like " << argv[0] << " -server server -service service [-log]" LOG_
+        }
         
-        runTest();
+        runTest(server, service);
         
         _CL_LOG << "Ending server test thread" LOG_
         exit(0);

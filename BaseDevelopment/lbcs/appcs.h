@@ -35,17 +35,17 @@
  */
 class lbConnection {
 public:
-	lbConnection(char* host, int _pid, int _tid);
-	virtual ~lbConnection();
-	
-	/**
-	 * Abstract functions
-	 */
-	void setType();
-	
-	char* hostname;
-	int pid;
-	int tid;
+        lbConnection(char* host, int _pid, int _tid);
+        virtual ~lbConnection();
+        
+        /**
+         * Abstract functions
+         */
+        void setType();
+        
+        char* hostname;
+        int pid;
+        int tid;
 };
 /*...e*/
 
@@ -66,24 +66,24 @@ DECLARE_FUNCTOR(instanceOflbAppServer)
  */
 class lbDispatchProto : public lb_I_DispatchProtocol {
 public:
-	lbDispatchProto();
-	virtual ~lbDispatchProto();
-	
-	DECLARE_LB_UNKNOWN()
+        lbDispatchProto();
+        virtual ~lbDispatchProto();
+        
+        DECLARE_LB_UNKNOWN()
 
-	lbErrCodes LB_STDCALL setProto(const char* _service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn);	
-	
-	const char* LB_STDCALL getServiceName();
-	
-	lbProtocolCallback LB_STDCALL getProto();
-	
-	lb_I_ProtocolTarget* LB_STDCALL getProtocolHandlerInstance();
+        lbErrCodes LB_STDCALL setProto(const char* _service, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback fn);      
+        
+        const char* LB_STDCALL getServiceName();
+        
+        lbProtocolCallback LB_STDCALL getProto();
+        
+        lb_I_ProtocolTarget* LB_STDCALL getProtocolHandlerInstance();
 
 private:
-	
-	UAP(lb_I_String, service)
-	UAP(lb_I_ProtocolTarget, handler)
-	lbProtocolCallback dispProto;
+        
+        UAP(lb_I_String, service)
+        UAP(lb_I_ProtocolTarget, handler)
+        lbProtocolCallback dispProto;
 };
 /*...e*/
 
@@ -94,17 +94,17 @@ private:
  * These then are available in client server applications.
  */
 class lbProtocolManager : 
-	public lb_I_Unknown,
-	public lb_I_ProtocolManager {
+        public lb_I_Unknown,
+        public lb_I_ProtocolManager {
 
 public:
-	lbProtocolManager();
-	virtual ~lbProtocolManager();
-	
-	DECLARE_LB_UNKNOWN()
-	
-	lbErrCodes LB_STDCALL addProtocolHandler(const char* handlername, lbProtocolCallback cbFn);
-	lbErrCodes LB_STDCALL delProtocolHandler(const char* handlername);	
+        lbProtocolManager();
+        virtual ~lbProtocolManager();
+        
+        DECLARE_LB_UNKNOWN()
+        
+        lbErrCodes LB_STDCALL addProtocolHandler(const char* handlername, lbProtocolCallback cbFn);
+        lbErrCodes LB_STDCALL delProtocolHandler(const char* handlername);      
 };
 /*...e*/
 
@@ -114,107 +114,107 @@ public:
 class lbAppServer : public lb_I_ApplicationServer
 {
 public:
-	lbAppServer();
-	virtual ~lbAppServer();
-	
-	DECLARE_LB_UNKNOWN()
+        lbAppServer();
+        virtual ~lbAppServer();
+        
+        DECLARE_LB_UNKNOWN()
 
-	void LB_STDCALL autostartServerPlugins(bool start);
-	lbErrCodes LB_STDCALL activateServerPlugin(const char* name);
+        void LB_STDCALL autostartServerPlugins(bool start);
+        lbErrCodes LB_STDCALL activateServerPlugin(const char* name);
 
-	void LB_STDCALL run(); // called from main or thread
+        void LB_STDCALL run(const char* server, const char* service); // called from main or thread
 
-	/**
-	 * Checks, if the parameters (hostname, pid and tid) are available.
-	 * Then it checks, if tid is as key available in connections container.
-	 * If all succeeds, 1 is returned and the request would be done.
-	 */
-	bool LB_STDCALL isConnected(lb_I_Transfer_Data* request);
+        /**
+         * Checks, if the parameters (hostname, pid and tid) are available.
+         * Then it checks, if tid is as key available in connections container.
+         * If all succeeds, 1 is returned and the request would be done.
+         */
+        bool LB_STDCALL isConnected(lb_I_Transfer_Data* request);
 
-	/**
-	 * Functions needed to encapsulate the transfer class
-	 */
-	 
-	
-	lbErrCodes LB_STDCALL waitForRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* request);
-	
-	lbErrCodes LB_STDCALL answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* result);
+        /**
+         * Functions needed to encapsulate the transfer class
+         */
+         
+        
+        lbErrCodes LB_STDCALL waitForRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* request);
+        
+        lbErrCodes LB_STDCALL answerRequest(lb_I_Transfer* _clt, lb_I_Transfer_Data* result);
 
-	const char* LB_STDCALL getServiceName();
-	lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance);	                  
+        const char* LB_STDCALL getServiceName();
+        lbErrCodes LB_STDCALL registerProtocols(lb_I_ProtocolManager* protoMgr, const char* serverInstance);                      
 
-	/**
-	 * Called from run() and gives a lb_I_Transfer instance.
-	 * This is no longer abstract, because this 'baseclass'
-	 * does all the server stuff for now.
-	 * A derived server must only make visible its handles
-	 * to this base class.
-	 */
-	lbErrCodes _connected(lb_I_Transfer* _clt); 
+        /**
+         * Called from run() and gives a lb_I_Transfer instance.
+         * This is no longer abstract, because this 'baseclass'
+         * does all the server stuff for now.
+         * A derived server must only make visible its handles
+         * to this base class.
+         */
+        lbErrCodes _connected(lb_I_Transfer* _clt); 
 
-	lbErrCodes LB_STDCALL dispatch(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
-	lbErrCodes LB_STDCALL addProtocolHandler(const char* handlername, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback cbFn);
-	lbErrCodes LB_STDCALL delProtocolHandler(const char* handlername);
-	 
+        lbErrCodes LB_STDCALL dispatch(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
+        lbErrCodes LB_STDCALL addProtocolHandler(const char* handlername, lb_I_ProtocolTarget* handlerInstance, lbProtocolCallback cbFn);
+        lbErrCodes LB_STDCALL delProtocolHandler(const char* handlername);
+         
 /*...sDoc:0:*/
-	/**
-	 * Implement this for your connected state. It is called per request.
-	 * I mean, that a socket connection has been opened and the
-	 * function is being called. So I am able to put in more logic
-	 * before and after the call of this function, like an 
-	 * authentication, or a load checking an the ability to react.
-	 * You can do what you want in your implementation, but you have
-	 * to call the three functions for waiting for, handling and sending
-	 * back an answer from the request.
-	 * If you do nothig, because you don't need, you don't need to write
-	 * a server.
-	 * By letting you have to implement this function, you will be able
-	 * to do your own stuff between the stages of a request. You may add
-	 * some dispatching stuff to divide your service. I will be able to
-	 * add some overhead to the request packets like encryption or so.
-	 */
+        /**
+         * Implement this for your connected state. It is called per request.
+         * I mean, that a socket connection has been opened and the
+         * function is being called. So I am able to put in more logic
+         * before and after the call of this function, like an 
+         * authentication, or a load checking an the ability to react.
+         * You can do what you want in your implementation, but you have
+         * to call the three functions for waiting for, handling and sending
+         * back an answer from the request.
+         * If you do nothig, because you don't need, you don't need to write
+         * a server.
+         * By letting you have to implement this function, you will be able
+         * to do your own stuff between the stages of a request. You may add
+         * some dispatching stuff to divide your service. I will be able to
+         * add some overhead to the request packets like encryption or so.
+         */
 /*...e*/
 
 protected:
 
-	lbErrCodes LB_STDCALL HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
-	lbErrCodes LB_STDCALL HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
+        lbErrCodes LB_STDCALL HandleConnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
+        lbErrCodes LB_STDCALL HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result);
 
-	/**
-	 * User management
-	 */
-	lbErrCodes makeProtoErrAnswer(lb_I_Transfer_Data* result, char* msg, char* where);
-	
-	int initServerModul(lb_I_ApplicationServerModul* servermodule, char* serverInstance);
+        /**
+         * User management
+         */
+        lbErrCodes makeProtoErrAnswer(lb_I_Transfer_Data* result, char* msg, char* where);
+        
+        int initServerModul(lb_I_ApplicationServerModul* servermodule, char* serverInstance);
 
-	lb_I_Transfer *transfer;	
-	UAP(lb_I_Container, connections)	
-	
-	// Dispatch table for registered protocol handlers
-	UAP(lb_I_Container, dispatchTable)
+        lb_I_Transfer *transfer;        
+        UAP(lb_I_Container, connections)        
+        
+        // Dispatch table for registered protocol handlers
+        UAP(lb_I_Container, dispatchTable)
 
-	/** \brief Loaded server modules. 
-	 * Each servermodule has a name. This name is used as identifer in this container.
-	 * Also this name is the identifer for the service name used by the client.
-	 */
-	UAP(lb_I_Container, serverModules)
+        /** \brief Loaded server modules. 
+         * Each servermodule has a name. This name is used as identifer in this container.
+         * Also this name is the identifer for the service name used by the client.
+         */
+        UAP(lb_I_Container, serverModules)
 
-	/** \brief Thread per module.
-	 * Each module defines a port to listen to. (Via the name of the server module)
-	 *
-	 * So the main thread must wait for all server threads to be ended before it could
-	 * exit.
-	 */
-	UAP(lb_I_Container, serverThreads)
-	
-	/** \brief Main application server also can handle requests.
-	 * Each request is a separate thread. So they would be stored
-	 * as running threads in this container.
-	 */
-	UAP(lb_I_Container, mainThreads)
-	
-	/** \brief Threads, that have done it's work. */
-	UAP(lb_I_Container, freeThreads)
+        /** \brief Thread per module.
+         * Each module defines a port to listen to. (Via the name of the server module)
+         *
+         * So the main thread must wait for all server threads to be ended before it could
+         * exit.
+         */
+        UAP(lb_I_Container, serverThreads)
+        
+        /** \brief Main application server also can handle requests.
+         * Each request is a separate thread. So they would be stored
+         * as running threads in this container.
+         */
+        UAP(lb_I_Container, mainThreads)
+        
+        /** \brief Threads, that have done it's work. */
+        UAP(lb_I_Container, freeThreads)
 };
 /*...e*/
 
@@ -224,25 +224,25 @@ protected:
  */
 class lbDispatchFn : public lb_I_DispatchFunction {
 public:
-	lbDispatchFn();
-	virtual ~lbDispatchFn();
+        lbDispatchFn();
+        virtual ~lbDispatchFn();
 
-	DECLARE_LB_UNKNOWN()
+        DECLARE_LB_UNKNOWN()
 
-	lbErrCodes LB_STDCALL setFunction(const char* service, lb_I_CallbackTarget* handlerInstance, lbMemberCallback fn);
-	
-	lbMemberCallback LB_STDCALL getFunction();
-	
-	lb_I_CallbackTarget* LB_STDCALL getHandlerInstance();
+        lbErrCodes LB_STDCALL setFunction(const char* service, lb_I_CallbackTarget* handlerInstance, lbMemberCallback fn);
+        
+        lbMemberCallback LB_STDCALL getFunction();
+        
+        lb_I_CallbackTarget* LB_STDCALL getHandlerInstance();
 
-	
-	/**
-	 * Abstract functions
-	 */
-	void setType();
-	
-	lbMemberCallback dispFn;
-	UAP(lb_I_CallbackTarget, handler)
+        
+        /**
+         * Abstract functions
+         */
+        void setType();
+        
+        lbMemberCallback dispFn;
+        UAP(lb_I_CallbackTarget, handler)
 };
 /*...e*/
 
@@ -261,7 +261,7 @@ public:
  */
 class lbAppClient : public lb_I_ApplicationClient {
 private:
-	lbAppClient();
+        lbAppClient();
         lbAppClient(lb_I_Transfer* clConn);
         virtual ~lbAppClient();
         
@@ -276,43 +276,43 @@ private:
         
 public:
 
-		// This function has basically been moved to the lb_I_Module interface.
+                // This function has basically been moved to the lb_I_Module interface.
         lb_I_Unknown* LB_STDCALL requestObject(const char* type, const char* name);
 
 /*...sImplement the interfaces:8:*/
-	lbErrCodes LB_STDCALL getLastError(char* description, int len);
-	lbErrCodes LB_STDCALL initialize();
-	lbErrCodes LB_STDCALL request(const char* request, lb_I_Transfer_Data* result);
-	lbErrCodes LB_STDCALL release();
-	lbErrCodes LB_STDCALL addCallbackHandler(const char* handlername, lbMemberCallback callbackFn);
-	lbErrCodes LB_STDCALL delCallbackHandler(const char* handlername);
-	lbErrCodes LB_STDCALL dispatch(const char* request, lb_I_Transfer_Data* result);
+        lbErrCodes LB_STDCALL getLastError(char* description, int len);
+        lbErrCodes LB_STDCALL initialize();
+        lbErrCodes LB_STDCALL request(const char* request, lb_I_Transfer_Data* result);
+        lbErrCodes LB_STDCALL release();
+        lbErrCodes LB_STDCALL addCallbackHandler(const char* handlername, lbMemberCallback callbackFn);
+        lbErrCodes LB_STDCALL delCallbackHandler(const char* handlername);
+        lbErrCodes LB_STDCALL dispatch(const char* request, lb_I_Transfer_Data* result);
 /*...e*/
 
 
-	/**
-	 * Use this function to indicate, that this instance is no longer
-	 * in your use.
-	 */
-	void dismiss();
-	
-	// lbAppBusClient must be able to create objects of this class
-	//friend class lbAppBusClient;
-	
+        /**
+         * Use this function to indicate, that this instance is no longer
+         * in your use.
+         */
+        void dismiss();
+        
+        // lbAppBusClient must be able to create objects of this class
+        //friend class lbAppBusClient;
+        
 protected:
 
-	/**
-	 * lbAppClient's can not instantiated directly. lbAppBusClient does
-	 * this. Also it sets its instance pointer here.
-	 */
-	//void setAppBusClient(lbAppBusClient* _AppBusClient);
+        /**
+         * lbAppClient's can not instantiated directly. lbAppBusClient does
+         * this. Also it sets its instance pointer here.
+         */
+        //void setAppBusClient(lbAppBusClient* _AppBusClient);
 
-	//lbAppBusClient* AppBusClient;
-	
-	lb_I_Transfer* clientConnection;
+        //lbAppBusClient* AppBusClient;
+        
+        lb_I_Transfer* clientConnection;
 
-	// Dispatch table for registered member callbacks
-	UAP(lb_I_Container, dispatchTable)
+        // Dispatch table for registered member callbacks
+        UAP(lb_I_Container, dispatchTable)
 };
 /*...e*/
 
