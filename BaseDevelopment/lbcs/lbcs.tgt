@@ -23,8 +23,9 @@ copy $(%DEVROOT)\projects\lbdmf\basedevelopment\lbcs\*.h $(%DEVROOT)\projects\dl
 
 5
 MCommand
-37
-copy *.dll $(%DEVROOT)\projects\dll
+55
+copy *.lib ..\..\..\dll\libs
+copy *.dll ..\..\..\dll
 
 6
 MItem

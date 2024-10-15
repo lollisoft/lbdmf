@@ -21,8 +21,10 @@ MCommand
 0
 5
 MCommand
-20
-copy *.dll ..\..\bin
+49
+copy *.lib ..\..\dll\libs
+copy *.dll ..\..\dll
+
 6
 MItem
 23
