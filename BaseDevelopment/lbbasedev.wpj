@@ -4,10 +4,10 @@ projectIdent
 VpeMain
 1
 WRect
-122
-293
+112
+256
 8608
-8722
+8713
 2
 MProject
 3
@@ -81,7 +81,7 @@ VComponent
 20
 WRect
 2368
-2123
+2114
 2656
 2304
 0
@@ -91,7 +91,7 @@ WFileName
 13
 lbcs\lbcs.tgt
 0
-1
+4
 22
 VComponent
 23
@@ -107,13 +107,13 @@ WFileName
 25
 lbtransfer\lbtransfer.tgt
 0
-4
+5
 25
 VComponent
 26
 WRect
 96
-1384
+1374
 2176
 1792
 0
@@ -147,7 +147,7 @@ WRect
 5968
 0
 2528
-2645
+2635
 0
 0
 33
@@ -161,9 +161,9 @@ VComponent
 35
 WRect
 6320
-1839
+1829
 2112
-2853
+2844
 0
 0
 36
@@ -171,7 +171,7 @@ WFileName
 58
 q:\develop\projects\lbdmf\serverplugins\applicationbus.tgt
 0
-1
+2
 37
 VComponent
 38
@@ -195,7 +195,7 @@ WRect
 6768
 4864
 1712
-1554
+1545
 0
 0
 42
@@ -209,9 +209,9 @@ VComponent
 44
 WRect
 2448
-4010
+4001
 2176
-2370
+2360
 0
 0
 45
@@ -220,4 +220,4 @@ WFileName
 lbpluginmanager\lbpluginmanager.tgt
 0
 3
-34
+37
