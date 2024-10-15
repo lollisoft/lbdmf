@@ -3,7 +3,9 @@
  * Documentation for FaxNumber
  */
 class lb_I_FaxNumber :
-public lb_I_Unknown {
+public lb_I_Unknown,
+public lb_I_Proxy
+{
 public:
       
 	virtual void LB_STDCALL AskForFaxNumber(lb_I_String* faxnumber) = 0;
@@ -21,3 +23,5 @@ public:
       
 };
 		
+UAPDECL(lb_I_FaxNumber)
+UAPDECL(lb_I_FaxNumber_ProtocolTarget)
