@@ -5,7 +5,7 @@
 class lb_I_ApplicationBus :
 public lb_I_Unknown,
 public lb_I_Proxy
- {
+{
 public:
     /** \brief For tests yet only.
          *
