@@ -21,8 +21,11 @@ MCommand
 0
 5
 MCommand
-26
+94
 copy *.exe ..\..\..\..\bin
+copy  ..\..\..\..\dll\*.dll .
+copy  ..\..\..\..\plugins\*.dll .
+
 6
 MItem
 14
