@@ -48,8 +48,11 @@ ApplicationBusProxy::ApplicationBusProxy() {
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
                 // The name of the lbDMF Busmaster must be defined in hosts or DNS
-        ABSConnection->init("localhost/busmaster");
-                _CL_LOG << "Connect to localhost/busmaster..." LOG_
+        if (ABSConnection->init("localhost/busmaster") == ERR_SOCKET_INIT) {
+            _CL_LOG << "Connect to localhost/busmaster failed." LOG_
+            return;
+        }
+        _CL_LOG << "Connect to localhost/busmaster..." LOG_
         Connect();
 
         ABSConnection->close();
@@ -110,14 +113,19 @@ int ApplicationBusProxy::Connect() {
         client->add("Tid");
         client->add(lbGetCurrentThreadId());
 
+    _CL_LOG << "Send prepared packets..." LOG_
+    
     *ABSConnection << *&client;
+    _CL_LOG << "Waiting for answer..." LOG_
     *ABSConnection >> *&result;
+    _CL_LOG << "Got answer..." LOG_
 
         // Handle the request
         int count = result->getPacketCount();
 
         result->resetPositionCount();
                 
+    _CL_LOG << "Have " << count << " packets..." LOG_
         while (count--) {
                 LB_PACKET_TYPE type;
                 int i = 0;

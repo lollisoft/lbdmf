@@ -366,6 +366,7 @@ int lbSocket::connect()
         _LOGERROR << "lbSocket::connect(): ERROR: Illegal state for this function" LOG_
                 close();
       }
+    lbSockState = LB_SOCK_UNINITIALIZED;
 #ifdef WINDOWS
       status=::connect(socket, (LPSOCKADDR) &serverSockAddr, sizeof(serverSockAddr));
       if (status == SOCKET_ERROR)
@@ -740,7 +741,7 @@ bool lbSocket::initSymbolic(char* host, char* service, bool asServer) {
         }
 
         init((serverMode == 1) ? 0 : inet_addrFromString(host), ntohs(port)); // In the function htons is used.
-        return true;
+        return lbSockState == LB_SOCK_CONNECTED;
 }
 /*...e*/
 /*...slbSocket\58\\58\init\40\unsigned long mysockaddr\44\ u_short port\41\:0:*/
