@@ -23,6 +23,7 @@ void runTest(const char* servername, const char* servicename)
                 _CL_LOG << "Application bus instantiated." LOG_
 
                 if (servername != NULL && servicename != NULL) {
+                    _CL_LOG << "Initialize custom host and service..." LOG_
                     client->setServerName(servername, servicename);
                 }
                 
@@ -87,9 +88,11 @@ int main(int argc, char** argv) {
                 strcmp(argv[3], "-service") == 0 &&
                 strcmp(argv[4], "-log") != 0 &&
                 strcmp(argv[5], "-log") == 0) {
+                setLogActivated(true);
+                _CL_LOG << "Got server parameter..." LOG_
                 server = strdup(argv[2]);
                 service = strdup(argv[4]);
-                setLogActivated(true);
+                _CL_LOG << "Server = " << server << "/" << service LOG_
         } else
         if (argc > 4 &&
                 strcmp(argv[1], "-server") == 0 &&
