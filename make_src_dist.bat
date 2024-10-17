@@ -92,6 +92,8 @@ call make_dist_base.bat BaseDevelopment\lbModule
 call make_dist_base.bat BaseDevelopment\lbtransfer
 call make_dist_base.bat BaseDevelopment\lbXMLConfig\lbDOMConfig 
 call make_dist_base.bat Plugins
+call make_dist_base.bat ProxyPlugins
+call make_dist_base.bat ServerPlugins
 call make_dist_base.bat vendor\mkmk
 call make_dist_base.bat vendor\antlr3
 call make_dist_base.bat vendor\sqlite
