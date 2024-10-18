@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export VERSION=1.3.4
+export VERSION=1.3.5
 export SERVER=http://ci-master.behrens.de:8080
 export XP=lbDMF-Release_1_0_4_stable_rc1_branch_XPVM_Release/ws/Projects/lbdmf/Output
 export LINUX=lbDMF-Release_1_0_4_stable_rc1_branch_Linux_Release/ws/Projects/lbdmf/dist
