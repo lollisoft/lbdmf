@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export VERSION=1.3.4
+
 export ARCH_CODESIGNING=`uname -p`
 
 if [ $ARCH_CODESIGNING = powerpc ]; then
@@ -33,8 +35,6 @@ fi
 export DEVELOPERIDAPP=Developer\ ID\ Application:\ Lothar\ Behrens\ \(3MPMMGXYRY\)
 
 export prefix=$1
-
-export VERSION=1.3.4
 
 codesign -f -v -s "$DEVELOPERIDAPP" -i de.lollisoft.wxWrapper.app lbDMF-$VERSION-`uname -p`.dmg
 
