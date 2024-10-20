@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ $CRUISECONTROL = yes ]; then
+    echo Notarizing skipped
+    exit
+fi
+
 export ARCH_CODESIGNING=`uname -p`
 
 if [ $ARCH_CODESIGNING = powerpc ]; then
