@@ -3,7 +3,7 @@ The list may be incomplete. If so, please notify me, I will correct it.
 They are as follows:
 
 lbDMF - Distributed Multiplatform Framework
-	Copyright (c) 2000-2009 Lothar Behrens 
+	Copyright (c) 2000-2024 Lothar Behrens 
 	http:///lbdmf.sourceforge.net
 
 Sqlite
@@ -60,7 +60,7 @@ lbDMF - Distributed Multiplatform Framework
 
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2000-2009  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2024  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
