@@ -1,8 +1,17 @@
 #!/bin/sh
 
-export VERSION=1.3.4
+export VERSION=1.3.5
 
 export ARCH_CODESIGNING=`uname -p`
+
+if [ $CRUISECONTROL = yes ]; then
+    echo Notarizing skipped
+    rm lbDMF-$VERSION-`uname -p`-dist.dmg
+    hdiutil convert lbDMF-$VERSION-`uname -p`.dmg -format UDZO -o lbDMF-$VERSION-`uname -p`-dist.dmg
+    zip lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`-dist.dmg
+    mv lbDMF.dmg.zip lbDMF-$VERSION-`uname -p`-dist.dmg.zip
+    exit
+fi
 
 if [ $ARCH_CODESIGNING = powerpc ]; then
     echo Notarizing dmg not supported on $ARCH_CODESIGNING
