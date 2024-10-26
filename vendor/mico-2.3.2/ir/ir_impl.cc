@@ -22,6 +22,9 @@
 
 #define MICO_CONF_IR
 
+#ifdef __MINGW32__
+#include <cstring>
+#endif
 #include <CORBA-SMALL.h>
 #include <mico/throw.h>
 #include <mico/ir_impl.h>

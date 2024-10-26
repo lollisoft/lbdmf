@@ -145,7 +145,10 @@ extern wchar_t *xwcsncpy (wchar_t *, const wchar_t *, size_t);
 extern char * mico_url_encode (const CORBA::Octet *, CORBA::ULong);
 extern CORBA::Octet * mico_url_decode (const char *, CORBA::ULong &);
 
-extern CORBA::ULong mico_string_hash (const char *s, CORBA::ULong max);
+#ifndef __MINGW32__
+extern 
+#endif
+CORBA::ULong mico_string_hash (const char *s, CORBA::ULong max);
 
 #ifndef HAVE_STRERROR_PROTO
 extern "C" char *strerror (int);

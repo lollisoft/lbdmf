@@ -285,6 +285,7 @@ mico_url_decode (const char * ptr, CORBA::ULong & len)
   return str;
 }
 
+
 CORBA::ULong
 mico_string_hash (const char *s, CORBA::ULong max)
 {

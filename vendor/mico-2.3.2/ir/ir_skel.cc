@@ -4,6 +4,10 @@
  *
  *  This file was automatically generated. DO NOT EDIT!
  */
+#ifdef __MINGW32__
+#include <cstring>
+#include <mico/util.h>
+#endif
 #include <CORBA.h>
 #include <mico/throw.h>
 #include <mico/template_impl.h>
@@ -45,7 +49,11 @@ bool CORBA::Contained_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CORBA
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 17)) {
     case 0:
       if( strcmp( _req->op_name(), "describe" ) == 0 ) {
@@ -266,7 +274,11 @@ bool CORBA::Container_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CORBA
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 31)) {
     case 0:
       if( strcmp( _req->op_name(), "remove_contained" ) == 0 ) {
@@ -851,7 +863,11 @@ bool CORBA::Repository_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CORB
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 11)) {
     case 0:
       if( strcmp( _req->op_name(), "get_primitive" ) == 0 ) {
@@ -1083,7 +1099,11 @@ bool CORBA::ConstantDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, COR
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 7)) {
     case 2:
       if( strcmp( _req->op_name(), "_get_type_def" ) == 0 ) {
@@ -1330,7 +1350,11 @@ bool CORBA::UnionDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CORBA:
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 7)) {
     case 0:
       if( strcmp( _req->op_name(), "_get_discriminator_type" ) == 0 ) {
@@ -1871,7 +1895,11 @@ bool CORBA::FixedDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CORBA:
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 7)) {
     case 1:
       if( strcmp( _req->op_name(), "_get_digits" ) == 0 ) {
@@ -1984,7 +2012,11 @@ bool CORBA::SequenceDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, COR
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 7)) {
     case 1:
       if( strcmp( _req->op_name(), "_get_element_type" ) == 0 ) {
@@ -2111,7 +2143,11 @@ bool CORBA::ArrayDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CORBA:
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 7)) {
     case 0:
       if( strcmp( _req->op_name(), "_get_length" ) == 0 ) {
@@ -2330,7 +2366,11 @@ bool CORBA::AttributeDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CO
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 7)) {
     case 2:
       if( strcmp( _req->op_name(), "_get_type_def" ) == 0 ) {
@@ -2455,7 +2495,11 @@ bool CORBA::OperationDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CO
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 17)) {
     case 0:
       if( strcmp( _req->op_name(), "_get_mode" ) == 0 ) {
@@ -2677,7 +2721,11 @@ bool CORBA::InterfaceDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CO
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 13)) {
     case 1:
       if( strcmp( _req->op_name(), "is_a" ) == 0 ) {
@@ -2895,7 +2943,11 @@ bool CORBA::ValueMemberDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, 
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 7)) {
     case 0:
       if( strcmp( _req->op_name(), "_set_access" ) == 0 ) {
@@ -3022,7 +3074,11 @@ bool CORBA::ValueDef_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CORBA:
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 29)) {
     case 0:
       if( strcmp( _req->op_name(), "_set_supported_interfaces" ) == 0 ) {

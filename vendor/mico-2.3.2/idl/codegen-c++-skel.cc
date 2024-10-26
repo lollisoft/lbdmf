@@ -185,7 +185,11 @@ void CodeGenCPPSkel::emit_dispatcher (CORBA::OpDescriptionSeq &ops,
 			    OpKey::Op, j1));
     }
 
-    o << "extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);"
+    o << "
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+"
       << endl;
     o << "switch (mico_string_hash (_req->op_name(), " << p << ")) "
       << BL_OPEN;
