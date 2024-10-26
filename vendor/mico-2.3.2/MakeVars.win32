@@ -21,7 +21,7 @@
 #
 # Configuration
 # Path of mico(without backslash at the end)
-SRCDIR		= c:\mico\unix\mico
+SRCDIR		= Q:\Develop\Projects\lbdmf\vendor\mico-2.3.2
 # Current Version(clear if you want old behaviour)
 VERSION		= 232
 # define if you want a release build(not tested much)
