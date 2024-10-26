@@ -5,6 +5,10 @@
  *  This file was automatically generated. DO NOT EDIT!
  */
 
+#ifdef __MINGW32__
+#include <cstring>
+#include <mico/util.h>
+#endif
 #include <CORBA.h>
 #include <mico/throw.h>
 #include <mico/template_impl.h>
@@ -1835,7 +1839,11 @@ bool CORBA::ImplementationDef_skel::dispatch( CORBA::StaticServerRequest_ptr _re
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 13)) {
     case 1:
       if( strcmp( _req->op_name(), "_get_name" ) == 0 ) {
@@ -2019,7 +2027,11 @@ bool CORBA::ImplRepository_skel::dispatch( CORBA::StaticServerRequest_ptr _req, 
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 11)) {
     case 1:
       if( strcmp( _req->op_name(), "destroy" ) == 0 ) {
@@ -2298,7 +2310,11 @@ bool CORBA::OAMediator_skel::dispatch( CORBA::StaticServerRequest_ptr _req, CORB
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 23)) {
     case 0:
       if( strcmp( _req->op_name(), "force_activation" ) == 0 ) {
@@ -2614,7 +2630,11 @@ bool CORBA::POAMediator_skel::dispatch( CORBA::StaticServerRequest_ptr _req, COR
   #ifdef HAVE_EXCEPTIONS
   try {
   #endif
-    extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+    
+#ifndef __MINGW32__
+extern CORBA::ULong mico_string_hash (const char *, CORBA::ULong);
+#endif
+
     switch (mico_string_hash (_req->op_name(), 7)) {
     case 1:
       if( strcmp( _req->op_name(), "deactivate_impl" ) == 0 ) {
