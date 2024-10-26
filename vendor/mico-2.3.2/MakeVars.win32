@@ -1,0 +1,96 @@
+#
+# MICO --- a free CORBA implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and/or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+# Configuration
+# Path of mico(without backslash at the end)
+SRCDIR		= Q:\Develop\Projects\lbdmf\vendor\mico-2.3.2
+# Current Version(clear if you want old behaviour)
+VERSION		= 232
+# define if you want a release build(not tested much)
+#RELEASE_BUILD	= 1
+#
+#End of configuration 
+
+CXX             = cl.exe
+CC              = cl.exe
+LINK            = link.exe
+LD	        = $(LINK)
+
+# SSL stuff, provided by Alfonso Urdaneta <aurdaneta@integratedvisions.com>
+# uncomment the following section and set SSL_PATH appropriately
+#SSL_PATH       = u:\www\openssl\openssl-0.9.2b
+#SSL_FLAGS      = /W3 /G5 /Ox /O2 /Ob2 /Gs0 /GF /Gy /nologo \
+#               -DMONOLITH -DWIN32 -DWIN32_LEAN_AND_MEAN -DL_ENDIAN \
+#               /DHAVE_SSL -I$(SSL_PATH)\inc32 \
+#               -I$(SSL_PATH)\tmp32dll \
+#               /F$(SSL_PATH)\out32dll
+#
+#SSL_LIBS       = /LIBPATH:$(SSL_PATH)\out32dll \
+#                ssleay32.lib libeay32.lib RSAglue.lib
+
+
+!ifdef RELEASE_BUILD
+CXXFLAGS        = /nologo /DMICO_EH /D_WINDOWS /GX /TP /MD $(SSL_FLAGS)
+CCFLAGS         = /nologo /D_WINDOWS /GX /TC /MD $(SSL_FLAGS)
+LINKFLAGS       = /nologo /subsystem:console /incremental:no $(SSL_FLAGS)
+LINKDLLFLAGS    = /nologo /dll /incremental:no $(SSL_FLAGS)
+!else
+CXXFLAGS        = /nologo /DMICO_EH /D_DEBUG /D_WINDOWS /GX /TP /Zi /MD $(SSL_FLAGS)
+CCFLAGS         = /nologo /D_DEBUG /D_WINDOWS /GX /TC /Zi /MD $(SSL_FLAGS)
+LINKFLAGS       = /nologo /debug /subsystem:console /incremental:no $(SSL_LIBS)
+LINKDLLFLAGS    = /nologo /debug /dll /incremental:no $(SSL_LIBS)
+!endif
+SYSLIBS         = wsock32.lib
+AR              = lib.exe
+ARFLAGS         = /nologo
+RM	        = del
+LDFLAGS		= $(LINKFLAGS)
+IDL		= $(SRCDIR)\win32-bin\idl
+MKDEPEND	= echo 
+# uncomment if you have tcl installed and declare path
+# HAVE_TCL	= 1
+# TCL_PATH	= d:\tcl
+# Tcl support is not usable yet
+
+.SUFFIXES:
+.SUFFIXES:	.c .cc .cpp .obj .rc .RES .idl
+
+.cc.obj:
+	$(CXX) /c $(CXXFLAGS) $< /Fo$*.obj
+
+.cpp.obj:
+	$(CXX) /c $(CXXFLAGS) $< /Fo$*.obj
+
+.cxx.obj:
+	$(CXX) /c $(CXXFLAGS) $< /Fo$*.obj
+
+
+.rc.RES:
+	$(RC) $<
+
+.idl.cpp:
+	$(IDL) --c++-suffix=cpp $<
+
+.c.obj:
+	$(CC) /c $(CCFLAGS) $< /Fo$*.obj
+
+
+
