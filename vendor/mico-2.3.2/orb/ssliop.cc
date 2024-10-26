@@ -5,6 +5,9 @@
  *  This file was automatically generated. DO NOT EDIT!
  */
 
+#ifdef __MINGW32__
+#include <cstring>
+#endif
 #include <mico/ssliop.h>
 
 //--------------------------------------------------------

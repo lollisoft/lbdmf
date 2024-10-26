@@ -1,6 +1,7 @@
 // (W) 1998 Martin Sander
 // maybe there is a "Microsoft way" to do this
 
+#ifndef BUILD_MICO_DLL
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,3 +84,5 @@ int main(int argc,char** argv)
 
   return 0;
 }
+
+#endif

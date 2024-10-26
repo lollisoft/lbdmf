@@ -1928,7 +1928,11 @@ CORBA::Any::get_longdouble (LongDouble &d)
 	    return TRUE;
 	} else if (get_ulonglong (_ul)) {
 #ifdef _WINDOWS
+#ifndef __MINGW32__
 	    d = __int64( _ul );
+#else
+	    d = _ul;
+#endif
 #else
 	    d = _ul;
 #endif

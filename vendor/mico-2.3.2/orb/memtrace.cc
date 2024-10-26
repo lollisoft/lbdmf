@@ -9,6 +9,7 @@
  *
  * ----------------------------------------------------------------------
  */
+#ifndef __MINGW32__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -889,3 +890,4 @@ MemTrace_Free (void * ptr)
 }
 
 }
+#endif

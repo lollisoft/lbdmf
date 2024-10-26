@@ -3,6 +3,11 @@
 #include <string.h>
 #include <assert.h>
 #include <mico/config.h>
+/*
+#ifdef __MINGW32__
+#include <iostream.h>
+#endif
+*/
 
 #ifdef USE_MEMTRACE
 
@@ -48,9 +53,9 @@ static long _memory_max = 0;
 static struct Report {
   ~Report ()
   {
-    cerr << "memstats: "
+    std::cerr << "memstats: "
 	 << _memory_max << " bytes max; "
-	 << _memory << " bytes not freed" << endl;
+	 << _memory << " bytes not freed" << std::endl;
   }
 } __report;
 

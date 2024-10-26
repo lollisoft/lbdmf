@@ -5,6 +5,10 @@
  *  This file was automatically generated. DO NOT EDIT!
  */
 
+#ifdef __MINGW32__
+#include <cstring>
+#endif
+
 #include <CORBA.h>
 #include <mico/throw.h>
 #include <mico/template_impl.h>

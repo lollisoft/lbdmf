@@ -152,7 +152,11 @@ xdec (OSMisc::ulonglong i)
     ostrstream ostr;
 
 #ifdef _WINDOWS
+#ifdef __MINGW32__
+    ostr << i << ends;
+#else
     ostr << unsigned long(i) << ends; //XXX
+#endif
 #else
     ostr << i << ends;
 #endif

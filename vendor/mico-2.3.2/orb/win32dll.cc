@@ -3,7 +3,6 @@
 
 #ifdef _WINDOWS
 
-
 namespace CORBA {
   CORBA::TypeCode_ptr _tc_null;
   CORBA::TypeCode_ptr _tc_void;
@@ -129,8 +128,6 @@ namespace CORBA {
 
   CORBA::TypeCodeConst Container::_tc_Description;
 }
-
-
 
 
 
