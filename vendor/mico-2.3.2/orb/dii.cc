@@ -26,6 +26,9 @@
 #ifndef _WINDOWS
 #include <string.h>
 #endif
+#ifdef __MINGW32__
+#include <cstring>
+#endif
 #include <ctype.h>
 #include <iostream.h>
 #include <mico/throw.h>
@@ -37,6 +40,7 @@
 #include <mico/basic_seq.h>
 
 #ifdef _WINDOWS
+#ifndef __MINGW32__
 #include <atlbase.h>
 #if ( !defined(_MSC_VER) || !defined(_ATL_VER) || (_MSC_VER < 1100) || (_ATL_VER < 0x0202))
 #error "You need Visual C++ 5.0 with Service Pack 3"
@@ -45,6 +49,7 @@
 // 1: it is the first in the Makefile.win32
 // 2: the large atlbase.h abused to determine the SPn
 // 3: necessary because of the FAQ "why doesn't it compile"
+#endif
 #endif
 #endif
 

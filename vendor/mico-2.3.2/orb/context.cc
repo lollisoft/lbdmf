@@ -23,6 +23,9 @@
 #ifndef _WINDOWS
 #include <string.h>
 #endif
+#ifdef __MINGW32__
+#include <cstring>
+#endif
 #include <CORBA-SMALL.h>
 #include <iostream.h>
 #include <mico/throw.h>

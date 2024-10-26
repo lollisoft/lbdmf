@@ -19,6 +19,7 @@
  *  Send comments and/or bug reports to:
  *                 mico@informatik.uni-frankfurt.de
  */
+#ifndef __MINGW32__
 
 #define MICO_CONF_IMR
 
@@ -312,4 +313,5 @@ MICO::UnixSharedLib::name ()
     return _name.c_str();
 }
 
+#endif
 #endif

@@ -20,6 +20,9 @@
  *                 mico@informatik.uni-frankfurt.de
  */
 
+#ifdef __MINGW32__
+#include <cstring>
+#endif
 #include <CORBA.h>
 #include <mico/throw.h>
 #include <mico/template_impl.h>
