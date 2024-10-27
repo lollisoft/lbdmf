@@ -5,7 +5,7 @@ VpeMain
 1
 WRect
 112
-256
+66
 8608
 8704
 2
@@ -81,7 +81,7 @@ VComponent
 20
 WRect
 2368
-2095
+2066
 2656
 2304
 0
@@ -113,7 +113,7 @@ VComponent
 26
 WRect
 96
-1355
+1327
 2176
 1792
 0
@@ -147,7 +147,7 @@ WRect
 5968
 0
 2528
-2616
+2588
 0
 0
 33
@@ -161,9 +161,9 @@ VComponent
 35
 WRect
 6320
-1810
+1792
 2112
-2825
+2816
 0
 0
 36
@@ -209,9 +209,9 @@ VComponent
 44
 WRect
 2448
-3982
+3953
 2176
-2341
+2313
 0
 0
 45
@@ -220,4 +220,4 @@ WFileName
 lbpluginmanager\lbpluginmanager.tgt
 0
 3
-31
+37
