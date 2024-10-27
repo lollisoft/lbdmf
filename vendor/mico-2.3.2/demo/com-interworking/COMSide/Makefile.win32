@@ -5,7 +5,7 @@
 MIDL            = midl
 !endif
 
-DIR_PREFIX = ..\
+DIR_PREFIX = ..\\
 !include ..\..\MakeVars.win32
 
 IDL          = idl
