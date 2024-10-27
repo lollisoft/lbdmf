@@ -1,0 +1,15 @@
+# Basic mechanism to build a MICO based stub and skel code.
+# First solution is a simple boa code within one file for
+# in process only purposes such as tests of CORBA coding.
+# The caller makefile must call this makefile accordingly
+# and BEFORE the usual makefile generation step to enable
+# creation of the make rules for these files as well.
+
+all: boasimple
+
+boasimple: $(INTERFACE).cpp
+	
+$(INTERFACE).cpp: $(INTERFACE).idl
+	idl --c++-suffix=cpp $(INTERFACE).idl
+	
+dummy:	
