@@ -27,6 +27,7 @@ LDFLAGS      = $(WIN32_BIN)\lib\mico$(VERSION).lib wsock32.lib /nologo /debug /s
     $(CC) $(cdebug) $(cflags) $(cvarsdll) $(CXXFLAGS) /c $<
 
 all:  account.dll clientCOM.exe serverCOM.exe
+#all:  account.dll serverCOM.exe
 
 # Clean up everything
 cleanall: clean
@@ -65,10 +66,13 @@ account.dll: account_p.obj account_i.obj dlldata.obj account.def
 
 #Build the files for the server application.
 caccount.obj: caccount.cxx account.h
+    $(CC) $(cdebug) $(cflags) $(cvarsdll) $(CXXFLAGS) /c caccount.cxx 
 
 error.obj: error.cxx
+    $(CC) $(cdebug) $(cflags) $(cvarsdll) $(CXXFLAGS) /c error.cxx 
 
 serverCOM.obj: serverCOM.cxx account.h account_i.c
+    $(CC) $(cdebug) $(cflags) $(cvarsdll) $(CXXFLAGS) /c serverCOM.cxx 
 
 #Link the server application.
 #serverCOM.exe: caccount.obj error.obj account_i.obj serverCOM.obj
@@ -82,6 +86,7 @@ serverCOM.exe: caccount.obj error.obj account_i.obj serverCOM.obj
 
 #Build the files for the client application.
 clientCOM.obj: clientCOM.cxx account.h account_i.c
+    $(CC) $(cdebug) $(cflags) $(cvarsdll) $(CXXFLAGS) /c clientCOM.cxx 
 
 #Link the client application.
 clientCOM.exe: clientCOM.obj error.obj account_i.obj
