@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.120 $
+# * $Revision: 1.229.2.121 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.120 2024/10/07 20:22:16 lothar Exp $
+# * $Id: Makefile,v 1.229.2.121 2024/10/27 05:55:45 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.121  2024/10/27 05:55:45  lothar
+# * Included mico into the Windows build, but start with ignoring errors
+# *
 # * Revision 1.229.2.120  2024/10/07 20:22:16  lothar
 # * Fixed some issues on Mac OS X (Arm)
 # *
@@ -1887,6 +1890,7 @@ ALLTARGETS = \
 	../../dll/libs \
 	../../plugins/libs \
 	../vendor/mkmk \
+	../vendor/mico-2.3.2 \
 	lbHook \
 	lbtransfer \
 	lbDB \
@@ -2442,6 +2446,15 @@ ifeq ($(OSTYPE), Windows_NT)
 	#-$(MAKE) -s -C $@
 	#-cp $@/mkmk $(prefix)/bin
 	#-cd ../BaseDevelopment
+
+	
+../vendor/mico-2.3.2/orb: dummy
+	$(MAKE) -s -C $@ -e MODULE=orb -e TARGET=$(TARGETDLL) -e CUSTOM_FILES='dii.cc typecode.cc any.cc codec.cc buffer.cc context.cc except.cc except2.cc dispatch.cc string.cc object.cc address.cc ior.cc orb.cc boa.cc dsi.cc transport.cc iop.cc util.cc basic_seq.cc ssl.cc fixed.cc intercept.cc dynany.cc codeset.cc queue.cc static.cc current.cc policy.cc policy2.cc policy_impl.cc poa.cc poa_base.cc poa_impl.cc service_info.cc value.cc valuetype.cc valuetype_impl.cc orb_excepts.cc dynany_impl.cc os-windows.cc ioptypes.cc ssliop.cc tckind.cc uni_base64.cc uni_unicode.cc uni_fromuni.cc uni_touni.cc ../ir/ir_impl.cc ../ir/ir.cc ../ir/ir_base.cc ../ir/ir_skel.cc ../imr/imr_impl.cc ../imr/imr.cc' -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
+	
+../vendor/mico-2.3.2: ../vendor/mico-2.3.2/orb
+	echo Build MICO
+	
 endif
 
 ifeq ($(OSTYPE), solaris)
