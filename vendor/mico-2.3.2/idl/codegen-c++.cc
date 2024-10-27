@@ -119,6 +119,13 @@ void CodeGenCPP::emit( string &fn )
 
   impl << endl;
 
+  // This addition is a quick hack to enable building generated implementation files
+  // without further modifications using MinGW compiler within my code base and make
+  // system
+  impl << "#ifdef __MINGW32__" << endl;
+  impl << "#include <cstring>" << endl;
+  impl << "#endif" << endl;
+
   if (!_params.mico_core) {
     impl << "#include ";
     impl << ( _params.relative_paths ? "<" : "\"" );
