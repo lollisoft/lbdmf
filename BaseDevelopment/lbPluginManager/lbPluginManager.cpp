@@ -32,11 +32,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.91.2.3 $
+* $Revision: 1.91.2.4 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.91.2.3 2024/10/15 14:20:17 lothar Exp $
+* $Id: lbPluginManager.cpp,v 1.91.2.4 2024/10/29 19:18:20 lothar Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.91.2.4  2024/10/29 19:18:20  lothar
+* Fixed detection of socket connect as server vs client.
+* Added better logging for missing plugin dir configuration.
+*
 * Revision 1.91.2.3  2024/10/15 14:20:17  lothar
 * Made some corrections. Passing no parameters except -log or nothing does actually not work
 *
@@ -1056,12 +1060,17 @@ void LB_STDCALL lbPluginManager::initialize() {
         char* pluginDir = getenv("PLUGIN_DIR");
         ///\todo Change the plugin path to user share lbdmf plugins.
         if (pluginDir == NULL) {
-                _CL_LOG << "ERROR: No plugin directory configured. Try fallback. Please create one and set environment PLUGIN_DIR properly." LOG_
-                pluginDir = (char*) malloc(strlen(getenv("USERPROFILE"))+strlen("/plugins")+1);
+                _CL_LOGALWAYS << "ERROR: No plugin directory configured (PLUGIN_DIR). Try fallback. Please create one and set environment variable PLUGIN_DIR properly." LOG_
+                pluginDir = (char*) malloc(strlen(getenv("USERPROFILE"))+strlen("\\plugins")+1);
                 pluginDir[0] = 0;
                 strcat(pluginDir, getenv("USERPROFILE"));
-
-                strcat(pluginDir, "/plugins");
+                strcat(pluginDir, "\\");
+                strcat(pluginDir, "plugins");
+				_CL_LOGALWAYS << "Created path to plugins: " << pluginDir LOG_
+				if (!DirectoryExists(pluginDir)) {
+					_CL_LOGALWAYS << "Create the directory for you so you then can place plugins there..." LOG_
+					createDirectory(pluginDir); 
+				}
         } else {
                 char* temp = pluginDir;
                 pluginDir = (char*) malloc(strlen(pluginDir)+1);
