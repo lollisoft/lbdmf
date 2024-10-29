@@ -214,7 +214,7 @@ lbErrCodes ApplicationBus::HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Tr
 }
 
 void LB_STDCALL ApplicationBus::AnounceUser(char* name, char* password) {
-        _CL_LOG << "ApplicationBus::AnounceUser(" << name << ", " << password << ") called." LOG_
+        _CL_LOGALWAYS << "ApplicationBus::AnounceUser(" << name << ", " << password << ") called." LOG_
 }
 lbErrCodes LB_STDCALL ApplicationBus::_AnounceUser(lb_I_Transfer_Data* request, lb_I_Transfer_Data*  result) {
         LB_PACKET_TYPE type;
@@ -255,7 +255,7 @@ char* name;
 }
       
 void LB_STDCALL ApplicationBus::Echo(char* text) {
-        _CL_LOG << "ApplicationBus::Echo(" << text << ") called." LOG_
+        _CL_LOGALWAYS << "ApplicationBus::Echo(" << text << ") called." LOG_
         text[0] = 0;
                //"Hallo, dies ist eine Echo - Message"  
         strcpy(text, "ApplicationBus::Echo(char* text) called.");
@@ -301,6 +301,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
       
 
 lb_I_String* LB_STDCALL ApplicationBus::findBackend(char* service) {
+        _CL_LOGALWAYS << "ApplicationBus::findBackend(" << service << ") called." LOG_
         UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
         
         *backend = "busmaster/busmaster";
@@ -349,6 +350,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_findBackend(lb_I_Transfer_Data* request, 
       
 
 void LB_STDCALL ApplicationBus::registerBackend(char* backend, char* server) {
+        _CL_LOGALWAYS << "ApplicationBus::registerBackend(" << backend << " on " << server << ") called." LOG_
         UAP_REQUEST(getModuleInstance(), lb_I_String, _backend)
         
         if (server != NULL && strcmp(server, "") != 0) {

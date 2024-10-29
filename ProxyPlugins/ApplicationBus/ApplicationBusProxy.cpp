@@ -70,9 +70,9 @@ ApplicationBusProxy::~ApplicationBusProxy() {
 
 void ApplicationBusProxy::setServerName(const char* servername, const char* servicename) {
     _CL_LOG << "ApplicationBusProxy::setServerName(" << servername << "," << servicename << ") called" LOG_
-	_CL_LOG << "Initialize the tcp connection to " << servername << ":" << servicename << "..." LOG_
-	REQUEST(getModuleInstance(), lb_I_String, server)
-	REQUEST(getModuleInstance(), lb_I_String, service)
+        _CL_LOG << "Initialize the tcp connection to " << servername << ":" << servicename << "..." LOG_
+        REQUEST(getModuleInstance(), lb_I_String, server)
+        REQUEST(getModuleInstance(), lb_I_String, service)
         
     if (ABSConnection != NULL) {
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
@@ -81,7 +81,7 @@ void ApplicationBusProxy::setServerName(const char* servername, const char* serv
         serverInstance->replace("servername", servername);
         serverInstance->replace("servicename", servicename);
         
-		// The name of the lbDMF Busmaster must be defined in hosts or DNS
+                // The name of the lbDMF Busmaster must be defined in hosts or DNS
         ABSConnection->init(serverInstance->charrep());
         _CL_LOG << "Connect to " << serverInstance->charrep() << "..." LOG_
         Connect();
@@ -103,7 +103,7 @@ int ApplicationBusProxy::Connect() {
         
         ABSConnection->gethostname(*&temp);
                 
-        _CL_LOG << "ApplicationBusProxy::Connect() Connects with hostname = " << temp->charrep() LOG_
+        _CL_LOGALWAYS << "ApplicationBusProxy::Connect() Connects with hostname = " << temp->charrep() LOG_
         
         client->add("Connect");
         client->add("Host");
@@ -171,7 +171,7 @@ int ApplicationBusProxy::Disconnect() {
         char* answer;
         char buf[100] = "";
 
-        _CL_LOG << "Disconnecting..." LOG_
+        _CL_LOGALWAYS << "Disconnecting..." LOG_
 
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
@@ -237,6 +237,8 @@ int ApplicationBusProxy::Disconnect() {
 
 
 void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
+        _CL_LOGALWAYS << "ApplicationBusProxy::AnounceUser(" << name << ")" LOG_
+        
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
         UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
 
@@ -275,6 +277,7 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
 }
       
 lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
+        _CL_LOGALWAYS << "ApplicationBusProxy::Echo(" << text << ")" LOG_
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
         UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
         UAP_REQUEST(getModuleInstance(), lb_I_String, echo)
@@ -329,6 +332,7 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 }
       
 lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
+        _CL_LOGALWAYS << "ApplicationBusProxy::findBackend(" << service << ")" LOG_
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
         UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
         UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
@@ -383,6 +387,7 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
 }
       
 void LB_STDCALL ApplicationBusProxy::registerBackend(char* backend, char* server) {
+        _CL_LOGALWAYS << "ApplicationBusProxy::registerBackend(" << backend << " on " << server << ")" LOG_
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
         UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
         
