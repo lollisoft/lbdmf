@@ -741,7 +741,7 @@ bool lbSocket::initSymbolic(char* host, char* service, bool asServer) {
         }
 
         init((serverMode == 1) ? 0 : inet_addrFromString(host), ntohs(port)); // In the function htons is used.
-        return lbSockState == LB_SOCK_CONNECTED;
+        return lbSockState == (serverMode == 1) ? LB_SOCK_LISTENING : LB_SOCK_CONNECTED;
 }
 /*...e*/
 /*...slbSocket\58\\58\init\40\unsigned long mysockaddr\44\ u_short port\41\:0:*/
