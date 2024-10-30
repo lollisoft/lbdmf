@@ -27,6 +27,11 @@
             65760 Eschborn (germany)
 */
 /*...e*/
+
+// Server exits and thread is still in work. So the multi treaded version must be fixed.
+// Maybe waiting with a barrier or check the exit of the main server function
+//#define USE_MULTITHREAD_CODE
+
 #ifdef LBDMF_PREC
 #include <lbConfigHook.h>
 #endif
@@ -1186,7 +1191,7 @@ int lbAppServer::initServerModul(lb_I_ApplicationServerModul* servermodule, char
         }
 
         // Loads all handlers and makes it reachable by the protocol dispatcher.
-        servermodule->registerModul(this); 
+        servermodule->registerModul(this, serverInstance); 
 
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer, transf)
         transf->init(servermodule->getServiceName(), TRUE);

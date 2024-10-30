@@ -43,7 +43,6 @@ void runTest(const char* servername, const char* servicename)
                         
                         
                         if (backend != NULL) _CL_LOG << "Backend is " << backend->charrep() LOG_
-                        
                 }
         } else {
                 _CL_LOG << "Error: Can't find application bus." LOG_
@@ -110,6 +109,8 @@ int main(int argc, char** argv) {
         
         runTest(server, service);
         
+        getchar();
+
         _CL_LOG << "Ending server test thread" LOG_
         exit(0);
         return 0;
