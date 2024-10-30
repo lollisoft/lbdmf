@@ -4,8 +4,8 @@ projectIdent
 VpeMain
 1
 WRect
-112
-66
+800
+652
 8608
 8704
 2
@@ -81,7 +81,7 @@ VComponent
 20
 WRect
 2368
-2066
+2048
 2656
 2304
 0
@@ -91,7 +91,7 @@ WFileName
 13
 lbcs\lbcs.tgt
 0
-4
+1
 22
 VComponent
 23
@@ -113,7 +113,7 @@ VComponent
 26
 WRect
 96
-1327
+1280
 2176
 1792
 0
@@ -144,10 +144,10 @@ lbhook\lbhook.tgt
 VComponent
 32
 WRect
-5968
+4768
 0
 2528
-2588
+2560
 0
 0
 33
@@ -160,8 +160,8 @@ q:\develop\projects\lbdmf\proxyplugins\applicationbusproxy.tgt
 VComponent
 35
 WRect
-6320
-1792
+5040
+1804
 2112
 2816
 0
@@ -171,7 +171,7 @@ WFileName
 58
 q:\develop\projects\lbdmf\serverplugins\applicationbus.tgt
 0
-5
+1
 37
 VComponent
 38
@@ -209,9 +209,9 @@ VComponent
 44
 WRect
 2448
-3953
+3840
 2176
-2313
+2304
 0
 0
 45
@@ -219,5 +219,5 @@ WFileName
 35
 lbpluginmanager\lbpluginmanager.tgt
 0
-3
-37
+1
+43
