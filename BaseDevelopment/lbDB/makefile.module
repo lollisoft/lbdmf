@@ -67,7 +67,12 @@ endif
 ifeq ($(OSTYPE), linux)
 MOD_INCL=$(STD_INCL)
 OBJDEP=
+ifeq ($(CPUARCH_BITS), 32)
 VENDORLIBS=-L$(prefix)/lib -llbHook `odbc_config  --prefix`/lib/libodbc.so
+endif
+ifeq ($(CPUARCH_BITS), 64)
+VENDORLIBS=-L$(prefix)/lib -llbHook `odbc_config  --prefix`/lib64/libodbc.so
+endif
 endif    
 
 

@@ -960,7 +960,12 @@ PRIMARY KEY (id),
 #endif
 #endif
 #ifndef OSX
+#ifdef CPUARCH_32	
         typedef unsigned long DWORD;
+#endif
+#ifdef CPUARCH_64	
+        typedef unsigned int DWORD;
+#endif
 #endif
         typedef unsigned short LB_DATA;
         //typedef unsigned short u_short;
