@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.33 $
+# * $Revision: 1.148.2.34 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.33 2024/08/03 12:40:32 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.34 2024/11/10 15:21:17 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.34  2024/11/10 15:21:17  lothar
+# * Made changes to support OpenSuSE Tumbleweed on 64 Bit - yet fails with linking libjpeg
+# *
 # * Revision 1.148.2.33  2024/08/03 12:40:32  lothar
 # * Got it working to harden and run that hardened application successfully and sign and notarize the application.
 # *
@@ -1344,6 +1347,10 @@ STD_INCL_CPP = $(STD_INCL)
 
 OBJ =o
 C_OPS   = -c $(DEBUG_CXX_FLAGS) -DUNIX -DLINUX -DTVISION
+
+CPUARCH_BITS=$(shell getconf LONG_BIT)
+
+C_OPS   += -DCPUARCH_$(CPUARCH_BITS)
 
 ifeq ($(DEBUG), yes)
 DEBUG_CXX_FLAGS=-g

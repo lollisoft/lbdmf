@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.122 $
+# * $Revision: 1.229.2.123 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.122 2024/10/27 10:07:40 lothar Exp $
+# * $Id: Makefile,v 1.229.2.123 2024/11/10 15:21:17 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.123  2024/11/10 15:21:17  lothar
+# * Made changes to support OpenSuSE Tumbleweed on 64 Bit - yet fails with linking libjpeg
+# *
 # * Revision 1.229.2.122  2024/10/27 10:07:40  lothar
 # * Missing config.h - at least on Watcom project.
 # * Added studd to build skel and stubs out of makefile rule
@@ -1720,6 +1723,17 @@ endif
 
 ifeq ($(OSTYPE), linux)
 
+# On CRUISECONTROL I build with old wx 2.8.12 that dows not include propgrid
+
+ifeq ($(CRUISECONTROL), yes)
+OPTIONALWXTARGETS = \
+	../vendor/wxaui-0.9.1/src \
+	../vendor/propgrid
+endif
+ifeq ($(CRUISECONTROL), no)
+OPTIONALWXTARGETS =
+endif
+
 TARGETDLL=so
 TARGETFRAMEWORK=so
 TARGETEXE=elf
@@ -1747,11 +1761,10 @@ ALLDIRS = \
 	lbPluginManager \
 	lbcs \
 	lbtransfer \
-	../vendor/propgrid \
+	$(OPTIONALWXTARGETS) \
 	../vendor/sqlite \
 	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -1785,11 +1798,10 @@ ALLDIRS = \
 	lbPluginManager \
 	lbcs \
 	lbtransfer \
-	../vendor/propgrid \
+	$(OPTIONALWXTARGETS) \
 	../vendor/sqlite \
 	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
-	../vendor/wxaui-0.9.1/src \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -2708,8 +2720,13 @@ endif
 	$(MAKE) -s -C $@ install-strip
 
 ../Test/GUI/wxWrapper: dummy
+ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
+else
+	$(MAKE) -s -C $@ -e MODULE=wxWrapper -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
 	cp ../Test/GUI/wxWrapper/wxWrapper $(prefix)/bin
 
 #../Test/GUI/wxWrapper: dummy
