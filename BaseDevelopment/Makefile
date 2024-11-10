@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.123 $
+# * $Revision: 1.229.2.124 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.123 2024/11/10 15:21:17 lothar Exp $
+# * $Id: Makefile,v 1.229.2.124 2024/11/10 17:05:54 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.124  2024/11/10 17:05:54  lothar
+# * Swapped order of building propgrid and aui in Jenkins
+# *
 # * Revision 1.229.2.123  2024/11/10 15:21:17  lothar
 # * Made changes to support OpenSuSE Tumbleweed on 64 Bit - yet fails with linking libjpeg
 # *
@@ -1727,8 +1730,8 @@ ifeq ($(OSTYPE), linux)
 
 ifeq ($(CRUISECONTROL), yes)
 OPTIONALWXTARGETS = \
-	../vendor/wxaui-0.9.1/src \
-	../vendor/propgrid
+	../vendor/propgrid \
+	../vendor/wxaui-0.9.1/src
 endif
 ifeq ($(CRUISECONTROL), no)
 OPTIONALWXTARGETS =
