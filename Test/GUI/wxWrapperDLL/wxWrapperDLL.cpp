@@ -34,7 +34,9 @@
 // But 1.8 of OW has problems with initialization. The matching version of
 // wxPropgrid in CVS is tagged with wxPG_1_2_2
 #ifdef __WATCOMC__
+#ifdef LBWXVERSION_OLD
 #define USE_PROPGRID_1_2_2
+#endif
 #endif
 #ifdef __MINGW32__
 //#define USE_PROPGRID_1_2_2
@@ -117,9 +119,16 @@
 
 #ifndef OSX
 #ifdef LINUX
+#ifdef LBWXVERSION_CURRENT
+#include <wx/propgrid/manager.h>
+#include <wx/aui/aui.h>
+#endif
+#ifdef LBWXVERSION_OLD
 #define wxAuiPaneInfo wxPaneInfo
 #define wxAuiManager wxFrameManager
 #include <manager.h>
+#endif
+
 #endif
 #ifdef WINDOWS
 #include <wx/aui/aui.h>
@@ -3793,8 +3802,8 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
                 m_mgr.Update();
 #endif
 #ifdef USE_WXAUI_TOOLBAR
-                wxList children = GetChildren();
-                wxNode* node = children.GetFirst();
+                //wxWindowList children = GetChildren();
+                //wxWindow* node = children.GetFirst();
 
                 wxWindow* leftPanel = NULL;
 #ifdef IN_PANEL

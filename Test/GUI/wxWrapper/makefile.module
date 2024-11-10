@@ -48,7 +48,7 @@ endif
 
 ifeq ($(LBWXVERSION), current)
 MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
-MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT) -lwxWrapperDLL -llbHook
+MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT) -lwxWrapperDLL -llbHook -ljpeg-turbo
 CPP_MINGW_EXEOPS += -DLBWXVERSION_CURRENT
 endif
 ifeq ($(LBWXVERSION), old)
@@ -155,9 +155,18 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWra
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
-LDFLAGS = `wx-config --inplace --libs`
+LDFLAGS = `wx-config --inplace --libs` -lwx_gtk3u_aui-3.2 -lwx_gtk3u_propgrid-3.2
 
+ifeq ($(LBWXVERSION), current)
+C_ELFOPS += -DLBWXVERSION_CURRENT
+endif
+
+ifeq ($(LBWXVERSION), current)
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL
+endif
+ifeq ($(LBWXVERSION), old)
 VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
+endif
 endif    
 
 ifeq ($(OSTYPE), linux-debian-ppc)
