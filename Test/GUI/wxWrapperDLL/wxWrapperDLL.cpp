@@ -103,7 +103,7 @@
 #ifdef USE_PROPGRID
 // Necessary header file
 #include "wx/propgrid/propgrid.h"
-#ifndef LBWXVERSION_CURRENT
+#ifdef LBWXVERSION_OLD
 #include <wx/menuitem.h>
 #include "wx/propgrid/propdev.h"
 #endif
