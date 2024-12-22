@@ -32,11 +32,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.91.2.4 $
+* $Revision: 1.91.2.5 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.91.2.4 2024/10/29 19:18:20 lothar Exp $
+* $Id: lbPluginManager.cpp,v 1.91.2.5 2024/12/22 11:03:45 lothar Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.91.2.5  2024/12/22 11:03:45  lothar
+* Trial to mitigate double autorun. Accidantly reseting container iteration within plugins.
+*
 * Revision 1.91.2.4  2024/10/29 19:18:20  lothar
 * Fixed detection of socket connect as server vs client.
 * Added better logging for missing plugin dir configuration.
@@ -667,7 +670,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
         if (strcmp(".", module) == 0) return false;
         if (strstr(module, "so.") != NULL) return false;
 
-        _CL_LOG << "Try to load module '" << module << "' in path '" << path << "'"  LOG_
+        _LOGALWAYS << "Try to load module '" << module << "' in path '" << path << "'"  LOG_
 
         char* pluginDir = NULL;
 
@@ -1554,6 +1557,7 @@ void LB_STDCALL lbPluginManager::runInstallers() {
 }
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
+	_LOGALWAYS << "lbPluginManager::beginEnumPlugins() called..." LOG_
         if (!isInitialized) initialize();
 
         PluginModules->finishIteration();

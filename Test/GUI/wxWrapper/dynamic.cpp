@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.17 2024/07/14 21:35:27 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.18 2024/12/22 11:03:45 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.17 $
+ * $Revision: 1.174.2.18 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.17 2024/07/14 21:35:27 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.18 2024/12/22 11:03:45 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.18  2024/12/22 11:03:45  lothar
+ * Trial to mitigate double autorun. Accidantly reseting container iteration within plugins.
+ *
  * Revision 1.174.2.17  2024/07/14 21:35:27  lothar
  * Made exit tool use post event to avoid crash.
  *
@@ -777,6 +780,7 @@ public wxApp
 	 */
     bool OnInit(void);
 
+	void FlushAutorunQueue();
 	void FlushMenubarQueue();
 	void FlushMenuentryQueue();
 
@@ -927,7 +931,8 @@ protected:
 	int AskOpenFileReadStream;
 
 	bool _XRCFileSet;
-
+		
+		static bool pluginsHaveBeenInitialized;
 
 /*...sevent manager:8:*/
         /*
@@ -959,9 +964,12 @@ protected:
 	// If the frame is not yet created, queue any menu creation events.
 	UAP(lb_I_Container, menubarQueue)
 	UAP(lb_I_Container, menuentryQueue)
+	UAP(lb_I_Container, autorunQueue)
 
 };
 /*...e*/
+
+bool MyApp::pluginsHaveBeenInitialized = false;
 
 #ifdef LB_I_EXTENTIONS
 BEGIN_IMPLEMENT_LB_UNKNOWN(MyApp)
@@ -1011,6 +1019,23 @@ int MyApp::OnExit() {
 	return 0;
 }
 /*...e*/
+
+void MyApp::FlushAutorunQueue() {
+	if (autorunQueue != NULL) {
+		autorunQueue->finishIteration();
+		while (autorunQueue->hasMoreElements() == 1) {
+			UAP(lb_I_Unknown, uk)
+			uk = autorunQueue->nextElement();
+			UAP(lb_I_Plugin, plugin)
+			if (uk != NULL) {
+				QI(uk, lb_I_Plugin, plugin)
+				plugin->autorun();
+			}
+		}
+		autorunQueue--;
+		autorunQueue = NULL;
+	}
+}
 
 void MyApp::FlushMenubarQueue() {
 	if (menubarQueue != NULL) {
@@ -1108,6 +1133,10 @@ bool MyApp::OnInit(void)
 
 	if (menuentryQueue == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Container, menuentryQueue)
+	}
+
+	if (autorunQueue == NULL) {
+		REQUEST(getModuleInstance(), lb_I_Container, autorunQueue)
 	}
 
 	registerEventHandler(*&disp);
@@ -1227,18 +1256,30 @@ bool MyApp::OnInit(void)
 		if (metaApp->getGUIMaximized()) frame->Maximize();
     }
 
-    _LOG << "Start enumerating plugins to call their autorun function." LOG_
-
-    if (PM->beginEnumPlugins()) {
-
-    while (TRUE) {
-        UAP(lb_I_Plugin, pl)
-        pl = PM->nextPlugin();
-        if (pl == NULL) break;
-            pl->autorun();
-        }
+	int index = 0;
+    if (!pluginsHaveBeenInitialized && PM->beginEnumPlugins()) {
+		_LOGALWAYS << "Start enumerating plugins to call their autorun function." LOG_
+		pluginsHaveBeenInitialized = true;
+		while (TRUE) {
+			UAP_REQUEST(getModuleInstance(), lb_I_Integer, pluginNumber)
+			index++;
+			pluginNumber->setData(index);
+			UAP(lb_I_KeyBase, key)
+			QI(pluginNumber, lb_I_KeyBase, key)
+			UAP(lb_I_Unknown, ukpl)
+			UAP(lb_I_Plugin, pl)
+			pl = PM->nextPlugin();
+			if (pl == NULL) break;
+			QI(pl, lb_I_Unknown, ukpl)
+			autorunQueue->insert(&ukpl, &key);
+			// Maybe needed. Check that
+			ukpl++;
+			//pl->autorun();
+		}
+		_LOGALWAYS << "Enumerating plugins to call their autorun done." LOG_
     }
 
+	FlushAutorunQueue();
 	FlushMenubarQueue();
 	FlushMenuentryQueue();
 
@@ -1973,19 +2014,23 @@ cleanUp clean_up;
 #endif
 /*...e*/
 
+wxApp* _app = NULL;
+
 /*...sWindows based WinMain implementation:0:*/
 #ifndef OSX
 #ifndef LINUX
 wxAppConsole *wxCreateApp()
     {
         //wxApp::CheckBuildOptions(wxBuildOptions());
-        return new MyApp;
+        if (_app == NULL) _app = new MyApp;
+		return _app;
     }
 
 //wxAppInitializer wxTheAppInitializer((wxAppInitializerFunction) &wxCreateApp);
-MyApp& wxGetApp() { return *(MyApp *)wxTheApp; }
-
-wxApp* _app = NULL;
+MyApp& wxGetApp()
+{
+	return *(MyApp *)wxTheApp;
+}
 
 int PASCAL WinMain(HINSTANCE hInstance,
                    HINSTANCE hPrevInstance,
