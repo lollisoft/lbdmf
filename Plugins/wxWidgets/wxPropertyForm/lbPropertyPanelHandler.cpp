@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.4 $
+ * $Revision: 1.1.2.5 $
  * $Name:  $
- * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.4 2015/10/25 18:13:18 lollisoft Exp $
+ * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.5 2024/12/22 11:03:45 lothar Exp $
  *
  * $Log: lbPropertyPanelHandler.cpp,v $
+ * Revision 1.1.2.5  2024/12/22 11:03:45  lothar
+ * Trial to mitigate double autorun. Accidantly reseting container iteration within plugins.
+ *
  * Revision 1.1.2.4  2015/10/25 18:13:18  lollisoft
  * Fixed form cleanup code to better support new property forms.
  *
@@ -294,10 +297,12 @@ public:
 	
 	DECLARE_LB_UNKNOWN()
 	
+	static bool hasAutoRun;
+
 	UAP(lb_I_Unknown, ukPropertyPanelHandler)
 };
 
-
+bool lbPluginPropertyPanelHandler::hasAutoRun = false;
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginPropertyPanelHandler)
 ADD_INTERFACE(lb_I_PluginImpl)
@@ -331,6 +336,9 @@ bool LB_STDCALL lbPluginPropertyPanelHandler::canAutorun() {
 lbErrCodes LB_STDCALL lbPluginPropertyPanelHandler::autorun() {
 	lbErrCodes err = ERR_NONE;
 	
+	if (hasAutoRun) return err;
+	hasAutoRun = true;
+
 	lbPropertyPanelHandler* PropertyPanelHandler = new lbPropertyPanelHandler();
 	
 	QI(PropertyPanelHandler, lb_I_Unknown, ukPropertyPanelHandler) 
