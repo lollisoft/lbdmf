@@ -30,7 +30,6 @@
 
 
 #include <lbConfigHook.h>
-#include <lbInterfaces-sub-security.h>
 
 /*...smisc and includes:0:*/
 #ifdef __GNUG__
@@ -188,10 +187,7 @@ public:
 
 		meta->setUserName(user);
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-		apps = securityManager->getApplications();
+		apps = meta->getApplications();
 
 		box->Clear();
 
@@ -379,33 +375,26 @@ DECLARE_LB_UNKNOWN()
 		char* pass = strdup(getTextValue("Passwort:"));
 		char* user = strdup(getTextValue("Benutzer:"));
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
-		if (securityManager != NULL && securityManager->login(user, pass)) {
-			appselect->setLoggedOnUser(user);
-			if (pass) free(pass);
-			if (user) free(user);
+			if (meta->login(user, pass)) {
+				appselect->setLoggedOnUser(user);
+				if (pass) free(pass);
+				if (user) free(user);
 
-			return TRUE;
-		} else {
-			char* buf = NULL;
-			char* buf1 = strdup(_trans("Error"));
+				return TRUE;
+			} else {
+				char* buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
+				char* buf1 = strdup(_trans("Error"));
+				wxMessageDialog dialog(NULL, buf, buf1, wxOK);
 
-			if (securityManager != NULL)
-				buf = strdup(_trans("Login to database failed.\n\nYou could not use the dynamic features of the\napplication without a proper configured database."));
-			else
-				buf = strdup(_trans("No security provider found.\n\nLogin feature not available without a security provider."));
+				dialog.ShowModal();
 
-			wxMessageDialog dialog(NULL, buf, buf1, wxOK);
+				free(buf);
+				free(buf1);
 
-			dialog.ShowModal();
-			free(buf);
-			free(buf1);
-
-			return FALSE;
-		}
+				return FALSE;
+			}
 	}
 /*...e*/
 /*...svoid init\40\wxWindow\42\ parent\41\:8:*/
@@ -631,10 +620,12 @@ public:
 	virtual lb_I_Unknown* LB_STDCALL peekImplementation();
 	void LB_STDCALL releaseImplementation();
 
-	void LB_STDCALL setNamespace(const char* _namespace) { }
+	static bool hasAutoRun;
 
 	UAP(lb_I_Unknown, loginHandler)
 };
+
+bool lbPluginLoginWizard::hasAutoRun = false;
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginLoginWizard)
         ADD_INTERFACE(lb_I_PluginImpl)
@@ -661,6 +652,9 @@ bool LB_STDCALL lbPluginLoginWizard::canAutorun() {
 
 lbErrCodes LB_STDCALL lbPluginLoginWizard::autorun() {
 	lbErrCodes err = ERR_NONE;
+
+	if (hasAutoRun) return err;
+	hasAutoRun = true;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev)
 
