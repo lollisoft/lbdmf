@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.124 $
+# * $Revision: 1.229.2.125 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.124 2024/11/10 17:05:54 lothar Exp $
+# * $Id: Makefile,v 1.229.2.125 2025/01/11 14:05:58 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.125  2025/01/11 14:05:58  lothar
+# * Make building mico optional
+# *
 # * Revision 1.229.2.124  2024/11/10 17:05:54  lothar
 # * Swapped order of building propgrid and aui in Jenkins
 # *
@@ -2474,17 +2477,17 @@ ifeq ($(OSTYPE), Windows_NT)
 	
 ../vendor/mico-2.3.2/orb: dummy
 	@echo Build MICO
-	$(MAKE) -s -C $@ -e MODULE=orb -e TARGET=$(TARGETDLL) -e CUSTOM_FILES='dii.cc typecode.cc any.cc codec.cc buffer.cc context.cc except.cc except2.cc dispatch.cc string.cc object.cc address.cc ior.cc orb.cc boa.cc dsi.cc transport.cc iop.cc util.cc basic_seq.cc ssl.cc fixed.cc intercept.cc dynany.cc codeset.cc queue.cc static.cc current.cc policy.cc policy2.cc policy_impl.cc poa.cc poa_base.cc poa_impl.cc service_info.cc value.cc valuetype.cc valuetype_impl.cc orb_excepts.cc dynany_impl.cc os-windows.cc ioptypes.cc ssliop.cc tckind.cc uni_base64.cc uni_unicode.cc uni_fromuni.cc uni_touni.cc ../ir/ir_impl.cc ../ir/ir.cc ../ir/ir_base.cc ../ir/ir_skel.cc ../imr/imr_impl.cc ../imr/imr.cc' -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ -e MODULE=orb -e TARGET=$(TARGETDLL) -e CUSTOM_FILES='dii.cc typecode.cc any.cc codec.cc buffer.cc context.cc except.cc except2.cc dispatch.cc string.cc object.cc address.cc ior.cc orb.cc boa.cc dsi.cc transport.cc iop.cc util.cc basic_seq.cc ssl.cc fixed.cc intercept.cc dynany.cc codeset.cc queue.cc static.cc current.cc policy.cc policy2.cc policy_impl.cc poa.cc poa_base.cc poa_impl.cc service_info.cc value.cc valuetype.cc valuetype_impl.cc orb_excepts.cc dynany_impl.cc os-windows.cc ioptypes.cc ssliop.cc tckind.cc uni_base64.cc uni_unicode.cc uni_fromuni.cc uni_touni.cc ../ir/ir_impl.cc ../ir/ir.cc ../ir/ir_base.cc ../ir/ir_skel.cc ../imr/imr_impl.cc ../imr/imr.cc' -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 	
 ../vendor/mico-2.3.2/demo/boa/account: dummy
 	@echo Build MICO Account in process sample app
-	$(MAKE) -s -C $@ -f $(MAKE_MICO_IDL) -e INTERFACE=account
-	$(MAKE) -s -C $@ -e MODULE=accountTest -e TARGET=$(TARGETEXE) -e CUSTOM_FILES='*.cc' -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ -f $(MAKE_MICO_IDL) -e INTERFACE=account
+	-$(MAKE) -s -C $@ -e MODULE=accountTest -e TARGET=$(TARGETEXE) -e CUSTOM_FILES='*.cc' -f $(MAKE_CONFIG_FILE)
+	-$(MAKE) -s -C $@
 	
 ../vendor/mico-2.3.2: ../vendor/mico-2.3.2/orb ../vendor/mico-2.3.2/demo/boa/account
-	@echo Build MICO and CORBA sample applications done
+	-@echo Build MICO and CORBA sample applications done
 	
 endif
 
