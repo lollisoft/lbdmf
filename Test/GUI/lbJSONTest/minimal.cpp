@@ -249,7 +249,7 @@ void MyFrame::OnTestJson(wxCommandEvent& WXUNUSED(event))
 	// use _T("/") for index.html, index.php, default.asp, etc.
 	wxInputStream *httpStream = NULL;
 	
-	wxString uri = "/updates/lbdmf.json";
+	wxString uri = "/updates/lbdmf.json?ostype=Windows&version=1.3.2";
 	
 	httpStream = get.GetInputStream(uri);
 	
