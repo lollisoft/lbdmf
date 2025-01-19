@@ -48,7 +48,7 @@ endif
 
 ifeq ($(LBWXVERSION), current)
 MINGWLIBS += -L$(DEVROOT_MINGW)$(SLASH)projects$(SLASH)dll$(SLASH)libs
-MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT) -lwxWrapperDLL -llbHook -ljpeg-turbo
+MINGWLIBS += $(MINGWLIBS_WXGUI_CURRENT) -lwxWrapperDLL -llbHook
 CPP_MINGW_EXEOPS += -DLBWXVERSION_CURRENT
 endif
 ifeq ($(LBWXVERSION), old)
