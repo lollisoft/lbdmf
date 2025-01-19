@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.125 $
+# * $Revision: 1.229.2.126 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.125 2025/01/11 14:05:58 lothar Exp $
+# * $Id: Makefile,v 1.229.2.126 2025/01/19 10:28:20 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.126  2025/01/19 10:28:20  lothar
+# * Added a simple test application for wx issues to prepare within that sample
+# *
 # * Revision 1.229.2.125  2025/01/11 14:05:58  lothar
 # * Make building mico optional
 # *
@@ -1896,6 +1899,7 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
+	../Test/GUI/lbJSONTest \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
@@ -2817,6 +2821,17 @@ ifeq ($(CRUISECONTROL), yes)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
+
+ifeq ($(OSTYPE), Windows_NT)
+../Test/GUI/lbJSONTest: dummy
+	$(MAKE) -s -C $@ -e MODULE=lbJSONTest -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
+endif
+
 
 $(DEVROOT_MAKE)/wxwin/wx/samples/report: dummy
 	$(MAKE) -s -C $@ -e MODULE=report -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)
