@@ -26,6 +26,13 @@
     #include "wx/wx.h"
 #endif
 
+
+#include "wx/sstream.h"
+#include "wx/protocol/http.h"
+
+#include "wx/jsonreader.h"
+#include "wx/jsonval.h"
+
 // ----------------------------------------------------------------------------
 // resources
 // ----------------------------------------------------------------------------
@@ -63,6 +70,8 @@ public:
     // event handlers (these functions should _not_ be virtual)
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
+	
+	void OnTestJson(wxCommandEvent& event);
 
 private:
     // any class wishing to process wxWidgets events must use this macro
@@ -82,7 +91,8 @@ enum
     // it is important for the id corresponding to the "About" command to have
     // this standard value as otherwise it won't be handled properly under Mac
     // (where it is special and put into the "Apple" menu)
-    Minimal_About = wxID_ABOUT
+    Minimal_About = wxID_ABOUT,
+	Minimal_TestJson = 1001
 };
 
 // ----------------------------------------------------------------------------
@@ -95,6 +105,7 @@ enum
 wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(Minimal_Quit,  MyFrame::OnQuit)
     EVT_MENU(Minimal_About, MyFrame::OnAbout)
+    EVT_MENU(Minimal_TestJson, MyFrame::OnTestJson)
 wxEND_EVENT_TABLE()
 
 // Create a new application object: this macro will allow wxWidgets to create
@@ -152,6 +163,7 @@ MyFrame::MyFrame(const wxString& title)
     wxMenu *helpMenu = new wxMenu;
     helpMenu->Append(Minimal_About, "&About\tF1", "Show about dialog");
 
+    fileMenu->Append(Minimal_TestJson, "&Test Json\tF2", "Test Json API");
     fileMenu->Append(Minimal_Quit, "E&xit\tAlt-X", "Quit this program");
 
     // now append the freshly created menu to the menu bar...
@@ -165,8 +177,11 @@ MyFrame::MyFrame(const wxString& title)
     // If menus are not available add a button to access the about box
     wxSizer* sizer = new wxBoxSizer(wxHORIZONTAL);
     wxButton* aboutBtn = new wxButton(this, wxID_ANY, "About...");
+    wxButton* jsonBtn = new wxButton(this, wxID_ANY, "Test Json...");
     aboutBtn->Bind(wxEVT_BUTTON, &MyFrame::OnAbout, this);
+    jsonBtn->Bind(wxEVT_BUTTON, &MyFrame::OnTestJson, this);
     sizer->Add(aboutBtn, wxSizerFlags().Center());
+    sizer->Add(jsonBtn, wxSizerFlags().Center());
     SetSizer(sizer);
 #endif // wxUSE_MENUBAR/!wxUSE_MENUBAR
 
@@ -200,4 +215,75 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
                  "About wxWidgets minimal sample",
                  wxOK | wxICON_INFORMATION,
                  this);
+}
+
+void MyFrame::OnTestJson(wxCommandEvent& WXUNUSED(event))
+{
+	wxJSONValue  lastReleaseInfo;
+	wxHTTP get;
+	wxString durationPoints;
+	wxString releaseInfo;
+	wxString releaseMsg;
+	int timeout = 10;
+	int retry = 5;
+
+	get.SetHeader("Content-type", "text/html; charset=utf-8");
+	get.SetTimeout(timeout);
+
+	durationPoints = "Checking for software update. Connection failed. Do a retry ";
+
+	while (!get.Connect(_T("www.lollisoft.de")))
+	{
+		timeout++;
+
+		SetStatusText(durationPoints);
+		durationPoints += ".";
+		wxSleep(1);
+		
+		if (retry-- == 0)
+			return;
+	}
+	
+	wxApp::IsMainLoopRunning(); // should return true
+	
+	// use _T("/") for index.html, index.php, default.asp, etc.
+	wxInputStream *httpStream = NULL;
+	
+	wxString uri = "/updates/lbdmf.json";
+	
+	httpStream = get.GetInputStream(uri);
+	
+	if (get.GetError() == wxPROTO_NOERR)
+	{
+		wxString res;
+		wxStringOutputStream out_stream(&res);
+		httpStream->Read(out_stream);
+		
+		// construct a JSON parser
+		wxJSONReader reader;
+		int numErrors = reader.Parse( res, &lastReleaseInfo );
+
+		if (numErrors > 0) {
+			wxMessageBox("Unable to read update information!");
+		} else {
+			SetStatusText("Got release information. Parsing ...");
+			wxJSONValue releases = lastReleaseInfo["releases"];
+			bool isArray = releases.IsArray();
+
+			if (isArray) {
+				for ( int i = 0; i < releases.Size(); i++ ) {
+					releaseInfo = releases[i]["version"].AsString();
+				}
+			}
+
+		}
+	}
+	
+	if (releaseInfo == "") {
+		releaseMsg = wxString::Format("No version info found\nRunning under %s.", wxGetOsDescription());
+	} else {
+		releaseMsg = wxString::Format("Version info found: %s\nRunning under %s.", releaseInfo, wxGetOsDescription());
+	}
+	
+    wxMessageBox(releaseMsg, "About wxWidgets minimal sample", wxOK | wxICON_INFORMATION, this);
 }
