@@ -552,8 +552,8 @@ lbErrCodes LB_STDCALL wxUpdateChecker::autorun() {
 	
 
 	QI(hdl, lb_I_Unknown, wxUpdateCheckerHandler)
-	// Instance needs to survive this call and destroyed
-	// the owner (wxUpdateChecker)
+	// Instance needs to survive this call and needs to be
+	// destroyed by the owner (wxUpdateChecker)
 	wxUpdateCheckerHandler++;
 	
 	hdl->registerEventHandler(*&disp);
