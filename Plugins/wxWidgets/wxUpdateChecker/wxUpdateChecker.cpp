@@ -570,7 +570,9 @@ lbErrCodes LB_STDCALL wxUpdateChecker::autorun() {
 	lbTimerEventInterceptor* ti = new lbTimerEventInterceptor();
 	
 	QI(ti, lb_I_DispatchInterceptor, timerEventInterceptor)
-	//TODO: Propably the same here.
+	// Instance needs to survive this call and needs to be
+	// destroyed by the owner (wxUpdateChecker)
+	timerEventInterceptor++;
 	
 	return err;
 }
