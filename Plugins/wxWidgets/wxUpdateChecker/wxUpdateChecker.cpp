@@ -144,7 +144,7 @@ public:
 		lb_I_String* LB_STDCALL getReleaseUri();
 
 protected:
-	wxJSONValue  lastReleaseInfo;
+	UAP(lb_I_String, lastReleaseUri)
 	bool silentRan;
 	bool updateCheckRan;
 
@@ -164,6 +164,7 @@ UpdateCheckerHandler::UpdateCheckerHandler() {
 	silent = false;
 	silent_retry = 5;
 	updateCheckRan = false;
+	REQUEST(getModuleInstance(), lb_I_String, lastReleaseUri)
 }
 
 UpdateCheckerHandler::~UpdateCheckerHandler() {
@@ -222,7 +223,12 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	updateCheckRan = true;
 	
 	wxHTTP get;
+#ifdef LBWXVERSION_OLD
 	get.SetHeader(_T("Content-type"), _T("text/html; charset=utf-8"));
+#endif
+#ifdef LBWXVERSION_CURRENT
+	get.SetHeader("Content-type", "text/html; charset=utf-8");
+#endif
 	int timeout = 10;
 	get.SetTimeout(timeout);
 	
@@ -235,7 +241,15 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	*durationPoints = "Checking for software update. Connection failed. Do a retry ";
 	
 	// this will wait until the user connects to the internet. It is important in case of dialup (or ADSL) connections
-	while (!get.Connect(_T("www.lollisoft.de")))  // only the server, no pages here yet ...
+	wxString connectString = 
+#ifdef LBWXVERSION_OLD
+	_T("www.lollisoft.de");
+#endif
+#ifdef LBWXVERSION_CURRENT
+	"www.lollisoft.de";
+#endif
+
+	while (!get.Connect(connectString))  // only the server, no pages here yet ...
 	{
 		timeout++;
 
@@ -254,32 +268,24 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	
 	// use _T("/") for index.html, index.php, default.asp, etc.
 	wxInputStream *httpStream = NULL;
-	
-	UAP_REQUEST(getModuleInstance(), lb_I_String, uri)
-	
-	*uri = "/updates/lbdmf.json?ostype=";
-	*uri += getOsType();
-	*uri += "&version=";
-	*uri += VERSIONINFO;
-	
+
+	wxString wxUri;
 #ifdef LBWXVERSION_OLD
-	httpStream = get.GetInputStream(_T(uri->charrep()));
+	wxUri = wxString::Format(_T("/updates/lbdmf.json?ostype=%s&version="), getOsType(), VERSIONINFO);
 #endif
 #ifdef LBWXVERSION_CURRENT
-	httpStream = get.GetInputStream(uri->charrep());
+	wxUri = wxString::Format("/updates/lbdmf.json?ostype=%s&version=", getOsType(), VERSIONINFO);
 #endif
 	
+	httpStream = get.GetInputStream(wxUri);
+	
 	UAP(lb_I_Parameter, UpdateSettings)
-/*	
-	UAP_REQUEST(getModuleInstance(), lb_I_Container, KnownVersions)
-	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-	*name = "KnownVersions";
-*/
 	
 	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds ..."));
 
 	if (get.GetError() == wxPROTO_NOERR)
 	{
+		wxJSONValue  lastReleaseInfo;
 		wxString res;
 		wxStringOutputStream out_stream(&res);
 		httpStream->Read(out_stream);
@@ -293,17 +299,29 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, msg_version)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, possible_msg_versions)
 		
+		_LOGALWAYS << res.c_str() LOG_
+		
 		int numErrors = reader.Parse( res, &lastReleaseInfo );
 		
 		if (numErrors > 0) {
+#ifdef LBWXVERSION_OLD
 			wxMessageBox(_T("Unable to read update information!"));
+#endif
+#ifdef LBWXVERSION_CURRENT
+			wxMessageBox("Unable to read update information!");
+#endif
 		} else {
 			//wxMessageBox(res);
 			
 			meta->setStatusText("Info", _trans("Got release information. Parsing ..."));
 			
 			// now retrive the array of supported languages
+#ifdef LBWXVERSION_OLD
+			wxJSONValue releases = lastReleaseInfo[_T("releases")];
+#endif
+#ifdef LBWXVERSION_CURRENT
 			wxJSONValue releases = lastReleaseInfo["releases"];
+#endif
 			
 			bool isArray = releases.IsArray();
 			
@@ -315,10 +333,17 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 			if (isArray) {
 				for ( int i = 0; i < releases.Size(); i++ ) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, version)
+#ifdef LBWXVERSION_OLD
+					wxString release = releases[i][_T("version")].AsString();
+#endif
+#ifdef LBWXVERSION_CURRENT
 					wxString release = releases[i]["version"].AsString();
-					
+#endif
 					*version = release.c_str();
 					
+					wxString release_uri = releases[0]["download"].AsString();
+					*lastReleaseUri = release_uri.c_str();
+
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk)
 					QI(version, lb_I_KeyBase, key)
@@ -424,15 +449,7 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 lb_I_String* LB_STDCALL UpdateCheckerHandler::getReleaseUri() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, releaseUri)
 
-	wxJSONValue releases = lastReleaseInfo["releases"];
-
-        bool isArray = releases.IsArray();
-
-        if (isArray) {
-               	wxString release_uri = releases[0]["download"].AsString();
-               	*releaseUri = release_uri.c_str();
-	}
-
+	*releaseUri = lastReleaseUri->charrep(); 
 	releaseUri++;
 
 	return *&releaseUri;
@@ -535,7 +552,10 @@ lbErrCodes LB_STDCALL wxUpdateChecker::autorun() {
 	
 
 	QI(hdl, lb_I_Unknown, wxUpdateCheckerHandler)
-
+	// Instance needs to survive this call and destroyed
+	// the owner (wxUpdateChecker)
+	wxUpdateCheckerHandler++;
+	
 	hdl->registerEventHandler(*&disp);
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
