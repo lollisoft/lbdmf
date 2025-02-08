@@ -695,7 +695,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                         &lb_wxFrame::OnDispatch );
 
-		Bind(wxEVT_CLOSE_WINDOW, &lb_wxFrame::OnClose, this);
+		Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(lb_wxFrame::OnClose), NULL, this);
+		//Bind(wxEVT_CLOSE_WINDOW, &lb_wxFrame::OnClose, this);
+
 /*		
         Connect( 0,  -1, wxEVT_CLOSE_WINDOW,
                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
