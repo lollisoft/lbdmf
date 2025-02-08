@@ -166,8 +166,6 @@
 
 #include <wxWrapperDLL.h>
 
-#define DYNAMIC_QUIT        1000
-#define DYNAMIC_TOOL_QUIT   1007
 
 /*...swxAppSelectPage:0:*/
 class wxAppSelectPage :
@@ -697,6 +695,12 @@ lbErrCodes LB_STDCALL lb_wxFrame::registerEventHandler(lb_I_Dispatcher* disp) {
                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                         &lb_wxFrame::OnDispatch );
 
+		Bind(wxEVT_CLOSE_WINDOW, &lb_wxFrame::OnClose, this);
+/*		
+        Connect( 0,  -1, wxEVT_CLOSE_WINDOW,
+                        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                        &lb_wxFrame::OnClose );
+*/
         Connect( DYNAMIC_QUIT,  -1, wxEVT_COMMAND_MENU_SELECTED,
                         (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                         &lb_wxFrame::OnDispatch );
@@ -2041,6 +2045,48 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 		meta->uninitialize();
 
         Close(TRUE);
+}
+
+void lb_wxFrame::OnClose(wxCloseEvent& event) {
+    if ( event.CanVeto() )
+    {
+        wxMessageDialog dialog(this,
+            "You have an unsaved file; save before closing?",
+            "OnClose",
+            wxCENTER |
+            wxYES_NO | wxCANCEL |
+            wxICON_QUESTION);
+
+        dialog.SetYesNoLabels(
+            "&Save",
+            "&Discard changes"
+        );
+        switch ( dialog.ShowModal() )
+        {
+        case wxID_CANCEL:
+            event.Veto();
+            wxLogStatus("You cancelled closing the application.");
+            // Return without calling event.Skip() to prevent closing the frame.
+            // The application should resume operation as if closing it had not
+            // been attempted.
+            return;
+        case wxID_YES:
+            wxMessageBox("You chose to save your file.", "OnClose", wxOK);
+            // In a real application, do something to save the
+            // file(s), possibly asking for a file name and location
+            // using wxFileDialog.
+            break;
+        default:
+            wxLogError("Unexpected wxMessageDialog return code!");
+            wxFALLTHROUGH;
+        case wxID_NO:
+            // Don't save anything, and simply continue with closing the frame.
+            break;
+        }
+    }
+
+    // Continue with closing the frame.
+    event.Skip();
 }
 
 void lb_wxFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) ) {

@@ -33,11 +33,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.7 $
+ * $Revision: 1.43.2.8 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.7 2023/12/02 12:06:44 lothar Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.8 2025/02/08 08:09:37 lothar Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.8  2025/02/08 08:09:37  lothar
+ * Added an event handler to intercept system exit menu. Not yet ready, but demonstration works
+ *
  * Revision 1.43.2.7  2023/12/02 12:06:44  lothar
  * Adoptions for new wxWidgets version to use wxAuiToolBar.
  * Small fixes for toolbar ordering to keep main toolbar at most
@@ -250,7 +253,7 @@
 #include <wx/listimpl.cpp>
     
 // ID for the menu commands
-#define DYNAMIC_QUIT            1000
+#define DYNAMIC_QUIT            1000//wxID_EXIT //1000
 #define DYNAMIC_TEXT            1001
 #define DYNAMIC_ABOUT           1002
 #define DYNAMIC_BUILDMENU       1003
@@ -258,11 +261,12 @@
 #define DYNAMIC_TEST2           1005
 #define DYNAMIC_VERBOSE         1006
 
-#define PGID					1007
+#define DYNAMIC_TOOL_QUIT   	1007
 #define CLOSE_CURRENT_PAGE		1008
 #define SHOW_PENDING_MESSAGES	1009
 #define REFRESHALL_FORMS		1010
 #define POST_PENDING_EVENT		1011
+#define PGID					1012
 
 class lb_wxGUI;
 
@@ -314,6 +318,7 @@ public:
 	void OnTimer(wxTimerEvent& event);
 	void OnIdle(wxIdleEvent& event);
 	void OnQuit(wxCommandEvent& event);
+    void OnClose(wxCloseEvent& event);
 	void OnVerbose(wxCommandEvent& event);
 	void OnCloseCurrentPage(wxCommandEvent& event);
 	void OnRefreshAll(wxCommandEvent& event);
