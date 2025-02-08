@@ -2081,7 +2081,7 @@ void lb_wxFrame::OnClose(wxCloseEvent& event) {
             break;
         default:
             wxLogError("Unexpected wxMessageDialog return code!");
-            wxFALLTHROUGH;
+//            wxFALLTHROUGH;
         case wxID_NO:
             // Don't save anything, and simply continue with closing the frame.
             break;
