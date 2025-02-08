@@ -2058,11 +2058,12 @@ void lb_wxFrame::OnClose(wxCloseEvent& event) {
             wxCENTER |
             wxYES_NO | wxCANCEL |
             wxICON_QUESTION);
-
+/*
         dialog.SetYesNoLabels(
             "&Save",
             "&Discard changes"
         );
+*/		
         switch ( dialog.ShowModal() )
         {
         case wxID_CANCEL:
