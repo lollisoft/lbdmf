@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.18 2024/12/22 11:03:45 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.19 2025/02/08 08:09:37 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.18 $
+ * $Revision: 1.174.2.19 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.18 2024/12/22 11:03:45 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.19 2025/02/08 08:09:37 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.19  2025/02/08 08:09:37  lothar
+ * Added an event handler to intercept system exit menu. Not yet ready, but demonstration works
+ *
  * Revision 1.174.2.18  2024/12/22 11:03:45  lothar
  * Trial to mitigate double autorun. Accidantly reseting container iteration within plugins.
  *
@@ -1001,15 +1004,17 @@ int MyApp::OnExit() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 
+	
+	//Moved to lb_wxFrame destructor for now
 	_CL_LOG << "Unload application ..." LOG_
 
-	metaApp->disableStatusbar();
+	//metaApp->disableStatusbar();
 
-	metaApp->unloadApplication();
+	//metaApp->unloadApplication();
 	metaApp->uninitialize();
 
 	_CL_LOG << "Unloaded application." LOG_
-
+	
 	//metaApp->save();
 
 	PM->unload();
