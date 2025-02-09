@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.126 $
+# * $Revision: 1.229.2.127 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.126 2025/01/19 10:28:20 lothar Exp $
+# * $Id: Makefile,v 1.229.2.127 2025/02/09 15:04:07 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.127  2025/02/09 15:04:07  lothar
+# * Tweaked clean and removed building lbJSONTest within Jenkins
+# *
 # * Revision 1.229.2.126  2025/01/19 10:28:20  lothar
 # * Added a simple test application for wx issues to prepare within that sample
 # *
@@ -1899,7 +1902,6 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
-	../Test/GUI/lbJSONTest \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
@@ -1943,6 +1945,7 @@ ALLTARGETS = \
 	../AppDevelopmentDemo/DynamicApp/App \
 	../Test/Console/XML \
 	../Test/GUI/wxWrapper \
+	../Test/GUI/lbJSONTest \
 	../Test/GUI/wxPlugins/lbLoginWizard \
 	../Test/GUI/wxPlugins/lbCryptoStream \
 	../Samples/HelloWorld \
@@ -2250,7 +2253,8 @@ $(prefix)/plugins:
 	-mkdir -p $@
 
 clean:
-	@for d in $(ALLDIRS); do \
+	-@$(MAKE) -C ../Test/GUI/lbJSONTest clean
+	-@for d in $(ALLDIRS); do \
 	  $(MAKE) -C $$d clean; \
 	done
 
