@@ -113,7 +113,7 @@ END_EVENT_TABLE()
 // static object for many reasons) and also implements the accessor function
 // wxGetApp() which will return the reference of the right type (i.e. MyApp and
 // not wxApp)
-wxIMPLEMENT_APP(MyApp);
+IMPLEMENT_APP(MyApp);
 
 // ============================================================================
 // implementation
