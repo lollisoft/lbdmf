@@ -2023,32 +2023,38 @@ void lb_wxFrame::OnRefreshAll(wxCommandEvent& event) {
 /*...slb_wxFrame\58\\58\OnQuit\40\wxCommandEvent\38\ WXUNUSED\40\event\41\ \41\:0:*/
 void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 {
-        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-		meta->save();
-
-        /*
-         * Let the lb_wxGUI class cleanup it's created  and hidden forms.
-         * The database form sample is a modal form and may be making the
-         * problem, if it is not destroyed here.
-         */
-
-        // Signalize that I am quitting.
-        OnQuitAccepted = true;
-
-        if (guiCleanedUp == 0) {
-                if (gui) gui->cleanup();
-                guiCleanedUp = 1;
-        }
-
-
-		// Done in OnExit in dynamic.cpp. Calling this twice actually let the datastructure be uninitialized
-		// and thus the second call to deinitApplicationSwitcher fails
-        meta->unloadApplication();
-		meta->uninitialize();
-
-        Close(TRUE);
+	// Moved the OnQuit code into the OnClose event handler to always catch the application closing
+	Close(TRUE);
 }
 
+void lb_wxFrame::OnClose(wxCloseEvent& event) {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	meta->save();
+
+	/*
+	 * Let the lb_wxGUI class cleanup it's created  and hidden forms.
+	 * The database form sample is a modal form and may be making the
+	 * problem, if it is not destroyed here.
+	 */
+
+	// Signalize that I am quitting.
+	OnQuitAccepted = true;
+
+	if (guiCleanedUp == 0) {
+			if (gui) gui->cleanup();
+			guiCleanedUp = 1;
+	}
+
+
+	// Done in OnExit in dynamic.cpp. Calling this twice actually let the datastructure be uninitialized
+	// and thus the second call to deinitApplicationSwitcher fails
+	meta->unloadApplication();
+	meta->uninitialize();
+
+    // Continue with closing the frame.
+    event.Skip();
+}
+/*
 void lb_wxFrame::OnClose(wxCloseEvent& event) {
     if ( event.CanVeto() )
     {
@@ -2058,12 +2064,12 @@ void lb_wxFrame::OnClose(wxCloseEvent& event) {
             wxCENTER |
             wxYES_NO | wxCANCEL |
             wxICON_QUESTION);
-/*
+			
         dialog.SetYesNoLabels(
             "&Save",
             "&Discard changes"
         );
-*/		
+
         switch ( dialog.ShowModal() )
         {
         case wxID_CANCEL:
@@ -2091,6 +2097,7 @@ void lb_wxFrame::OnClose(wxCloseEvent& event) {
     // Continue with closing the frame.
     event.Skip();
 }
+*/
 
 void lb_wxFrame::OnVerbose(wxCommandEvent& WXUNUSED(event) ) {
     setVerbose(!isVerbose());
