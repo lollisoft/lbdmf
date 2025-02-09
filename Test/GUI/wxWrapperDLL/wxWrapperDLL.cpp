@@ -2028,6 +2028,10 @@ void lb_wxFrame::OnQuit(wxCommandEvent& WXUNUSED(event) )
 }
 
 void lb_wxFrame::OnClose(wxCloseEvent& event) {
+	// Actually this is needed as there is a shift of registered event Id's that then trigger loading the web page.
+	// So the event system is buggy when event handlers getting unregistered.
+	enableTimer(false);
+
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	meta->save();
 
