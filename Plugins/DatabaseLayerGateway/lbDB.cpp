@@ -6254,10 +6254,10 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(const char* c
 					*value = (const char*) "";
 					param->setUAPString(*&name, *&value);
 					*name = "PKTableName";
-					*value = (const char*) pktab;
+					*value = (const char*) pktab.c_str();
 					param->setUAPString(*&name, *&value);
 					*name = "PKTableColumnName";
-					*value = (const char*) pkcol;
+					*value = (const char*) pkcol.c_str();
 					param->setUAPString(*&name, *&value);
 					*name = "FKTableCatalog";
 					*value = (const char*) "";
@@ -6269,7 +6269,7 @@ lb_I_Container* LB_STDCALL lbDatabaseLayerDatabase::getForeignKeys(const char* c
 					*value = (const char*) tables[i].c_str();
 					param->setUAPString(*&name, *&value);
 					*name = "FKTableColumnName";
-					*value = (const char*) fkcol;
+					*value = (const char*) fkcol.c_str();
 					param->setUAPString(*&name, *&value);
 					*name = "KeySequence";
 					number->setData(-1);
