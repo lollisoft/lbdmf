@@ -90,6 +90,7 @@ lbErrCodes LB_STDCALL lbReadTextFileToString::registerEventHandler(lb_I_Dispatch
 	eman->registerEvent("readFileToString", temp);
 	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbReadTextFileToString::readFileToString, "readFileToString");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbReadTextFileToString::readFileToString(lb_I_Unknown* uk) {
@@ -247,7 +248,8 @@ lbErrCodes LB_STDCALL lbPluginReadTextFileToString::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	r->registerEventHandler(*&dispatcher);
-	
+	r++;
+
 	return err;
 }
 

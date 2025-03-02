@@ -91,9 +91,11 @@ lbErrCodes LB_STDCALL lbUIDsl::setData(lb_I_Unknown* uk) {
 lbErrCodes LB_STDCALL lbUIDsl::registerEventHandler(lb_I_Dispatcher* disp) {
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	int temp;
+	//TODO: Why is this commented out?
 	//eman->registerEvent("parse", temp);
 
 	//disp->addEventHandlerFn(this, (lbEvHandler) &lbUIDsl::parse, "parse");
+	return ERR_NONE;
 }
 
 void LB_STDCALL lbUIDsl::init(const char* sourceCode) {
@@ -199,6 +201,7 @@ lbErrCodes LB_STDCALL lbPluginUIDsl::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	uidsl->registerEventHandler(*&dispatcher);
+	uidsl++;
 	
 	return err;
 }

@@ -212,6 +212,7 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunSilentUpdateCheck(lb_I_Unknown* u
 		
 		silent = false;
 	}
+	return ERR_NONE;
 }
 
 /// Run update check per week.

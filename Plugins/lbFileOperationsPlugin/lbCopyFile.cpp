@@ -90,6 +90,7 @@ lbErrCodes LB_STDCALL lbCopyFileImpl::registerEventHandler(lb_I_Dispatcher* disp
 	eman->registerEvent("copyFile", temp);
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbCopyFileImpl::copyFile, "copyFile");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbCopyFileImpl::copyFile(lb_I_Unknown* uk) {
@@ -226,6 +227,7 @@ lbErrCodes LB_STDCALL lbPluginCopyFile::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	XSLTTransformer->registerEventHandler(*&dispatcher);
+	XSLTTransformer++;
 	
 	return err;
 }

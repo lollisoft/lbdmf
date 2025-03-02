@@ -670,6 +670,7 @@ lbErrCodes LB_STDCALL lbPluginLoginWizard::autorun() {
 	QI(hdl, lb_I_Unknown, loginHandler)
 
 	hdl->registerEventHandler(*&disp);
+	hdl++;
 
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 

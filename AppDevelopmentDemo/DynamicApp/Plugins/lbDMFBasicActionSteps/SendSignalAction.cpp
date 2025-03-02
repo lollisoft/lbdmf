@@ -73,7 +73,6 @@ extern "C" {
 /*...e*/
 /*...e*/
 
-#include <lbInterfaces-lbDMFManager.h>
 #include <SendSignalAction.h>
 
 
@@ -481,12 +480,12 @@ lbErrCodes LB_STDCALL lbPluginCallActivityHandler::autorun() {
 	
 	
 	lbCallActivityHandler* hdl = new lbCallActivityHandler();
-	
-	
 	QI(hdl, lb_I_Unknown, ukCallActivity)
-	
 	hdl->registerEventHandler(*&disp);
-	
+	// Instance needs to survive this call and needs to be
+	// destroyed by the owner (wxUpdateChecker)
+	hdl++;
+
 	return err;
 }
 

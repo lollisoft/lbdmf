@@ -90,6 +90,7 @@ lbErrCodes LB_STDCALL lbWriteStringToFile::registerEventHandler(lb_I_Dispatcher*
 	eman->registerEvent("writeStringToFile", temp);
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbWriteStringToFile::writeStringToFile, "writeStringToFile");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbWriteStringToFile::writeStringToFile(lb_I_Unknown* uk) {
@@ -239,6 +240,7 @@ lbErrCodes LB_STDCALL lbPluginWriteStringToFile::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	XSLTTransformer->registerEventHandler(*&dispatcher);
+	XSLTTransformer++;
 	
 	return err;
 }

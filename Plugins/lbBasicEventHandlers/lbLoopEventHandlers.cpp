@@ -92,6 +92,7 @@ lbErrCodes LB_STDCALL lbLoopEventHandlers::registerEventHandler(lb_I_Dispatcher*
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbLoopEventHandlers::loopContainer, "loopContainer");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbLoopEventHandlers::loopQueryResult, "loopQueryResult");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbLoopEventHandlers::loopContainer(lb_I_Unknown* uk) {
@@ -312,6 +313,7 @@ lbErrCodes LB_STDCALL lbPluginLoopEventHandlers::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	XSLTTransformer->registerEventHandler(*&dispatcher);
+	XSLTTransformer++;
 	
 	return err;
 }

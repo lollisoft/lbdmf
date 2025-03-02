@@ -94,6 +94,7 @@ lbErrCodes LB_STDCALL lbBasicEventHandlers::registerEventHandler(lb_I_Dispatcher
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbBasicEventHandlers::replaceText, "replaceText");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbBasicEventHandlers::prependText, "prependText");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbBasicEventHandlers::appendText, "appendText");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbBasicEventHandlers::replaceText(lb_I_Unknown* uk) {
@@ -380,7 +381,8 @@ lbErrCodes LB_STDCALL lbPluginBasicEventHandlers::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	XSLTTransformer->registerEventHandler(*&dispatcher);
-	
+	XSLTTransformer++;
+
 	return err;
 }
 

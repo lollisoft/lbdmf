@@ -218,6 +218,7 @@ lbErrCodes LB_STDCALL lbPluginUserFeedback::autorun() {
 		lbUserFeedback* feedback = new lbUserFeedback();
 		QI(feedback, lb_I_Unknown, ukUserFeedback)
 		feedback->registerEventHandler(*&disp);
+		feedback++;
 	}
 	
 	return err;
