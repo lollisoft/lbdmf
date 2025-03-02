@@ -165,7 +165,7 @@ class <xsl:value-of select="$FormularName"/>;
 // Author:      Lothar Behrens
 // Modified by:
 // Created:     2008/09/14 (Template)
-// RCS-ID:      $Id: lbDMFDataViewModelBaseclass.xsl,v 1.3 2013/08/03 19:49:58 lollisoft Exp $
+// RCS-ID:      $Id: lbDMFDataViewModelBaseclass.xsl,v 1.2.2.2 2025/03/02 12:40:09 lothar Exp $
 // Copyright:   (c) Lothar Behrens
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -568,6 +568,7 @@ lbErrCodes LB_STDCALL lbPluginInstallMenuEntry<xsl:value-of select="$Application
 	QI(hdl, lb_I_Unknown, loginHandler)
 	
 	hdl->registerEventHandler(*&amp;disp);
+	hdl++;
 
 	UAP_REQUEST(manager.getPtr(), lb_I_MetaApplication, meta)
 

@@ -28,11 +28,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.5 $
+ * $Revision: 1.1.2.6 $
  * $Name:  $
- * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.5 2024/12/22 11:03:45 lothar Exp $
+ * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.6 2025/03/02 12:40:09 lothar Exp $
  *
  * $Log: lbPropertyPanelHandler.cpp,v $
+ * Revision 1.1.2.6  2025/03/02 12:40:09  lothar
+ * Plugins are now capable to be autoran. There were many methods with a missing return of an error code.
+ *
  * Revision 1.1.2.5  2024/12/22 11:03:45  lothar
  * Trial to mitigate double autorun. Accidantly reseting container iteration within plugins.
  *
@@ -346,6 +349,7 @@ lbErrCodes LB_STDCALL lbPluginPropertyPanelHandler::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	PropertyPanelHandler->registerEventHandler(*&dispatcher);
+	PropertyPanelHandler++;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 	

@@ -136,6 +136,7 @@ lbErrCodes lbTimerEventInterceptor::initialize() {
         // Idea to the schema:
         // A timer handler has a name. Each handler is added at the end so it will enforce an ordered sequence (or chain) if several handlers are registered with the same name.
         // But then the typical registration is not enough as it will replace existing handlers.
+		return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbTimerEventInterceptor::removeInterceptedInstance(lb_I_Unknown* interceptedInstance) {

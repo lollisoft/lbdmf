@@ -90,6 +90,7 @@ lbErrCodes LB_STDCALL lbCopyFileImpl::registerEventHandler(lb_I_Dispatcher* disp
 	eman->registerEvent("copyFile", temp);
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbCopyFileImpl::copyFile, "copyFile");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbCopyFileImpl::copyFile(lb_I_Unknown* uk) {
@@ -178,8 +179,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-	
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 	/*...e*/
 	
 	DECLARE_LB_UNKNOWN()
@@ -228,6 +227,7 @@ lbErrCodes LB_STDCALL lbPluginCopyFile::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	XSLTTransformer->registerEventHandler(*&dispatcher);
+	XSLTTransformer++;
 	
 	return err;
 }
