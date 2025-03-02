@@ -91,6 +91,7 @@ lbErrCodes LB_STDCALL lbFileExists::registerEventHandler(lb_I_Dispatcher* disp) 
 
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbFileExists::fileExists, "fileExists");
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbFileExists::directoryExists, "directoryExists");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbFileExists::fileExists(lb_I_Unknown* uk) {
@@ -221,8 +222,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 	/*...e*/
 	
 	DECLARE_LB_UNKNOWN()
@@ -271,6 +270,7 @@ lbErrCodes LB_STDCALL lbPluginFileExists::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	XSLTTransformer->registerEventHandler(*&dispatcher);
+	XSLTTransformer++;
 	
 	return err;
 }

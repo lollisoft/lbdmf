@@ -128,6 +128,7 @@ lbErrCodes LB_STDCALL lbXSLTTransformer::registerEventHandler(lb_I_Dispatcher* d
 	eman->registerEvent("transformXSLT", temp);
 	
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbXSLTTransformer::transformXSLT, "transformXSLT");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbXSLTTransformer::transformXSLT(lb_I_Unknown* uk) {
@@ -368,6 +369,7 @@ lbErrCodes LB_STDCALL lbPluginXSLTTransformer::autorun() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
 	
 	XSLTTransformer->registerEventHandler(*&dispatcher);
+	XSLTTransformer++;
 	
 	return err;
 }

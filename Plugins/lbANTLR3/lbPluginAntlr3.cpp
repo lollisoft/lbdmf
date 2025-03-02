@@ -88,8 +88,8 @@ lbErrCodes LB_STDCALL lbAntlr3::registerEventHandler(lb_I_Dispatcher* disp) {
 	UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
 	int temp;
 	eman->registerEvent("parse", temp);
-
 	disp->addEventHandlerFn(this, (lbEvHandler) &lbAntlr3::parse, "parse");
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbAntlr3::parse(lb_I_Unknown* uk) {
@@ -214,12 +214,12 @@ lbErrCodes LB_STDCALL lbPluginAntlr3::setData(lb_I_Unknown* uk) {
 /*...e*/
 
 lbPluginAntlr3::lbPluginAntlr3() {
-	_CL_VERBOSE << "lbPluginAntlr3::lbPluginAntlr3() called.\n" LOG_
+	_LOGALWAYS << "lbPluginAntlr3::lbPluginAntlr3() called.\n" LOG_
 	
 }
 
 lbPluginAntlr3::~lbPluginAntlr3() {
-	_CL_VERBOSE << "lbPluginAntlr3::~lbPluginAntlr3() called.\n" LOG_
+	_LOGALWAYS << "lbPluginAntlr3::~lbPluginAntlr3() called.\n" LOG_
 }
 
 bool LB_STDCALL lbPluginAntlr3::canAutorun() {
@@ -227,16 +227,27 @@ bool LB_STDCALL lbPluginAntlr3::canAutorun() {
 }
 
 lbErrCodes LB_STDCALL lbPluginAntlr3::autorun() {
+	_LOGALWAYS << "lbPluginAntlr3::autorun() called.\n" LOG_
 	lbErrCodes err = ERR_NONE;
 
 	lbAntlr3* antlr3 = new lbAntlr3();
-		
+	_LOGALWAYS << "lbAntlr3 constructed.\n" LOG_
+
 	QI(antlr3, lb_I_Unknown, uklbAntlr3) 
-	
+	_LOGALWAYS << "Interface queried.\n" LOG_
+
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
-	
-	antlr3->registerEventHandler(*&dispatcher);
-	
+	_LOGALWAYS << "Dispatcher queried.\n" LOG_
+
+	if (dispatcher != NULL)
+	{
+		antlr3->registerEventHandler(*&dispatcher);
+		_LOGALWAYS << "Eventhandler registered.\n" LOG_
+
+		antlr3++;
+	}
+
+	_LOGALWAYS << "lbPluginAntlr3::autorun() leaving.\n" LOG_
 	return err;
 }
 
