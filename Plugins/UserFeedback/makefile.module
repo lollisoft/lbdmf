@@ -116,7 +116,12 @@ MOD_INCL=$(STD_INCL)
 OBJDEP=
 C_SOOPS_WX = -DUNIX -DLINUX -DLB_I_EXTENTIONS `wx-config --cxxflags`
 C_SOOPS= $(C_SOOPS_WX)
+ifeq ($(CPUARCH_BITS), 32)
 VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs` -lexslt 
+endif
+ifeq ($(CPUARCH_BITS), 64)
+VENDORLIBS=-L$(prefix)/lib -llbHook `xslt-config --libs` `xml2-config --libs` -L/user/lib64 -lexslt 
+endif
 LDFLAGS=$(L_SOOPS) `wx-config --libs`
 endif    
 
