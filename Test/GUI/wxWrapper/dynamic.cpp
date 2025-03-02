@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.19 2025/02/08 08:09:37 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.20 2025/03/02 11:13:46 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.19 $
+ * $Revision: 1.174.2.20 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.19 2025/02/08 08:09:37 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.20 2025/03/02 11:13:46 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.20  2025/03/02 11:13:46  lothar
+ * Added support for finding toolbarimages within BaseDevelopment folder when running from there. Need to add a copy folder rule as well.
+ *
  * Revision 1.174.2.19  2025/02/08 08:09:37  lothar
  * Added an event handler to intercept system exit menu. Not yet ready, but demonstration works
  *
@@ -1284,7 +1287,7 @@ bool MyApp::OnInit(void)
 		_LOGALWAYS << "Enumerating plugins to call their autorun done." LOG_
     }
 
-	FlushAutorunQueue();
+	//FlushAutorunQueue();
 	FlushMenubarQueue();
 	FlushMenuentryQueue();
 
