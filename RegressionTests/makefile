@@ -181,16 +181,16 @@ Database/Plain-ODBC-Test: dummy
 	echo DEVROOT_MAKE: $(DEVROOT_MAKE)
 	echo RELPATH: $(RELPATH)
 	echo $(MAKE) -C $@ -e MODULE=plainODBCTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@ -e MODULE=plainODBCTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
+	-$(MAKE) -C $@ -e MODULE=plainODBCTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	-$(MAKE) -C $@
 
 Database/Plain-ODBC-Test-Blob: dummy
-	$(MAKE) -C $@ -e MODULE=plainODBCTestBlob -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
+	-$(MAKE) -C $@ -e MODULE=plainODBCTestBlob -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	-$(MAKE) -C $@
 
 Database/Plain-ODBC-Test-Refresh: dummy
-	$(MAKE) -C $@ -e MODULE=plainODBCTestRefresh -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
-	$(MAKE) -C $@
+	-$(MAKE) -C $@ -e MODULE=plainODBCTestRefresh -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	-$(MAKE) -C $@
 
 ContainerTest: dummy
 	$(MAKE) -C $@ -e MODULE=ContainerTest -e TARGET=$(TARGETEXE) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure

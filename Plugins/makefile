@@ -368,11 +368,11 @@ lbDMFDataModel: dummy
 	$(MAKE) -C $@
 	
 DatabaseReport: dummy
-	$(MAKE) -C $@ -e MODULE=lbDatabaseReport -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
+	-$(MAKE) -C $@ -e MODULE=lbDatabaseReport -e TARGET=$(TARGETWXPLUGIN) -f $(DEVROOT_MAKE)$(RELPATH)/make/makefile.configure
 ifeq ($(CRUISECONTROL), yes)
-	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
+	-$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
-	$(MAKE) -s -C $@ -e LBWXVERSION=current
+	-$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
 	
 VisitorOperations: dummy
