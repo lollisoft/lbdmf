@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.129 $
+# * $Revision: 1.229.2.130 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.129 2025/03/02 08:41:13 lothar Exp $
+# * $Id: Makefile,v 1.229.2.130 2025/03/02 13:47:51 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.130  2025/03/02 13:47:51  lothar
+# * Added command to copy toolbar images to BaseDevelopment to enable instand run without issues after building the code.
+# *
 # * Revision 1.229.2.129  2025/03/02 08:41:13  lothar
 # * Commented out a xml header that I probably never have used. Also made some projects optional to allow fails within them because I am not complete yet with Tumbleweed 64 bit porting.
 # *
@@ -2748,6 +2751,7 @@ else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
 	cp ../Test/GUI/wxWrapper/wxWrapper $(prefix)/bin
+	cp -R ../Test/GUI/wxWrapper/toolbarimages .
 
 #../Test/GUI/wxWrapper: dummy
 #	$(MAKE) -s -C $@ -f makefile.wx-sample
