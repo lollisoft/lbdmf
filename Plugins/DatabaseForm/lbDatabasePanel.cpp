@@ -420,6 +420,13 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 			*file += ".app/Contents/Resources/toolbarimages/";
 		}
 #endif
+#ifdef LINUX
+		if (opendir(file->charrep()) == NULL) {
+			*file = "./";
+			*file += "toolbarimages/";
+		}
+#endif
+
 		*file += "new.xpm";
 		
 		if (!wxFile::Exists(file->charrep())) {
@@ -514,7 +521,13 @@ void LB_STDCALL lbDatabasePanel::addSpecialField(const char* name, wxSizer* size
 			*file += ".app/Contents/Resources/toolbarimages/";
 		}
 #endif
-		
+#ifdef LINUX
+		if (opendir(file->charrep()) == NULL) {
+			*file = "./";
+			*file += "toolbarimages/";
+		}
+#endif
+
 		*file += "new.xpm";
 		
 		if (!wxFile::Exists(file->charrep())) {
@@ -4433,6 +4446,12 @@ lbErrCodes LB_STDCALL lbDatabasePanel::lbDBRead() {
 								*toolbarfile = "./";
 								*toolbarfile += pName->charrep();
 								*toolbarfile += ".app/Contents/Resources/toolbarimages/";
+							}
+#endif
+#ifdef LINUX
+							if (opendir(toolbarfile->charrep()) == NULL) {
+								*toolbarfile = "./";
+								*toolbarfile += "toolbarimages/";
 							}
 #endif
 
