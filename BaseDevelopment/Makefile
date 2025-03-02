@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.127 $
+# * $Revision: 1.229.2.128 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.127 2025/02/09 15:04:07 lothar Exp $
+# * $Id: Makefile,v 1.229.2.128 2025/03/02 08:02:22 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.128  2025/03/02 08:02:22  lothar
+# * Added some support for Tumbleweed 64 bit build. Not yet ready.
+# *
 # * Revision 1.229.2.127  2025/02/09 15:04:07  lothar
 # * Tweaked clean and removed building lbJSONTest within Jenkins
 # *

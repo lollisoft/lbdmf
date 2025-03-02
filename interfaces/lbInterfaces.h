@@ -914,6 +914,11 @@ PRIMARY KEY (id),
 #endif
 
 // I need a proper way to detect 32 or 64 bit target builts. But also on all platforms and not only for Mac OS X that forces me now.
+#ifdef LINUX
+#ifdef __x86_64__
+#define CPUARCH_64
+#endif	
+#endif
 
 #ifdef OSX
 #ifdef __LP64__
