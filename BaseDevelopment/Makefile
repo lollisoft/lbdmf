@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.128 $
+# * $Revision: 1.229.2.129 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.128 2025/03/02 08:02:22 lothar Exp $
+# * $Id: Makefile,v 1.229.2.129 2025/03/02 08:41:13 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.129  2025/03/02 08:41:13  lothar
+# * Commented out a xml header that I probably never have used. Also made some projects optional to allow fails within them because I am not complete yet with Tumbleweed 64 bit porting.
+# *
 # * Revision 1.229.2.128  2025/03/02 08:02:22  lothar
 # * Added some support for Tumbleweed 64 bit build. Not yet ready.
 # *
@@ -2446,7 +2449,7 @@ endif
 	$(MAKE) -s -C $@
 
 ../vendor/wxReportWriter: dummy
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@
 
 ../Test/Console/XML: dummy
 	-$(MAKE) -s -C $@ -e MODULE=console-test -e TARGET=$(TARGETEXE) -f $(MAKE_CONFIG_FILE)

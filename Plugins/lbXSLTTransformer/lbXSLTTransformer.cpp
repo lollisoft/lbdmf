@@ -61,7 +61,7 @@
 #include <libxml/debugXML.h>
 #include <libxml/HTMLtree.h>
 #include <libxml/xmlIO.h>
-#include <libxml/DOCBparser.h>
+//#include <libxml/DOCBparser.h>
 #include <libxml/xinclude.h>
 #include <libxml/catalog.h>
 #include <libxslt/xslt.h>
@@ -320,8 +320,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 	/*...e*/
 	
 	DECLARE_LB_UNKNOWN()
