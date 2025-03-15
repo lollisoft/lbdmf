@@ -155,7 +155,13 @@ MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWra
 OBJDEP=
 
 C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
+
+ifeq ($(LBWXVERSION), current)
 LDFLAGS = `wx-config --inplace --libs` -lwx_gtk3u_aui-3.2 -lwx_gtk3u_propgrid-3.2
+endif
+ifeq ($(LBWXVERSION), old)
+LDFLAGS = `wx-config --inplace --libs` -lwxAUI -lwxPropgrid
+endif
 
 ifeq ($(LBWXVERSION), current)
 C_ELFOPS += -DLBWXVERSION_CURRENT
