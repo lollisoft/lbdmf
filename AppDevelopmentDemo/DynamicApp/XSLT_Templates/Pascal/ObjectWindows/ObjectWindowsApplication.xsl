@@ -328,11 +328,9 @@ End;
 	</xsl:call-template>
 </xsl:variable>
 Procedure TMainWindow.show<xsl:value-of select="$FormularName"/>;
-Var ADialog : P<xsl:value-of select="$FormularName"/>Dialog;
 Var ReturnValue : Integer;
 Begin
-  ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init(@Self));
-  ReturnValue := Application^.ExecDialog(ADialog);
+  ReturnValue := Application^.ExecDialog(New(P<xsl:value-of select="$FormularName"/>Dialog, Init(@Self)));
 End;
 </xsl:for-each>
 
