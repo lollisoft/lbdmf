@@ -918,7 +918,7 @@ PRIMARY KEY (id),
 #ifdef __x86_64__
 #define CPUARCH_64
 #endif	
-#ifdef __x86_32__
+#ifdef __i386__
 #define CPUARCH_32
 #endif	
 #endif
