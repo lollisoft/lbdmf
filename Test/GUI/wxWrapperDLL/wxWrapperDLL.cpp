@@ -99,6 +99,7 @@
 #include <wx/file.h>
 #include <wx/splash.h>
 #include <wx/treebase.h>
+#include <wx/tokenzr.h>
 #include <wx/html/htmlwin.h>
 #ifdef USE_PROPGRID
 // Necessary header file
