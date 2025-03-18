@@ -41,10 +41,12 @@ Source: "watcomenv.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "watcomenvc.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite
 Source: "buildwxWidgets_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "buildwxWidgets_MinGW_debug.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "buildwxWidgets_MinGW64_debug.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "buildwxWidgets_Custom_MinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "buildwxWidgets_Custom_MinGW_debug.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "installODBC.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "installMinGW.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
+Source: "installMinGW64.bat"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "Test\GUI\wxWrapper\splash.png"; DestDir: "{app}\Develop\Projects\lbdmf\BaseDevelopment"; CopyMode: alwaysoverwrite;
 Source: "Test\GUI\wxWrapper\toolbarimages\*.*"; DestDir: "{app}\Develop\Projects\lbdmf\BaseDevelopment\toolbarimages"; CopyMode: alwaysoverwrite;
 
