@@ -36,7 +36,7 @@ echo ) >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-1.1.34.tar.gz ( >> doBuildWx.bat
 echo curl -k -L -o %DEVLW%\lbDMF\Develop\Projects\lbdmf\vendor\libxslt-1.1.34.tar.gz ftp://xmlsoft.org/libxml2/libxslt-1.1.34.tar.gz >> doBuildWx.bat
 echo ) >> doBuildWx.bat
-echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Tools\mingw32\bin\gcc.exe ( >> doBuildWx.bat
+echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Tools\mingw64\bin\gcc.exe ( >> doBuildWx.bat
 echo call %DEVLW%\lbDMF\installMinGW64.bat %MINGW_STICKON_VERSION% %MINGW_STICKON_WIN32_VERSION% >> doBuildWx.bat
 rem echo copy /Y %DEVLW%\lbDMF\commctrl-wxWidgets-patch.h Develop\Tools\MinGW\include\commctrl.h >> doBuildWx.bat
 rem echo copy /Y %DEVLW%\lbDMF\w32api-Wcpp-patch.h Develop\Tools\MinGW\include\w32api.h >> doBuildWx.bat
