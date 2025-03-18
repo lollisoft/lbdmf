@@ -8,7 +8,7 @@ call watcomenv.bat exit DISTMODE
 
 @rem Override WXDIR from this point on. wxWidgets uses Windows backslash for path separators. 
 set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx
-set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw32\bin
+set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw64\bin
 
 @rem Get an explicite version that always ensures to build the code
 set MINGW_STICKON_VERSION=4.7.*
