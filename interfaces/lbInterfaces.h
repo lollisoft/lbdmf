@@ -932,6 +932,12 @@ PRIMARY KEY (id),
 #endif
 #endif
 
+#ifdef __MINGW64__
+#define CPUARCH_64
+#endif	
+#ifndef __MINGW64__
+#define CPUARCH_32
+#endif	
 
 #ifndef __BASE_TYPES_DEFINED__
 #define __BASE_TYPES_DEFINED__
@@ -968,11 +974,13 @@ PRIMARY KEY (id),
 #endif
 #endif
 #ifndef OSX
+#ifndef WINDOWS
 #ifdef CPUARCH_32	
         typedef unsigned long DWORD;
 #endif
 #ifdef CPUARCH_64	
         typedef unsigned int DWORD;
+#endif
 #endif
 #endif
         typedef unsigned short LB_DATA;
