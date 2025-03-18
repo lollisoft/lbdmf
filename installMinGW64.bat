@@ -10,10 +10,10 @@ curl -k -L -o 7z2301-x64.exe https://www.7-zip.org/a/7z2301-x64.exe
 )
 
 if NOT EXIST MinGW64.7z (
-%Systemroot%\System32\curl -k -L -o MinGW64.7z https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z/download
+%Systemroot%\System32\curl -k -L -o MinGW64.7z https://sourceforge.net/projects/mingw-w64/files/Toolchains%%20targetting%%20Win64/Personal%%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
 )
 if NOT EXIST MinGW64.7z (
-curl -k -L -o MinGW64.7z https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z/download
+curl -k -L -o MinGW64.7z https://sourceforge.net/projects/mingw-w64/files/Toolchains%%20targetting%%20Win64/Personal%%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
 )
 
 7z2301-x64.exe /S /D="C:\lbDMF\Develop\Projects\bin"
