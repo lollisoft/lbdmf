@@ -1,11 +1,15 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.130 $
+# * $Revision: 1.229.2.131 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.130 2025/03/02 13:47:51 lothar Exp $
+# * $Id: Makefile,v 1.229.2.131 2025/03/18 23:54:32 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.131  2025/03/18 23:54:32  lothar
+# * Propably the remaining adoptions to get Windows 64Bit build succeed.
+# * There are only some issues with the lbDB ODBC implementation.
+# *
 # * Revision 1.229.2.130  2025/03/02 13:47:51  lothar
 # * Added command to copy toolbar images to BaseDevelopment to enable instand run without issues after building the code.
 # *
@@ -2982,7 +2986,7 @@ endif
 
 lbDB: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
-	$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@
 
 lbPluginManager: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -e USEGDB=no -f $(MAKE_CONFIG_FILE)

@@ -25,11 +25,15 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.34 $
+# * $Revision: 1.148.2.35 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.34 2024/11/10 15:21:17 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.35 2025/03/18 23:54:32 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.35  2025/03/18 23:54:32  lothar
+# * Propably the remaining adoptions to get Windows 64Bit build succeed.
+# * There are only some issues with the lbDB ODBC implementation.
+# *
 # * Revision 1.148.2.34  2024/11/10 15:21:17  lothar
 # * Made changes to support OpenSuSE Tumbleweed on 64 Bit - yet fails with linking libjpeg
 # *
@@ -913,7 +917,7 @@ CCMINGW=gcc
 CPPMINGW=g++
 
 # Sqlite could be compiled in 32Bit only
-MINGW_ARCH=-m32
+MINGW_ARCH=#-m32
 
 ifeq ($(MODE), _DEBUG)
 MINGW_DEBUG= -gdwarf-2 -g3
