@@ -183,8 +183,8 @@ rem Some bin dirs for development
 rem set CVSBIN=%DEVROOT%\Tools\cvs
 set WATBIN=%DEVLW%\%BASE%\Tools\WATCOM\BINNT;%DEVROOT%\Tools\WATCOM\BINW
 set DEVBIN=%DEVLW%\%BASE%\bin
-
-set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw32\bin;
+rem Prefer the 64 bit compiler if both are present
+set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw64\bin;%DEVLW%\%BASE%\Tools\mingw32\bin;
 
 rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
