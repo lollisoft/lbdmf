@@ -68,6 +68,12 @@
 <xsl:otherwise>Code/Targets/lbDMF/Modules</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
+<xsl:variable name="pas_appmoduledir">
+<xsl:choose>
+<xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/></xsl:when>
+<xsl:otherwise>Code/Targets/Pascal</xsl:otherwise>
+</xsl:choose>
+</xsl:variable>
 <xsl:variable name="appexecutedir">
 <xsl:choose>
 <xsl:when test="$codegentarget!=''">Code/Targets/<xsl:value-of select="$codegentarget"/>/WxGUI_Applications</xsl:when>
