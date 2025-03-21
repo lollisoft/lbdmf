@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.131 $
+# * $Revision: 1.229.2.132 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.131 2025/03/18 23:54:32 lothar Exp $
+# * $Id: Makefile,v 1.229.2.132 2025/03/21 16:19:47 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.132  2025/03/21 16:19:47  lothar
+# * Deactivated on Linux the makefile based 64Bit setting detection and corrected the in header equivalent.
+# *
 # * Revision 1.229.2.131  2025/03/18 23:54:32  lothar
 # * Propably the remaining adoptions to get Windows 64Bit build succeed.
 # * There are only some issues with the lbDB ODBC implementation.
