@@ -25,11 +25,14 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.35 $
+# * $Revision: 1.148.2.36 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.35 2025/03/18 23:54:32 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.36 2025/03/21 16:19:47 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.36  2025/03/21 16:19:47  lothar
+# * Deactivated on Linux the makefile based 64Bit setting detection and corrected the in header equivalent.
+# *
 # * Revision 1.148.2.35  2025/03/18 23:54:32  lothar
 # * Propably the remaining adoptions to get Windows 64Bit build succeed.
 # * There are only some issues with the lbDB ODBC implementation.
@@ -1354,7 +1357,7 @@ C_OPS   = -c $(DEBUG_CXX_FLAGS) -DUNIX -DLINUX -DTVISION
 
 CPUARCH_BITS=$(shell getconf LONG_BIT)
 
-C_OPS   += -DCPUARCH_$(CPUARCH_BITS)
+#C_OPS   += -DCPUARCH_$(CPUARCH_BITS)
 
 ifeq ($(DEBUG), yes)
 DEBUG_CXX_FLAGS=-g
