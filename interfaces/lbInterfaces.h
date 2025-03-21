@@ -918,7 +918,7 @@ PRIMARY KEY (id),
 #ifdef __x86_64__
 #define CPUARCH_64
 #endif	
-#ifdef __i386__
+#ifndef __x86_64__
 #define CPUARCH_32
 #endif	
 #endif
@@ -932,12 +932,14 @@ PRIMARY KEY (id),
 #endif
 #endif
 
+#ifndef LINUX
 #ifdef __MINGW64__
 #define CPUARCH_64
 #endif	
 #ifndef __MINGW64__
 #define CPUARCH_32
 #endif	
+#endif
 
 #ifndef __BASE_TYPES_DEFINED__
 #define __BASE_TYPES_DEFINED__
@@ -975,12 +977,14 @@ PRIMARY KEY (id),
 #endif
 #ifndef OSX
 #ifndef WINDOWS
+
 #ifdef CPUARCH_32	
         typedef unsigned long DWORD;
 #endif
 #ifdef CPUARCH_64	
         typedef unsigned int DWORD;
 #endif
+
 #endif
 #endif
         typedef unsigned short LB_DATA;
