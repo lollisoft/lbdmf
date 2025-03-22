@@ -992,7 +992,7 @@ PRIMARY KEY (id),
 #endif
 
 #endif
-#endif
+
         typedef unsigned short LB_DATA;
         //typedef unsigned short u_short;
         /*...e*/
