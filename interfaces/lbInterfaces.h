@@ -983,14 +983,14 @@ PRIMARY KEY (id),
 #endif
 
 #ifndef OSX
-
+#ifndef __MINGW32__ // MinGW 64 defines DWORD and probably the MinGW 32 as well
 #ifdef CPUARCH_32	
         typedef unsigned long DWORD;
 #endif
 #ifdef CPUARCH_64	
         typedef unsigned int DWORD;
 #endif
-
+#endif //__MINGW32__
 #endif
 
         typedef unsigned short LB_DATA;
