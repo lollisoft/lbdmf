@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.134 $
+# * $Revision: 1.229.2.135 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.134 2025/03/29 17:11:17 lothar Exp $
+# * $Id: Makefile,v 1.229.2.135 2025/03/29 21:25:46 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.135  2025/03/29 21:25:46  lothar
+# * Added support to compile with old and new wxWidgets
+# *
 # * Revision 1.229.2.134  2025/03/29 17:11:17  lothar
 # * Added a line to install wxShapeFramweork after building
 # *
@@ -2730,6 +2733,7 @@ ifeq ($(OSTYPE), linux)
 	-$(MAKE) -s -C $@ -e MODULE=libwxShapeFramework -e TARGET=$(TARGETWXSO) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
+	-$(MAKE) -s -C $@ install
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 	-$(MAKE) -s -C $@ install
