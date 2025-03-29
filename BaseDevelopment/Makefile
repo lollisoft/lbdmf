@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.133 $
+# * $Revision: 1.229.2.134 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.133 2025/03/29 17:04:03 lothar Exp $
+# * $Id: Makefile,v 1.229.2.134 2025/03/29 17:11:17 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.134  2025/03/29 17:11:17  lothar
+# * Added a line to install wxShapeFramweork after building
+# *
 # * Revision 1.229.2.133  2025/03/29 17:04:03  lothar
 # * The designer runs now on Linux. Probably the first time as the module name for wxShapeFramework didn't conform the Linux naming. Obviously there were issues I had to modify the code within as well.
 # *
@@ -2729,6 +2732,7 @@ ifeq ($(CRUISECONTROL), yes)
 	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
+	-$(MAKE) -s -C $@ install
 endif
 
 ../vendor/wxShapeFramework/samples/wxSFDemo: dummy
