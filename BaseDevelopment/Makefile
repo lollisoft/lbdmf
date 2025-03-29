@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.132 $
+# * $Revision: 1.229.2.133 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.132 2025/03/21 16:19:47 lothar Exp $
+# * $Id: Makefile,v 1.229.2.133 2025/03/29 17:04:03 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.133  2025/03/29 17:04:03  lothar
+# * The designer runs now on Linux. Probably the first time as the module name for wxShapeFramework didn't conform the Linux naming. Obviously there were issues I had to modify the code within as well.
+# *
 # * Revision 1.229.2.132  2025/03/21 16:19:47  lothar
 # * Deactivated on Linux the makefile based 64Bit setting detection and corrected the in header equivalent.
 # *
@@ -2607,8 +2610,10 @@ endif
 ../vendor/wxShapeFramework/src: dummy
 	$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXFRAMEWORK) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
 ifeq ($(CRUISECONTROL), yes)
+	echo Build old wxShapeFramework
 	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
 else
+	echo Build current wxShapeFramework
 	$(MAKE) -s -C $@ -e LBWXVERSION=current
 endif
 
@@ -2719,8 +2724,21 @@ ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ install-strip
 
 ../vendor/wxShapeFramework/src: dummy
-	-$(MAKE) -s -C $@ -e MODULE=wxShapeFramework -e TARGET=$(TARGETWXSO) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+	-$(MAKE) -s -C $@ -e MODULE=libwxShapeFramework -e TARGET=$(TARGETWXSO) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
+
+../vendor/wxShapeFramework/samples/wxSFDemo: dummy
+	-$(MAKE) -s -C $@ -e MODULE=wxSFDemo -e TARGET=$(TARGETWXEXE) -e CUSTOM_FILES=wxxmlserializer/*.cpp -f $(MAKE_CONFIG_FILE)
+ifeq ($(CRUISECONTROL), yes)
+	$(MAKE) -s -C $@ -e LBWXVERSION=$(LBWXVERSION_CC_DEFAULT)
+else
+	$(MAKE) -s -C $@ -e LBWXVERSION=current
+endif
+
 
 ../vendor/wxShapeFramework/example: dummy
 	-$(MAKE) -s -C $@ -e MODULE=wxShapeFrameworkExample -e TARGET=$(TARGETWXEXE) -f $(MAKE_CONFIG_FILE)

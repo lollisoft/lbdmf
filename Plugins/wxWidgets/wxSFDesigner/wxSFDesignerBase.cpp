@@ -172,6 +172,8 @@ lbErrCodes LB_STDCALL wxSFDesignerBase::registerBaseEventHandler(lb_I_Dispatcher
 		metaapp->addMenuEntry("Layout", arrLayouts[i].c_str(), eventName, "");
 		dispatcher->addEventHandlerFn(this, (lbEvHandler) &wxSFDesignerBase::lbSetAutoLayout, eventName);
 	}
+
+	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL wxSFDesignerBase::lbLoadModel(lb_I_Unknown* uk) {

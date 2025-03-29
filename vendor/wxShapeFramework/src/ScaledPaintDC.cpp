@@ -8,6 +8,18 @@
  * Notes:
  **************************************************************/
 
+#ifdef LINUX
+
+#ifdef LBWXVERSION_CURRENT
+
+#define IGNORE_THIS
+
+#endif
+
+#endif
+
+#ifndef IGNORE_THIS
+
 #include "ScaledPaintDC.h"
 
 wxSFScaledPaintDC::wxSFScaledPaintDC(wxBitmap& outbmp, double scale)
@@ -257,3 +269,5 @@ void wxSFScaledPaintDC::DrawArc(const wxRealPoint& pt1, const wxRealPoint& pt2, 
 {
 	DrawArc(pt1.x, pt1.y, pt2.x, pt2.y, center.x, center.y);
 }
+
+#endif

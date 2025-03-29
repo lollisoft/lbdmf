@@ -8,6 +8,18 @@
  * Notes:
  **************************************************************/
 
+#ifdef LINUX
+
+#ifdef LBWXVERSION_CURRENT
+
+#define IGNORE_THIS
+
+#endif
+
+#endif
+
+#ifndef IGNORE_THIS
+
 #include "RectShape.h"
 #include "CommonFcn.h"
 
@@ -33,3 +45,5 @@ void wxSFRectShape::Deserialize(wxXmlNode* node)
 
 	wxSFShapeBase::Deserialize(node);
 }
+
+#endif
