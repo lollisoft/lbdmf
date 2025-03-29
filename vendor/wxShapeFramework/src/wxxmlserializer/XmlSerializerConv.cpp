@@ -8,6 +8,18 @@
  * Notes:
  **************************************************************/
 
+#ifdef LINUX
+
+#ifdef LBWXVERSION_CURRENT
+
+#define IGNORE_THIS
+
+#endif
+
+#endif
+
+#ifndef IGNORE_THIS
+
 #include "XmlSerializer.h"
 
 #include <wx/tokenzr.h>
@@ -288,3 +300,5 @@ wxString xsSerializable::BoolToString(bool val)
 {
 	return wxString::Format(wxT("%d"), val);
 }
+
+#endif
