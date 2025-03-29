@@ -139,14 +139,29 @@ VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
 endif    
 
 ifeq ($(OSTYPE), linux)
-MOD_INCL=$(STD_INCL) -I $(DEVROOT)/Projects/$(REPO_NAME)/vendor/propgrid/include -I ../wxWrapperDLL
+MOD_INCL=$(STD_INCL) -I $(DEVROOT)$(RELPATH)/vendor/propgrid/include -I ../wxWrapperDLL
 OBJDEP=
 
-C_ELFOPS += `wx-config --inplace --cxxflags` -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
-LDFLAGS = `wx-config --inplace --libs`
+C_ELFOPS += `wx-config --inplace --cxxflags` -I $(DEVROOT)$(RELPATH)/vendor/wxShapeFramework/include -DUSE_WXWRAPPER_DLL -DUNIX -DLINUX -DLB_I_EXTENTIONS
 
-VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid
-endif    
+ifeq ($(LBWXVERSION), current)
+LDFLAGS = `wx-config --inplace --libs` -lwx_gtk3u_aui-3.2 -lwx_gtk3u_propgrid-3.2
+endif
+ifeq ($(LBWXVERSION), old)
+LDFLAGS = `wx-config --inplace --libs` -lwxAUI -lwxPropgrid
+endif
+
+ifeq ($(LBWXVERSION), current)
+C_ELFOPS += -DLBWXVERSION_CURRENT
+endif
+
+ifeq ($(LBWXVERSION), current)
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lc wxShapeFramework.so
+endif
+ifeq ($(LBWXVERSION), old)
+VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lwxAUI -lwxPropgrid -lc wxShapeFramework.so
+endif
+endif
 
 ifeq ($(LB_USE_FRAMEWORKS), yes)
 

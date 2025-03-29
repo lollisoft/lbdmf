@@ -8,6 +8,18 @@
  * Notes:
  **************************************************************/
 
+#ifdef LINUX
+
+#ifdef LBWXVERSION_CURRENT
+
+#define IGNORE_THIS
+
+#endif
+
+#endif
+
+#ifndef IGNORE_THIS
+
 #include "RoundRectShape.h"
 #include "CommonFcn.h"
 
@@ -33,3 +45,5 @@ void wxSFRoundRectShape::Deserialize(wxXmlNode* node)
 
 	wxSFRectShape::Deserialize(node);
 }
+
+#endif

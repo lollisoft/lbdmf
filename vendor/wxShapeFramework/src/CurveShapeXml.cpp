@@ -8,6 +8,18 @@
  * Notes:
  **************************************************************/
 
+#ifdef LINUX
+
+#ifdef LBWXVERSION_CURRENT
+
+#define IGNORE_THIS
+
+#endif
+
+#endif
+
+#ifndef IGNORE_THIS
+
 #include "CurveShape.h"
 #include "CommonFcn.h"
 
@@ -34,3 +46,5 @@ void wxSFCurveShape::Deserialize(wxXmlNode* node)
     wxSFLineShape::Deserialize(node);
 
 }
+
+#endif
