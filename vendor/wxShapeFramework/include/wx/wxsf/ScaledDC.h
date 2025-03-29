@@ -141,11 +141,23 @@ protected:
 	virtual void DoDrawEllipticArc(wxCoord x, wxCoord y, wxCoord w, wxCoord h, double sa, double ea);
 	virtual void DoDrawIcon(const wxIcon& icon, wxCoord x, wxCoord y);
 	virtual void DoDrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2);
-	virtual void DoDrawLines(int n, const wxPoint points[], wxCoord xoffset, wxCoord yoffset);
-	virtual void DoDrawPoint(wxCoord x, wxCoord y);
+#ifdef LBWXVERSION_CURRENT
+    virtual void DoDrawLines(int n, const wxPoint points[], wxCoord xoffset, wxCoord yoffset);
+#endif
+#ifdef LBWXVERSION_OLD
+    virtual void DoDrawLines(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset);
+#endif
+    virtual void DoDrawPoint(wxCoord x, wxCoord y);
 	virtual void DoDrawPolyPolygon(int n, int count[], wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle);
-	virtual void DoDrawPolygon(int n, const wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle = wxODDEVEN_RULE);
-	virtual void DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height);
+	
+#ifdef LBWXVERSION_CURRENT
+    virtual void DoDrawPolygon(int n, const wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle = wxODDEVEN_RULE);
+#endif
+#ifdef LBWXVERSION_OLD
+    virtual void DoDrawPolygon(int n, wxPoint points[], wxCoord xoffset, wxCoord yoffset, int fillStyle = wxODDEVEN_RULE);
+#endif
+	
+    virtual void DoDrawRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height);
 	virtual void DoDrawRotatedText(const wxString& text, wxCoord x, wxCoord y, double angle);
 	virtual void DoDrawRoundedRectangle(wxCoord x, wxCoord y, wxCoord width, wxCoord height, double radius);
 	virtual void DoDrawSpline(wxList *points);
@@ -518,8 +530,14 @@ public:
 		return m_pOrig->DoGetAsBitmap( subrect );
 	}
 
+#ifdef LBWXVERSION_CURRENT
     virtual void DoDrawLines(int n, const wxPoint points[],
                              wxCoord xoffset, wxCoord yoffset )
+#endif
+#ifdef LBWXVERSION_OLD
+    virtual void DoDrawLines(int n, wxPoint points[],
+                             wxCoord xoffset, wxCoord yoffset )
+#endif
 	{
         wxPoint *updPoints = new wxPoint[n];
 
@@ -553,9 +571,16 @@ public:
 		delete [] pts;
 	}
 
+#ifdef LBWXVERSION_CURRENT
     virtual void DoDrawPolygon(int n, const wxPoint points[],
-                           wxCoord xoffset, wxCoord yoffset,
-                           wxPolygonFillMode fillStyle = wxODDEVEN_RULE)
+                               wxCoord xoffset, wxCoord yoffset,
+                               wxPolygonFillMode fillStyle = wxODDEVEN_RULE)
+#endif
+#ifdef LBWXVERSION_OLD
+    virtual void DoDrawPolygon(int n, wxPoint points[],
+                               wxCoord xoffset, wxCoord yoffset,
+                               wxPolygonFillMode fillStyle = wxODDEVEN_RULE)
+#endif
 	{
         wxPoint *updPoints = new wxPoint[n];
 
