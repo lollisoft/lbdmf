@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.135 $
+# * $Revision: 1.229.2.136 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.135 2025/03/29 21:25:46 lothar Exp $
+# * $Id: Makefile,v 1.229.2.136 2025/03/30 08:19:00 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.136  2025/03/30 08:19:00  lothar
+# * Don't build wxSFDemo on Mac. Build setup does not match to this app.
+# *
 # * Revision 1.229.2.135  2025/03/29 21:25:46  lothar
 # * Added support to compile with old and new wxWidgets
 # *
@@ -1499,8 +1502,7 @@ ALLTARGETS = \
 	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper \
-	../AppDevelopmentDemo/MkBs \
-	../vendor/wxShapeFramework/samples/wxSFDemo
+	../AppDevelopmentDemo/MkBs
 
 else
 
@@ -1537,8 +1539,7 @@ ALLTARGETS = \
 	../Test/GlobalAppServer/server \
 	$(BASEDIRECTORIES) \
 	../Test/GUI/wxWrapper \
-	../AppDevelopmentDemo/MkBs \
-	../vendor/wxShapeFramework/samples/wxSFDemo
+	../AppDevelopmentDemo/MkBs
 
 endif
 
