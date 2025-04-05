@@ -85,4 +85,4 @@ $CPP stringtools.cpp -c -DOSX \
     -I /usr/include \
     -I ../dosdir
 
-$CPP -o mkmk stringtools.o contain.o mkmk.o ../dosdir/match.o ../dosdir/dosdir.o
+$CPP -o mkmk.out stringtools.o contain.o mkmk.o ../dosdir/match.o ../dosdir/dosdir.o
