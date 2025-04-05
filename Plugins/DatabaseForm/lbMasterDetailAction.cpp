@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,10 +22,10 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
-
-            65760 Eschborn (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 
 /*...sincludes:0:*/
@@ -93,8 +93,6 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #define USE_EXRERNAL_FORMULARACTIONS
 
 #include <lbDatabaseForm.h>
@@ -233,22 +231,19 @@ bool LB_STDCALL lbDetailFormAction::openDetailForm(lb_I_String* formularname, lb
 
 
 			if ((formParams != NULL) && (forms != NULL)) {
-				UAP(lb_I_SecurityProvider, securityManager)
-				UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-				AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
 				UAP_REQUEST(getModuleInstance(), lb_I_String, SQL)
-				long AppID = securityManager->getApplicationID();
+				long AppID = meta->getApplicationID();
 
-				while (forms->hasMoreElements()) {
-					forms->setNextElement();
+				while (forms->hasMoreFormulars()) {
+					forms->setNextFormular();
 
-					if ((forms->get_anwendungid() == AppID) && (strcmp(forms->get_name(), formularname->charrep()) == 0)) {
+					if ((forms->getApplicationID() == AppID) && (strcmp(forms->getName(), formularname->charrep()) == 0)) {
 						UAP(lb_I_DatabaseForm, f)
 						UAP(lb_I_DatabaseForm, master)
 						UAP(lb_I_DatabaseForm, form)
-						long FormularID = forms->get_id();
-						*SQL = lookupParameter(*&formParams, "query", FormularID);
-						forms->finishIteration();
+						long FormularID = forms->getFormularID();
+						*SQL = formParams->getParameter("query", FormularID);
+						forms->finishFormularIteration();
 						form = gui->createDBForm(formularname->charrep(),
 												 SQL->charrep(),
 												 DBName->charrep(),
@@ -570,8 +565,8 @@ long LB_STDCALL lbDetailFormAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectById(myActionID);
-			*What = appActionSteps->get_what();
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
 
 			*msg = "Open detail form (";
 			*msg += What->charrep();
