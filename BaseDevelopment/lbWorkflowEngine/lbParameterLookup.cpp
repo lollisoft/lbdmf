@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@
             65760 Eschborn (germany)
 */
 /*...e*/
-
+#ifdef USE_PARAMETER_LOOKUP
 /*...sincludes:0:*/
 #include <lbDMF_wxPrec.h>
 
@@ -90,3 +90,5 @@ char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name,
 	_LOG << "getParameter(...) Error: Parameter not found." LOG_
 	return NULL;
 }
+
+#endif
