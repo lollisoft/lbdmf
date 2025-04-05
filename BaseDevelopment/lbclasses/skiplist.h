@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -72,8 +72,7 @@ private:
 public:
 	SkipList();
 	virtual ~SkipList();
-
-	lb_I_Iterator* LB_STDCALL getIterator();
+	
 	
 	DECLARE_LB_UNKNOWN()
 	DECLARE_LB_I_CONTAINER_IMPL()
@@ -91,64 +90,6 @@ public:
 	Elem dump_next();
 };
 /*...e*/
-
-class Iterator : public lb_I_Iterator
-{
-private:
-	SkipNode*		head;
-	SkipNode*		skipiterator;
-	lb_I_KeyBase*	_currentKey;
-	  
-	int level;
-	int flag;
-	int count;
-	bool cloning;
-	int iteration;
-	lb_I_Element* iterator;
-	bool canDeleteObjects;
-	lb_I_Element* container_data;
-
-	int can_dump();
-	Elem dump_next();
-
-public:
-	Iterator();
-	virtual ~Iterator();
-	Iterator(SkipNode* _head, int _count);
-
-	DECLARE_LB_UNKNOWN()
-
-		
-	/** \brief Number of objects in the container.
-	 *
-	 */
-    int LB_STDCALL Count();
-
-	/** \brief Returns 1 if elements are iterable.
-	 *
-	 */
-    int LB_STDCALL hasMoreElements();
-
-	/** \brief Get next element.
-	 *
-	 */
-    lb_I_Unknown* LB_STDCALL nextElement();
-
-	/** \brief Stops the iteration modus, begun with hasMoreElements.
-	 *
-	 * Use this function to stop the iteration. You must use this function to
-	 * be able to restart iteration. If hasMoreElements returns 0, the
-	 * iteration is finished automatically.
-	 */
-    void LB_STDCALL finishIteration();
-	
-	/** \brief Get current key based on iterator position.
-	 *
-	 */
-	lb_I_KeyBase* LB_STDCALL currentKey();
-};
-
-
 /*...sclass lbSkipListElement:0:*/
 class lbSkipListElement : public lb_I_Element {
 public:
