@@ -61,8 +61,6 @@ extern "C" {
 #include <lbConfigHook.h>
 #endif
 
-#include <lbInterfaces-lbDMFManager.h>
-
 /*...e*/
 
 #ifdef WINDOWS
@@ -109,7 +107,7 @@ int main(int argc, char *argv[]) {
 
 		QI(uk, lb_I_Translations, translations)
 
-		translations->add("Auto", "car", "german", 1);
+		translations->addTranslation("Auto", "car", "german", 1);
 	}
 
 	PM->unload();

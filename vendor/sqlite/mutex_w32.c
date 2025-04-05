@@ -11,7 +11,7 @@
 *************************************************************************
 ** This file contains the C functions that implement mutexes for win32
 **
-** $Id: mutex_w32.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
+** $Id: mutex_w32.c,v 1.2.4.1 2025/04/05 16:16:40 lothar Exp $
 */
 #include "windllexport.h"
 #include "sqliteInt.h"

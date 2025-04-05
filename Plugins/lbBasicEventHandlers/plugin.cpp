@@ -69,11 +69,11 @@ extern "C" {
 /*...e*/
 
 /*...sclass lbPluginModuleXSLTTransformer:0:*/
-class lbPluginBasicEventHandlers : public lb_I_PluginModule {
+class lbPluginModuleFileOperations : public lb_I_PluginModule {
 public:
 	
-	lbPluginBasicEventHandlers();
-	virtual ~lbPluginBasicEventHandlers();
+	lbPluginModuleFileOperations();
+	virtual ~lbPluginModuleFileOperations();
 	
 	DECLARE_LB_UNKNOWN()
 	
@@ -85,37 +85,39 @@ public:
 /*...e*/
 
 /*...sclass lbPluginModuleVisitors implementation:0:*/
-BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginBasicEventHandlers)
+BEGIN_IMPLEMENT_LB_UNKNOWN(lbPluginModuleFileOperations)
 ADD_INTERFACE(lb_I_PluginModule)
 END_IMPLEMENT_LB_UNKNOWN()
 
-IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginBasicEventHandlers)
+IMPLEMENT_FUNCTOR(instanceOfPluginModule, lbPluginModuleFileOperations)
 
-BEGIN_PLUGINS(lbPluginBasicEventHandlers)
-	ADD_PLUGIN(lbPluginTextOperations,		ActionStep)
+BEGIN_PLUGINS(lbPluginModuleFileOperations)
+ADD_PLUGIN(lbPluginReadTextFileToString,		ActionStep)
+ADD_PLUGIN(lbPluginWriteStringToFile,			ActionStep)
+ADD_PLUGIN(lbPluginFileExists,					ActionStep)
 END_PLUGINS()
 
 
 
-lbPluginBasicEventHandlers::lbPluginBasicEventHandlers() {
+lbPluginModuleFileOperations::lbPluginModuleFileOperations() {
 	
 }
 
-lbPluginBasicEventHandlers::~lbPluginBasicEventHandlers() {
-	_CL_VERBOSE << "lbPluginBasicEventHandlers::~lbPluginBasicEventHandlers() called." LOG_
+lbPluginModuleFileOperations::~lbPluginModuleFileOperations() {
+	_CL_VERBOSE << "lbPluginModuleFileOperations::~lbPluginModuleFileOperations() called." LOG_
 }
 
-void LB_STDCALL lbPluginBasicEventHandlers::initialize() {
-	_CL_VERBOSE << "lbPluginBasicEventHandlers::initialize() called." LOG_
+void LB_STDCALL lbPluginModuleFileOperations::initialize() {
+	_CL_VERBOSE << "lbPluginModuleFileOperations::initialize() called." LOG_
 	enumPlugins();
 }
 
-void LB_STDCALL lbPluginBasicEventHandlers::install() {
+void LB_STDCALL lbPluginModuleFileOperations::install() {
 
 }
 
-lbErrCodes LB_STDCALL lbPluginBasicEventHandlers::setData(lb_I_Unknown* uk) {
-	_CL_VERBOSE << "lbPluginBasicEventHandlers::setData(...) not implemented yet" LOG_
+lbErrCodes LB_STDCALL lbPluginModuleFileOperations::setData(lb_I_Unknown* uk) {
+	_CL_VERBOSE << "lbPluginModuleFileOperations::setData(...) not implemented yet" LOG_
 	
 	if (uk != NULL) {
 		_CL_LOG << "Cloning object with " << uk->getRefCount() << " references." LOG_

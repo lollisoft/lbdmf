@@ -1,11 +1,16 @@
 #...sRevision history:0:
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.3 $
+# * $Revision: 1.3.4.1 $
 # * $Name:  $
-# * $Id: lbDOMConfig.mak,v 1.3 2001/07/11 16:04:33 lothar Exp $
+# * $Id: lbDOMConfig.mak,v 1.3.4.1 2025/04/05 16:16:30 lothar Exp $
 # *
 # * $Log: lbDOMConfig.mak,v $
+# * Revision 1.3.4.1  2025/04/05 16:16:30  lothar
+# * This file seems to clash with HEAD bransh when migrating to git.
+# * So update it in the bransh to probably fix this. Why does the
+# * migration fails here?
+# *
 # * Revision 1.3  2001/07/11 16:04:33  lothar
 # * First version of module management that hold's a little stresstest
 # *

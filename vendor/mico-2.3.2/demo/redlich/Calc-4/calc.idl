@@ -1,0 +1,20 @@
+// IDL -- Taschenrechner fuer komplexe Zahlen
+
+module Calc4 {
+
+    interface calc          {
+        struct complex {
+            float r;      // Real-Teil
+            float i;      // Imaginaer-Teil
+        };
+    
+        exception MyException  {
+            string reason;
+        };
+    
+        oneway void  setValue(in complex z);
+        complex  add(in complex z);
+        void     mult(in complex z, out complex result);
+        void     div(inout complex z) raises (MyException);
+    };
+};

@@ -1,0 +1,12 @@
+
+version 0.2b
+------------
+- speedup for delete_all_properties operation
+
+version 0.2
+-----------
+- fixed get_number_of_properties() definition (bug reported by Karel Gardas)
+- changed #defines in PropertyService_impl.h
+- wrote "property-daemon" demo (see .../mico/demo/property-daemon)
+- changed classnames from MICO_Whatever to Whatever_impl 
+

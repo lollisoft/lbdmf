@@ -1,0 +1,2 @@
+#define MICO_VERSION "2.3.1"
+#define MICO_BIN_VERSION 0x020301

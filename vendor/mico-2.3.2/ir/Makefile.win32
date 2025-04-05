@@ -1,0 +1,52 @@
+#
+# MICO --- a CORBA 2.0 implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and/or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+!include ..\MakeVars.win32
+
+LINK_BUG_OBJS=..\orb\util.obj \
+              ..\idl\params.obj ..\idl\parser.obj ..\idl\yacc.obj \
+              ..\idl\scanner.obj ..\idl\parsenode.obj ..\idl\idlparser.obj \
+              ..\idl\codegen.obj ..\idl\codegen-midl.obj \
+              ..\idl\codegen-c++-util.obj ..\idl\codegen-c++-common.obj \
+              ..\idl\codegen-c++-stub.obj ..\idl\codegen-c++-skel.obj \
+              ..\idl\codegen-c++.obj ..\idl\codegen-c++-impl.obj \
+              ..\idl\codegen-idl.obj ..\idl\dep.obj ..\idl\error.obj \
+              ..\idl\const.obj ..\idl\db.obj ..\idl\prepro.obj
+
+CXXFLAGS = $(CXXFLAGS) /I. /I..\include /I..\include\windows /I..\idl
+
+SRCS = ir.cc ir_skel.cc ir_base.cc ir_impl.cc main.cc
+
+
+STATIC_OBJS = $(SRCS:.cc=.obj)
+
+
+prg: ird.exe
+	copy ird.exe ..\win32-bin
+
+ird.exe: $(STATIC_OBJS)
+	$(LINK) $(LINKFLAGS) /out:ird.exe main.obj $(LINK_BUG_OBJS) \
+	..\orb\mico$(VERSION).lib ole32.lib ..\idl\idl$(VERSION).lib
+
+clean:
+	del /f $(STATIC_OBJS) main.obj ird.exe *.pdb 2> nul
+

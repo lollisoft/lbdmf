@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106.2.5 $
+ * $Revision: 1.106.2.6 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.106.2.5 2017/07/09 08:23:13 lollisoft Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106.2.6 2025/04/05 16:16:34 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.106.2.6  2025/04/05 16:16:34  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.106.2.5  2017/07/09 08:23:13  lollisoft
  * Added new data type mappings. Hopefully first usable version.
  *

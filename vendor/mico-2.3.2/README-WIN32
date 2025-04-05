@@ -1,0 +1,194 @@
+
+RELEASE NOTES
+-------------
+
+This README describes some specific details for running MICO under
+Windows using the Visual-C++ compiler from Microsoft. Beware that the
+port isn't finished yet(but hopefully very close to completion).
+
+Take a look at mico\demo\mfc\README to see an example that uses MICO
+in conjunction with the MFC class library.
+
+
+
+PROBLEMS
+--------
+
+Porting MICO to Visual-C++ was a major pain. Sometimes a MICO
+application will crash inside mico.dll. As far as we can tell this is
+related to a bug in the Microsoft Linker when dealing with global
+constructors. If this happens to you, try to link typecode.obj and
+util.obj statically with your application (a copy of these object
+files can be found in win32-bin\lib). This usually resolved our
+problems...  sigh...
+
+ Normally no need to link any additional files.
+ The util.obj is only needed when passing std::map objects between
+ application and a dll(necessary in idl.exe).
+ The problem with typecode.obj should be fixed too(knock on wood).
+
+Most of the demos now have a makefile for VC++ and a batch file.
+The presence of these, does not mean that all the examples work, most of
+them have been converted automatically. In some cases, not everything
+is ported to win32, in other cases the compiler can't handle the code.
+Sometimes micod or a server keeps on running, after an example
+ends(you have to close the console, or  when the process is not
+started with a separate console(start /b), you have to kill the process
+from the tasklist).
+
+Especially for compiling single demos, a small batch file placed
+somewhere in the path(for example named make.bat, unless you 
+already have a make.exe ), that looks like:
+
+nmake /f makefile.win32 %1 %2 %3
+
+is quite helpful, so that you can compile, just by
+typing make(or 'make clean' to remove the object files )
+
+TODO:
+- nsadmin has strange input handling
+- demo/relship won't compile
+
+
+Visual C++ 5 SP3 contains a SERIOUS BUG in the std::string class,
+using VC6 is recommended!
+
+
+If you have problems with the dll-version, here is a guide
+from Roland Koeckel <roland.koeckel@gmx.de> how to use
+MICO in a static library:
+
+How to compile mico as a static library with VC++ 6.0 SP1
+
+1.) VC++ and *.cc files
+
+Making VC++ recognize *.cc files as C++ files is a major
+hazzle. I am tempted to say this has been done on purpose.
+But in case you want to compile mico in the Developer
+there is no way around:
+
+http://support.microsoft.com/support/kb/articles/Q181/5/06.asp
+
+Everybody not willing or able to use regedit feel free to
+use the following registry file at your own risk.
+Copy the lines between the dashed lines into a file "cc.reg"
+and double click on it.
+
+- - - - - - cc.reg - - - -
+
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\.cc]
+@="cppfile"
+
+[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\6.0\Build System\Components\Platforms\Win32 (x86)\Tools\32-Bit C/C++-Compiler für 80x86]
+"Input_Spec"="*.c;*.cpp;*.cxx;*.cc"
+
+[HKEY_CURRENT_USER\Software\Microsoft\DevStudio\6.0\Build System\Components\Tools\<Component 0x3>]
+"Input_Spec"="*.c;*.cpp;*.cxx;*.cc"
+
+- - - - - - - - - - - - - -
+
+2.) Creating the project
+
+- Create a new project "micolib" as a Win32 Static Library
+
+- Add _WINDOWS, BUILD_MICO_DLL and __MICO_ORB__ to the
+  precompiler definitions for Debug and Release
+
+- Select "Multithreaded debugger" for Debug and "Multithreaded"
+  for Release as Runtime Library
+
+- Add the following files to the project:
+
+  mico\orb\*.cc, mico\ir\ir_all.cc, mico\imr\imr_all.cc
+
+- Remove the following files from the project:
+
+  *.cc.diff
+  win32def.cc,
+  win32dll.cc
+  os-unix.cc
+  memcheck.cc
+  memtrace.cc
+  orb_all.cc
+
+- Add mico\include\windows and mico\include to your include
+  path. Move mico\include\windows up to the very top
+
+- Add /Tp to the compiler paramters for the .cc files
+
+- Compile the library
+
+- Be prepared for a huge debug lib (up to 40M)
+
+3.) Using the library
+
+- Create a new project for your application and make it depend on
+  the mico lib project.
+
+- Add _WINDOWS to the precompiler definitions for Debug and Release
+
+- Select "Multithreaded debugger" as Runtime Library for the
+  debug build and "Multithreaded" for the release build
+
+- Add wsock32.lib to the list of libraries and any other lib you
+  want to link your application with. The mico lib will be linked
+  to your application through the dependency
+
+- Compile the project
+
+- Be prepared for huge debug database files (.pdb)
+
+---------------------------------------
+
+
+When using micod with --forward it takes a rather long time (about
+1.5 sec) to invoke an object after the server has been restarted
+after a shutdown.
+
+To improve the performance of rebinding to an object,
+an adjustment can be made to the Microsoft TCP/IP implementation.
+Without this change, the time it takes for a client to rebind to a
+server object is significantly longer than needed.
+
+Specifically, if a server responds that a port in the search range
+is not in use, the Microsoft TCP/IP default is to continue trying
+3 times with a half-second interval between each retry.
+This value of 3 retries is settable in the registry, and
+we recommend this be changed to 0.
+Note that changing this parameter only takes effect after a reboot.
+
+To set this manually, use REGEDIT:
+
+Windows NT
+------------------
+create a DWORD value called TcpMaxConnectRetransmissions in:
+
+HKEY_LOCAL_MACHINE\
+SYSTEM\
+CurrentControlSet\
+Services\
+Tcpip\
+Parameters
+
+and set the value to 0.
+
+Windows 95
+-----------------
+create a DWORD value called MaxConnectRetries in:
+
+KEY_LOCAL_MACHINE\
+System\
+CurrentControlSet\
+Services\
+VxD\
+MSTCP
+
+and set the value to 0.
+
+
+HELP
+----
+
+Feel free to send comments, patches, or whatever over the mailing list!

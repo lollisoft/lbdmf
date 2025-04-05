@@ -1,0 +1,88 @@
+#
+# MICO --- a CORBA 2.0 implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and/or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+!include ..\MakeVars.win32
+
+LINK_BUG_OBJS=..\orb\util.obj
+# ..\orb\typecode.obj
+
+CXXFLAGS = $(CXXFLAGS)
+# /DBUILD_MICO_DLL
+
+# ----------------------------------------------------------------------
+
+
+CXXFLAGS = $(CXXFLAGS) /I. /I..\include /I..\include\windows
+
+SRCS = params.cc codegen-c++-common.cc codegen-idl.cc codegen-c++-skel.cc \
+       codegen.cc parsenode.cc codegen-c++-stub.cc const.cc \
+       parser.cc codegen-c++-util.cc codegen-c++-impl.cc db.cc \
+       prepro.cc codegen-c++.cc dep.cc error.cc scanner.cc \
+       codegen-midl.cc idlparser.cc yacc.cc
+
+
+STATIC_OBJS = $(SRCS:.cc=.obj)
+
+DLL_SRCS = $(SRCS) 
+
+
+DLL_OBJS= parser.obj yacc.obj scanner.obj parsenode.obj \
+         idlparser.obj codegen.obj codegen-c++-util.obj \
+         codegen-c++-common.obj codegen-c++-stub.obj codegen-c++-skel.obj \
+         codegen-c++.obj codegen-c++-impl.obj codegen-idl.obj dep.obj \
+         codegen-midl.obj error.obj const.obj db.obj prepro.obj params.obj
+
+
+lib: idl$(VERSION).dll
+	copy idl$(VERSION).dll ..\win32-bin
+	copy idl$(VERSION).lib ..\win32-bin\lib
+
+prg: idl.exe
+	copy idl.exe ..\win32-bin
+
+# Map-classes can't be passed between dlls (or dlls and apps)
+# so map-based GetOpt has to be linked explicitely
+
+idl.exe: main.obj $(DLL_OBJS)
+	$(LINK) $(LINKFLAGS) main.obj  $(DLL_OBJS) $(LINK_BUG_OBJS)\
+		/subsystem:console  ../orb/mico$(VERSION).lib ole32.lib \
+		/out:idl.exe
+
+idl$(VERSION).dll: $(DLL_OBJS) win32dll.def
+	copy ..\orb\mico$(VERSION).dll .
+	$(LINK) $(LINKDLLFLAGS) $(DLL_OBJS) /subsystem:console ../orb/mico$(VERSION).lib /out:idl$(VERSION).dll \
+			ole32.lib /def:win32dll.def
+	del mico$(VERSION).dll
+
+win32dll.def: $(DLL_OBJS) ../orb/win32def.exe win32dll.dmp
+	..\orb\win32def.exe "idl$(VERSION)" "MICO is CORBA" win32dll.dmp > win32dll.def
+
+win32dll.dmp: $(DLL_OBJS)
+	dumpbin /symbols $(DLL_OBJS) > win32dll.dmp
+
+../orb/win32def.exe: ../orb/win32def.cc
+	cl /TP ../orb/win32def.cc /o../orb/win32def.exe
+	del /f win32def.exe
+
+clean:
+	del /f *.obj *.def *.dmp *.pch *.exp *.dll *.lib \
+		idl.exe *.pdb *~ 2> nul

@@ -4,7 +4,7 @@
 // Author:      Peter Cawley
 // Modified by:
 // Created:     2009-07-01
-// RCS-ID:      $Id: buttonbar.cpp,v 1.3 2010/05/17 05:50:42 lollisoft Exp $
+// RCS-ID:      $Id: buttonbar.cpp,v 1.3.2.1 2025/04/05 16:16:41 lothar Exp $
 // Copyright:   (C) Peter Cawley
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////

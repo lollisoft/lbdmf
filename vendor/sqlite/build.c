@@ -22,7 +22,7 @@
 **     COMMIT
 **     ROLLBACK
 **
-** $Id: build.c,v 1.3 2008/05/09 06:38:22 lollisoft Exp $
+** $Id: build.c,v 1.3.4.1 2025/04/05 16:16:40 lothar Exp $
 */
 #include "windllexport.h"
 #include "sqliteInt.h"

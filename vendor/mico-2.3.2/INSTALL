@@ -1,0 +1,209 @@
+
+Prerequisits
+============
+
+Unix
+----
+
+Before trying to compile Mico make sure you have installed the
+following software packages:
+
+   o gnu make version 3.7 or newer (required)
+   o C++ compiler and library (required):
+        - egcs 1.x, or
+        - g++ 2.8.x and libg++ 2.8.x (where x > 0), or
+        - g++ 2.7.2.x and libg++ 2.7.2
+   o flex 2.5.2 or newer (optional)
+   o bison 1.22 or newer (optional)
+   o JDK 1.1.5 (SUN's Java developers kit) (optional)
+   o JavaCUP 0.10g (parser generator for Java) (optional)
+
+flex and bison are only necessary if you change their input files
+(files having the suffix .l and .y) or if you want to compile the
+graphical user unterface. The last two items (JDK and JavaCUP) are
+only needed for the graphical interface repository browser, not for
+Mico itself. So you can get along without installing the Java stuff.
+
+It is important that you use one of the above listed C++ compilers and
+a C++ library that matches the version of the compiler. Your best bet
+is using either egcs or g++ 2.8. In contrast to gcc 2.7.2 both of them
+have proper support for exceptions. egcs is a bit easier to install
+than g++, because it includes a matching C++ library.
+
+Windows 95/NT
+-------------
+
+In order to run MICO on Windows 95 or NT you have to use the Cygnus
+CDK beta 19, a port of the GNU tools to Win32 or Microsoft's
+Visual-C++ compiler. For instructions on how to compile MICO using the
+Visual-C++ compiler, refer to the file README-WIN32 in the main
+directory of the MICO sources.
+
+Install the CDK by running its setup program.  Note that you have to
+install itin the directory the setup program suggests (c:\Cygnus\CDK\B19);
+otherwise bison won't be able to find its skeleton files.  Then create
+c:\bin and put an sh.exe into it. Likewise create c:\lib and put a cpp.exe
+into it:
+
+  mkdir c:\bin
+  copy c:\Cygnus\CDK\B19\H-i386-cygwin32\bin\bash.exe c:\bin\sh.exe
+  mkdir c:\lib
+  copy c:\Cygnus\CDK\B19\H-i386-cygwin32\lib\gcc-lib\2.7-B19\cpp.exe c:\lib
+
+Now you are ready to unpack and compile Mico as described in section 2.3.
+
+There are some problems with the current release of the CDK:
+
+   o On standalone machines which are not connected to a name server
+     resolving IP addresses other than 127.0.0.1 into host names
+     will hang forever. This is either a problem with the CDK or with
+     Windows in general. On standalone machines you therefore have to
+     make all servers bind to 127.0.0.1 by specifying
+     -ORBIIOPAddr inet:127.0.0.1:<port> on the command line.
+
+   o The gcc 2.7 that comes with the CDK has broken exception handling.
+     Furthermore it seems to be unable to use virtual memory, at least I
+     get out of virtual memory errors although there is a lot of free swap
+     space. I know there are ports of egcs and gcc 2.8 (which might
+     do better), but didn't give them a try.
+
+   o There seems to be a problem with automatic TCP port number selection.
+     Usually one binds to port number 0 and the system automatically picks
+     an unused port for you. This basically works with CDK, but sometimes
+     causes hanging connections. The solution is to always explicitely
+     specify port numbers, i.e. give all servers---even ones that
+     are started by micod---the option -ORBIIOPAddr inet:0.0.0.0:<port>,
+     where <port> is nonzero.
+
+Installation
+============
+
+The Mico source release is shipped as a tar'ed and gzip'ed archive called
+
+  mico-<version>.tar.gz
+
+Unpack the archive using the following command:
+
+  gzip -dc mico-<version>.tar.gz | tar xf -
+
+You are left with a new directory mico containing the Mico sources.  To save
+you the hassle of manually editing Makefile's and such, Mico comes with a
+configuration script that checks your system for required programs and other
+configuration issues. The script, called configure, supports several
+important command line options:
+
+--help
+     Gives an overview of all supported command line options.
+
+--prefix=<install-directory>
+     With this options you tell configure where the Mico programs and
+     libraries should be installed after compilation. This defaults
+     to /usr/local.
+
+--disable-optimize
+     Do not use the -O option when compiling C/C++ files. It is now safe to
+     use this option because only files that do not use exceptions are
+     compiled using -O, which is why optimization is now turned on by default.
+
+--enable-debug
+     Use the -g option when compiling C/C++ files.
+
+--enable-repo
+     Use the -frepo flag when compiling C++ files.  This works only with a
+     patched g++ 2.7.2 and will greatly reduce the size of the binaries, at
+     the cost of much slower compilation (this option instructs g++ to do
+     some sort of template repository). You must use this option on HP-UX,
+     otherwise you will get lots of error during linking.
+
+--disable-shared
+     Build the Mico library as a static library instead as a shared one.
+     Shared libraries currently only work on ELF based systems (e.g., Linux,
+     Solaris, Digital Unix), AIX, and HP-UX. If you do not use the
+     --disable-shared option you have to make sure the directory where the
+     Mico library resides in is either by default searched for shared
+     libraries by the dynamic linker (/usr/lib and /lib on most systems) or
+     you have to include the directory in the environment variable that tells
+     the dynamic linker where to search for additional shared libraries. This
+     variable is called LIBPATH on AIX, SHLIB_PATH on HP-UX and
+     LD_LIBRARY_PATH on all the other systems.
+     To run the generated binaries before doing a make install you have to
+     set this environment variable like this:
+
+          # AIX
+
+          export LIBPATH=<mico-path>/mico/orb:$LIBPATH
+
+          # HP-UX
+
+          export SHLIB_PATH=<mico-path>/mico/orb:$SHLIB_PATH
+
+          # others
+
+          export LD_LIBRARY_PATH=<mico-path>/mico/orb:$LD_LIBRARY_PATH
+
+     where <mico-path> is the absolute path of the directory the Mico sources
+     were unpacked in.
+
+--disable-dynamic
+     This option disables dynamic loading of CORBA objects into a running
+     executeable. For dynamic loading to work your system must either support
+     support dlopen() and friends or shl_load() and friends.
+
+--enable-final
+     Build a size optimized version of the Mico library. This will need lots
+     of memory during compilation but will reduce the size of the resulting
+     library a lot. Works with and without --enable-shared. Does not work on
+     HP-UX.
+
+--disable-mini-stl
+     As mentioned before, Mico makes use of the Standard Template Library
+     (STL). For environments that do not provide an STL implementation, Mico
+     comes with its own slim STL (called MiniSTL), which is simply a subset
+     of the standard STL sufficient to compile Mico. By default Mico will
+     use MiniSTL. If you want to use the system supplied STL for some reason
+     you have to use the option --disable-mini-stl.
+     MiniSTL works well with g++ and greatly reduces compilation time and
+     size of the binaries. Using MiniSTL one could try to compile Mico using
+     a C++ compiler other than g++. But this still has not been tested and
+     may therefore lead to problems.
+
+--disable-except
+     Disable exception handling.  On some platforms (e.g., DEC alpha) g++
+     has very buggy exception handling support and cannot compile Mico with
+     exeption handling enabled.  If this happens to you try turning off
+     exception handling using this option.
+
+--with-qt=<qt-path>
+     Enable support for QT. <qt-path> is the directory where QT has been
+     installed in.
+
+--with-gtk=<gtk-path>
+     Enable support for GTK. <gtk-path> is the directory where GTK has been
+     installed in.
+
+--with-tcl=<tcl-path>}
+     Enable support for TCL. <tcl-path> is the directory where
+     TCL has been installed in.
+
+--with-ssl=<SSLeay-path>
+     Enable support for SSL. <SSLeay-path> is the directory where
+     SSLeay has been installed in.
+
+
+Now you should run configure with the proper command line options you need,
+e.g.:
+
+  cd mico
+  ./configure --with-qt=/usr/local/qt
+
+Use gmake to start compilation and install the programs and libraries,
+possibly becoming root before installation:
+
+  gmake
+  gmake install
+
+On some systems you have to take special actions after installing a shared
+library in order to tell the dynamic linker about the new library. For
+instance on Linux you have to run ldconfig as root:
+
+  /sbin/ldconfig -v

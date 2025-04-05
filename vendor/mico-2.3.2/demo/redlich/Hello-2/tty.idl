@@ -1,0 +1,6 @@
+// IDL --- (verbesserte) Abstraktion eines Terminals (tty)
+
+interface tty   {
+    oneway void print(in string msg);
+};
+

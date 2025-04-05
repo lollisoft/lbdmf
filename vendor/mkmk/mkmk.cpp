@@ -12,11 +12,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.39 $
+ * $Revision: 1.114.2.40 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.39 2024/08/03 12:40:32 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.40 2025/04/05 16:16:40 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.40  2025/04/05 16:16:40  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.114.2.39  2024/08/03 12:40:32  lothar
  * Got it working to harden and run that hardened application successfully and sign and notarize the application.
  *
@@ -2703,7 +2708,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.39 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.40 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");

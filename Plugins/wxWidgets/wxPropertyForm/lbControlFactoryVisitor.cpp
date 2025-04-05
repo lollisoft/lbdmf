@@ -28,11 +28,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.2 $
+ * $Revision: 1.1.2.3 $
  * $Name:  $
- * $Id: lbControlFactoryVisitor.cpp,v 1.1.2.2 2023/10/28 18:09:17 lothar Exp $
+ * $Id: lbControlFactoryVisitor.cpp,v 1.1.2.3 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbControlFactoryVisitor.cpp,v $
+ * Revision 1.1.2.3  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.1.2.2  2023/10/28 18:09:17  lothar
  * Fixed more build rules for wxWidgets version selection.
  *

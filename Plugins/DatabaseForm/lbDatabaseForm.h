@@ -30,11 +30,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71.2.8 $
+ * $Revision: 1.71.2.9 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.71.2.8 2025/04/05 16:04:02 lothar Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.9 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71.2.9  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.71.2.8  2025/04/05 16:04:02  lothar
  * This file seems to clash with HEAD bransh when migrating to git.
  * So update it in the bransh to probably fix this. Why does the

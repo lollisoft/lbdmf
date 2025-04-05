@@ -20,143 +20,142 @@ platform. On linux, modify the xml file so that the functor has no prefix (_).
 Each interface like lb_I_Container for a container is
 configured pointing to a module (DLL/so) and a functor, that creates the instance.
 
+There is one main tool that helps me to build the source code on all platforms. The
+tool is mkmk. It enables me to define a directory or more with a bunch of files to
+add into a makefile that it basically writes in some parts. On Windows I currently
+provide a precompiled version. On other platforms it will be build at the very
+beginning.
+
+Hint: The mkmk tool was orginally written by Luis Crespo. His publication is at:
+http://www.cubic.org/~submissive/sourcerer/mkmk.htm		
+
 
 Requirements:
 
-Sample installation is at drive D:
+Typically the installation is on drive C:
 
 Windows:
 
-	At least MSVC 6.0 compiler (only the console tools are needed)
+	I work primarily with MinGW C++ compiler on Windows. There is a part of the project
+	that can compile with the Watcom 11 compiler and most probably with the current
+	Open Watcom compiler. The Microsoft Visual C++ compiler is mostly not tested at the
+	current and most older releases. Therefore you need to stick to MinGW or - for some
+	networking part of code you may use Watcom compiler and the corresponding watcom
+	project file at the root folder (lbdmf.wpj).
 
-	The MSVC 6.0 IDE projectfile exists, but doesn't yet support
-	directly the making of the GUI sample. But the rest was tested earlier.
-
-	or
-
-	the Watcom 10.6 or the latest Openwatcom compiler is needed.
-
-	I use watcom and therefore, this compiler is tested at most time.
-
-	The wxWidgets source code. Tested version is 2.4.2.
+	You most easily can download the source code setup executable. It has an option to pull
+	prerequisites like the MinGW compiler and wxWidgets. Basically the source code installer
+	therefore pulls the binary build tools in vc version precompiled, the 7Z tool to unpack
+	the MinGW zip archive (either the 32Bit or 64Bit version) depending on which checkbox you
+	tick. It also loads the wxWidgets 3.2.2.0 code installer and starts building that library.
+	After building that, it installs the dll's to the expected place within the source code
+	location.
 	
+	If you have let the installer build wxWidgets, or you had that done in a prior version and
+	the wxWidgets library is at least somewhere with in 3.x you could start opening my main 'IDE'.
+	The plain command prompt with the lbDMF Develop icon and type make. I have tested the 3.2.2.0
+	version.
 
+	The mkmk tool will actually be delivered as binary installer. The main src installer can
+	pull that tool as a pre requisite if the corresponding build wxWidgets checkbox is ticked.
+	If you want to build the complete code including mkmk, you need to go to the vendor
+	folder where the mkmk tool has it's code folder and therein is a msvc project. The msvc
+	project is in vendor/mkmk/mkmk/mkmk.dsw, The other folder named vcprj is probably a prior
+	trial. But that manual approach is not well tested, as the binary tools also contains some
+	tools needed while building the code.
 
 Post installation:
 
-	Download the compilers of your choice. Install it into a Develop\Tools directory.
-	(eg. D:\lbDMF\Develop\tools\watcom)
-
-	Download the stable wxWidgets source distribution (at least 2.4.2). Install it to
-	a Develop\wxwin directory. (eg. D:\lbDMF\Develop\wxwin\wx)
-
-
-	A database is needed by the sample applications. Tested are MySQL, PostgreSQL,
-	Microsoft SQL Server 2000, Sybase SQL Anywhere 5.x.
-
-	The latest tests were done with MySQL and XAMPP for Windows. Feel free to use the
-	other database vendors, but note: There are not yet SQL scripts for all databases.
-
-	The following steps are not documented, nor tested as well. I use a running version :-)
-
-	Download xampp for windows or
-	http://www.apachefriends.org/en/xampp-windows.html#641
-
-	download the database only from the same site as the
-	ODBC drivers below.
-
-	Download ODBC drivers for MySQL
-	http://dev.mysql.com/downloads/connector/odbc/3.51.html
+	The most convienient way to get started is the source code installer and tick either building
+	wxWidgets with MinGW32 or MinGW64. It does all prerequisite installations and build wxWidgets.
+	
+	Actually I primarly use SqLite and neglected the ODBC and SQL Server or SQL Anywhere stuff. Using
+	that will require again some testing and work to get things up to date.
 
 Post setup:
 
 	If you start the lbDMF Develop link on the desktop, you get opened a text file with
-	a hint text.
-
-	This simply means to configure the base directory. In this sample installation scenario,
-	simply change the lines set DEVLW=<driveletter> to DEVLW=D:
-
-	Start a normal MSDOS console (cmd) and type these lines:
-	set WXWIN=D:\lbDMF\Develop\wxwin\wx
-	D:
-	cd %WXWIN%\src\msw
-	copy %WXWIN%\include\wx\msw\setup.h %WXWIN%\include\wx
-	wmake -f makefile.wat all
-
-	This should start compiling the wxWidgets code.
-
-	If you have done this, you can restart the lbDMF Develop link and a simple console window
-	starts.
-
-	Type make
-
-	To be able to run the sample applications, you need to create at least one database.
-	Do this with the tools, provided from the database vendors.
+	a hint text. This is somewhat old and you can ignore that and close the text editor if you
+	have installed the source code to the default location C:\lbDMF.
 	
-	The first database, needed should be named lbdmf and a correct ODBC configuration should
-	be set up.
+	Restart the lbDMF Develop console and start building using the make command. If the build
+	has been succeeded, you type make install and then type wxWrapper.
+	
+	These are therefore your commands to get the application building and started:
+	
+	make
+	make install
+	wxWrapper
 
-	NOTE: The database login function is used with hardcoded ODBC DSN name and also user with password.
-	The functions could be found by a search for ->connect(
-
-	Create at least an use to have rights to change data.
-
-
-Unix tools like make (Mingw or the like), a version is also included in the binary distribution
-Batchfiles are provided to setup the env variables,
-subst a drive Q: pointing to the actual development tree
-(subst q: c:\). Then q:\ has the following tree:
-q:\develop\projects\CPP\...
-
-
+	These are the commands to clean and remake (needed in some cases instead of a plain make):
+	
+	make distclean
+	make clean
+	make
+	make install
+	wxWrapper
 
 Linux:
 
-An actual G++ compiler and all the tools to compile,
-mkmk - a makefile creation tool to build makefiles that matches to
-my make environment, the source is included, so you can bootstrap it.
-uncompress the file to your home directory,
-create /libdev/lib (as root) for the so modules and give rigths to you to 
-copy the so's to it (my choice for development :-),
-place the CPP directory to /home/<user>/develop/Projects
-env variables for the bootstrapping:
-	MODULELIB=lbModule.so
-	LBXMLFUNCTOR=getlbDOMConfigInstance
-	LBMODULEFUNCTOR=getlb_ModuleInstance
-	DEVROOT=/home/<user>/develop
-	LD_LIBRARY_PATH=/libdev/lib:
-	OSTYPE=linux
+Prerequisites:
 
+The complete build has been tested on a 64Bit OpenSuSE Tumbleweed installation.
 
-Vendor libraries, that are used in my code:
+You need a compiler. I have installed gcc-c++-14-2.2.x86_64
+You need wxWidgets. I have installed wxGTK3-3_2-devel-3.2.6-2.3.x86_64
+You need XSLT. I have installed libxslt-devel-1.1.42-1.1.x86_64
+You need flex. I have installed it via zypper install flex
+You need bison. I have installed it via zypper install bison
 
-	XML4C C++ XML library: (Currently obsolete)
-	
-	Download the matching XML4C distribution for your OS 
-	from http://www.alphaWorks.ibm.com/aw.nsf/download/xml4c
-	place the extracted tree to /home/<user>/develop/Projects/CPP/vendor/XML4C,
-	please attent, that the directory name must match to xml4c-src3_5_1
-	build it and install it as usual.
-	
-	GTK is needed. I have tested it with the GTK developer package from CD (SuSE 9.1)
-	
-	wxWidgets is needed. Download the latest version as a source tarball (2.4.2)
-	Make and install it.
+Then you need git. I have installed git-core-2.48.1-1.1.x86_64
+I need cvs as I do a migration path. You will need git to pull from my github repository.
 
-	Install unixODBC and configure a postgreSQL database pointing to 'lbDMF'
-	Execute the script ...	
-	
-Vendor programs, that I have adopted for my need:
+So going with four commands on openSuSE you would get most of it fast:
 
-	mkmk
-	    Build: 
-		Goto /home/<user>/develop/Projects/CPP/vendor/dosdir,
-		call make.sh
-		goto /home/<user>/develop/Projects/CPP/vendor/mkmk,
-		call make.sh
-		copy mkmk to ~/bin
+sudo zypper install gcc-c++ flex bison wxGTK3-3_2-devel make git-core unixODBC unixODBC-devel libxslt-devel
+mkdir -p develop/Projects
+cd develop/Projects/
+git clone https://github.com/lollisoft/lbdmf.git
+
+Then you could do:
+cd lbdmf/BaseDevelopment
+make
+
+You need some basic .bashrc settings to get started to build the source code from the source
+repositoy. Here is my setup that generally seems to work on openSuSE Tumbleweed:
+
+CVS_RSH=ssh
+MODULELIB=lbModule.so
+LBXMLFUNCTOR=getlbDOMConfigInstance
+LBMODULEFUNCTOR=getlb_ModuleInstance
+DEVROOT=~/develop
+LD_LIBRARY_PATH=~/lib:
+PLUGIN_DIR=~/plugins
+OSTYPE=linux
+PATH="/usr/local/bin:/sw/bin:/sw/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:~/bin:$HOME/bin:/usr/local/bin:/usr/brlcad/bin:/opt/local/bin"
+
+# On older OSX
+# #DEVELOPER_TOOLS_PATH=/Developer/Tools
+# #export DEVELOPER_TOOLS_PATH
+# # On newer OSX
+
+OSVERSION=`uname -r`
+export OSVERSION
+OSPLATFORM=`uname -p`
+export OSPLATFORM
+
+export CVS_RSH
+export MODULELIB
+export LBXMLFUNCTOR
+export LBMODULEFUNCTOR
+export DEVROOT
+export LD_LIBRARY_PATH
+export OSTYPE
+export PATH
+export PLUGIN_DIR
+REPO_NAME=lbdmf
+export REPO_NAME
 		
-Hint: The mkmk tool was orginally written by Luis Crespo. His publication is at:
-http://www.cubic.org/~submissive/sourcerer/mkmk.htm		
-		
-	
+When you have setup this environment, you could start pulling the code into the following directory:
+/home/<user>/develop/Projects. There should then be the code within /home/<user>/develop/Projects/lbdmf.
+Go to the directory /home/<user>/develop/Projects/lbdmf/BaseDevelopment and type make.

@@ -33,11 +33,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.1 $
+ * $Revision: 1.1.2.2 $
  * $Name:  $
- * $Id: wxUpdateChecker.h,v 1.1.2.1 2015/01/01 21:16:09 lollisoft Exp $
+ * $Id: wxUpdateChecker.h,v 1.1.2.2 2025/04/05 16:16:31 lothar Exp $
  *
  * $Log: wxUpdateChecker.h,v $
+ * Revision 1.1.2.2  2025/04/05 16:16:31  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.1.2.1  2015/01/01 21:16:09  lollisoft
  * Added initial json based update check plugin.
  *

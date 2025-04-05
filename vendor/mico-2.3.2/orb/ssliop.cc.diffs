@@ -1,0 +1,19 @@
+*** orig/ssliop.cc	Fri Jan  8 23:46:11 1999
+--- ssliop.cc	Fri Jan  8 23:43:51 1999
+***************
+*** 5,11 ****
+   *  This file was automatically generated. DO NOT EDIT!
+   */
+  
+! #include "ssliop.h"
+  
+  //--------------------------------------------------------
+  //  Implementation of stubs
+--- 5,11 ----
+   *  This file was automatically generated. DO NOT EDIT!
+   */
+  
+! #include <mico/ssliop.h>
+  
+  //--------------------------------------------------------
+  //  Implementation of stubs

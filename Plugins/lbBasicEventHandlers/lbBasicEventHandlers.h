@@ -29,13 +29,13 @@
 /**
  * \brief Provides an event handler to write a string object to a file.
  */
-class lbTextOperations: 
+class lbBasicEventHandlers: 
 public lb_I_VisitableHelper,
 public lb_I_EventHandler
 {
 public:
-	lbTextOperations();
-	virtual ~lbTextOperations();
+	lbBasicEventHandlers();
+	virtual ~lbBasicEventHandlers();
 
 	DECLARE_LB_UNKNOWN()
 	

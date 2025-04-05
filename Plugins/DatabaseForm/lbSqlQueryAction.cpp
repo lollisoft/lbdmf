@@ -93,8 +93,6 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #define USE_EXRERNAL_FORMULARACTIONS
 
 #include <lbDatabaseForm.h>
@@ -199,8 +197,8 @@ long LB_STDCALL lbSQLQueryAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 
-			appActionSteps->selectById(myActionID);
-			*What = appActionSteps->get_what();
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
 
 			*msg = "Execute query (";
 			*msg += What->charrep();

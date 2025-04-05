@@ -1,0 +1,18 @@
+- use of namespaces causes all sorts of strange behavior, e.g. in the following
+  code fragment the typedef badly fails:
+	namespace CORBA {
+		class ORBIface {
+		public:
+			typedef ULong MsgId;
+			...
+		};
+		class OAIface {
+		public:
+			typedef ORBIface::MsgId MsgId;
+			...
+		};
+	};
+- template class decls inside namespaces cause gcc internal error 123.
+- template class delcs inside classes cause parse error.
+- template instantiations inside namespaces cause buggy asm code (names are
+  not correctly mangled).

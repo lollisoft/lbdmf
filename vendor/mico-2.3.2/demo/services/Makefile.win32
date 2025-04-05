@@ -1,0 +1,19 @@
+
+all: subs
+
+!include ..\MakeVars.win32
+DIRS=naming events property-daemon stream-bench trader
+# relship 
+
+subs:
+	for %i in ( $(DIRS) ); do cmd /c "cd %i &$(MAKE) /nologo /f Makefile.win32  "
+
+clean:
+	for %i in ( $(DIRS) ); do cmd /c "cd %i &$(MAKE) /nologo /f Makefile.win32  clean"
+	del /f *.o core *~ .depend
+
+install:
+	$(IDIRCMD) $(INSTDIR)\doc\mico\examples\services
+	$(ISRCCMD) Makefile $(INSTDIR)\doc\mico\examples\services
+	$(ISRCCMD) README $(INSTDIR)\doc\mico\examples\services
+	for i in $(DIRS) stream-sound; do $(MAKE) -C $$i install || exit 1; done

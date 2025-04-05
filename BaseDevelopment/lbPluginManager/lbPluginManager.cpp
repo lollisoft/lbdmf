@@ -32,11 +32,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.91.2.5 $
+* $Revision: 1.91.2.6 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.91.2.5 2024/12/22 11:03:45 lothar Exp $
+* $Id: lbPluginManager.cpp,v 1.91.2.6 2025/04/05 16:16:30 lothar Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.91.2.6  2025/04/05 16:16:30  lothar
+* This file seems to clash with HEAD bransh when migrating to git.
+* So update it in the bransh to probably fix this. Why does the
+* migration fails here?
+*
 * Revision 1.91.2.5  2024/12/22 11:03:45  lothar
 * Trial to mitigate double autorun. Accidantly reseting container iteration within plugins.
 *

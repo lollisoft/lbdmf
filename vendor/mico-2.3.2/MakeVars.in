@@ -1,0 +1,189 @@
+# -*- Makefile -*-
+#
+# MICO --- a free CORBA implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and/or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+prefix		= @prefix@
+exec_prefix	= @exec_prefix@
+SRCDIR		= @ABSSRCDIR@
+INSTDIR		= $(exec_prefix)
+SHARED_INSTDIR	= $(prefix)
+
+
+HAVE_REPO	= @HAVE_REPO@
+HAVE_JDK	= @HAVE_JDK@
+HAVE_SHARED	= @HAVE_SHARED@
+HAVE_STATIC	= @HAVE_STATIC@
+HAVE_DYNAMIC	= @HAVE_DYNAMIC@
+HAVE_FINAL	= @HAVE_FINAL@
+HAVE_NAMESPACE  = @HAVE_NAMESPACE@
+HAVE_EXCEPTIONS = @HAVE_EXCEPTIONS@
+HAVE_SHARED_EXCEPTS = @HAVE_SHARED_EXCEPTS@
+HAVE_ORB_EXCEPTS = @HAVE_ORB_EXCEPTS@
+HAVE_QT		= @HAVE_QT@
+HAVE_GTK        = @HAVE_GTK@
+HAVE_X11	= @HAVE_X11@
+HAVE_TCL	= @HAVE_TCL@
+HAVE_SSL	= @HAVE_SSL@
+HAVE_MEMCHECK   = @HAVE_MEMCHECK@
+USE_MEMTRACE	= @USE_MEMTRACE@
+
+USE_NAMING	= @USE_NAMING@
+USE_EVENTS	= @USE_EVENTS@
+USE_STREAMS	= @USE_STREAMS@
+USE_RELSHIP	= @USE_RELSHIP@
+USE_PROPERTY	= @USE_PROPERTY@
+USE_TRADER      = @USE_TRADER@
+USE_TIME	= @USE_TIME@
+
+SHELL           = /bin/sh
+RANLIB          = @RANLIB@
+AR              = @AR@
+ARFLAGS		= @ARFLAGS@
+FLEX            = @LEX@
+BISON           = @YACC@
+TCLSH		= @TCLSH@
+MOC		= @MOC@
+CXX		= @CXX@ @REPOFLAG@
+PICFLAGS	= -DPIC @PICFLAGS@
+NOPICFLAGS	=
+EHFLAGS		= @EHFLAGS@
+EHOPTFLAGS	= @EHOPTFLAGS@
+DLFLAGS		= @DLFLAGS@
+CPPFLAGS	= @CPPFLAGS@
+CXXFLAGS	= @STLINC@ @EXTRA_CXXFLAGS@ @CXXFLAGS@
+CC		= @CC@
+CFLAGS		= @CFLAGS@
+X_CFLAGS	= @X_CFLAGS@
+X_LIBS		= @X_LIBS@
+GTK_CFLAGS      = @GTK_CFLAGS@
+GTK_LIBS        = @GTK_LIBS@
+TCL_LIBS        = @TCL_LIBS@
+PURE_LDFLAGS	= @LDFLAGS@
+LDFLAGS		= $(PURE_LDFLAGS) $(DLFLAGS)
+LDSO		= $(SRCDIR)/admin/mico-shld -nolibs
+LDSOFLAGS	= @LDSOFLAGS@
+SOEXT		= @SOEXT@
+POSTLD		= @POSTLD@
+RM              = rm -f
+LN		= ln -f -s
+MKDIR           = mkdir
+JAVAC           = javac
+JCUP            = java java_cup.Main
+LATEX		= latex
+BIBTEX		= bibtex
+DVIPS		= dvips
+LATEX2HTML	= latex2html
+FIG2DEV		= fig2dev
+MKFAQ           = $(SRCDIR)/admin/mkfaq
+IDL		= $(SRCDIR)/idl/idl
+IDLGEN		= $(SRCDIR)/idl/idl
+MKDEPEND	= $(SRCDIR)/admin/mkdepend
+# on some Solaris systems strip does not support ELF binaries ...
+IBINCMD         = $(SRCDIR)/admin/install-sh -c -m 755
+# mode 555 is a tribute to HP-UX
+ILIBCMD         = $(SRCDIR)/admin/install-sh -c -m 555
+IMANCMD         = $(SRCDIR)/admin/install-sh -c -m 644
+IINCCMD         = $(SRCDIR)/admin/install-sh -c -m 644
+IDIRCMD         = $(SRCDIR)/admin/mkinstalldirs
+ISCRIPTCMD      = $(SRCDIR)/admin/install-sh -c -m 755
+ISRCCMD         = $(SRCDIR)/admin/install-sh -c -m 644
+
+CONFLIBS	= @LIBS@ @EXTRA_LIBS@
+VERSION		= $(shell tr b \. < $(SRCDIR)/VERSION)
+
+
+ifeq ($(HAVE_SHARED), yes)
+export LD_LIBRARY_PATH := $(SRCDIR)/libs:$(LD_LIBRARY_PATH)
+export LIBPATH         := $(SRCDIR)/libs:$(LIBPATH)
+export SHLIB_PATH      := $(SRCDIR)/libs:$(SHLIB_PATH)
+LIBMICO		       = libmico$(VERSION).$(SOEXT)
+else
+LIBMICO		       = libmico$(VERSION).a
+endif
+
+ifeq ($(HAVE_SHARED_EXCEPTS), yes)
+LIBMICOCOSS	       = libmicocoss$(VERSION).$(SOEXT)
+LIBMICOAUX	       = libmicoaux$(VERSION).$(SOEXT)
+else
+LIBMICOCOSS	       = libmicocoss$(VERSION).a
+LIBMICOAUX	       = libmicoaux$(VERSION).a
+endif
+
+export PATH           := $(SRCDIR)/cpp:$(PATH)
+
+
+main_target: all
+
+
+.SUFFIXES: .java .class .cup .tex .dvi .ps .fig .eps .gif .moc .pic.o .ll .yy
+.SUFFIXES: .$(SOEXT)
+
+
+# delete builtin rules ...
+%.c: %.y
+%.c: %.l
+%.dvi: %.tex
+%.o: %.cc
+
+%.pic.o: %.cc
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(PICFLAGS) -c $< -o $@
+
+%.o: %.cc
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(NOPICFLAGS) -c $< -o $@
+
+%.cc: %.ll
+	$(FLEX) -B -8 -o$@ $<
+
+%.cc: %.yy
+	$(BISON) -d -t -v -o $*.c $<
+	mv $*.c $*.cc
+
+%.c: %.y
+	$(BISON) -d -t -v -o $*.c $<
+
+%.class: %.java
+	$(JAVAC) $<
+
+%.java: %.cup
+	$(JCUP) < $<
+
+%.dvi: %.tex
+	$(LATEX) $<
+	if grep Rerun `basename $< .tex`.log >/dev/null; then $(LATEX) $< ; fi
+	$(BIBTEX) `basename $< .tex`
+	$(LATEX) $<
+	if grep Rerun `basename $< .tex`.log >/dev/null; then $(LATEX) $< ; fi
+
+%.ps: %.dvi
+	$(DVIPS) $< -o $@
+
+%.eps: %.fig
+	$(FIG2DEV) -L ps < $< > $@
+
+%.ps: %.gif
+	giftopnm $< | pnmtops -noturn > $@
+
+%.moc: %.cc
+	$(MOC) $< -o $@
+
+%.moc: %.h
+	$(MOC) $< -o $@

@@ -1,0 +1,19 @@
+
+
+Examples that demonstrate using the Basic Object Adapter (BOA):
+
+account:
+  simple one process bank account example. run binary 'account'.
+
+account2:
+  distributed bank account example that shows usage of BOA activation mode
+  shared, how to make objects persistent and how to use BOA::ReferenceData.
+  run shellscript 'account'.
+
+account3:
+  similar to account2 but uses unshared activation mode and a factory to
+  create bank accounts. run shellscript 'account'.
+
+account4:
+  Shows how to migrate objects between different implementations.
+  run shellscript 'account'.

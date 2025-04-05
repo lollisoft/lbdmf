@@ -1,0 +1,40 @@
+#!/bin/sh
+
+PATH=../../../daemon:../../../coss/naming:../../../imr:../../../ir:$PATH
+export PATH
+
+ADDR=inet:`uname -n`:12456
+RC="-ORBImplRepoAddr $ADDR -ORBNamingAddr $ADDR"
+
+rm -f NameService-root.inf
+
+# run BOA daemon
+echo "starting BOA daemon ..."
+micod -ORBIIOPAddr $ADDR --forward &
+micod_pid=$!
+
+trap "kill $micod_pid" 0
+
+sleep 1
+
+# register server
+echo "register name service ..."
+imr create NameService poa `which nsd` \
+ IDL:omg.org/CosNaming/NamingContext:1.0#NameService $RC
+
+echo "register account service ..."
+imr create Account shared "`pwd`/server $RC" \
+ IDL:Account:1.0 $RC
+
+sleep 1
+# activate the account server to make itself register with the
+# name service so the client can find it ...
+echo "activating Account implementation"
+imr activate Account $RC
+
+sleep 1
+# nsadmin $RC # ls myAccount
+
+# run client
+echo "and run client ..."
+./client $RC

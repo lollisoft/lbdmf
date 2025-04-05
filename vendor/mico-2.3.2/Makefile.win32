@@ -1,0 +1,115 @@
+#
+# MICO --- a free CORBA implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and/or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+!include MakeVars.win32
+
+LIBDIRS = orb idl 
+PRGDIRS = cpp idl ir imr daemon tools
+ALLDIRS = cpp orb idl ir imr daemon coss tools
+
+all: nt-all
+
+nt-all: nt-system nt-inst
+
+nt-system:
+	@if not exist win32-bin \
+	  mkdir win32-bin
+	@if not exist win32-bin\lib  \
+	  mkdir win32-bin\lib
+	@for %i in ( $(LIBDIRS) ) do \
+	    @if exist %i cmd /c "cd %i & $(MAKE) /nologo /f Makefile.win32 lib"
+
+	set path=$(SRCDIR)\win32-bin;%path%;
+	@for %i in ( $(PRGDIRS) ) do \
+	    @if exist %i cmd /c "cd %i & $(MAKE) /nologo /f Makefile.win32 prg"
+	cmd /c "cd coss & $(MAKE) /nologo /f Makefile.win32"
+
+
+
+nt-inst:
+	@if not exist win32-bin\include \
+	  mkdir win32-bin\include
+	xcopy /q /s include\*.* win32-bin\include 2> nul
+	copy orb\typecode.obj win32-bin\lib 2> nul
+	copy orb\util.obj win32-bin\lib 2> nul
+
+clean:
+	@for %i in ( $(ALLDIRS) ) do \
+	    @if exist %i cmd /c "cd %i & $(MAKE) /nologo /f Makefile.win32 clean"
+	del /s /f /q win32-bin  2> nul
+	del *~ 2>nul
+	rmdir /s /q win32-bin 2> nul
+
+#----------------------------------------------------------------------------
+#---- Make targets for Win95/98 that avoid cmd.exe features -----------------
+#----------------------------------------------------------------------------
+
+w95-all: w95-system w95-inst
+
+w95-system:
+	mkdir win32-bin
+	mkdir win32-bin\lib
+	cd orb
+	        nmake /nologo /f Makefile.win32 lib
+	cd ..\idl
+	        nmake /nologo /f Makefile.win32 lib
+	cd ..\cpp
+	        nmake /nologo /f Makefile.win32 prg
+	cd ..\idl
+	        nmake /nologo /f Makefile.win32 prg
+	cd ..\ir
+	        nmake /nologo /f Makefile.win32 prg
+	cd ..\imr
+	        nmake /nologo /f Makefile.win32 prg
+	cd ..\daemon
+	        nmake /nologo /f Makefile.win32 prg
+	cd ..\coss
+	        nmake /nologo /f Makefile.win32 w95-all
+	cd ..\tools
+		nmake /nologo /f Makefile.win32 w95-all
+	cd ..
+
+w95-inst:
+	cd win32-bin
+	mkdir include
+	cd ..
+	xcopy /q /s include\*.* win32-bin\include
+	copy orb\typecode.obj win32-bin\lib
+	copy orb\util.obj win32-bin\lib
+
+w95-clean:
+	cd cpp
+ 		del *.obj
+	cd ..\orb
+ 		del *.obj
+	cd ..\idl
+ 		del *.obj
+	cd ..\ir
+ 		del *.obj
+	cd ..\imr
+ 		del *.obj
+	cd ..\daemon
+ 		del *.obj
+	cd ..\coss
+ 		del *.obj
+
+

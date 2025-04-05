@@ -1,0 +1,73 @@
+#
+# MICO --- a CORBA 2.0 implementation
+# Copyright (C) 1997 Kay Roemer & Arno Puder
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+# Send comments and/or bug reports to:
+#                mico@informatik.uni-frankfurt.de
+#
+
+!include ..\MakeVars.win32
+
+CXXFLAGS = $(CXXFLAGS) /I. /I..\include /I..\include\windows \
+           /DBUILD_MICO_DLL 
+
+
+SRCS = dii.cc typecode.cc any.cc codec.cc buffer.cc context.cc \
+  except.cc except2.cc dispatch.cc string.cc object.cc address.cc ior.cc \
+  orb.cc boa.cc dsi.cc transport.cc iop.cc util.cc basic_seq.cc \
+  ssl.cc fixed.cc intercept.cc dynany.cc codeset.cc queue.cc static.cc \
+  current.cc policy.cc policy2.cc policy_impl.cc poa.cc poa_base.cc poa_impl.cc \
+  service_info.cc value.cc valuetype.cc valuetype_impl.cc orb_excepts.cc \
+  dynany_impl.cc os-windows.cc ioptypes.cc ssliop.cc tckind.cc \
+  uni_base64.cc uni_unicode.cc uni_fromuni.cc uni_touni.cc
+
+STATIC_OBJS = $(SRCS:.cc=.obj)
+
+
+lib: mico$(VERSION).dll
+	copy mico$(VERSION).dll ..\win32-bin
+	copy mico$(VERSION).lib ..\win32-bin\lib
+
+
+DLL_SRCS = $(SRCS) \
+	../ir/ir_impl.cc ../ir/ir.cc ../ir/ir_base.cc ../ir/ir_skel.cc \
+	../imr/imr_impl.cc ../imr/imr.cc
+
+clean:
+	del /f $(STATIC_OBJS)  \
+		win32def.exe win32dll.def win32dll.dmp mico$(VERSION).dll mico$(VERSION).lib \
+		mico*.exp ..\ir\ir_impl.obj ..\ir\ir1.obj ..\ir\ir2.obj \
+		..\imr\imr_impl.obj ..\imr\imr.obj \
+		*.pdb *.pch *.obj *~ 2> nul
+
+
+DLL_OBJS = $(DLL_SRCS:.cc=.obj)
+
+
+mico$(VERSION).dll:	$(DLL_OBJS) win32dll.def
+	$(LINK) $(LINKDLLFLAGS) $(DLL_OBJS) $(SYSLIBS) /out:mico$(VERSION).dll \
+		/def:win32dll.def
+
+win32dll.def:	$(DLL_OBJS) win32def.exe win32dll.dmp
+	win32def.exe "mico$(VERSION)" "MICO is CORBA" win32dll.dmp > win32dll.def
+
+win32dll.dmp:	$(DLL_OBJS)
+	dumpbin /symbols $(DLL_OBJS) > win32dll.dmp
+
+win32def.exe:	win32def.cc
+	cl /TP win32def.cc
+

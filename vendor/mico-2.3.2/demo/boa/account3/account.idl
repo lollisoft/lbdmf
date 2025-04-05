@@ -1,0 +1,13 @@
+
+interface Account {
+    void deposit( in unsigned long amount );
+    void withdraw( in unsigned long amount );
+    long balance();
+};
+
+interface Bank {
+    typedef sequence<Account> AccountSeq;
+
+    Account create ();
+    void deposit_all_accounts (in unsigned long amount);
+};

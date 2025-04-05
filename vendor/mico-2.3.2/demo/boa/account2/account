@@ -1,0 +1,21 @@
+#!/bin/sh
+
+PATH=../../../daemon:../../../coss/naming:../../../imr:../../../ir:$PATH
+MICORC=/dev/null
+export MICORC
+
+ADDR=inet:`uname -n`:12456
+
+# run BOA daemon
+micod -ORBIIOPAddr $ADDR --forward &
+micod_pid=$!
+sleep 1
+
+trap "kill $micod_pid" 0
+
+# register server
+imr create Account shared `pwd`/server IDL:Account:1.0#foobar \
+  -ORBImplRepoAddr $ADDR
+
+# run client
+./client $ADDR

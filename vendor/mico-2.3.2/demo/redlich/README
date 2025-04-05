@@ -1,0 +1,9 @@
+
+J.P. Redlich, the author of the book "CORBA 2.0 - Praktische
+Einfuehrung fuer C++ und Java", has ported various programs from his
+book to MICO. These files are located in the diretory demo/redlich of
+the MICO source distribution. The author has placed his demo programs
+under the GNU copyright. For this reason we were able to include the
+complete sources of these programs with this distribution. Refer to
+J.P. Redlich's book for explanations of the demos. In order to compile
+them, you simply need to run "make" from this directory.

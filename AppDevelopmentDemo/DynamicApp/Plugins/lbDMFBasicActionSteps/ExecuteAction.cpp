@@ -73,7 +73,6 @@ extern "C" {
 /*...e*/
 /*...e*/
 
-#include <lbInterfaces-lbDMFManager.h>
 #include <ExecuteAction.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbExecuteAction)
@@ -222,8 +221,8 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 			
-			appActionSteps->selectById(myActionID);
-			*What = appActionSteps->get_what();
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
 			
 			*msg = "Execute application (";
 			*msg += What->charrep();
@@ -247,16 +246,16 @@ long LB_STDCALL lbExecuteAction::execute(lb_I_Parameter* params) {
 			if (replacers != NULL) {
 				// Build up the required parameters that may occur in What
 				int I = 0;
-				while (replacers->hasMoreElements()) {
+				while (replacers->hasMoreActionStepParameters()) {
 					UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 					UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 					
 					UAP(lb_I_String, valueSubstituted)
 					
-					replacers->setNextElement();
+					replacers->setNextActionStepParameter();
 					
-					*name = replacers->get_name();
-					*value = replacers->get_value();
+					*name = replacers->getActionStepParameterName();
+					*value = replacers->getActionStepParameterValue();
 					
 					_LOG << "Prepare parameter " << name->charrep() << " with value " << value->charrep() << " for application." LOG_
 					
