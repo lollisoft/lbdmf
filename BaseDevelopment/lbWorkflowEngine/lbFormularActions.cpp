@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -304,9 +304,9 @@ char* lbFormularActions::getActionSourceDataField(const char* reversed_event) {
 		
 		
 		if (appActions != NULL) {
-			appActions->selectById(getActionTargetIDLong(reversed_event));
+			appActions->selectAction(getActionTargetIDLong(reversed_event));
 			_LOG << "Returning action source by event mapping." LOG_
-			return appActions->get_source();
+			return appActions->getActionSource();
 		}
 	}
 	
