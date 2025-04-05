@@ -2,7 +2,7 @@
 /*
  DMF Distributed Multiplatform Framework (the initial goal of this library)
  This file is part of lbDMF.
- Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+ Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
  
  This library is free software; you can redistribute it and/or
  modify it under the terms of the GNU Lesser General Public
@@ -28,11 +28,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.2 $
+ * $Revision: 1.1.2.3 $
  * $Name:  $
- * $Id: lbSqlQueryAction.h,v 1.1.2.2 2012/05/12 21:20:09 lollisoft Exp $
+ * $Id: lbSqlQueryAction.h,v 1.1.2.3 2025/04/05 15:46:56 lothar Exp $
  *
  * $Log: lbSqlQueryAction.h,v $
+ * Revision 1.1.2.3  2025/04/05 15:46:56  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.1.2.2  2012/05/12 21:20:09  lollisoft
  * Code cleanup and made formularactions loadable at runtime.
  *
