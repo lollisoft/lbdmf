@@ -10,7 +10,7 @@
 **
 *************************************************************************
 **
-** $Id: btmutex.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
+** $Id: btmutex.c,v 1.2.4.1 2025/04/05 16:16:40 lothar Exp $
 **
 ** This file contains code used to implement mutexes on Btree objects.
 ** This code really belongs in btree.c.  But btree.c is getting too

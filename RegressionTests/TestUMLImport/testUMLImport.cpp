@@ -63,7 +63,6 @@ extern "C" {
 
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
 
 class UIWrapper : public lb_I_Application,
 public lb_I_EventHandler
@@ -97,8 +96,6 @@ public:
 
 	virtual lbErrCodes LB_STDCALL registerEventHandler(lb_I_Dispatcher* disp);
 	lb_I_Unknown* LB_STDCALL getUnknown();
-
-	void LB_STDCALL loadedApplicationVersion(bool isOld, lb_I_DocumentVersion* version = NULL) { }
 
 
 	lbErrCodes LB_STDCALL askYesNo(lb_I_Unknown* uk);
@@ -361,13 +358,11 @@ int main(int argc, char *argv[]) {
 
 		// Need to issue some events to simulate user actions
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-		securityManager->login("user", "TestUser");
+		meta->login("user", "TestUser");
 
 		UAP(lb_I_Container, applications)
 
-		applications = securityManager->getApplications();
+		applications = meta->getApplications();
 
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 

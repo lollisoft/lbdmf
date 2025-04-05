@@ -11,7 +11,7 @@
 *************************************************************************
 ** This file contains code associated with the ANALYZE command.
 **
-** @(#) $Id: analyze.c,v 1.2 2007/11/07 22:19:47 lollisoft Exp $
+** @(#) $Id: analyze.c,v 1.2.4.1 2025/04/05 16:16:40 lothar Exp $
 */
 #include "windllexport.h"
 #ifndef SQLITE_OMIT_ANALYZE

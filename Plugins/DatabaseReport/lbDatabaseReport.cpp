@@ -108,7 +108,6 @@ extern "C" {
 #endif
 
 #include "wx/propgrid/propgrid.h"
-#include <lbInterfaces-lbDMFManager.h>
 #include <wxWrapperDLL.h>
 #include <lbDatabaseReport.h>
 
@@ -695,16 +694,16 @@ long LB_STDCALL lbDBReportAction::execute(lb_I_Parameter* params) {
 		}
 	}
 	long first_dst_actionid = -1;
-	transitions->finishIteration();
-	while (transitions->hasMoreElements()) {
-		transitions->setNextElement();
+	transitions->finishActionStepTransitionIteration();
+	while (transitions->hasMoreActionStepTransitions()) {
+		transitions->setNextActionStepTransition();
 		// First use a simple expression without any Lex & Yacc parser
 		UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
 		long dst_actionid;
 		wxString expression;
-		expression = transitions->get_expression();
-		dst_actionid = transitions->get_dst_actionid();
+		expression = transitions->getActionStepTransitionDecision();
+		dst_actionid = transitions->getActionStepTransitionDstActionID();
 		
 		if (expression.find("==") != -1) {
 			// equal operator
@@ -750,8 +749,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 	/*...e*/
 	
 	DECLARE_LB_UNKNOWN()
@@ -1016,23 +1013,23 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 		
 		_LOG << "Prepare report with id = " << id LOG_
 		
-		reports->selectById(id);
+		reports->selectReport(id);
 		
-		reportelements->finishIteration();
+		reportelements->finishElementIteration();
 		
 		while (reportelements->hasMoreElements()) {
 			reportelements->setNextElement();
-			_LOG << "Check for report element " << reportelements->get_name() << " with reportid = " << reportelements->get_reportid() LOG_
-			if (reportelements->get_reportid() == id) {
+			_LOG << "Check for report element " << reportelements->getElementName() << " with reportid = " << reportelements->getElementReportID() LOG_
+			if (reportelements->getElementReportID() == id) {
 				
 				// The report element matches to this report
 				
-				long x = reportelements->get_x();
-				long y = reportelements->get_y();
+				long x = reportelements->getElementX();
+				long y = reportelements->getElementY();
 				
-				_LOG << "Have a report element x, y (" << x << ", " << y << ") for given report: '" << reportelements->get_name() << "' with typ '" << reportelements->get_typ() << "'." LOG_
+				_LOG << "Have a report element x, y (" << x << ", " << y << ") for given report: '" << reportelements->getElementName() << "' with typ '" << reportelements->getElementTyp() << "'." LOG_
 				
-				switch (reportelements->get_typ()) {
+				switch (reportelements->getElementTyp()) {
 					case 1: // Text block
 					{
 						UAP_REQUEST(getModuleInstance(), lb_I_Container, lines)
@@ -1041,23 +1038,23 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 						
 						_LOG << "Have a report text block element..." LOG_
 						
-						reporttextblocks->finishIteration();
+						reporttextblocks->finishTextIteration();
 						
-						while (reporttextblocks->hasMoreElements()) {
-							reporttextblocks->setNextElement();
+						while (reporttextblocks->hasMoreTexts()) {
+							reporttextblocks->setNextText();
 							
-							_LOG << "Check report text block, if to be inserted: '" << reporttextblocks->get_line() << "'." LOG_
-							if (reporttextblocks->get_elementid() == reportelements->get_id()) {
+							_LOG << "Check report text block, if to be inserted: '" << reporttextblocks->getLine() << "'." LOG_
+							if (reporttextblocks->getElementID() == reportelements->getElementID()) {
 								UAP_REQUEST(getModuleInstance(), lb_I_String, l)
 								UAP_REQUEST(getModuleInstance(), lb_I_Long, i)
 								
-								*l = reporttextblocks->get_text();
-								i->setData(reporttextblocks->get_line());
+								*l = reporttextblocks->getText();
+								i->setData(reporttextblocks->getLine());
 								
 								QI(i, lb_I_KeyBase, key)
 								QI(l, lb_I_Unknown, ukLine)
 								
-								_LOG << "Insert a line of text into report text block: '" << reporttextblocks->get_line() << "'." LOG_
+								_LOG << "Insert a line of text into report text block: '" << reporttextblocks->getLine() << "'." LOG_
 								
 								lines->insert(&ukLine, &key);
 							}

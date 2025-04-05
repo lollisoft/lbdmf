@@ -2,7 +2,7 @@
 // Name:        ribbon/page.h
 // Purpose:     interface of wxRibbonPage
 // Author:      Peter Cawley
-// RCS-ID:      $Id: page.h,v 1.2 2010/05/15 17:29:56 lollisoft Exp $
+// RCS-ID:      $Id: page.h,v 1.2.2.1 2025/04/05 16:16:41 lothar Exp $
 // Licence:     wxWindows licence
 ///////////////////////////////////////////////////////////////////////////////
 

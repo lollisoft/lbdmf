@@ -31,10 +31,15 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.18 $
+ * $Revision: 1.18.2.1 $
  * $Name:  $
- * $Id: lbelement.h,v 1.18 2011/10/15 21:47:12 lollisoft Exp $
+ * $Id: lbelement.h,v 1.18.2.1 2025/04/05 16:16:30 lothar Exp $
  * $Log: lbelement.h,v $
+ * Revision 1.18.2.1  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.18  2011/10/15 21:47:12  lollisoft
  * Removed all code that is obsolete. Current code compiles but still does not run.
  *

@@ -16,7 +16,7 @@
 ** sqlite3RegisterDateTimeFunctions() found at the bottom of the file.
 ** All other code has file scope.
 **
-** $Id: date.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
+** $Id: date.c,v 1.2.4.1 2025/04/05 16:16:40 lothar Exp $
 **
 ** SQLite processes all times and dates as Julian Day numbers.  The
 ** dates and times are stored as the number of days since noon

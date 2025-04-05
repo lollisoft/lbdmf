@@ -55,8 +55,6 @@
 #include <direct.h>
 #endif
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDMFActionStepIdForFormValue.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbDMFIdForFormValue, lbDMFIdForFormValue)
@@ -67,7 +65,11 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 
 lbDMFIdForFormValue::lbDMFIdForFormValue() {
+	
 	myActionID = -1;
+	
+	;
+
 	_CL_LOG << "lbDMFIdForFormValue::lbDMFIdForFormValue() called." LOG_
 }
 
@@ -94,42 +96,6 @@ void LB_STDCALL lbDMFIdForFormValue::setTransitions(lb_I_Action_Step_Transitions
 
 void LB_STDCALL lbDMFIdForFormValue::setParameter(lb_I_ActionStep_Parameters* myParams) {
 	
-}
-
-lbErrCodes LB_STDCALL lookupApplication(lb_I_Applications* applications, const char* name) {
-	applications->finishIteration();
-	
-	while (applications->hasMoreElements()) {
-		applications->setNextElement();
-		if (strcmp(applications->get_name(), name) == 0)
-			return ERR_NONE;
-	}
-	
-	return ERR_ENTITY_NOT_FOUND;
-}
-
-char* LB_STDCALL lookupParameter(lb_I_ApplicationParameter* from, const char* name, long ApplicationID) {
-	from->finishIteration();
-	
-	while (from->hasMoreElements()) {
-		from->setNextElement();
-		if (from->get_anwendungid() == ApplicationID && strcmp(from->get_parametername(), name) == 0)
-			return from->get_parametervalue();
-	}
-
-	return NULL;
-}
-
-char* LB_STDCALL lookupParameter(lb_I_FormularParameter* from, const char* name, long FormID) {
-	from->finishIteration();
-	
-	while (from->hasMoreElements()) {
-		from->setNextElement();
-		if (from->get_formularid() == FormID && strcmp(from->get_parametername(), name) == 0)
-			return from->get_parametervalue();
-	}
-
-	return NULL;
 }
 
 long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
@@ -197,9 +163,9 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 	metaapp->load();
 	metaapp->setLoadFromDatabase(b);
 
-	UAP(lb_I_SecurityProvider, securityManager)
-	UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
-	AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
+	UAP(lb_I_Applications, applications)
+	applications = metaapp->getApplicationModel();
+	applications->selectApplication(ApplicationName->charrep());
 	
 	if (activeDocument != NULL) {
 		UAP(lb_I_KeyBase, key)
@@ -212,18 +178,16 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 		QI(name, lb_I_KeyBase, key)
 		uk = document->getElement(&key);
 		QI(uk, lb_I_ApplicationParameter, appParams)
-		
-///\todo I am not sure if there the ApplicationName must be used.
-		AppID->setData(securityManager->getApplicationID());
+		AppID->setData(applications->getApplicationID());
 		
 		// The database I get the current row Id.
 		UAP_REQUEST(getModuleInstance(), lb_I_String, AppDBName)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, AppDBPass)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, AppDBUser)
 		
-		*AppDBName = lookupParameter(*&appParams, "DBName", (long) AppID->getData());
-		*AppDBUser = lookupParameter(*&appParams, "DBUser", (long) AppID->getData());
-		*AppDBPass = lookupParameter(*&appParams, "DBPass", (long) AppID->getData());
+		*AppDBName = appParams->getParameter("DBName", (long) AppID->getData());
+		*AppDBUser = appParams->getParameter("DBUser", (long) AppID->getData());
+		*AppDBPass = appParams->getParameter("DBPass", (long) AppID->getData());
 
 		*name = "Formulars";
 		
@@ -234,14 +198,14 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 			QI(uk, lb_I_Formulars, formulars)
 			
 			if (formulars != NULL) {
-				formulars->finishIteration();
+				formulars->finishFormularIteration();
 				
-				while (formulars->hasMoreElements()) {
-					formulars->setNextElement();
+				while (formulars->hasMoreFormulars()) {
+					formulars->setNextFormular();
 					
-					if (strcmp(formulars->get_name(), currentFormular->charrep()) == 0) {
-						if (formulars->get_anwendungid() == (long) AppID->getData()) {
-							long formId = formulars->get_id();
+					if (strcmp(formulars->getName(), currentFormular->charrep()) == 0) {
+						if (formulars->getApplicationID() == (long) AppID->getData()) {
+							long formId = formulars->getFormularID();
 							
 							// Get the query of it
 							*name = "FormParams";
@@ -252,7 +216,7 @@ long LB_STDCALL lbDMFIdForFormValue::execute(lb_I_Parameter* execution_params) {
 								QI(uk, lb_I_FormularParameter, formParams)
 								
 								UAP_REQUEST(getModuleInstance(), lb_I_String, query)
-								*query = lookupParameter(*&formParams, "query", formId);
+								*query = formParams->getParameter("query", formId);
 								
 								UAP(lb_I_Database, database)
 								
@@ -382,8 +346,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()

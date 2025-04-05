@@ -33,11 +33,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.2.2.1 $
  * $Name:  $
- * $Id: lbCryptoStream.h,v 1.2 2011/02/27 10:34:00 lollisoft Exp $
+ * $Id: lbCryptoStream.h,v 1.2.2.1 2025/04/05 16:16:31 lothar Exp $
  *
  * $Log: lbCryptoStream.h,v $
+ * Revision 1.2.2.1  2025/04/05 16:16:31  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.2  2011/02/27 10:34:00  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *

@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149.2.4 $
+ * $Revision: 1.149.2.5 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.149.2.4 2017/07/09 08:23:11 lollisoft Exp $
+ * $Id: lbModule.cpp,v 1.149.2.5 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.149.2.5  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.149.2.4  2017/07/09 08:23:11  lollisoft
  * Added new data type mappings. Hopefully first usable version.
  *

@@ -73,7 +73,6 @@ extern "C" {
 /*...e*/
 /*...e*/
 
-#include <lbInterfaces-lbDMFManager.h>
 #include <DecisionAction.h>
 
 /*...lbDecisionAction:0:*/
@@ -182,25 +181,25 @@ long LB_STDCALL lbDecisionAction::execute(lb_I_Parameter* params) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
 			UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 			
-			appActionSteps->selectById(myActionID);
-			*What = appActionSteps->get_what();
+			appActionSteps->selectActionStep(myActionID);
+			*What = appActionSteps->getActionStepWhat();
 			
 			// The desicion here does not contain how to make desicion, but may contain a general text about what the desicion is for.
 			// A desicion should not have more than two outgoing connectors to other action steps. This simplifies the logic.
 			
-			transitions->finishIteration();
-			while (transitions->hasMoreElements()) {
-				transitions->setNextElement();
+			transitions->finishActionStepTransitionIteration();
+			while (transitions->hasMoreActionStepTransitions()) {
+				transitions->setNextActionStepTransition();
 				// First use a simple expression without any Lex & Yacc parser
 				UAP_REQUEST(getModuleInstance(), lb_I_String, paramValue)
 				UAP_REQUEST(getModuleInstance(), lb_I_String, paramName)
 				long dst_actionid;
 				UAP_REQUEST(getModuleInstance(), lb_I_String, expression)
 				//wxString expression;
-				*expression = transitions->get_expression();
-				dst_actionid = transitions->get_dst_actionid();
+				*expression = transitions->getActionStepTransitionDecision();
+				dst_actionid = transitions->getActionStepTransitionDstActionID();
 				
-				if (transitions->get_src_actionid() == myActionID) {
+				if (transitions->getActionStepTransitionSrcActionID() == myActionID) {
 					_LOG << "Evaluate expression '" << expression->charrep() << "' of actionid = " << myActionID LOG_
 					if (expression->strpos("==") != -1) {
 						// equal operator

@@ -5,7 +5,7 @@
 // Author:      Markus Greither
 // Modified by:
 // Created:     11/10/02
-// RCS-ID:      $Id: resizec.h,v 1.1 2010/02/21 22:29:55 lollisoft Exp $
+// RCS-ID:      $Id: resizec.h,v 1.1.2.1 2025/04/05 16:16:30 lothar Exp $
 // Copyright:   (c) Markus Greither
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

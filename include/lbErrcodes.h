@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.46.2.3 $
+ * $Revision: 1.46.2.4 $
  * $Name:  $
- * $Id: lbErrcodes.h,v 1.46.2.3 2015/01/25 07:17:46 lollisoft Exp $
+ * $Id: lbErrcodes.h,v 1.46.2.4 2025/04/05 16:16:32 lothar Exp $
  *
  * $Log: lbErrcodes.h,v $
+ * Revision 1.46.2.4  2025/04/05 16:16:32  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.46.2.3  2015/01/25 07:17:46  lollisoft
  * Added new error code for website error handling stuff.
  *

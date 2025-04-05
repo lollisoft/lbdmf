@@ -107,28 +107,6 @@ namespace std
 
 void sig_handler(int signr);
 
-class TestResult {
-public:
-	TestResult(std::string testclass, std::string testname, std::string methodname, std::string testtype)
-	{
-		TestName = testname;
-		TestClass = testclass;
-		TestMethodName = methodname;
-		TestType = testtype;
-		TestMsg = "";
-	}
-	
-	std::string TestClass;
-	std::string TestName;
-	std::string TestMethodName;
-	std::string TestType;
-	std::string TestMsg;
-	
-	bool Failed;
-	bool Thrown;
-};
-typedef std::list<TestResult*> TestResults;
-
 /**
  * A singleton class.
  * Receives tests results and stores messages to the test log
@@ -144,19 +122,7 @@ public:
 	static TestsListener& theInstance();
 	std::string logString();
 	std::stringstream& errorsLog();
-
-	void currentTestClass( std::string& _class);
 	void currentTestName( std::string& name);
-	void currentTestMethodName( std::string& methodname);
-	void currentTestMsg( std::string& msg);
-	void currentTestType( std::string& _type);
-
-	std::string currentTestClass() { return *_currentTestClass; }
-	std::string currentTestName() { return *_currentTestName; }
-	std::string currentTestMethodName() { return *_currentTestMethodName; }
-	std::string currentTestMsg() { return *_currentTestMsg; }
-	std::string currentTestType() { return *_currentTestType; }
-
 	static void testHasRun();
 	static void testHasFailed();
 	static void testHasThrown();
@@ -165,17 +131,6 @@ public:
 	/** returns wheather all run tests have passed */
 	static bool allTestsPassed();
 
-	static void createTestResult() 
-	{
-		_currentTestResult = new TestResult(TestsListener::theInstance().currentTestClass(), TestsListener::theInstance().currentTestName(), TestsListener::theInstance().currentTestMethodName(), TestsListener::theInstance().currentTestType());
-	}
-
-	static TestResult* currentTestResult() 
-	{
-		return _currentTestResult;
-	}
-	
-	static TestResults getTestResults() { return _testResults; }
 private:
 	static const char* errmsgTag_nameOfTest() { return "Test failed: "; }
 
@@ -185,13 +140,7 @@ private:
 		_executed=_failed=_exceptions=0;
 	}
 
-	static TestResult* _currentTestResult;
-	static TestResults _testResults;
-	std::string* _currentTestClass;
 	std::string* _currentTestName;
-	std::string* _currentTestMethodName;
-	std::string* _currentTestMsg;
-	std::string* _currentTestType;
 	std::stringstream _log;
 	unsigned _executed;
 	unsigned _failed;
@@ -403,14 +352,10 @@ protected:
 	class TestCase : public Test
 	{
 	public:
-		TestCase(ConcreteFixture* parent, TestCaseMethod method, const std::string & name, const std::string & classname, const std::string & type_, const std::string & msg, const std::string & methodname) :
+		TestCase(ConcreteFixture* parent, TestCaseMethod method, const std::string & name) :
 		  _parent(parent),
 		  _testCaseMethod(method),
-		  _name(name),
-		  _classname(classname),
-		  _type(type_),
-		  _methodname(methodname),
-		  _msg(msg)
+		  _name(name)
 		{
 		}
 		/** calls TestFixture method.  setUp and tearDown methods are called by
@@ -418,12 +363,8 @@ protected:
 		 * it is robust to unexpected exceptions (throw) */
 		void runTest()
 		{
-			TestsListener::theInstance().currentTestClass(_classname);
-			TestsListener::theInstance().currentTestName(_name);
-			TestsListener::theInstance().currentTestMethodName(_methodname);
-			TestsListener::theInstance().currentTestMsg(_msg);
-			TestsListener::theInstance().currentTestType(_type);
 			TestsListener::theInstance().testHasRun();
+			TestsListener::theInstance().currentTestName(_name);
 			try
 			{
 				(_parent->*_testCaseMethod)();
@@ -458,10 +399,6 @@ protected:
 		ConcreteFixture* _parent;
 		TestCaseMethod _testCaseMethod;
 		std::string _name;
-		std::string _classname;
-		std::string _type;
-		std::string _methodname;
-		std::string _msg;
 	};
     //------------- end of class TestCase ----------------------------
 
@@ -495,7 +432,7 @@ public:
 
 	void afegeixCasDeTest(ConcreteFixture* parent, TestCaseMethod method, const char* name)
 	{
-		TestCase* casDeTest = new TestCase(parent, method, _name + "::" + name, _name, "-", "-", name);
+		TestCase* casDeTest = new TestCase(parent, method, _name + "::" + name);
 		_testCases.push_back( casDeTest );
 	}
 	/** calls each test after setUp and tearDown TestFixture methods */

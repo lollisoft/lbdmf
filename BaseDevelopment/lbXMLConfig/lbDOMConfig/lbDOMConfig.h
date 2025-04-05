@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.13 $
+ * $Revision: 1.13.2.1 $
  * $Name:  $
- * $Id: lbDOMConfig.h,v 1.13 2011/02/27 10:30:36 lollisoft Exp $
+ * $Id: lbDOMConfig.h,v 1.13.2.1 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbDOMConfig.h,v $
+ * Revision 1.13.2.1  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.13  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *

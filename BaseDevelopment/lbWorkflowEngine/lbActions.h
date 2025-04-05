@@ -28,14 +28,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.2 $
+ * $Revision: 1.1.2.2 $
  * $Name:  $
- * $Id: lbActions.h,v 1.2 2013/02/16 10:36:25 lollisoft Exp $
+ * $Id: lbActions.h,v 1.1.2.2 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbActions.h,v $
- * Revision 1.2  2013/02/16 10:36:25  lollisoft
- * Merged Release_1_0_4_stable_rc1_branch but doesn't yet compile.
- * Several files were conflicting and resolved in this checkin.
+ * Revision 1.1.2.2  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
  *
  * Revision 1.1.2.1  2012/05/12 04:40:17  lollisoft
  * Moved action implementation out of DatabaseForm plugin and replaced wx related code with my own.

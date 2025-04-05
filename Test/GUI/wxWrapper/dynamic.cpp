@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.21 2025/03/02 12:40:09 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.22 2025/04/05 16:16:31 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.21 $
+ * $Revision: 1.174.2.22 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.21 2025/03/02 12:40:09 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.22 2025/04/05 16:16:31 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.22  2025/04/05 16:16:31  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.174.2.21  2025/03/02 12:40:09  lothar
  * Plugins are now capable to be autoran. There were many methods with a missing return of an error code.
  *

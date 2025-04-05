@@ -310,24 +310,6 @@ GO
 				<xsl:when test="./xmi:Extension/stereotype[@name='form']">
 -- Class <xsl:value-of select="@name"/> of type FORM found.
 				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='role']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='ribbongroup']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='ribbonpage']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='ribbonmenu']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='menuaction']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='application']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='entity']">
 -- Class <xsl:value-of select="@name"/> of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -342,24 +324,6 @@ GO
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
 -- Class <xsl:value-of select="@name"/> of type FORM found.
 				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:role']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:ribbongroup']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:ribbonpage']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:ribbonmenu']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:menuaction']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
-				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:application']">
--- Class <xsl:value-of select="@name"/> of type role found.
-				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:entity']">
 -- Class <xsl:value-of select="@name"/> of type ENTITY found.
 -- Create table model with template 'importApplicationTable'.
@@ -371,7 +335,6 @@ GO
 			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 		</xsl:call-template>
 			</xsl:when>
-
 			<xsl:otherwise>
 -- Unknown stereotype '<xsl:value-of select="./xmi:Extension/stereotype/@name"/>' for class <xsl:value-of select="@name"/>.
 		<xsl:call-template name="dropApplicationTable">
@@ -408,7 +371,6 @@ SET SESSION AUTHORIZATION 'dba';
 			</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='report']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
-		<!--
 					<xsl:call-template name="importDMFReport">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -416,11 +378,9 @@ SET SESSION AUTHORIZATION 'dba';
 						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 						<xsl:with-param name="TargetReportSystem" select="'OpenRPT'"/>
 					</xsl:call-template>
-		-->			
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:report']">
 		-- Class <xsl:value-of select="@name"/> of type FORM found.
-		<!--
 					<xsl:call-template name="importDMFReport">
 						<xsl:with-param name="ApplicationID" select="../@xmi:id"/>
 						<xsl:with-param name="ApplicationName" select="../@name"/>
@@ -428,7 +388,6 @@ SET SESSION AUTHORIZATION 'dba';
 						<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
 						<xsl:with-param name="TargetReportSystem" select="'OpenRPT'"/>
 					</xsl:call-template>
-		-->			
 				</xsl:when>
 				<xsl:when test="./xmi:Extension/stereotype[@name='lbDMF:form']">
 -- Class <xsl:value-of select="@name"/> of type FORM found.
