@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.138 $
+# * $Revision: 1.229.2.139 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.138 2025/04/05 16:38:55 lothar Exp $
+# * $Id: Makefile,v 1.229.2.139 2025/04/05 16:42:59 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.139  2025/04/05 16:42:59  lothar
+# * Some trouble with ifeq and else
+# *
 # * Revision 1.229.2.138  2025/04/05 16:38:55  lothar
 # * Tweaked mkmk building because it now clashes with the standard mkmk vcproj folder mkmk
 # *
@@ -2999,12 +3002,15 @@ lbHook: dummy
 ifeq ($(OSTYPE), linux)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
+
 ifeq ($(OSTYPE), solaris)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
+
 ifeq ($(OSTYPE), linux-debian-ppc)
 	$(MAKE) -s -C $@ -e MODULE=lib$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
+
 ifeq ($(OSTYPE), Windows_NT)
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETFRAMEWORK) -f $(MAKE_CONFIG_FILE)
 else
