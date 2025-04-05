@@ -35,6 +35,7 @@ Requirements:
 Typically the installation is on drive C:
 
 Windows:
+********
 
 	I work primarily with MinGW C++ compiler on Windows. There is a part of the project
 	that can compile with the Watcom 11 compiler and most probably with the current
@@ -96,6 +97,7 @@ Post setup:
 	wxWrapper
 
 Linux:
+******
 
 Prerequisites:
 
@@ -155,7 +157,8 @@ export PATH
 export PLUGIN_DIR
 REPO_NAME=lbdmf
 export REPO_NAME
-		
-When you have setup this environment, you could start pulling the code into the following directory:
-/home/<user>/develop/Projects. There should then be the code within /home/<user>/develop/Projects/lbdmf.
-Go to the directory /home/<user>/develop/Projects/lbdmf/BaseDevelopment and type make.
+
+Mac OS X:
+*********
+
+TBD
