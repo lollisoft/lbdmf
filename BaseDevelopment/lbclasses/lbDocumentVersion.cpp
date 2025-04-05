@@ -31,11 +31,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.2.2.2 $
+* $Revision: 1.2.2.3 $
 * $Name:  $
-* $Id: lbDocumentVersion.cpp,v 1.2.2.2 2025/04/05 15:00:26 lothar Exp $
+* $Id: lbDocumentVersion.cpp,v 1.2.2.3 2025/04/05 15:03:06 lothar Exp $
 *
 * $Log: lbDocumentVersion.cpp,v $
+* Revision 1.2.2.3  2025/04/05 15:03:06  lothar
+* This file seems to clash with HEAD bransh when migrating to git.
+* So update it in the bransh to probably fix this. Why does the
+* migration fails here?
+*
 * Revision 1.2.2.2  2025/04/05 15:00:26  lothar
 * This file seems to clash with HEAD bransh when migrating to git.
 * So update it in the bransh to probably fix this. Why does the
@@ -72,6 +77,11 @@
 #include <lb_misc.h>
 #include <fstream>
 /*...e*/
+
+// This file was implemented in HEAD only and makes trouble in branch.
+// Have readded it in the branch and then added the ifdef to deactivate
+// that code for now.
+#ifdef IMPLEMENT_DOCUMENT_VERSION
 
 class lbDocumentVersion : public lb_I_DocumentVersion
 {
@@ -201,3 +211,4 @@ lb_I_String* LB_STDCALL lbDocumentVersion::getStoragePluginVersion() {
 	StoragePluginVersion++;
 	return *&StoragePluginVersion;
 }
+#endif
