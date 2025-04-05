@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -31,12 +31,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.17 $
+ * $Revision: 1.16.2.1 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.17 2012/01/21 18:39:21 lollisoft Exp $
+ * $Id: lbcontainer.h,v 1.16.2.1 2025/04/05 14:20:32 lothar Exp $
  * $Log: lbcontainer.h,v $
- * Revision 1.17  2012/01/21 18:39:21  lollisoft
- * Got the plugin issue fixed. (When a plugin will load another plugin from an implementations constructor)
+ * Revision 1.16.2.1  2025/04/05 14:20:32  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
  *
  * Revision 1.16  2011/02/27 10:30:36  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
@@ -128,8 +130,6 @@ public:
 
     lbContainer();
     virtual ~lbContainer();
-
-	lb_I_Iterator* LB_STDCALL getIterator();
 
     DECLARE_LB_UNKNOWN()
 
