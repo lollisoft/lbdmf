@@ -28,11 +28,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.3 $
+ * $Revision: 1.1.2.4 $
  * $Name:  $
- * $Id: lbPropertyForm.cpp,v 1.1.2.3 2015/10/25 18:13:18 lollisoft Exp $
+ * $Id: lbPropertyForm.cpp,v 1.1.2.4 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbPropertyForm.cpp,v $
+ * Revision 1.1.2.4  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.1.2.3  2015/10/25 18:13:18  lollisoft
  * Fixed form cleanup code to better support new property forms.
  *

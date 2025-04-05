@@ -28,11 +28,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77.2.3 $
+ * $Revision: 1.77.2.4 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.77.2.3 2015/01/01 19:06:51 lollisoft Exp $
+ * $Id: lbMetaApplication.h,v 1.77.2.4 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.77.2.4  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.77.2.3  2015/01/01 19:06:51  lollisoft
  * Added initial json based update check plugin.
  *

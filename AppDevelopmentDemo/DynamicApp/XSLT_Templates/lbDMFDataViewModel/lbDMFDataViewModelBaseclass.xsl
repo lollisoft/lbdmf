@@ -165,7 +165,7 @@ class <xsl:value-of select="$FormularName"/>;
 // Author:      Lothar Behrens
 // Modified by:
 // Created:     2008/09/14 (Template)
-// RCS-ID:      $Id: lbDMFDataViewModelBaseclass.xsl,v 1.2.2.2 2025/03/02 12:40:09 lothar Exp $
+// RCS-ID:      $Id: lbDMFDataViewModelBaseclass.xsl,v 1.2.2.3 2025/04/05 16:16:29 lothar Exp $
 // Copyright:   (c) Lothar Behrens
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

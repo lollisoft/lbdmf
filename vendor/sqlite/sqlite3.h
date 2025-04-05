@@ -30,7 +30,7 @@
 ** the version number) and changes its name to "SQLITE_DLLEXPORT sqlite3.h" as
 ** part of the build process.
 **
-** @(#) $Id: sqlite3.h,v 1.5 2008/09/17 08:21:05 lollisoft Exp $
+** @(#) $Id: sqlite3.h,v 1.5.2.1 2025/04/05 16:16:40 lothar Exp $
 */
 #ifdef WINDOWS
 #ifndef SQLITE_DLLEXPORT

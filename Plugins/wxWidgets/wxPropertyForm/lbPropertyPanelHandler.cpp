@@ -28,11 +28,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.6 $
+ * $Revision: 1.1.2.7 $
  * $Name:  $
- * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.6 2025/03/02 12:40:09 lothar Exp $
+ * $Id: lbPropertyPanelHandler.cpp,v 1.1.2.7 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbPropertyPanelHandler.cpp,v $
+ * Revision 1.1.2.7  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.1.2.6  2025/03/02 12:40:09  lothar
  * Plugins are now capable to be autoran. There were many methods with a missing return of an error code.
  *

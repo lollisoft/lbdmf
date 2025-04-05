@@ -31,10 +31,15 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.16.2.1 $
+ * $Revision: 1.16.2.2 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.16.2.1 2025/04/05 14:20:32 lothar Exp $
+ * $Id: lbcontainer.h,v 1.16.2.2 2025/04/05 16:16:30 lothar Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.16.2.2  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.16.2.1  2025/04/05 14:20:32  lothar
  * This file seems to clash with HEAD bransh when migrating to git.
  * So update it in the bransh to probably fix this. Why does the

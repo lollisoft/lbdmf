@@ -1,6 +1,6 @@
 # ======================================================================================
 # Author: Francesco Montorsi
-# RCS-ID: $Id: configure.ac,v 1.1.2.1 2012/10/07 16:06:26 lollisoft Exp $
+# RCS-ID: $Id: configure.ac,v 1.1.2.2 2025/04/05 16:16:41 lothar Exp $
 #
 # A basic "configure.ac" for a wxCode component.
 # See

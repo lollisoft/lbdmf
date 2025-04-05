@@ -66,6 +66,8 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
+
+	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
@@ -125,7 +127,6 @@ lb_I_Unknown* LB_STDCALL lbPluginFaxNumber::peekImplementation() {
 
 	if (impl == NULL) {
 		FaxNumber* faxNumber = new FaxNumber();
-		faxNumber->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(faxNumber, lb_I_Unknown, impl)
 	} else {
@@ -142,7 +143,6 @@ lb_I_Unknown* LB_STDCALL lbPluginFaxNumber::getImplementation() {
 	if (impl == NULL) {
 		_LOG << "Warning: getImplementation() has not been used prior." LOG_
 		FaxNumber* faxNumber = new FaxNumber();
-		faxNumber->setModuleManager(manager.getPtr(), __FILE__, __LINE__);
 	
 		QI(faxNumber, lb_I_Unknown, impl)
 	}

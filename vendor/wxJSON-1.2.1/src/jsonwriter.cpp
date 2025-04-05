@@ -3,7 +3,7 @@
 // Purpose:     the wxJSONWriter class: a JSON text generator
 // Author:      Luciano Cattani
 // Created:     2007/10/12
-// RCS-ID:      $Id: jsonwriter.cpp,v 1.1.2.1 2015/01/01 19:06:53 lollisoft Exp $
+// RCS-ID:      $Id: jsonwriter.cpp,v 1.1.2.2 2025/04/05 16:16:40 lothar Exp $
 // Copyright:   (c) 2007 Luciano Cattani
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

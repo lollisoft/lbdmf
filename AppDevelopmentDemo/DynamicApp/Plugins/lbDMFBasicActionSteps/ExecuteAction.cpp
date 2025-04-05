@@ -73,7 +73,6 @@ extern "C" {
 /*...e*/
 /*...e*/
 
-#include <lbInterfaces-lbDMFManager.h>
 #include <ExecuteAction.h>
 
 BEGIN_IMPLEMENT_LB_UNKNOWN(lbExecuteAction)

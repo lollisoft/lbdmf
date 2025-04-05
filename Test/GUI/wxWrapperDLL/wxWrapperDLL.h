@@ -33,11 +33,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.43.2.8 $
+ * $Revision: 1.43.2.9 $
  * $Name:  $
- * $Id: wxWrapperDLL.h,v 1.43.2.8 2025/02/08 08:09:37 lothar Exp $
+ * $Id: wxWrapperDLL.h,v 1.43.2.9 2025/04/05 16:16:32 lothar Exp $
  *
  * $Log: wxWrapperDLL.h,v $
+ * Revision 1.43.2.9  2025/04/05 16:16:32  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.43.2.8  2025/02/08 08:09:37  lothar
  * Added an event handler to intercept system exit menu. Not yet ready, but demonstration works
  *

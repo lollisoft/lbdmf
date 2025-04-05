@@ -1,11 +1,16 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.136 $
+# * $Revision: 1.229.2.137 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.136 2025/03/30 08:19:00 lothar Exp $
+# * $Id: Makefile,v 1.229.2.137 2025/04/05 16:16:29 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.137  2025/04/05 16:16:29  lothar
+# * This file seems to clash with HEAD bransh when migrating to git.
+# * So update it in the bransh to probably fix this. Why does the
+# * migration fails here?
+# *
 # * Revision 1.229.2.136  2025/03/30 08:19:00  lothar
 # * Don't build wxSFDemo on Mac. Build setup does not match to this app.
 # *

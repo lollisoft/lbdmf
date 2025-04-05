@@ -13,7 +13,7 @@
 ** subsystem.  The page cache subsystem reads and writes a file a page
 ** at a time and provides a journal for rollback.
 **
-** @(#) $Id: pager.h,v 1.1 2007/11/07 08:27:11 lollisoft Exp $
+** @(#) $Id: pager.h,v 1.1.4.1 2025/04/05 16:16:40 lothar Exp $
 */
 
 #ifndef _PAGER_H_

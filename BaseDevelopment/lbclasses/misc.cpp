@@ -31,10 +31,15 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.56.2.3 $
+* $Revision: 1.56.2.4 $
 * $Name:  $
-* $Id: misc.cpp,v 1.56.2.3 2015/11/22 09:20:45 lollisoft Exp $
+* $Id: misc.cpp,v 1.56.2.4 2025/04/05 16:16:30 lothar Exp $
 * $Log: misc.cpp,v $
+* Revision 1.56.2.4  2025/04/05 16:16:30  lothar
+* This file seems to clash with HEAD bransh when migrating to git.
+* So update it in the bransh to probably fix this. Why does the
+* migration fails here?
+*
 * Revision 1.56.2.3  2015/11/22 09:20:45  lollisoft
 * Added a new plugin to integrate logging with Graylog. Including first trial to get the code build on Linux and Mac. Windows may require curl.
 *

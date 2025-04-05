@@ -108,7 +108,6 @@ extern "C" {
 #endif
 
 #include "wx/propgrid/propgrid.h"
-#include <lbInterfaces-lbDMFManager.h>
 #include <wxWrapperDLL.h>
 #include <lbDatabaseReport.h>
 
@@ -1045,7 +1044,7 @@ void  lbDatabaseReport::initTextBlocks(long id) {
 							reporttextblocks->setNextText();
 							
 							_LOG << "Check report text block, if to be inserted: '" << reporttextblocks->getLine() << "'." LOG_
-							if (reporttextblocks->getElementID() == reportelements->getID()) {
+							if (reporttextblocks->getElementID() == reportelements->getElementID()) {
 								UAP_REQUEST(getModuleInstance(), lb_I_String, l)
 								UAP_REQUEST(getModuleInstance(), lb_I_Long, i)
 								

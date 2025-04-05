@@ -46,20 +46,10 @@ public:
 	virtual void		LB_STDCALL setNextReport();
 	virtual void		LB_STDCALL finishReportIteration();
 
-	virtual long		LB_STDCALL getID();
+	virtual long		LB_STDCALL getReportID();
 	virtual char*		LB_STDCALL getReportName();
 	virtual char*		LB_STDCALL getReportDescription();
 	
-	bool		LB_STDCALL ismarked() { return false; }
-	void		LB_STDCALL mark() { }
-	void		LB_STDCALL unmark() { }
-
-	void		LB_STDCALL deleteUnmarked() { }
-	void		LB_STDCALL deleteMarked() { }
-
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	UAP(lb_I_Container, Reports)
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_String, currentName)
@@ -82,20 +72,10 @@ public:
 	virtual void		LB_STDCALL finishParameterIteration();
 
 	virtual long		LB_STDCALL getReportID();
-	virtual long		LB_STDCALL getID();
+	virtual long		LB_STDCALL getParameterID();
 	virtual char*		LB_STDCALL getParameterName();
 	virtual char*		LB_STDCALL getParameterValue();
 	
-	bool		LB_STDCALL ismarked() { return false; }
-	void		LB_STDCALL mark() { }
-	void		LB_STDCALL unmark() { }
-
-	void		LB_STDCALL deleteUnmarked() { }
-	void		LB_STDCALL deleteMarked() { }
-
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	UAP(lb_I_Container, ReportParameters)
 	UAP(lb_I_Long, currentID)
 	UAP(lb_I_Long, currentReportID)
@@ -119,7 +99,7 @@ public:
 	void		LB_STDCALL finishElementIteration();
 
 	long		LB_STDCALL getElementReportID();
-	long		LB_STDCALL getID();
+	long		LB_STDCALL getElementID();
 	char*		LB_STDCALL getElementName();
 	char*		LB_STDCALL getElementDescription();
 	long		LB_STDCALL getElementTyp();
@@ -127,16 +107,6 @@ public:
 	long		LB_STDCALL getElementY();
 	long		LB_STDCALL getElementW();
 	long		LB_STDCALL getElementH();
-
-	bool		LB_STDCALL ismarked() { return false; }
-	void		LB_STDCALL mark() { }
-	void		LB_STDCALL unmark() { }
-
-	void		LB_STDCALL deleteUnmarked() { }
-	void		LB_STDCALL deleteMarked() { }
-
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	UAP(lb_I_Container, ReportElements)
 	UAP(lb_I_Long, currentID)
@@ -165,19 +135,9 @@ public:
 	virtual void		LB_STDCALL setNextElementType();
 	virtual void		LB_STDCALL finishElementTypeIteration();
 
-	virtual long		LB_STDCALL getID();
+	virtual long		LB_STDCALL getElementID();
 	virtual char*		LB_STDCALL getElementName();
 	virtual char*		LB_STDCALL getElementDescription();
-
-	bool		LB_STDCALL ismarked() { return false; }
-	void		LB_STDCALL mark() { }
-	void		LB_STDCALL unmark() { }
-
-	void		LB_STDCALL deleteUnmarked() { }
-	void		LB_STDCALL deleteMarked() { }
-
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	UAP(lb_I_Container, ElementTypes)
 	UAP(lb_I_Long, currentID)
@@ -204,16 +164,6 @@ public:
 	long		LB_STDCALL getLine();
 	long		LB_STDCALL getElementID();
 	long		LB_STDCALL getID();
-
-	bool		LB_STDCALL ismarked() { return false; }
-	void		LB_STDCALL mark() { }
-	void		LB_STDCALL unmark() { }
-
-	void		LB_STDCALL deleteUnmarked() { }
-	void		LB_STDCALL deleteMarked() { }
-
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	UAP(lb_I_Container, ReportTexts)
 	UAP(lb_I_Long, currentID)

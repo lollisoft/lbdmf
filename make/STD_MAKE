@@ -25,11 +25,16 @@
 #            65760 Eschborn (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.36 $
+# * $Revision: 1.148.2.37 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.36 2025/03/21 16:19:47 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.37 2025/04/05 16:16:35 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.37  2025/04/05 16:16:35  lothar
+# * This file seems to clash with HEAD bransh when migrating to git.
+# * So update it in the bransh to probably fix this. Why does the
+# * migration fails here?
+# *
 # * Revision 1.148.2.36  2025/03/21 16:19:47  lothar
 # * Deactivated on Linux the makefile based 64Bit setting detection and corrected the in header equivalent.
 # *

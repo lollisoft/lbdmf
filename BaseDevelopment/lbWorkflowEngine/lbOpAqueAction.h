@@ -28,11 +28,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.1 $
+ * $Revision: 1.1.2.2 $
  * $Name:  $
- * $Id: lbOpAqueAction.h,v 1.1.2.1 2012/05/12 04:40:17 lollisoft Exp $
+ * $Id: lbOpAqueAction.h,v 1.1.2.2 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbOpAqueAction.h,v $
+ * Revision 1.1.2.2  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.1.2.1  2012/05/12 04:40:17  lollisoft
  * Moved action implementation out of DatabaseForm plugin and replaced wx related code with my own.
  *

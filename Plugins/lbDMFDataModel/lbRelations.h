@@ -55,9 +55,6 @@ public:
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
 
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
-
 	DECLARE_LB_UNKNOWN()
 	
 	UAP(lb_I_Container, Relations)
@@ -97,9 +94,6 @@ public:
 
 	void		LB_STDCALL deleteUnmarked();
 	void		LB_STDCALL deleteMarked();
-
-	void		LB_STDCALL setOperator(lb_I_Unknown* db);
-	lbErrCodes	LB_STDCALL ExecuteOperation(const char* operationName);
 
 	DECLARE_LB_UNKNOWN()
 	

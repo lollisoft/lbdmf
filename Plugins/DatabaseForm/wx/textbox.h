@@ -3,7 +3,7 @@
 // Purpose:     wxTextBoxLayoutStatus, wxTextBoxInputStatus, wxTextBox
 // Author:      Francesco Montorsi
 // Created:     2005/8/15
-// RCS-ID:      $Id: textbox.h,v 1.1 2010/02/21 22:29:55 lollisoft Exp $
+// RCS-ID:      $Id: textbox.h,v 1.1.2.1 2025/04/05 16:16:30 lothar Exp $
 // Copyright:   (c) 2005 Francesco Montorsi
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////

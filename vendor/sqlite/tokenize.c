@@ -15,7 +15,7 @@
 ** individual tokens and sends those tokens one-by-one over to the
 ** parser for analysis.
 **
-** $Id: tokenize.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
+** $Id: tokenize.c,v 1.2.4.1 2025/04/05 16:16:40 lothar Exp $
 */
 #include "windllexport.h"
 #include "sqliteInt.h"

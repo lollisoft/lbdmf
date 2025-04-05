@@ -31,10 +31,15 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.58.2.1 $
+ * $Revision: 1.58.2.2 $
  * $Name:  $
- * $Id: lbobject.h,v 1.58.2.1 2017/07/09 08:23:12 lollisoft Exp $
+ * $Id: lbobject.h,v 1.58.2.2 2025/04/05 16:16:30 lothar Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.58.2.2  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.58.2.1  2017/07/09 08:23:12  lollisoft
  * Added new data type mappings. Hopefully first usable version.
  *

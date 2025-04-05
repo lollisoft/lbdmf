@@ -28,11 +28,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.3 $
+ * $Revision: 1.1.2.4 $
  * $Name:  $
- * $Id: lbControlFactory.h,v 1.1.2.3 2016/03/20 10:12:28 lollisoft Exp $
+ * $Id: lbControlFactory.h,v 1.1.2.4 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbControlFactory.h,v $
+ * Revision 1.1.2.4  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.1.2.3  2016/03/20 10:12:28  lollisoft
  * Added new model elements for storing parameters (for columns and formularfields).
  *

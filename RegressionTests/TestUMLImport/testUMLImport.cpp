@@ -63,7 +63,6 @@ extern "C" {
 
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
 
 class UIWrapper : public lb_I_Application,
 public lb_I_EventHandler
@@ -359,13 +358,11 @@ int main(int argc, char *argv[]) {
 
 		// Need to issue some events to simulate user actions
 
-		UAP(lb_I_SecurityProvider, securityManager)
-		AQUIRE_PLUGIN(lb_I_SecurityProvider, Default, securityManager, "No security provider found.")
-		securityManager->login("user", "TestUser");
+		meta->login("user", "TestUser");
 
 		UAP(lb_I_Container, applications)
 
-		applications = securityManager->getApplications();
+		applications = meta->getApplications();
 
 		if (!meta->getAutoload()) meta->loadApplication("user", "lbDMF Manager");
 

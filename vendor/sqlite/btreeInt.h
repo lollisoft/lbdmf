@@ -9,7 +9,7 @@
 **    May you share freely, never taking more than you give.
 **
 *************************************************************************
-** $Id: btreeInt.h,v 1.1 2007/11/07 08:27:10 lollisoft Exp $
+** $Id: btreeInt.h,v 1.1.4.1 2025/04/05 16:16:40 lothar Exp $
 **
 ** This file implements a external (disk-based) database using BTrees.
 ** For a detailed discussion of BTrees, refer to

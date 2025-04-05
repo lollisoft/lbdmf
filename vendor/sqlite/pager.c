@@ -18,7 +18,7 @@
 ** file simultaneously, or one process from reading the database while
 ** another is writing.
 **
-** @(#) $Id: pager.c,v 1.2 2007/11/07 22:19:48 lollisoft Exp $
+** @(#) $Id: pager.c,v 1.2.4.1 2025/04/05 16:16:40 lothar Exp $
 */
 #include "windllexport.h"
 #ifndef SQLITE_OMIT_DISKIO

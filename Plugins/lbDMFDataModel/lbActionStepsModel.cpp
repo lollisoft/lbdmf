@@ -54,7 +54,6 @@
 #include <lbdmfdatamodel-module.h>
 /*...e*/
 
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbActionStepsModel.h>
 
 IMPLEMENT_FUNCTOR(instanceOflbActionStepsModel, lbActionStepsModel)
@@ -63,13 +62,6 @@ BEGIN_IMPLEMENT_LB_UNKNOWN(lbActionStepsModel)
 	ADD_INTERFACE(lb_I_Action_Steps)
 END_IMPLEMENT_LB_UNKNOWN()
 
-void		LB_STDCALL lbActionStepsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbActionStepsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
 
 lbActionStepsModel::lbActionStepsModel() {
 	
@@ -101,7 +93,7 @@ void		LB_STDCALL lbActionStepsModel::deleteUnmarked() {
 		setNextActionStep();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getActionStepID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -119,7 +111,7 @@ void		LB_STDCALL lbActionStepsModel::deleteMarked() {
 		setNextActionStep();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getActionStepID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -264,7 +256,7 @@ void  LB_STDCALL lbActionStepsModel::finishActionStepIteration() {
 	Actions->finishIteration();
 }
 
-long LB_STDCALL lbActionStepsModel::getID() {
+long LB_STDCALL lbActionStepsModel::getActionStepID() {
 	return currentActionStepID->getData();
 }
 
@@ -408,14 +400,6 @@ END_IMPLEMENT_LB_UNKNOWN()
 
 IMPLEMENT_FUNCTOR(instanceOflbActionStepTransitionsModel, lbActionStepTransitionsModel)
 
-void		LB_STDCALL lbActionStepTransitionsModel::setOperator(lb_I_Unknown* db) {
-
-}
-
-lbErrCodes	LB_STDCALL lbActionStepTransitionsModel::ExecuteOperation(const char* operationName) {
-	return ERR_NONE;
-}
-
 lbActionStepTransitionsModel::lbActionStepTransitionsModel() {
 	
 	_CL_VERBOSE << "lbActionStepTransitionsModel::lbActionStepTransitionsModel() called." LOG_
@@ -446,7 +430,7 @@ void		LB_STDCALL lbActionStepTransitionsModel::deleteUnmarked() {
 		setNextActionStepTransition();
 		if (!ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getActionStepTransitionID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -464,7 +448,7 @@ void		LB_STDCALL lbActionStepTransitionsModel::deleteMarked() {
 		setNextActionStepTransition();
 		if (ismarked()) {
 			UAP_REQUEST(getModuleInstance(), lb_I_Long, ID)
-			ID->setData(getID());
+			ID->setData(getActionStepTransitionID());
 			
 			UAP(lb_I_KeyBase, key)
 			QI(ID, lb_I_KeyBase, key)
@@ -602,7 +586,7 @@ void  LB_STDCALL lbActionStepTransitionsModel::finishActionStepTransitionIterati
 	Actions->finishIteration();
 }
 
-long LB_STDCALL lbActionStepTransitionsModel::getID() {
+long LB_STDCALL lbActionStepTransitionsModel::getActionStepTransitionID() {
 	return currentID->getData();
 }
 

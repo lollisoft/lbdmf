@@ -92,8 +92,6 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...sclass lbPluginModuleDatabaseForm:0:*/

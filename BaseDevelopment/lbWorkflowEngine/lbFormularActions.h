@@ -28,11 +28,16 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.2 $
+ * $Revision: 1.1.2.3 $
  * $Name:  $
- * $Id: lbFormularActions.h,v 1.1.2.2 2012/05/12 21:20:09 lollisoft Exp $
+ * $Id: lbFormularActions.h,v 1.1.2.3 2025/04/05 16:16:30 lothar Exp $
  *
  * $Log: lbFormularActions.h,v $
+ * Revision 1.1.2.3  2025/04/05 16:16:30  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.1.2.2  2012/05/12 21:20:09  lollisoft
  * Code cleanup and made formularactions loadable at runtime.
  *
