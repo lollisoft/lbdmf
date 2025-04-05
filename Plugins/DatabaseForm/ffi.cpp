@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,10 +22,11 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
-            
-            65760 Eschborn (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
+
 /*...e*/
 /*...sincludes:0:*/
 #include <lbDMF_wxPrec.h>
@@ -92,8 +93,6 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 FormularFieldInformation::FormularFieldInformation(char const * formularname, lb_I_Query* query) {
@@ -136,24 +135,24 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 	if (columntypes != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, tablename)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, fieldname)
-		UAP_REQUEST(getModuleInstance(), lb_I_Boolean, specialColumn)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, specialColumn)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, columnType)
 
-		columntypes->finishIteration();
-		while (columntypes->hasMoreElements()) {
-			columntypes->setNextElement();
+		columntypes->finishTypeIteration();
+		while (columntypes->hasMoreTypes()) {
+			columntypes->setNextType();
 			
-			*tablename = columntypes->get_tablename();
-			*fieldname = columntypes->get_name();
-			specialColumn->setData(columntypes->get_specialcolumn());
-			*columnType = columntypes->get_controltype();
+			*tablename = columntypes->getTableName();
+			*fieldname = columntypes->getName();
+			*specialColumn = columntypes->getSpecialColumn();
+			*columnType = columntypes->getControlType();
 
 			for (int i = 1; i <= query->getColumns(); i++) {
 				UAP_REQUEST(getModuleInstance(), lb_I_String, col)
 				
 				col->setData(query->getColumnName(i));
 
-				if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && columntypes->get_ro()) {
+				if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && columntypes->getReadonly()) {
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk)
 					
@@ -163,7 +162,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 					ROFields->insert(&uk, &key);
 				}
 				
-				if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((bool)specialColumn->getData())) {
+				if ((strcmp(col->charrep(), fieldname->charrep()) == 0) && ((strcmp("true", specialColumn->charrep()) == 0) || (strcmp("1", specialColumn->charrep()) == 0))) {
 					UAP(lb_I_KeyBase, key)
 					UAP(lb_I_Unknown, uk)
 					
@@ -175,7 +174,7 @@ FormularFieldInformation::FormularFieldInformation(char const * formularname, lb
 
 			}
 		}
-		columntypes->finishIteration();
+		columntypes->finishTypeIteration();
 	} else {
 		UAP(lb_I_Database, database)
 		char* dbbackend = meta->getSystemDatabaseBackend();
