@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.137 $
+# * $Revision: 1.229.2.138 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.137 2025/04/05 16:16:29 lothar Exp $
+# * $Id: Makefile,v 1.229.2.138 2025/04/05 16:38:55 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.138  2025/04/05 16:38:55  lothar
+# * Tweaked mkmk building because it now clashes with the standard mkmk vcproj folder mkmk
+# *
 # * Revision 1.229.2.137  2025/04/05 16:16:29  lothar
 # * This file seems to clash with HEAD bransh when migrating to git.
 # * So update it in the bransh to probably fix this. Why does the
@@ -2537,7 +2540,7 @@ ifeq ($(OSTYPE), solaris)
 
 ../vendor/mkmk: dummy
 	$@/make.sh $@
-	cp $@/mkmk $(prefix)/bin
+	cp $@/mkmk.out $(prefix)/bin/mkmk
 	cd ../BaseDevelopment
 endif
 
@@ -2548,7 +2551,7 @@ ifeq ($(OSTYPE), linux-debian-ppc)
 
 ../vendor/mkmk: dummy
 	$@/make.sh $@
-	cp $@/mkmk $(prefix)/bin
+	cp $@/mkmk.out $(prefix)/bin/mkmk
 	cd ../BaseDevelopment
 endif
 
@@ -2559,7 +2562,7 @@ ifeq ($(OSTYPE), linux)
 
 ../vendor/mkmk: dummy
 	$@/make.sh $@
-	cp $@/mkmk $(prefix)/bin
+	cp $@/mkmk.out $(prefix)/bin/mkmk
 	cd ../BaseDevelopment
 endif
 
@@ -2570,7 +2573,7 @@ ifeq ($(OSTYPE), osx)
 
 ../vendor/mkmk: dummy
 	$@/make-osx.sh $@
-	cp $@/mkmk $(prefix)/bin
+	cp $@/mkmk.out $(prefix)/bin/mkmk
 	cd ../BaseDevelopment
 
 ../vendor/propgrid: dummy

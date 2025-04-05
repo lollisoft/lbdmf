@@ -29,4 +29,4 @@ $CPP stringtools.cpp -c -DUNIX \
     -I /usr/include \
     -I ../dosdir
 
-$CPP -o mkmk stringtools.o contain.o mkmk.o ../dosdir/match.o ../dosdir/dosdir.o -lstdc++
+$CPP -o mkmk.out stringtools.o contain.o mkmk.o ../dosdir/match.o ../dosdir/dosdir.o -lstdc++
