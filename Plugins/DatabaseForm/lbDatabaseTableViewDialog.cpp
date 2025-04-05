@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,10 +22,10 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
-
-            65760 Eschborn (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 
 /*...sincludes:0:*/
@@ -96,8 +96,6 @@ extern "C" {
 #include <wx/file.h>
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #include <lbDatabaseForm.h>
 
 /*...sdoc:0:*/
@@ -489,8 +487,6 @@ public:
 	lb_I_Unknown* LB_STDCALL peekImplementation();
 	lb_I_Unknown* LB_STDCALL getImplementation();
 	void LB_STDCALL releaseImplementation();
-
-	void LB_STDCALL setNamespace(const char* _namespace) { }
 /*...e*/
 
 	DECLARE_LB_UNKNOWN()
