@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -21,8 +21,11 @@
 
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
-    p-Mail: See my current address on http://www.lollisoft.de/index.php?module=xarpages&func=display&pid=6
-*/
+    p-Mail: Lothar Behrens
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 /*...sincludes:0:*/
 #ifdef LBDMF_PREC
@@ -104,15 +107,15 @@ char* LB_STDCALL lbPluginModuleTest::getTestFixture() {
 
 lbPluginModuleTest::lbPluginModuleTest() {
 	
-	_LOGVERBOSE << "lbPluginModuleTest::lbPluginModuleTest() called." LOG_
+	_LOG << "lbPluginModuleTest::lbPluginModuleTest() called." LOG_
 }
 
 lbPluginModuleTest::~lbPluginModuleTest() {
-	_LOGVERBOSE << "lbPluginModuleTest::~lbPluginModuleTest() called." LOG_
+	_CL_LOG << "lbPluginModuleTest::~lbPluginModuleTest() called." LOG_
 }
 
 void LB_STDCALL lbPluginModuleTest::initialize() {
-	_LOGVERBOSE << "lbPluginModuleTest::initialize() called." LOG_
+	_CL_LOG << "lbPluginModuleTest::initialize() called." LOG_
 	enumPlugins();
 }
 
@@ -121,10 +124,10 @@ void LB_STDCALL lbPluginModuleTest::install() {
 }
 
 lbErrCodes LB_STDCALL lbPluginModuleTest::setData(lb_I_Unknown* uk) {
-	_LOGVERBOSE << "lbPluginModuleTest::setData(...) not implemented yet" LOG_
+        _CL_VERBOSE << "lbPluginModuleTest::setData(...) not implemented yet" LOG_
 
 	if (uk != NULL) {
-		_LOGVERBOSE << "Cloning lbPluginModuleTest with " << uk->getRefCount() << " references." LOG_
+		_CL_LOG << "Cloning lbPluginModuleTest with " << uk->getRefCount() << " references." LOG_
 	}
         
         return ERR_NOT_IMPLEMENTED;
