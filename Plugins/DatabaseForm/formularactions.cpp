@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,10 +22,10 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
-            
-            65760 Eschborn (germany)
-*/
+			Ginsterweg 4
+ 
+			65760 Eschborn (germany)
+ */
 /*...e*/
 /*...sincludes:0:*/
 #include <lbDMF_wxPrec.h>
@@ -92,8 +92,6 @@ extern "C" {
 #include "wx/wizard.h"
 /*...e*/
 
-#include <lbInterfaces-sub-security.h>
-#include <lbInterfaces-lbDMFManager.h>
 #define USE_EXRERNAL_FORMULARACTIONS
 
 #include <lbDatabaseForm.h>
@@ -303,9 +301,9 @@ char* FormularActions::getActionSourceDataField(const char* reversed_event) {
 		
 		
 		if (appActions != NULL) {
-			appActions->selectById(getActionTargetIDLong(reversed_event));
+			appActions->selectAction(getActionTargetIDLong(reversed_event));
 			_LOG << "Returning action source by event mapping." LOG_
-			return appActions->get_source();
+			return appActions->getActionSource();
 		}
 	}
 	
