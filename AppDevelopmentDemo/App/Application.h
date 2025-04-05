@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -30,11 +30,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3 $
+ * $Revision: 1.3.2.1 $
  * $Name:  $
- * $Id: Application.h,v 1.3 2011/02/27 10:34:00 lollisoft Exp $
+ * $Id: Application.h,v 1.3.2.1 2025/04/05 15:49:44 lothar Exp $
  *
  * $Log: Application.h,v $
+ * Revision 1.3.2.1  2025/04/05 15:49:44  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.3  2011/02/27 10:34:00  lollisoft
  * Changed all copyright entries addresses to match my current postal address.
  *
