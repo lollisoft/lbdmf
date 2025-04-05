@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -38,11 +38,16 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.69 $
+ * $Revision: 1.69.2.1 $
  * $Name:  $
- * $Id: skiplist.cpp,v 1.69 2011/10/16 08:40:56 lollisoft Exp $
+ * $Id: skiplist.cpp,v 1.69.2.1 2025/04/05 15:19:14 lothar Exp $
  *
  * $Log: skiplist.cpp,v $
+ * Revision 1.69.2.1  2025/04/05 15:19:14  lothar
+ * This file seems to clash with HEAD bransh when migrating to git.
+ * So update it in the bransh to probably fix this. Why does the
+ * migration fails here?
+ *
  * Revision 1.69  2011/10/16 08:40:56  lollisoft
  * Refactoring produced again some uninitialized variables that havs been fixed now. The app seems to start and esit without errors.
  *
