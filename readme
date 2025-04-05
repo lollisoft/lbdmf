@@ -1,5 +1,5 @@
 		    DMF - Distributed Multiplatform Framework
-		     Copyright (C)  Lothar Behrens 2002-2025
+		     Copyright (C)  Lothar Behrens 2000-2025
 
 This framework was intented to be independend from compiler and vendor frameworks
 like MFC or Watcom class libraries. Multiplatform stays currently for Windows and
@@ -29,6 +29,10 @@ beginning.
 Hint: The mkmk tool was orginally written by Luis Crespo. His publication is at:
 http://www.cubic.org/~submissive/sourcerer/mkmk.htm		
 
+Development started at 05.03.2000 according to the checkins I have tried to preserve
+while creating a migration from CVS to GitHub. See the following link where it started:
+
+https://github.com/lollisoft/lbdmf/commits?since=1999-01-01&until=2001-12-31&after=6a40475cb952e5540f858869a3ea657a8a800a5a+209
 
 Requirements:
 
