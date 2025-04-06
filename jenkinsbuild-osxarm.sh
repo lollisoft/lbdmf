@@ -38,11 +38,11 @@ done
 echo dummy: >> Projects/$REPO_NAME/makefile
 echo \ >> Projects/$REPO_NAME/makefile
 echo BaseDevelopment: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C \$\@ -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C \$\@ -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) -e prefix=$(prefix) >> Projects/$REPO_NAME/makefile
 
 echo \ >> Projects/$REPO_NAME/makefile
 echo install: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) install >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) -e prefix=$(prefix) install >> Projects/$REPO_NAME/makefile
 
 DEVROOT=`pwd`
 export DEVROOT
