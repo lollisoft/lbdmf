@@ -1,6 +1,7 @@
 #!/bin/sh
 
 export REPO_NAME=lbdmf
+export prefix=`pwd`
 
 echo Hudson build started at: `pwd`
 echo all: BaseDevelopment > Projects/$REPO_NAME/makefile
@@ -60,8 +61,8 @@ export OSPLATFORM
 CRUISECONTROL=yes
 export CRUISECONTROL
 make -C Projects/$REPO_NAME -f makefile clean
-make -C Projects/$REPO_NAME -e LBWXVERSION=current -f makefile
-make -C Projects/$REPO_NAME -e LBWXVERSION=current -f makefile install
+make -C Projects/$REPO_NAME -e LBWXVERSION=current -e prefix=$(prefix) -f makefile
+make -C Projects/$REPO_NAME -e LBWXVERSION=current -e prefix=$(prefix) -f makefile install
 rm -rf Projects/lbdmf/Test/GUI/wxWrapper/wxWrapper
 rm -rf Projects/lbdmf/Test/GUI/wxWrapper/wxWrapper.app
-make -C Projects/$REPO_NAME -e LBWXVERSION=current -f makefile
+make -C Projects/$REPO_NAME -e LBWXVERSION=current -e prefix=$(prefix) -f makefile
