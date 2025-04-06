@@ -1,7 +1,8 @@
 #!/bin/sh
 
 export REPO_NAME=lbdmf
-export prefix=`pwd`
+prefix=`pwd`
+export prefix
 
 echo Hudson build started at: `pwd`
 echo all: BaseDevelopment > Projects/$REPO_NAME/makefile
