@@ -323,6 +323,7 @@ ifeq ($(TARGET), yacc)
 dummy:
 
 makefile.yacc: dummy
+	echo Create yacc makefile
 	cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile.yacc
 	echo Path='$(PATH)' >> makefile.yacc
 	echo all: $(_MODULE).output >> makefile.yacc
@@ -338,6 +339,7 @@ ifeq ($(TARGET), lex)
 dummy:
 
 makefile.lex: dummy
+	echo Create lex makefile
 	cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile.lex
 	echo Path='$(PATH)' >> makefile.lex
 	echo all: $(_MODULE).yy.c >> makefile.lex
