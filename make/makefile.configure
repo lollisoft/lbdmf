@@ -321,10 +321,10 @@ endif
 ifeq ($(TARGET), yacc)
 
 makefile: dummy
-	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile.yacc
-	@echo Path='$(PATH)' >> makefile.yacc
-	@echo all: $(_MODULE).output >> makefile.yacc
-	@rm -f $(_MODULE).bak
+	cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile.yacc
+	echo Path='$(PATH)' >> makefile.yacc
+	echo all: $(_MODULE).output >> makefile.yacc
+	rm -f $(_MODULE).bak
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) $(CUSTOM_FILES) >> makefile.yacc
 
 endif
@@ -332,10 +332,10 @@ endif
 ifeq ($(TARGET), lex)
 
 makefile: dummy
-	@cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile.lex
-	@echo Path='$(PATH)' >> makefile.lex
-	@echo all: $(_MODULE).yy.c >> makefile.lex
-	@rm -f $(_MODULE).bak
+	cat $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template makefile.module > makefile.lex
+	echo Path='$(PATH)' >> makefile.lex
+	echo all: $(_MODULE).yy.c >> makefile.lex
+	rm -f $(_MODULE).bak
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) $(CUSTOM_FILES) >> makefile.lex
 
 endif
