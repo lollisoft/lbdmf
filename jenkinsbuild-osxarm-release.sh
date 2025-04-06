@@ -52,6 +52,9 @@ echo \ >> Projects/$REPO_NAME/makefile
 echo wxWrapper: dummy >> Projects/$REPO_NAME/makefile
 echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) clean >> Projects/$REPO_NAME/makefile
 echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
+
+DEVROOT=`pwd`
+export DEVROOT
 OSTYPE=osx
 export OSTYPE
 OSVERSION=`uname -r`
