@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.139 $
+# * $Revision: 1.229.2.140 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.139 2025/04/05 16:42:59 lothar Exp $
+# * $Id: Makefile,v 1.229.2.140 2025/04/06 10:00:18 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.140  2025/04/06 10:00:18  lothar
+# * Why does it not work to create makefile.lex and co?
+# *
 # * Revision 1.229.2.139  2025/04/05 16:42:59  lothar
 # * Some trouble with ifeq and else
 # *
@@ -2326,7 +2329,7 @@ dummy:
 	
 ifneq ($(OSTYPE), Windows_NT)
 ../vendor/databaselayer/src/Implementations/Sqllite: dummy
-	@echo Build Grammar makefile
+	@echo Build Grammar makefile next try
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=gram -e TARGET=$(TARGETYACC) -e CUSTOM_FILES='*.y' -f $(MAKE_CONFIG_FILE)
 	@echo Build Lexer makefile
 	$(MAKE) -s -C $@/sqlitefk/src -e MODULE=lex -e TARGET=$(TARGETLEX) -e CUSTOM_FILES='*.l' -f $(MAKE_CONFIG_FILE)
