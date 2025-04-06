@@ -330,6 +330,7 @@ makefile.yacc: dummy
 	rm -f $(_MODULE).bak
 
 makefile: makefile.yacc
+	echo Create makefile.yacc mkmk
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) $(CUSTOM_FILES) >> makefile.yacc
 
 endif
@@ -346,6 +347,7 @@ makefile.lex: dummy
 	rm -f $(_MODULE).bak
 
 makefile: makefile.lex 
+	echo Create makefile.lex mkmk
 	$(MKMK) $(TARGET) $(_MODULE) $(STDDEP) $(CUSTOM_FILES) >> makefile.lex
 
 endif
