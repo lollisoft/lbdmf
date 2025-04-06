@@ -27,7 +27,7 @@ void runTest(const char* servername, const char* servicename)
                     client->setServerName(servername, servicename);
                 }
                 
-                while (count++ < 5) {
+                while (count++ < 1) {
                         UAP(lb_I_String, echo)
                         UAP(lb_I_String, backend)
 

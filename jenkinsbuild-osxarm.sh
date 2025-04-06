@@ -43,6 +43,9 @@ echo \	\$\(MAKE\) -s -C \$\@ -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) >> 
 echo \ >> Projects/$REPO_NAME/makefile
 echo install: dummy >> Projects/$REPO_NAME/makefile
 echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) install >> Projects/$REPO_NAME/makefile
+
+DEVROOT=`pwd`
+export DEVROOT
 OSTYPE=osx
 export OSTYPE
 OSVERSION=`uname -r`

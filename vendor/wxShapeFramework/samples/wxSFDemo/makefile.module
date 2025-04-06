@@ -155,6 +155,10 @@ ifeq ($(LBWXVERSION), current)
 C_ELFOPS += -DLBWXVERSION_CURRENT
 endif
 
+ifeq ($(LBWXVERSION), old)
+C_ELFOPS += -DLBWXVERSION_OLD
+endif
+
 ifeq ($(LBWXVERSION), current)
 VENDORLIBS=-L$(prefix)/lib -llbHook -lwxWrapperDLL -lc wxShapeFramework.so
 endif
@@ -169,6 +173,15 @@ ifeq ($(OSTYPE), osx)
 MOD_INCL=$(STD_INCL) -I ../../include
 OBJDEP=
 C_ELFOPS += `wx-config --inplace --cxxflags` -DwxUSE_COLOURPICKERCTRL -DUSE_WXWRAPPER_DLL -DOSX -DUNIX -DLINUX -DLB_I_EXTENTIONS
+
+ifeq ($(LBWXVERSION), current)
+C_ELFOPS += -DLBWXVERSION_CURRENT
+endif
+
+ifeq ($(LBWXVERSION), old)
+C_ELFOPS += -DLBWXVERSION_OLD
+endif
+
 
 ifeq ($(DEBUG), yes)
 C_ELFOPS +=  -D__WXDEBUG__
