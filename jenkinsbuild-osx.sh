@@ -56,7 +56,7 @@ CRUISECONTROL=yes
 export CRUISECONTROL
 DEVELOPER_TOOLS_PATH=/Developer/Tools
 export DEVELOPER_TOOLS_PATH
-make -C Projects/$REPO_NAME -e LBWXVERSION=old -e prefix=$prefix -f makefile
-make -C Projects/$REPO_NAME -e LBWXVERSION=old -e prefix=$prefix -f makefile install
+make -C Projects/$REPO_NAME -e LBWXVERSION=old -e DEVROOT=$DEVROOT -e prefix=$prefix -f makefile
+make -C Projects/$REPO_NAME -e LBWXVERSION=old -e DEVROOT=$DEVROOT -e prefix=$prefix -f makefile install
 
 
