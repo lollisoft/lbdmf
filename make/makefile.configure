@@ -320,7 +320,7 @@ endif
 
 ifeq ($(TARGET), yacc)
 
-makefile: makefile.module \
+makefile.yacc: makefile.module \
 $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
 $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
@@ -335,7 +335,7 @@ endif
 
 ifeq ($(TARGET), lex)
 
-makefile: makefile.module \
+makefile.lex: makefile.module \
 $(DEVROOT_MAKE)$(RELPATH)/BaseDevelopment/Makefile \
 $(DEVROOT_MAKE)$(RELPATH)/make/makefile.template \
 $(DEVROOT_MAKE)$(RELPATH)/make/STD_MAKE \
