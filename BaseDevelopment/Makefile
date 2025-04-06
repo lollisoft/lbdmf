@@ -1,11 +1,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.141 $
+# * $Revision: 1.229.2.142 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.141 2025/04/06 14:28:19 lothar Exp $
+# * $Id: Makefile,v 1.229.2.142 2025/04/06 14:30:20 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.142  2025/04/06 14:30:20  lothar
+# * Added some debug output
+# *
 # * Revision 1.229.2.141  2025/04/06 14:28:19  lothar
 # * Fixing reference to /Users/lothar by passing prefix correctly.
 # *
@@ -2582,6 +2585,7 @@ ifeq ($(OSTYPE), osx)
 
 ../vendor/mkmk: dummy
 	$@/make-osx.sh $@
+	echo cp $@/mkmk.out $(prefix)/bin/mkmk
 	cp $@/mkmk.out $(prefix)/bin/mkmk
 	cd ../BaseDevelopment
 
