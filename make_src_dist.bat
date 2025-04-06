@@ -121,6 +121,8 @@ copy makefile.wat %DEVROOT%
 copy README %DEVROOT%
 copy COPYING %DEVROOT%
 copy doxygen.conf %DEVROOT%
+copy *.wpj %DEVROOT%
+
 copy BaseDevelopment\makefile %DEVROOT%\BaseDevelopment
 copy BaseDevelopment\make.bat %DEVROOT%\BaseDevelopment
 copy %PACKAGINGROOT%\watcomenv.bat %DEVROOT%
