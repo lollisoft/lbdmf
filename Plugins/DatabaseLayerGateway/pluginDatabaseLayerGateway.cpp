@@ -1,7 +1,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -21,9 +21,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
+            Odenwaldstr. 14
 
-            65760 Eschborn (germany)
+            63150 Heusenstamm (germany)
 */
 
 #ifdef LBDMF_PREC

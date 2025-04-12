@@ -1,11 +1,53 @@
+#    DMF Distributed Multiplatform Framework (the initial goal of this library)
+#    This file is part of lbDMF.
+#    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
+#
+#    This library is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU Lesser General Public
+#    License as published by the Free Software Foundation; either
+#    version 2.1 of the License, or (at your option) any later version.
+#
+#    This library is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#    Lesser General Public License for more details.
+#
+#    You should have received a copy of the GNU Lesser General Public
+#    License along with this library; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+#    The author of this work will be reached by e-Mail or paper mail.
+#    e-Mail: lothar.behrens@lollisoft.de
+#    p-Mail: Lothar Behrens
+#            Odenwaldstr. 14
+#
+#            63150 Heusenstamm (germany)
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.139 $
+# * $Revision: 1.229.2.144 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.139 2025/04/05 16:42:59 lothar Exp $
+# * $Id: Makefile,v 1.229.2.144 2025/04/12 10:54:06 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.144  2025/04/12 10:54:06  lothar
+# * Changed my address and copyright start and ending year to reflect
+# * my upcoming new home and timeframe of development.
+# *
+# * Revision 1.229.2.143  2025/04/12 10:09:26  lothar
+# * Changed my address and copyright start and ending year to reflect
+# * my upcoming new home and timeframe of development.
+# *
+# * Revision 1.229.2.142  2025/04/06 14:30:20  lothar
+# * Added some debug output
+# *
+# * Revision 1.229.2.141  2025/04/06 14:28:19  lothar
+# * Fixing reference to /Users/lothar by passing prefix correctly.
+# *
+# * Revision 1.229.2.140  2025/04/06 10:00:18  lothar
+# * Why does it not work to create makefile.lex and co?
+# *
 # * Revision 1.229.2.139  2025/04/05 16:42:59  lothar
 # * Some trouble with ifeq and else
 # *
@@ -2576,6 +2618,7 @@ ifeq ($(OSTYPE), osx)
 
 ../vendor/mkmk: dummy
 	$@/make-osx.sh $@
+	echo cp $@/mkmk.out $(prefix)/bin/mkmk
 	cp $@/mkmk.out $(prefix)/bin/mkmk
 	cd ../BaseDevelopment
 

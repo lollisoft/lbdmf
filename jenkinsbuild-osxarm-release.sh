@@ -1,6 +1,8 @@
 #!/bin/sh
 
 export REPO_NAME=lbdmf
+prefix=`pwd`
+export prefix
 
 echo Hudson build started at: `pwd`
 echo all: BaseDevelopment > Projects/$REPO_NAME/makefile
@@ -37,20 +39,23 @@ done
 echo dummy: >> Projects/$REPO_NAME/makefile
 echo \ >> Projects/$REPO_NAME/makefile
 echo BaseDevelopment: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C \$\@ -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C \$\@ -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) -e prefix=$\(prefix\) >> Projects/$REPO_NAME/makefile
 
 echo \ >> Projects/$REPO_NAME/makefile
 echo install: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) install >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) -e prefix=$\(prefix\) install >> Projects/$REPO_NAME/makefile
 
 echo \ >> Projects/$REPO_NAME/makefile
 echo clean: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) clean >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) -e prefix=$\(prefix\) clean >> Projects/$REPO_NAME/makefile
 
 echo \ >> Projects/$REPO_NAME/makefile
 echo wxWrapper: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) clean >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) -e prefix=$\(prefix\) clean >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C Test/GUI/wxWrapper -e LBWXVERSION=current -e DEVROOT=\$\(DEVROOT\) -e prefix=$\(prefix\) >> Projects/$REPO_NAME/makefile
+
+DEVROOT=`pwd`
+export DEVROOT
 OSTYPE=osx
 export OSTYPE
 OSVERSION=`uname -r`
@@ -60,8 +65,8 @@ export OSPLATFORM
 CRUISECONTROL=yes
 export CRUISECONTROL
 make -C Projects/$REPO_NAME -f makefile clean
-make -C Projects/$REPO_NAME -e LBWXVERSION=current -f makefile
-make -C Projects/$REPO_NAME -e LBWXVERSION=current -f makefile install
+make -C Projects/$REPO_NAME -e LBWXVERSION=current -e DEVROOT=$DEVROOT -e prefix=$prefix -f makefile
+make -C Projects/$REPO_NAME -e LBWXVERSION=current -e DEVROOT=$DEVROOT -e prefix=$prefix -f makefile install
 rm -rf Projects/lbdmf/Test/GUI/wxWrapper/wxWrapper
 rm -rf Projects/lbdmf/Test/GUI/wxWrapper/wxWrapper.app
-make -C Projects/$REPO_NAME -e LBWXVERSION=current -f makefile
+make -C Projects/$REPO_NAME -e LBWXVERSION=current -e DEVROOT=$DEVROOT -e prefix=$prefix -f makefile

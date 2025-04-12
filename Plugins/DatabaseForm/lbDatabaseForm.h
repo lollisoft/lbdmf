@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,19 +22,27 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-			Ginsterweg 4
- 
-			65760 Eschborn (germany)
- */
+            Odenwaldstr. 14
+
+            63150 Heusenstamm (germany)
+*/
 /*...e*/
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.71.2.9 $
+ * $Revision: 1.71.2.11 $
  * $Name:  $
- * $Id: lbDatabaseForm.h,v 1.71.2.9 2025/04/05 16:16:30 lothar Exp $
+ * $Id: lbDatabaseForm.h,v 1.71.2.11 2025/04/12 10:54:06 lothar Exp $
  *
  * $Log: lbDatabaseForm.h,v $
+ * Revision 1.71.2.11  2025/04/12 10:54:06  lothar
+ * Changed my address and copyright start and ending year to reflect
+ * my upcoming new home and timeframe of development.
+ *
+ * Revision 1.71.2.10  2025/04/12 10:09:26  lothar
+ * Changed my address and copyright start and ending year to reflect
+ * my upcoming new home and timeframe of development.
+ *
  * Revision 1.71.2.9  2025/04/05 16:16:30  lothar
  * This file seems to clash with HEAD bransh when migrating to git.
  * So update it in the bransh to probably fix this. Why does the

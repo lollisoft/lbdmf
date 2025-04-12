@@ -1,6 +1,8 @@
 #!/bin/sh
 
 export REPO_NAME=lbdmf
+prefix=`pwd`
+export prefix
 
 echo Hudson build started at: `pwd`
 echo all: BaseDevelopment > Projects/$REPO_NAME/makefile
@@ -37,11 +39,14 @@ done
 echo dummy: >> Projects/$REPO_NAME/makefile
 echo \ >> Projects/$REPO_NAME/makefile
 echo BaseDevelopment: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C \$\@ -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C \$\@ -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) -e prefix=$\(prefix\) >> Projects/$REPO_NAME/makefile
 
 echo \ >> Projects/$REPO_NAME/makefile
 echo install: dummy >> Projects/$REPO_NAME/makefile
-echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) install >> Projects/$REPO_NAME/makefile
+echo \	\$\(MAKE\) -s -C BaseDevelopment -e LBWXVERSION=old -e DEVROOT=\$\(DEVROOT\) -e prefix=$\(prefix\) install >> Projects/$REPO_NAME/makefile
+
+DEVROOT=`pwd`
+export DEVROOT
 OSTYPE=osx
 export OSTYPE
 OSVERSION=`uname -r`
@@ -52,7 +57,7 @@ CRUISECONTROL=yes
 export CRUISECONTROL
 DEVELOPER_TOOLS_PATH=/Developer/Tools
 export DEVELOPER_TOOLS_PATH
-make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile
-make -C Projects/$REPO_NAME -e LBWXVERSION=old -f makefile install
+make -C Projects/$REPO_NAME -e LBWXVERSION=old -e DEVROOT=$DEVROOT -e prefix=$prefix -f makefile
+make -C Projects/$REPO_NAME -e LBWXVERSION=old -e DEVROOT=$DEVROOT -e prefix=$prefix -f makefile install
 
 
