@@ -22,7 +22,7 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Odenwaldstraße 14
+            Odenwaldstr. 14
 
             63150 Heusenstamm (germany)
 */

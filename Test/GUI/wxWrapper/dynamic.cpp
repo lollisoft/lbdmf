@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.23 2025/04/12 10:09:26 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.24 2025/04/12 10:54:06 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Odenwaldstraﬂe 14
+            Odenwaldstr. 14
 
             63150 Heusenstamm (germany)
 */
@@ -51,11 +51,15 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.23 $
+ * $Revision: 1.174.2.24 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.23 2025/04/12 10:09:26 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.24 2025/04/12 10:54:06 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.24  2025/04/12 10:54:06  lothar
+ * Changed my address and copyright start and ending year to reflect
+ * my upcoming new home and timeframe of development.
+ *
  * Revision 1.174.2.23  2025/04/12 10:09:26  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
