@@ -20,17 +20,21 @@
 #    The author of this work will be reached by e-Mail or paper mail.
 #    e-Mail: lothar.behrens@lollisoft.de
 #    p-Mail: Lothar Behrens
-#            Odenwaldstraße 14
+#            Odenwaldstr. 14
 #
 #            63150 Heusenstamm (germany)
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.143 $
+# * $Revision: 1.229.2.144 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.143 2025/04/12 10:09:26 lothar Exp $
+# * $Id: Makefile,v 1.229.2.144 2025/04/12 10:54:06 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.144  2025/04/12 10:54:06  lothar
+# * Changed my address and copyright start and ending year to reflect
+# * my upcoming new home and timeframe of development.
+# *
 # * Revision 1.229.2.143  2025/04/12 10:09:26  lothar
 # * Changed my address and copyright start and ending year to reflect
 # * my upcoming new home and timeframe of development.
