@@ -2,7 +2,7 @@
 <!--
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002-2009  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
-            
-            65760 Eschborn (germany)
+            Odenwaldstr. 14
+
+            63150 Heusenstamm (germany)
 -->
 <!-- Template to create base class file for fixed database forms -->
 <xsl:import href="Interface.h.xsl"/>

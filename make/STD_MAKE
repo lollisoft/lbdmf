@@ -20,16 +20,20 @@
 #    The author of this work will be reached by e-Mail or paper mail.
 #    e-Mail: lothar.behrens@lollisoft.de
 #    p-Mail: Lothar Behrens
-#            Odenwaldstraﬂe 14
+#            Odenwaldstr. 14
 #
 #            63150 Heusenstamm (germany)
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.148.2.38 $
+# * $Revision: 1.148.2.39 $
 # * $Name:  $
-# * $Id: STD_MAKE,v 1.148.2.38 2025/04/12 10:09:26 lothar Exp $
+# * $Id: STD_MAKE,v 1.148.2.39 2025/04/12 10:54:06 lothar Exp $
 # *
 # * $Log: STD_MAKE,v $
+# * Revision 1.148.2.39  2025/04/12 10:54:06  lothar
+# * Changed my address and copyright start and ending year to reflect
+# * my upcoming new home and timeframe of development.
+# *
 # * Revision 1.148.2.38  2025/04/12 10:09:26  lothar
 # * Changed my address and copyright start and ending year to reflect
 # * my upcoming new home and timeframe of development.

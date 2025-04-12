@@ -2,7 +2,7 @@
 <!--
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002-2009  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,9 +22,9 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
-            
-            65760 Eschborn (germany)
+            Odenwaldstr. 14
+
+            63150 Heusenstamm (germany)
 -->
 <xsl:import href="../include/exsl.xsl"/>
 
@@ -165,7 +165,7 @@ class <xsl:value-of select="$FormularName"/>;
 // Author:      Lothar Behrens
 // Modified by:
 // Created:     2008/09/14 (Template)
-// RCS-ID:      $Id: lbDMFDataViewModelBaseclass.xsl,v 1.2.2.3 2025/04/05 16:16:29 lothar Exp $
+// RCS-ID:      $Id: lbDMFDataViewModelBaseclass.xsl,v 1.2.2.4 2025/04/12 10:54:06 lothar Exp $
 // Copyright:   (c) Lothar Behrens
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////

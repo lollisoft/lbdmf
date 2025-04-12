@@ -22,7 +22,7 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Odenwaldstraﬂe 14
+            Odenwaldstr. 14
 
             63150 Heusenstamm (germany)
 */
@@ -31,10 +31,14 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.16.2.3 $
+ * $Revision: 1.16.2.4 $
  * $Name:  $
- * $Id: lbcontainer.h,v 1.16.2.3 2025/04/12 10:09:26 lothar Exp $
+ * $Id: lbcontainer.h,v 1.16.2.4 2025/04/12 10:54:06 lothar Exp $
  * $Log: lbcontainer.h,v $
+ * Revision 1.16.2.4  2025/04/12 10:54:06  lothar
+ * Changed my address and copyright start and ending year to reflect
+ * my upcoming new home and timeframe of development.
+ *
  * Revision 1.16.2.3  2025/04/12 10:09:26  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
