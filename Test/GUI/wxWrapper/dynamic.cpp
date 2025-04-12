@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.22 2025/04/05 16:16:31 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.23 2025/04/12 10:09:26 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -42,20 +42,24 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
+            Odenwaldstraﬂe 14
 
-            65760 Eschborn (germany)
+            63150 Heusenstamm (germany)
 */
 /*...e*/
 /*...e*/
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.22 $
+ * $Revision: 1.174.2.23 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.22 2025/04/05 16:16:31 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.23 2025/04/12 10:09:26 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.23  2025/04/12 10:09:26  lothar
+ * Changed my address and copyright start and ending year to reflect
+ * my upcoming new home and timeframe of development.
+ *
  * Revision 1.174.2.22  2025/04/05 16:16:31  lothar
  * This file seems to clash with HEAD bransh when migrating to git.
  * So update it in the bransh to probably fix this. Why does the

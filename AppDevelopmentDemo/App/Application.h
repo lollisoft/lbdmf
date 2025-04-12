@@ -2,7 +2,7 @@
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,19 +22,23 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-			Ginsterweg 4
- 
-			65760 Eschborn (germany)
- */
+            Odenwaldstraﬂe 14
+
+            63150 Heusenstamm (germany)
+*/
 /*...e*/
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.3.2.2 $
+ * $Revision: 1.3.2.3 $
  * $Name:  $
- * $Id: Application.h,v 1.3.2.2 2025/04/05 16:16:25 lothar Exp $
+ * $Id: Application.h,v 1.3.2.3 2025/04/12 10:09:26 lothar Exp $
  *
  * $Log: Application.h,v $
+ * Revision 1.3.2.3  2025/04/12 10:09:26  lothar
+ * Changed my address and copyright start and ending year to reflect
+ * my upcoming new home and timeframe of development.
+ *
  * Revision 1.3.2.2  2025/04/05 16:16:25  lothar
  * This file seems to clash with HEAD bransh when migrating to git.
  * So update it in the bransh to probably fix this. Why does the
