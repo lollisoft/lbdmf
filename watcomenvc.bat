@@ -4,33 +4,36 @@ set DEVROOT=%%DEVROOT%%
 echo --------------------------------------------------------------------------------- >> readme.txt
 echo *                        Basic development settings                             * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt
-echo * Buildsystem may use mkmk ported to MinGW. A precompiled Open Watcom 1.7 port  * >> readme.txt
-echo * may be used until the MinGW version works well.                               * >> readme.txt
-echo --------------------------------------------------------------------------------- >> readme.txt
-echo * Mkmk is the main tool, that creates the required makefiles. A prebuild        * >> readme.txt
-echo * version got built by Open Watcom 1.7 prior to porting to MinGW started for it * >> readme.txt
-echo * to replace it later. Using the MinGW version requires include building it.    * >> readme.txt
-echo * To do so. search for #   ../vendor/mkmk \ and include it as described.        * >> readme.txt
+echo * The build system uses a generative approach to create makefiles per project.  * >> readme.txt
+echo * Responsible for this is a tool named mkmk. Actually it is compiled with       * >> readme.txt
+echo * Visual C++ 6.0 to ensure support starting from Windows XP. The Watcom version * >> readme.txt
+echo * had problems as well as the MinGW version. To support a smooth installation,  * >> readme.txt
+echo * the mkmk tool is delivered precompiled and gets installed with the source     * >> readme.txt
+echo * code installer batch startup files that pull wxWidgets and build that after   * >> readme.txt
+echo * the installation, if you have checked either the 32Bit or the 64Bit option.   * >> readme.txt
+echo * The 64Bit option has been tested on Windows 10 at least.                      * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt
 echo * You have started lbDMF Develop the first time. Wait until wxWidgets           * >> readme.txt
 echo * got built if you opted for a build. If that is finished, reopen               * >> readme.txt
-echo * lbDMF Develop and type make. Depending on the version you opted, mkmk needs   * >> readme.txt
-echo * to be included into the build process as described above.                     * >> readme.txt
+echo * lbDMF Develop and type make.                                                  * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 echo * If you don't have opted for building wxWigets, the library and MinGW must     * >> readme.txt
 echo * be installed manually. Folders for that look respectively like this:          * >> readme.txt
 echo * C:\lbDMF\Develop\wxwin\wx (wx is the base folder for wxWidgets)               * >> readme.txt
-echo * C:\lbDMF\Develop\Tools\MinGW (MinGW is the base MinGW Get) 				     * >> readme.txt
-echo * C:\lbDMF\Develop\Tools\mingw32 (MinGW is the base for the compiler stuff)     * >> readme.txt
+echo * C:\lbDMF\Develop\Tools\MinGW (MinGW is the base MinGW Get)                    * >> readme.txt
+echo * C:\lbDMF\Develop\Tools\mingw32 (MinGW32 is the base for the compiler stuff)   * >> readme.txt
+echo * C:\lbDMF\Develop\Tools\mingw64 (MinGW64 is the base for the compiler stuff)   * >> readme.txt
 echo *                                                                               * >> readme.txt
 echo * Also install the lbDMF Build tools at the same place as the source code.      * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 echo * If installation and building is finished, type wxWrapper and enjoy running    * >> readme.txt
-echo * the lbDMF Manager prototype (default login: user, password: TestUser)         * >> readme.txt
+echo * the lbDMF Manager prototype application.                                      * >> readme.txt
+echo * (default login if enabled: user, password: TestUser)                          * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 echo * Important note: If you have chosen to install in another location,            * >> readme.txt
 echo * update the watcomenv.bat file environment variables DEVLW, BASE, BASE_MAKE    * >> readme.txt
-echo * and DEVROOT_MAKE_BASE respectively                                            * >> readme.txt
+echo * and DEVROOT_MAKE_BASE respectively and check if all works well without        * >> readme.txt
+echo * further changes. If not, please send me a message.                            * >> readme.txt
 echo --------------------------------------------------------------------------------- >> readme.txt 
 echo * Download the latest documentation and follow the modeling quickstart.         * >> readme.txt 
 echo --------------------------------------------------------------------------------- >> readme.txt
