@@ -5,7 +5,7 @@ and include import and export templates for UML designers (XMI 1.2 and 2.1 forma
 Currently, XMI import and export is only tested with BoUML. See www.bouml.fr for a license.
 
 lbDMF - Distributed Multiplatform Framework
-	Copyright (c) 2000-2009 Lothar Behrens 
+	Copyright (c) 2000-2025 Lothar Behrens 
 	http:///lbdmf.sourceforge.net
 
 
@@ -14,7 +14,7 @@ lbDMF - Distributed Multiplatform Framework
 
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2000-2009  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -34,8 +34,8 @@ lbDMF - Distributed Multiplatform Framework
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Ginsterweg 4
-            
-            65760 Eschborn (germany)
+            Odenwaldstr. 14
+
+            63150 Heusenstamm (germany)
 
 
