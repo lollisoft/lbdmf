@@ -101,7 +101,7 @@ extern "C" {
 
 #    DMF Distributed Multiplatform Framework (the initial goal of this library)
 #    This file is part of lbDMF.
-#    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+#    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 #
 #    This library is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU Lesser General Public
@@ -121,9 +121,9 @@ extern "C" {
 #    The author of this work will be reached by e-Mail or paper mail.
 #    e-Mail: lothar.behrens@lollisoft.de
 #    p-Mail: Lothar Behrens
-#			 Ginsterweg 4
+#            Odenwaldstr. 14
 #
-#			 65760 Eschborn (germany)
+#            63150 Heusenstamm (germany)
 
 ifeq ($(OSTYPE), Windows_NT)
 MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MINGW)/wxwin/wx/include
@@ -260,7 +260,7 @@ endif
 
 #    DMF Distributed Multiplatform Framework (the initial goal of this library)
 #    This file is part of lbDMF.
-#    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+#    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 #
 #    This library is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU Lesser General Public
@@ -280,9 +280,9 @@ endif
 #    The author of this work will be reached by e-Mail or paper mail.
 #    e-Mail: lothar.behrens@lollisoft.de
 #    p-Mail: Lothar Behrens
-#			 Ginsterweg 4
+#            Odenwaldstr. 14
 #
-#			 65760 Eschborn (germany)
+#            63150 Heusenstamm (germany)
 
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -358,7 +358,7 @@ endif
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -378,9 +378,9 @@ endif
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-			Ginsterweg 4
+            Odenwaldstr. 14
 
-			65760 Eschborn (germany)
+            63150 Heusenstamm (germany)
 */
 
 #ifndef _LB_APP_
@@ -412,7 +412,7 @@ DECLARE_FUNCTOR(instanceOfApplication)
 /*
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2002  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -432,9 +432,9 @@ DECLARE_FUNCTOR(instanceOfApplication)
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-			Ginsterweg 4
+            Odenwaldstr. 14
 
-			65760 Eschborn (germany)
+            63150 Heusenstamm (germany)
 */
 
 #include &lt;stdio.h&gt;
