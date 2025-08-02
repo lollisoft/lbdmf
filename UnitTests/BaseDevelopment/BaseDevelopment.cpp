@@ -900,7 +900,7 @@ public:
 		
 		*notInserted = "notInserted";
 		
-		ASSERT_EQUALS( NULL, c->exists(&nIkey));
+		ASSERT_EQUALS( 0, c->exists(&nIkey));
 	}
 	
 	void test_lbContainer_lookupNI_byExists( void )
@@ -926,7 +926,7 @@ public:
 		
 		*notInserted = "notInserted";
 		
-		ASSERT_EQUALS( NULL, c->exists(&nIkey));
+		ASSERT_EQUALS( 0, c->exists(&nIkey));
 	}
 	
 	void test_lbContainer_lookupPostFreed_byExists( void )
@@ -958,7 +958,7 @@ public:
 
 		ASSERT_EQUALS( (char*) NULL, s->charrep());
 		
-		ASSERT_EQUALS( NULL, c->exists(&nIkey));
+		ASSERT_EQUALS( 0, c->exists(&nIkey));
 	}
 	
 	void test_Instanciate_lbContainer( void )
@@ -1288,6 +1288,7 @@ public:
 	{
 		TEST_CASE(test_Instanciate_lbMetaApplication)
 		TEST_CASE(test_lbMetaApplication_getActiveDocument_not_available_because_not_logged_in)
+		TEST_CASE(test_lbMetaApplication_WriteCustomSettings)
 		TEST_CASE(test_lbMetaApplication_login_failure_because_not_initialized)
 	}
 
@@ -1322,6 +1323,71 @@ public:
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, m)
 
 		ASSERT_EQUALS( true, m != NULL );
+	}
+
+	void test_lbMetaApplication_WriteCustomSettings( void )
+	{
+		puts("test_lbMetaApplication_WriteCustomSettings");
+		lbErrCodes err = ERR_NONE;
+
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+		
+		UAP(lb_I_Parameter, UpdateSettings)
+		UAP(lb_I_Parameter, UpdateSettingsReloaded)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, LastCheckWeek)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, LastCheckWeekAfter)
+		UAP_REQUEST(getModuleInstance(), lb_I_Integer, LastCheckWeekMod)
+
+		ASSERT_EQUALS( true, meta != NULL );
+		
+		meta->initialize();
+		
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		*name = "LastCheckWeek";
+
+		UpdateSettings = meta->getPropertySet("UpdateSettings");
+	
+		ASSERT_EQUALS(true, *&UpdateSettings != NULL);
+	
+		UpdateSettings->getUAPInteger(*&name, *&LastCheckWeek);
+
+		// negative values are technically ok, but is not a real week number. Ok for testing here.
+		LastCheckWeek->setData(-1);
+		int lastValue = LastCheckWeek->getData();
+
+		UpdateSettings->setUAPInteger(*&name, *&LastCheckWeek);
+		
+		UpdateSettings->getUAPInteger(*&name, *&LastCheckWeekAfter);
+
+		int lastValueAfter = LastCheckWeekAfter->getData();
+		
+		ASSERT_EQUALS(true, lastValueAfter == -1);
+
+		LastCheckWeekAfter->setData(-2);
+		lastValueAfter = LastCheckWeekAfter->getData();
+		
+		UpdateSettings->setUAPInteger(*&name, *&LastCheckWeekAfter);
+        meta->addPropertySet(*&UpdateSettings, "UpdateSettings");
+
+		ASSERT_EQUALS(true, meta->save() == ERR_NONE);
+		LastCheckWeekAfter->setData(-3);
+		lastValueAfter = LastCheckWeekAfter->getData();
+		
+		ASSERT_EQUALS(true, lastValueAfter == -3);
+		
+		UpdateSettings->setUAPInteger(*&name, *&LastCheckWeekAfter);
+		ASSERT_EQUALS(true, meta->load() == ERR_NONE);
+		
+		UpdateSettingsReloaded = meta->getPropertySet("UpdateSettings");
+
+		UpdateSettingsReloaded->getUAPInteger(*&name, *&LastCheckWeekAfter);
+		lastValueAfter = LastCheckWeekAfter->getData();
+		
+		UpdateSettingsReloaded->getUAPInteger(*&name, *&LastCheckWeekMod);
+		
+		int lastValueRestored = LastCheckWeekMod->getData();
+		
+		ASSERT_EQUALS(true, lastValueRestored == -2);
 	}
 
 public:
@@ -3962,6 +4028,7 @@ __attribute__ ((constructor)) void ct() {
 	//USE_FIXTURE( BaseDevelopmentContainer )
 //	USE_FIXTURE( BaseDevelopmentDatabase )
 	USE_FIXTURE( BaseDevelopmentSqlite )
+	USE_FIXTURE( BaseDevelopmentMetaApplication )
 
 /*
 	USE_FIXTURE( BaseDevelopmentEventManager )
