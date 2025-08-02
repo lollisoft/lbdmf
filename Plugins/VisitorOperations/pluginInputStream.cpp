@@ -374,8 +374,9 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
 		*iStream >> ParameterName;
 		*iStream >> ParameterClassName;
 		
+		_CL_LOGALWAYS << "Reading object name '" << ParameterName << "' of type '" << ParameterClassName << "'." LOG_
+
 		*paramname = ParameterName;
-		
 		if (strcmp(ParameterClassName, c->getClassName()) == 0) {
 			visit(*&c);
 			params->setUAPContainer(*&paramname, *&c);
@@ -415,7 +416,7 @@ void LB_STDCALL lbInputStreamOpr::visit(lb_I_Parameter* params) {
             int result = sscanf(key, "%d", &_i);
             free(key);
 			ii->setData(_i);
-            _LOGALWAYS << "Have read an integer parameter " << ii->charrep() LOG_
+			_CL_LOGALWAYS << "Read ParameterName=" << ParameterName << ". Have read an integer parameter " << ii->charrep() LOG_
 			params->setUAPInteger(*&paramname, *&ii);
 		}
 		else
