@@ -462,6 +462,7 @@ void LB_STDCALL lbParameter::setUAPString(lb_I_String*& parameter, lb_I_String*&
 	QI(p, lb_I_Unknown, uk_p)
 
 
+	delParameter(parameter);
 	parameters->insert(&uk_p, &k_parameter);
 }
 
@@ -507,6 +508,7 @@ void LB_STDCALL lbParameter::setUAPParameter(lb_I_String*& parameter, lb_I_Param
 	UAP(lb_I_Unknown, uk_p)
 	QI(p, lb_I_Unknown, uk_p)
 
+	delParameter(parameter);
 	parameters->insert(&uk_p, &k_parameter);
 }
 
@@ -547,6 +549,7 @@ void LB_STDCALL lbParameter::setUAPLong(lb_I_String*& parameter, lb_I_Long*& p) 
 	QI(p, lb_I_Unknown, uk_p)
 
 
+	delParameter(parameter);
 	parameters->insert(&uk_p, &k_parameter);
 }
 
@@ -593,7 +596,7 @@ void LB_STDCALL lbParameter::setUAPInteger(lb_I_String*& parameter, lb_I_Integer
 	UAP(lb_I_Unknown, uk_p)
 	QI(p, lb_I_Unknown, uk_p)
 
-
+	delParameter(parameter);
 	parameters->insert(&uk_p, &k_parameter);
 }
 
@@ -638,6 +641,7 @@ void LB_STDCALL lbParameter::setUAPFileLocation(lb_I_String*& parameter, lb_I_Fi
 	QI(p, lb_I_Unknown, uk_p)
 
 
+	delParameter(parameter);
 	parameters->insert(&uk_p, &k_parameter);
 }
 
@@ -685,6 +689,7 @@ void LB_STDCALL lbParameter::setUAPDirLocation(lb_I_String*& parameter, lb_I_Dir
 	QI(p, lb_I_Unknown, uk_p)
 
 
+	delParameter(parameter);
 	parameters->insert(&uk_p, &k_parameter);
 }
 
@@ -729,6 +734,7 @@ void LB_STDCALL lbParameter::setUAPBoolean(lb_I_String*& parameter, lb_I_Boolean
 	QI(p, lb_I_Unknown, uk_p)
 
 
+	delParameter(parameter);
 	parameters->insert(&uk_p, &k_parameter);
 }
 
@@ -773,6 +779,7 @@ void LB_STDCALL lbParameter::setUAPQuery(lb_I_String*& parameter, lb_I_Query*& p
 	QI(p, lb_I_Unknown, uk_p)
 
 
+	delParameter(parameter);
 	parameters->insert(&uk_p, &k_parameter);
 }
 
