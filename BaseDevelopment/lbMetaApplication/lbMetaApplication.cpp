@@ -31,11 +31,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.17 $
+ * $Revision: 1.188.2.18 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.17 2025/04/12 10:54:06 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.18 2025/08/02 08:36:35 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.18  2025/08/02 08:36:35  lothar
+ * Renamed lOp variables
+ *
  * Revision 1.188.2.17  2025/04/12 10:54:06  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
@@ -1048,7 +1051,7 @@ END_IMPLEMENT_LB_UNKNOWN()
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\save\40\\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	lbErrCodes err = ERR_NONE;
-
+	_CL_LOGALWAYS << "lb_MetaApplication::save called ..." LOG_
 	if (!_loaded) {
 		_LOG << "lb_MetaApplication::save() Error: Can't save in unloaded state." LOG_
 		return err;
@@ -1066,8 +1069,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 	}
 
 	ukPl1 = pl1->getImplementation();
-	UAP(lb_I_FileOperation, fOp1)
-	QI(ukPl1, lb_I_FileOperation, fOp1)
+	UAP(lb_I_FileOperation, fOutputStreamVisitor)
+	QI(ukPl1, lb_I_FileOperation, fOutputStreamVisitor)
 
 #ifdef OSX
 	lb_I_GUI* g = NULL;
@@ -1084,22 +1087,22 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
             *metaAppFile = "./wxWrapper.app/Contents/Resources/MetaApp.mad";
         }
 
-        if (!fOp1->begin(metaAppFile->charrep())) {
+        if (!fOutputStreamVisitor->begin(metaAppFile->charrep())) {
 			// Fallback
-			if (!fOp1->begin("MetaApp.mad")) {
+			if (!fOutputStreamVisitor->begin("MetaApp.mad")) {
 				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
 				return ERR_FILE_WRITE_DEFAULT;
 			}
 		}
-	} else if (!fOp1->begin("MetaApp.mad")) {
+	} else if (!fOutputStreamVisitor->begin("MetaApp.mad")) {
 		_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
 		return ERR_FILE_WRITE_DEFAULT;
 	}
 #endif
 #ifndef OSX
-	if (!fOp1->begin("MetaApp.mad")) {
+	if (!fOutputStreamVisitor->begin("MetaApp.mad")) {
 		_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
 		return ERR_FILE_WRITE_DEFAULT;
@@ -1108,15 +1111,16 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 
 	UAP(lb_I_Unknown, ukAcceptor1)
 	QI(this, lb_I_Unknown, ukAcceptor1)
-	ukAcceptor1->accept(*&fOp1);
+	ukAcceptor1->accept(*&fOutputStreamVisitor);
 
+#ifdef IMPLEMENT_NEWSTUFF
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
-	disp->accept(*&fOp1);
-
+	disp->accept(*&fOutputStreamVisitor);
+#endif
 
 	if (propertySets != NULL) {
 		_LOG << "Save property sets..." LOG_
-		propertySets->accept(*&fOp1);
+		propertySets->accept(*&fOutputStreamVisitor);
 		_LOG << "Saved property sets." LOG_
 	} else {
 		_LOG << "Don't save property sets. Not initialized." LOG_
@@ -1136,7 +1140,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 
 	if (Users != NULL) {
 		_LOG << "lb_MetaApplication::save(): Save Users list." LOG_
-		Users->accept(*&fOp1);
+		Users->accept(*&fOutputStreamVisitor);
 	}
 
 	if (Applications == NULL) {
@@ -1151,7 +1155,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 
 	if (Applications != NULL) {
 		_LOG << "lb_MetaApplication::save(): Save Applications list." LOG_
-		Applications->accept(*&fOp1);
+		Applications->accept(*&fOutputStreamVisitor);
 	}
 
 	if (User_Applications == NULL) {
@@ -1166,7 +1170,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 
 	if (User_Applications != NULL) {
 		_LOG << "lb_MetaApplication::save(): Save User_Applications list." LOG_
-		User_Applications->accept(*&fOp1);
+		User_Applications->accept(*&fOutputStreamVisitor);
 	}
 
 /*
@@ -1175,20 +1179,20 @@ lbErrCodes LB_STDCALL lb_MetaApplication::save() {
 
 	_LOG << "Save application database backend: '" << _application_database_backend << "'" LOG_
 	*backend = _application_database_backend;
-	backend->accept(*&fOp1);
+	backend->accept(*&fOutputStreamVisitor);
 
 	_LOG << "Save system database backend: '" << _system_database_backend << "'" LOG_
 	*backend = _system_database_backend;
-	backend->accept(*&fOp1);
+	backend->accept(*&fOutputStreamVisitor);
 
 	usebackend->setData(_use_application_database_backend);
 	_LOG << "Save application database backend flag: '" << usebackend->charrep() << "'" LOG_
-	usebackend->accept(*&fOp1);
+	usebackend->accept(*&fOutputStreamVisitor);
 	usebackend->setData(_use_system_database_backend);
 	_LOG << "Save system database backend flag: '" << usebackend->charrep() << "'" LOG_
-	usebackend->accept(*&fOp1);
+	usebackend->accept(*&fOutputStreamVisitor);
 */
-	fOp1->end();
+	fOutputStreamVisitor->end();
 
 	return ERR_NONE;
 }
@@ -1213,8 +1217,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 		ukPl = pl->getImplementation();
 
 		if (ukPl != NULL) {
-			UAP(lb_I_FileOperation, fOp)
-			QI(ukPl, lb_I_FileOperation, fOp)
+			UAP(lb_I_FileOperation, fInputStreamVisitor)
+			QI(ukPl, lb_I_FileOperation, fInputStreamVisitor)
 
 #ifdef OSX
 			lb_I_GUI* g = NULL;
@@ -1226,32 +1230,32 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
                     *metaAppFile = getDataDirectory();
                     *metaAppFile += "/MetaApp.mad";
                     
-                    if (!fOp->begin(metaAppFile->charrep())) {
+                    if (!fInputStreamVisitor->begin(metaAppFile->charrep())) {
                         // Fallback
-                        if (!fOp->begin("MetaApp.mad")) {
+                        if (!fInputStreamVisitor->begin("MetaApp.mad")) {
                             _CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
                             return ERR_FILE_READ;
                         }
                     }
                 } else {
-                    if (!fOp->begin("./wxWrapper.app/Contents/Resources/MetaApp.mad")) {
+                    if (!fInputStreamVisitor->begin("./wxWrapper.app/Contents/Resources/MetaApp.mad")) {
                         // Fallback
-                        if (!fOp->begin("MetaApp.mad")) {
+                        if (!fInputStreamVisitor->begin("MetaApp.mad")) {
                             _CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
                             return ERR_FILE_READ;
                         }
                     }
                 }
-			} else if (!fOp->begin("MetaApp.mad")) {
+			} else if (!fInputStreamVisitor->begin("MetaApp.mad")) {
 				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
 				return ERR_FILE_READ;
 			}
 #endif
 #ifndef OSX
-			if (!fOp->begin("MetaApp.mad")) {
+			if (!fInputStreamVisitor->begin("MetaApp.mad")) {
 				_CL_LOG << "ERROR: Could not write default file for meta application!" LOG_
 
 				return ERR_FILE_READ;
@@ -1261,7 +1265,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			// Read my data
 			UAP(lb_I_Unknown, ukAcceptor)
 			QI(this, lb_I_Unknown, ukAcceptor)
-			ukAcceptor->accept(*&fOp);
+			ukAcceptor->accept(*&fInputStreamVisitor);
 
 #ifdef IMPLEMENT_NEWSTUFF
 			/* Here it seems the best and earliest place to load interceptor configuration.
@@ -1281,12 +1285,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			 */
 
 			UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
-			disp->accept(*&fOp);
+			disp->accept(*&fInputStreamVisitor);
 #endif
 
 			_LOG << "Read property sets from metaapp file..." LOG_
 			REQUEST(getModuleInstance(), lb_I_Parameter, propertySets)
-			propertySets->accept(*&fOp);
+			propertySets->accept(*&fInputStreamVisitor);
 			_LOG << "Done reading property sets. Having " << propertySets->Count() << " sets." LOG_
 
 
@@ -1325,13 +1329,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			if (!_force_use_database) {
 				_LOG << "Read users, applications and user associations from file." LOG_
 				// Read an Users list
-				ukPl2->accept(*&fOp);
+				ukPl2->accept(*&fInputStreamVisitor);
 				// Read an Applications list
-				ukPl3->accept(*&fOp);
+				ukPl3->accept(*&fInputStreamVisitor);
 				// Read users applications
-				ukPl4->accept(*&fOp);
+				ukPl4->accept(*&fInputStreamVisitor);
 				// Read applications to formular assoc
-//				ukPl5->accept(*&fOp);
+//				ukPl5->accept(*&fInputStreamVisitor);
 
 				if (Users->getUserCount() == 0) {
 					_LOG << "Warning: Users list from file does not contain any data." LOG_
@@ -1344,26 +1348,26 @@ lbErrCodes LB_STDCALL lb_MetaApplication::load() {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 			UAP_REQUEST(getModuleInstance(), lb_I_Boolean, usebackend)
 
-			backend->accept(*&fOp);
+			backend->accept(*&fInputStreamVisitor);
 			if (_application_database_backend != NULL) free(_application_database_backend);
 			_application_database_backend = strdup(backend->charrep());
 
-			backend->accept(*&fOp);
+			backend->accept(*&fInputStreamVisitor);
 			if (_system_database_backend != NULL) free(_system_database_backend);
 			_system_database_backend = strdup(backend->charrep());
 
 			_LOG << "Load application database backend: '" << _application_database_backend << "'" LOG_
 			_LOG << "Load system database backend: '" << _system_database_backend << "'" LOG_
 
-			usebackend->accept(*&fOp);
+			usebackend->accept(*&fInputStreamVisitor);
 			_LOG << "Load system database backend flag: '" << usebackend->charrep() << "'" LOG_
 			_use_application_database_backend = usebackend->getData();
-			usebackend->accept(*&fOp);
+			usebackend->accept(*&fInputStreamVisitor);
 			_LOG << "Load application database backend flag: '" << usebackend->charrep() << "'" LOG_
 			_use_system_database_backend = usebackend->getData();
 */
 
-			fOp->end();
+			fInputStreamVisitor->end();
 
 			_loaded = true;
 
