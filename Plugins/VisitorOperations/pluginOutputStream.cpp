@@ -376,6 +376,8 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Applications_Formulars* applicationfo
 void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 	int count;
 
+	_CL_LOGALWAYS << "lbOutputStream::visit called..." LOG_
+
 	count = params->Count();
 	*oStream << count;
 
@@ -383,7 +385,10 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 	
 	container = params->getParameterList();
 	
-	if (count == 0) return;
+	if (count == 0) {
+		_CL_LOGALWAYS << "No parameters stored..." LOG_
+		return;
+	}
 	
 	container->finishIteration();
 
@@ -404,7 +409,7 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 		*oStream << key->charrep();
 		*oStream << uk->getClassName();
 
-		_LOG << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_
+		_CL_LOGALWAYS << "Writing object name '" << key->charrep() << "' of type '" << uk->getClassName() << "'." LOG_
 
 		if (strcmp(uk->getClassName(), c->getClassName()) == 0) {
 			c->setData(*&uk);
@@ -429,6 +434,7 @@ void LB_STDCALL lbOutputStream::visit(lb_I_Parameter* params) {
 		if (strcmp(uk->getClassName(), i->getClassName()) == 0) {
 			i->setData(*&uk);
 			visit(*&i);
+			_CL_LOGALWAYS << "Write ParameterName=" << key->charrep() << ". Have read an integer parameter " << i->charrep() LOG_
 		}
 		if (strcmp(uk->getClassName(), b->getClassName()) == 0) {
 			b ->setData(*&uk);
