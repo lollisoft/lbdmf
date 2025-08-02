@@ -254,11 +254,13 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 
 		if (week > LastCheckWeek->getData()) {
 			doCheck = true;
-		
-			LastCheckWeek->setData(week + 1);
-			
-			UpdateSettings->setUAPInteger(*&name, *&LastCheckWeek);
         }
+		
+		LastCheckWeek->setData(week + 1);
+		
+		UpdateSettings->setUAPInteger(*&name, *&LastCheckWeek);
+
+        meta->addPropertySet(*&UpdateSettings, "UpdateSettings");
 	}
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, dispatcher)
