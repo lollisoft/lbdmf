@@ -39,8 +39,8 @@ $(DEVROOT_MAKE)$(SLASH)projects$(SLASH)dll$(SLASH)libs$(SLASH)lbxslt.lib
 MOD_INCL_MINGW = $(STD_INCL_MINGW)
 MOD_INCL_MINGW_CPP = $(STD_INCL_MINGW_CPP)
 
-MOD_INCL_MINGW += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxml2-2.8.0/include
-MOD_INCL_MINGW_CPP += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxslt-1.1.21 -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxml2-2.8.0/include
+MOD_INCL_MINGW += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxslt-1.1.22 -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxml2-2.8.0/include
+MOD_INCL_MINGW_CPP += -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxslt-1.1.22 -I $(DEVROOT_MINGW)$(RELPATH)/vendor/libxml2-2.8.0/include
 
 MINGWLIBS += -llibxml2 -llbxslt
 	
