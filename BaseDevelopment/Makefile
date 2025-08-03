@@ -26,11 +26,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.144 $
+# * $Revision: 1.229.2.145 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.144 2025/04/12 10:54:06 lothar Exp $
+# * $Id: Makefile,v 1.229.2.145 2025/08/03 09:42:34 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.145  2025/08/03 09:42:34  lothar
+# * Change ../vendor/libxslt-1.1.21/libxslt to ../vendor/libxslt-1.1.22/libxslt
+# *
 # * Revision 1.229.2.144  2025/04/12 10:54:06  lothar
 # * Changed my address and copyright start and ending year to reflect
 # * my upcoming new home and timeframe of development.
@@ -1975,7 +1978,7 @@ ALLTARGETS = \
 	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
-	../vendor/libxslt-1.1.21/libxslt \
+	../vendor/libxslt-1.1.22/libxslt \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
@@ -2475,10 +2478,10 @@ ifeq ($(OSTYPE), Windows_NT)
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
-../vendor/libxslt-1.1.21:
-	$(TAR) -zxf ../vendor/libxslt-1.1.21.tar.gz --directory ../vendor
-	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.21/libxslt/makefile.module
-	cp ../vendor/libxslt-1.1.21/libxslt/win32config.h ../vendor/libxslt-1.1.21/config.h
+../vendor/libxslt-1.1.22:
+	$(TAR) -zxf ../vendor/libxslt-1.1.22.tar.gz --directory ../vendor
+	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.22/libxslt/makefile.module
+	cp ../vendor/libxslt-1.1.22/libxslt/win32config.h ../vendor/libxslt-1.1.22/config.h
 
 ../vendor/libxslt-1.1.34: dummy
 	$(TAR) -zxf ../vendor/libxslt-1.1.34.tar.gz --directory ../vendor
@@ -2489,7 +2492,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	cp ../vendor/xsltconfig-1.1.34.h ../vendor/libxslt-1.1.34/libxslt/xsltconfig.h
 endif
 
-../vendor/libxslt-1.1.21/libxslt: ../vendor/libxslt-1.1.21
+../vendor/libxslt-1.1.22/libxslt: ../vendor/libxslt-1.1.22
 	$(MAKE) -s -C $@ -e MODULE=lbxslt -e TARGET=$(TARGETXSLTDLL) -f $(MAKE_CONFIG_FILE)
 	$(MAKE) -s -C $@
 
