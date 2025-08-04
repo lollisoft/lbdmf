@@ -62,6 +62,10 @@ Source: "TAO.orbsvcs.orbsvcs.GNUmakefile"; DestDir: "{app}"; CopyMode: alwaysove
 ;Source: "commctrl-wxWidgets-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 Source: "w32api-Wcpp-patch.h"; DestDir: "{app}"; CopyMode: alwaysoverwrite;
 
+; libxslt 1.1.34
+Source: "dist\dist_iss_xslt\libxslt-1.1.34.tar.gz"; DestDir: "{app}\Develop\Projects\lbdmf\vendor"; CopyMode: alwaysoverwrite;
+
+
 [Icons]
 Name: "{group}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenvc.bat"; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
 Name: "{userdesktop}\lbDMF Develop"; IconFilename: "{app}\lbdmf.ico"; Filename: "{app}\watcomenvc.bat"; MinVersion: 4,4; Tasks: desktopicon; WorkingDir: "{app}\develop\projects\lbdmf\BaseDevelopment"
