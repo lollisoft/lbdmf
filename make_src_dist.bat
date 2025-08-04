@@ -33,6 +33,7 @@ if not EXIST "dist\dist_iss_BinBuildTools\Graphviz2.26.3" mkdir dist\dist_iss_Bi
 if not EXIST "dist\dist_iss_BinBuildTools\doxygen" mkdir dist\dist_iss_BinBuildTools\doxygen
 if not EXIST "dist\dist_iss_wxLua_dist" mkdir dist\dist_iss_wxLua_dist
 if not EXIST "dist\dist_iss_MkMk" mkdir dist\dist_iss_MkMk
+if not EXIST "dist\dist_iss_xslt" mkdir dist\dist_iss_xslt
 
 if not EXIST "dist\bindist_iss" mkdir dist\bindist_iss
 if not EXIST "dist\bindist_iss\bin" mkdir dist\bindist_iss\bin
@@ -43,6 +44,7 @@ if not EXIST "dist\bindist_iss_MinGW_Libraries" mkdir dist\bindist_iss_MinGW_Lib
 if not EXIST "dist\bindist_iss_Watcom_Libraries" mkdir dist\bindist_iss_Watcom_Libraries
 
 7z x vendor\MinGW.zip -odist\dist_iss_MinGW
+copy vendor\libxslt-1.1.34.tar.gz dist\dist_iss_xslt
 
 copy %TOOLSFOLDER%\mingw\bin\mingwm10.dll dist\bindist_iss_MinGW_Libraries
 copy %TOOLSFOLDER%\mingw\bin\libgcc_s_dw2-1.dll dist\bindist_iss_MinGW_Libraries
@@ -63,6 +65,7 @@ copy %TOOLSFOLDER%\XSLTProc\libxslt.dll dist\bindist_iss\dll
 copy %TOOLSFOLDER%\XSLTProc\libexslt.dll dist\bindist_iss\dll
 copy %TOOLSFOLDER%\PostgreSQL\psqlodbc.dll dist\dist_iss_psqlodbc
 copy %TOOLSFOLDER%\BinBuildTools\*.* dist\dist_iss_BinBuildTools
+
 xcopy /S /E Z:\Q\develop\Tools\doxygen\*.* dist\dist_iss_BinBuildTools\doxygen
 xcopy /S /E Z:\Q\develop\Tools\Graphviz2.26.3\*.* dist\dist_iss_BinBuildTools\Graphviz2.26.3
 
@@ -104,7 +107,7 @@ call make_dist_base.bat vendor\wxShapeFramework
 call make_dist_base.bat vendor\wxaui-0.9.1
 call make_dist_base.bat vendor\libxml2-2.8.0
 call make_dist_base.bat vendor\libxslt-1.1.22
-call make_dist_base.bat vendor\libxslt-1.1.34
+@rem call make_dist_base.bat vendor\libxslt-1.1.34
 call make_dist_base.bat vendor\wxJSON-1.2.1
 call make_dist_base.bat include 
 call make_dist_base.bat interfaces 
