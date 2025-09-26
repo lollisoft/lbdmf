@@ -184,7 +184,7 @@ const
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
 	<xsl:variable name="FieldName" select="@name"/>
 	<xsl:variable name="TableName" select="@tablename"/>
-<xsl:if test="position()=last()">	
+<xsl:if test="position()=first()">	
 X<xsl:value-of select="$TableName"/>IDXDesc: array[1..NumIndexes] of <xsl:value-of select="$TableName"/>IDXDesc = (
   ( { Index #1 - LASTNAME }
     szName: '';                      { Index name }
@@ -270,9 +270,9 @@ type
   P<xsl:value-of select="$TableName"/>RecordType = ^T<xsl:value-of select="$TableName"/>RecordType;
   T<xsl:value-of select="$TableName"/>RecordType = record
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
-	<xsl:variable name="FieldName" select="@name"/>
-	<xsl:variable name="TableName" select="@tablename"/>
-    <xsl:value-of select="$FieldName"/>: array[0..<xsl:value-of select="$FieldName"/>NameLen] of char;
+	<xsl:variable name="FFFieldName" select="@name"/>
+	<xsl:variable name="FFTableName" select="@tablename"/>
+    <xsl:value-of select="$FFFieldName"/>: array[0..<xsl:value-of select="$FFFieldName"/>NameLen] of char;
     )<xsl:if test="position()!=last()">,</xsl:if>
 </xsl:for-each>
     Id: double;
