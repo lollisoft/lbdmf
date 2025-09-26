@@ -56,8 +56,7 @@
 
 <xsl:template name="createEngineUnit">
 
-<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/Engine.pas" method="text">Unit DataDlgs;
-{$A+,B-,D+,F+,G+,I-,K+,L+,N+,P-,Q-,R-,S-,T-,V+,W+,X+,Y+}
+<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/Engine.pas" method="text">{$A+,B-,D+,F+,G+,I-,K+,L+,N+,P-,Q-,R-,S-,T-,V+,W+,X+,Y+}
 {$M 25000,8192}
 {************************************************}
 {                                                }
@@ -100,36 +99,38 @@ const
 	</xsl:call-template>
 </xsl:variable>
 
+const
   <xsl:value-of select="$FormularName"/>Index   = 1;
   <xsl:value-of select="$FormularName"/>IDIndex  = 2;
 
+const
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
 	<xsl:variable name="FieldName" select="@name"/>
 	<xsl:variable name="TableName" select="@tablename"/>
-  <xsl:value-of select="$FieldName"/>_len         = 32;
-  
-  { FieldNums }
-  <xsl:value-of select="$FieldName"/>Num      = <xsl:value-of select="position()"/>;
-
+	
+{ FieldNums }
+  F<xsl:value-of select="$TableName"/>_<xsl:value-of select="$FieldName"/>Num      = <xsl:value-of select="last()"/>;
+  <xsl:value-of select="$TableName"/>_<xsl:value-of select="$FieldName"/>_len      = 32;
+<xsl:if test="position()=last()">
 { Name of table to be created }
-  <xsl:value-of select="$TableName"/>TblName = '<xsl:value-of select="$FieldName"/>';
+  <xsl:value-of select="$TableName"/>TblName = '<xsl:value-of select="$TableName"/>';
 { Type of Table }
   <xsl:value-of select="$TableName"/>TblType = szDBase;
 { Number of fields to be created when the table is created. }
-  <xsl:value-of select="$TableName"/>NumFields = <xsl:value-of select="last()"/>;
+  <xsl:value-of select="$TableName"/>NumFields = <xsl:value-of select="position()"/>;
 { Number of indexes to be created when the table is created }
   <xsl:value-of select="$TableName"/>NumIndexes = 3;
-  
+
 type
   P<xsl:value-of select="$TableName"/>XIDXDesc = ^T<xsl:value-of select="$TableName"/>IDXDesc;
-  T<xsl:value-of select="$TableName"/>IDXDesc = array[1..NumIndexes] of <xsl:value-of select="$TableName"/>IDXDesc;
+  T<xsl:value-of select="$TableName"/>IDXDesc = array[1..<xsl:value-of select="$TableName"/>NumIndexes] of IDXDesc;
   P<xsl:value-of select="$TableName"/>TempFldDesc = ^<xsl:value-of select="$TableName"/>TempFldDesc;
-  <xsl:value-of select="$TableName"/>TempFldDesc = array[1..NumFields] of <xsl:value-of select="$TableName"/>FldDesc;
+  <xsl:value-of select="$TableName"/>TempFldDesc = array[1..<xsl:value-of select="$TableName"/>NumFields] of FldDesc;
+</xsl:if>  
 </xsl:for-each>
 
 </xsl:for-each>
 
-const
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularId" select="@ID"/>
@@ -155,17 +156,19 @@ const
 	</xsl:call-template>
 </xsl:variable>
 
-  XFLDDesc: array[1..NumFields] of FldDesc = (
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
 	<xsl:variable name="FieldName" select="@name"/>
 	<xsl:variable name="TableName" select="@tablename"/>
-  <xsl:value-of select="$FieldName"/>_len         = 32;
+<xsl:if test="position()=1">
+const
+  X<xsl:value-of select="$TableName"/>FLDDesc: array[1..<xsl:value-of select="$TableName"/>NumFields] of FldDesc = (
+</xsl:if>	
     { // Field 1 - <xsl:value-of select="$FieldName"/> }
-    ( iFldNum:  F<xsl:value-of select="$FieldName"/>Num;        { Field Number }
+    ( iFldNum:  F<xsl:value-of select="$TableName"/>_<xsl:value-of select="$FieldName"/>Num;        { Field Number }
       szName:   '<xsl:value-of select="$FieldName"/>';     { Field Name }
       iFldType: fldZSTRING;      { Field Type }
       iSubType: fldUNKNOWN;      { Field Subtype }
-      iUnits1:  <xsl:value-of select="$FieldName"/>_Len;         { Field Size 1 or 0, except  BLOb or CHAR field }
+      iUnits1:  <xsl:value-of select="$TableName"/>_<xsl:value-of select="$FieldName"/>_Len;         { Field Size 1 or 0, except  BLOb or CHAR field }
       iUnits2:  0;               { Decimal places ( 0 )  computed }
       iOffset:  0;               { Offset in record ( 0 ) }
       iLen:     0;               { Length in Bytes  ( 0 ) }
@@ -174,7 +177,7 @@ const
       efldrRights: fldrREADWRITE { Rights }
     )<xsl:if test="position()!=last()">,</xsl:if>
 </xsl:for-each>
-     ));
+     );
 
 { Index Descriptor - describes the Indexes associated with the
   table. This index is going to be added to the table when the
@@ -184,8 +187,9 @@ const
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
 	<xsl:variable name="FieldName" select="@name"/>
 	<xsl:variable name="TableName" select="@tablename"/>
-<xsl:if test="position()=first()">	
-X<xsl:value-of select="$TableName"/>IDXDesc: array[1..NumIndexes] of <xsl:value-of select="$TableName"/>IDXDesc = (
+<xsl:if test="position()=1">	
+
+X<xsl:value-of select="$TableName"/>IDXDesc: array[1..<xsl:value-of select="$TableName"/>NumIndexes] of IDXDesc = (
   ( { Index #1 - LASTNAME }
     szName: '';                      { Index name }
     iIndexId: 1;                     { Index number }
@@ -263,20 +267,17 @@ X<xsl:value-of select="$TableName"/>IDXDesc: array[1..NumIndexes] of <xsl:value-
   'Indexed on Employee''s last name',
   'Indexed on Employee''s identification number',
   'Indexed on Employee''s department number');
-</xsl:if>  
 
 type
 
   P<xsl:value-of select="$TableName"/>RecordType = ^T<xsl:value-of select="$TableName"/>RecordType;
   T<xsl:value-of select="$TableName"/>RecordType = record
-<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
-	<xsl:variable name="FFFieldName" select="@name"/>
-	<xsl:variable name="FFTableName" select="@tablename"/>
-    <xsl:value-of select="$FFFieldName"/>: array[0..<xsl:value-of select="$FFFieldName"/>NameLen] of char;
-    )<xsl:if test="position()!=last()">,</xsl:if>
-</xsl:for-each>
-    Id: double;
+</xsl:if>  
+    <xsl:value-of select="$FieldName"/>Field: array[0..<xsl:value-of select="$TableName"/>_<xsl:value-of select="$FieldName"/>_len] of char;
+<xsl:if test="position()=last()">	
+    IdField: double;
   end;
+</xsl:if>  
 </xsl:for-each>
 
 </xsl:for-each>
@@ -357,15 +358,47 @@ procedure AddInitialRecords(hCur: HDBICur);
 function FindTablesDir(var Dir: PChar; DirsBack: Byte): Boolean;
 function DbInit: DBIResult;
 function DbiError(RetVal: DBIResult): DBIResult;
-function GetTable(var hDb: hDBIdb; var hCur: hDBICur) : DBIResult;
+function GetTable(var hDb: hDBIdb; var TblName: PChar; var TblType: PChar; var hCur: hDBICur) : DBIResult;
 function CloseDb(hdb: hdbIDb; hCur: hDBICur): DBIResult;
-function CreateTable: DBIResult;
 function DeleteRec(hCur: hDBICur): DBIResult;
-function AddRecord(hCur: hDBICur; PRec: PRecordType; Add: BOOL): DBIResult;
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularId" select="@ID"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
+	<xsl:variable name="FieldName" select="@name"/>
+	<xsl:variable name="TableName" select="@tablename"/>
+<xsl:if test="position()=1">
+
+function <xsl:value-of select="$TableName"/>CreateTable: DBIResult;
+function <xsl:value-of select="$TableName"/>AddRecord(hCur: hDBICur; PRec: P<xsl:value-of select="$TableName"/>RecordType; Add: BOOL): DBIResult;
+function <xsl:value-of select="$TableName"/>GetData(hCur: hDBICur; pRecord: P<xsl:value-of select="$TableName"/>RecordType): DBIResult;
+</xsl:if>
+</xsl:for-each>
+</xsl:for-each>
 function GoTop(hCur: hDBICur; MoveRec: BOOL): DBIResult;
 function GoBottom(hCur: hDBICur; MoveRec: BOOL): DBIResult;
 function SetIndex(hCur: hDBICur; uNum: word; FirstRec: BOOL): DBIResult;
-function GetData(hCur: hDBICur; pRecord: PRecordType): DBIResult;
 function GetNextRec(hCur: hDBICur): DBIResult;
 function GetPrevRec(hCur: hDBICur): DBIResult;
 function AtEOF( hCur: hDBICur): BOOL;
@@ -481,6 +514,7 @@ end;
 
 procedure AddInitialRecords(hCur: hDBICur);
 begin
+{
   if AddRecord(hCur, @DefaultRecord1, true) &lt;&gt; DBIERR_NONE then
      BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
   if AddRecord(hCur, @DefaultRecord2, true) &lt;&gt; DBIERR_NONE then
@@ -489,6 +523,7 @@ begin
      BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
   if AddRecord(hCur, @DefaultRecord4, true) &lt;&gt; DBIERR_NONE then
      BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
+}
 end;
 
 procedure MoveFromOffset(var Source: TMoveArray; var Dest; FromOffset, Size: word);
@@ -594,7 +629,7 @@ end;
 /  Name:   GetTable
 /  Desc:   This function opens a database and a table.
 =============================================================================}
-function GetTable(var hDb: hDBIdb; var hCur: hDBICur) : DBIResult;
+function GetTable(var hDb: hDBIdb; var TblName: PChar; var TblType: PChar; var hCur: hDBICur) : DBIResult;
 var
   S: array[0..100] of Char;
   TableDir: PChar;
@@ -623,11 +658,87 @@ begin
     FreeMem(TableDir, dbiMAXPATHLEN + 1);
 end;
 
+
 {=============================================================================
-/  Name:   CreateTable
+/  Name:   DeleteRec
+/  Desc:   This function deletes the record that is pointed to by the
+/          cursor.
+=============================================================================}
+
+function DeleteRec (hCur: hDBICur): DBIResult;
+begin
+    DbiError(DbiGetRecord(hCur, dbiWRITELOCK, nil, nil));
+    DbiError(DbiDeleteRecord(hCur, nil));
+    DeleteRec := GlobalDBIErr;
+end; { DeleteRec }
+
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularId" select="@ID"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
+	<xsl:variable name="FieldName" select="@name"/>
+	<xsl:variable name="TableName" select="@tablename"/>
+<xsl:if test="position()=1">
+function <xsl:value-of select="$TableName"/>AddRecord(hCur: hDBICur; PRec: P<xsl:value-of select="$TableName"/>RecordType; Add: BOOL): DBIResult;
+function <xsl:value-of select="$TableName"/>GetData(hCur: hDBICur; pRecord: P<xsl:value-of select="$TableName"/>RecordType): DBIResult;
+</xsl:if>
+</xsl:for-each>
+</xsl:for-each>
+
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularId" select="@ID"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
+	<xsl:variable name="FieldName" select="@name"/>
+	<xsl:variable name="TableName" select="@tablename"/>
+<xsl:if test="position()=1">
+{=============================================================================
+/  Name:   <xsl:value-of select="$TableName"/>CreateTable
 /  Desc:   This function opens a database and creates a table.
 =============================================================================}
-function CreateTable: DBIResult;
+function <xsl:value-of select="$TableName"/>CreateTable: DBIResult;
 var
   crTblDsc: CRTblDesc;           { Table Descriptor }
   bOverWrite: BOOL;              { Overwrite, yes/no flag }
@@ -649,18 +760,18 @@ begin
   fillchar(crTblDsc, sizeof(CRTblDesc), #0);  { Clear the buffer. }
 
   { Set the name and the type of the table }
-  strcopy(crTblDsc.szTblName, TblName); { name of the table }
-  strcopy(crTblDsc.szTblType, TblType); { Type of table }
+  strcopy(crTblDsc.szTblName, <xsl:value-of select="$TableName"/>TblName); { name of the table }
+  strcopy(crTblDsc.szTblType, <xsl:value-of select="$TableName"/>TblType); { Type of table }
 
   { Set the field information for the table }
 
-  crTblDsc.iFldCount := NumFields;   { number of fields }
-  crTblDsc.pfldDesc  := @XFldDesc;   { Field descriptor }
+  crTblDsc.iFldCount := <xsl:value-of select="$TableName"/>NumFields;   { number of fields }
+  crTblDsc.pfldDesc  := @X<xsl:value-of select="$TableName"/>FldDesc;   { Field descriptor }
 
   { Set the index information for the table }
 
-  crTblDsc.iIdxCount := NumIndexes;   { Number of indexes }
-  crTblDsc.pidxDesc  := @XIDXDesc;    { Index descriptor }
+  crTblDsc.iIdxCount := <xsl:value-of select="$TableName"/>NumIndexes;   { Number of indexes }
+  crTblDsc.pidxDesc  := @X<xsl:value-of select="$TableName"/>IDXDesc;    { Index descriptor }
 
   { Create the table using information supplied in the Table
   { Descrpitor above }
@@ -668,7 +779,7 @@ begin
 
   if(GlobalDBIErr &lt;&gt; DBIERR_NONE) then
   begin
-    CreateTable :=  GlobalDBIErr;
+    <xsl:value-of select="$TableName"/>CreateTable :=  GlobalDBIErr;
     DbiError(DbiCloseDatabase(hDb));
     FreeMem(TableDir, dbiMAXPATHLEN + 1);
     exit;
@@ -679,30 +790,18 @@ begin
 
 
   if(GlobalDBIErr &lt;&gt; DBIERR_NONE) then
-     CreateTable := GlobalDBIErr
+     <xsl:value-of select="$TableName"/>CreateTable := GlobalDBIErr
   else
-    CreateTable := DBIERR_NONE;
+    <xsl:value-of select="$TableName"/>CreateTable := DBIERR_NONE;
   FreeMem(TableDir, dbiMAXPATHLEN + 1);
 end;
 
-{=============================================================================
-/  Name:   DeleteRec
-/  Desc:   This function deletes the record that is pointed to by the
-/          cursor.
-=============================================================================}
-
-function DeleteRec (hCur: hDBICur): DBIResult;
-begin
-    DbiError(DbiGetRecord(hCur, dbiWRITELOCK, nil, nil));
-    DbiError(DbiDeleteRecord(hCur, nil));
-    DeleteRec := GlobalDBIErr;
-end; { DeleteRec }
 
 {=============================================================================
-/  Name:   AddRecord
+/  Name:   <xsl:value-of select="$TableName"/>AddRecord
 /  Desc:   This function adds a record to the table pointed at by the cursor.
 =============================================================================}
-function AddRecord(hCur: hDBICur; PRec: PRecordType; Add: BOOL): DBIResult;
+function <xsl:value-of select="$TableName"/>AddRecord(hCur: hDBICur; PRec: P<xsl:value-of select="$TableName"/>RecordType; Add: BOOL): DBIResult;
 var
   PRecBuf: pByte;         { Record buffer }
   TblProps: CURProps;     { Table Properties }
@@ -715,7 +814,7 @@ begin
   pRecBuf := nil;
   DbiError(DbiGetCursorProps(hCur, TblProps));
 
-  getmem(PRecBuf, sizeof(TRecordType));
+  getmem(PRecBuf, sizeof(T<xsl:value-of select="$TableName"/>RecordType));
   {  Make sure we're starting with a clean record buffer }
   DbiError(DbiInitRecord(hCur, pRecBuf));
 
@@ -766,18 +865,18 @@ begin
 
     { NOW YOU MUST FREE the blob. }
     DbiError(DbiFreeBlob(hCur, pRecBuf, CommentsNum));
-    freemem(PRecBuf, sizeof(TRecordType));
+    freemem(PRecBuf, sizeof(T<xsl:value-of select="$TableName"/>RecordType));
     RetVal := GlobalDBIErr;
   end;
 
-  AddRecord := RetVal;
-end; { AddRecord }
+  <xsl:value-of select="$TableName"/>AddRecord := RetVal;
+end; { <xsl:value-of select="$TableName"/>AddRecord }
 
 {=============================================================================
-/  Name:   FillRec
+/  Name:   <xsl:value-of select="$TableName"/>FillRec
 /  Desc:   This function adds a record to the table pointed at by the cursor.
 =============================================================================}
-function FillRec (hCur: hDBICur; pRecBuf: pByte; PRec: PRecordType): DBIResult;
+function <xsl:value-of select="$TableName"/>FillRec (hCur: hDBICur; pRecBuf: pByte; PRec: P<xsl:value-of select="$TableName"/>RecordType): DBIResult;
 var
   DateInt: longint;
   DayInt:  word;      { Day part of the date }
@@ -838,11 +937,11 @@ begin
 end;
 
 {=============================================================================
-/  Name:   GetData
+/  Name:   <xsl:value-of select="$TableName"/>GetData
 /  Desc:   This function gets the data pointed to by hCur and puts it
 /          into the record structure.
 =============================================================================}
-function GetData (hCur: hDBICur; pRecord: PRecordType): DBIResult;
+function <xsl:value-of select="$TableName"/>GetData (hCur: hDBICur; pRecord: P<xsl:value-of select="$TableName"/>RecordType): DBIResult;
 var
   TblProps: CURProps;
   PRecBuf: pByte;
@@ -857,7 +956,7 @@ begin
 
   { Create the record buffer.  The size comes from the proporty recsize. }
 
-  getmem(PRecBuf, sizeof(TRecordType));
+  getmem(PRecBuf, sizeof(T<xsl:value-of select="$TableName"/>RecordType));
 
   { Initialize the record buffer. }
   DbiError(DbiInitRecord(hCur, PRecBuf));
@@ -872,9 +971,13 @@ begin
     { Now free the record lock on this record ONLY. }
     DbiError(DbiRelRecordLock(hCur, false));
   end;
-  freemem(pRecBuf, sizeof(TRecordType));
+  freemem(pRecBuf, sizeof(T<xsl:value-of select="$TableName"/>RecordType));
   GetData := DBIERR_NONE;
-end; { GetData }
+end; { <xsl:value-of select="$TableName"/>GetData }
+</xsl:if>
+</xsl:for-each>
+</xsl:for-each>
+
 
 {=============================================================================
 /  Name:   GetPrevRec
