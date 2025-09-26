@@ -56,6 +56,20 @@
 
 <xsl:template name="createApplication">
 
+<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/MainApp.pas" method="text">Program <xsl:value-of select="$ApplicationName"/>;
+
+Uses AppUnit;
+
+{ Declare a variable of type T<xsl:value-of select="$ApplicationName"/>App }
+var
+  <xsl:value-of select="$ApplicationName"/>App: T<xsl:value-of select="$ApplicationName"/>App;
+
+Begin  
+  <xsl:value-of select="$ApplicationName"/>App.Init('<xsl:value-of select="$ApplicationName"/>App');
+  <xsl:value-of select="$ApplicationName"/>App.Run;
+  <xsl:value-of select="$ApplicationName"/>App.Done;
+End.
+</exsl:document>
 </xsl:template>
 
 </xsl:stylesheet>

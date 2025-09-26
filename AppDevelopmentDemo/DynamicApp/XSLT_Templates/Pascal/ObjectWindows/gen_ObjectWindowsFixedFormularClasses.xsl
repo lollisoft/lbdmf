@@ -2,7 +2,7 @@
 <!--
     DMF Distributed Multiplatform Framework (the initial goal of this library)
     This file is part of lbDMF.
-    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
+    Copyright (C) 2024-  Lothar Behrens (lothar.behrens@lollisoft.de)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -22,25 +22,17 @@
     The author of this work will be reached by e-Mail or paper mail.
     e-Mail: lothar.behrens@lollisoft.de
     p-Mail: Lothar Behrens
-            Odenwaldstr. 14
-
-            63150 Heusenstamm (germany)
+            Ginsterweg 4
+            
+            65760 Eschborn (germany)
 -->
 <!-- Helper to create multible files. -->
 <xsl:import href="../../include/exsl.xsl"/>
 
 <xsl:import href="../../include/lbDMFBaseTemplates.xsl"/>
 
-<!-- The main application -->
-<xsl:import href="Application.xsl"/>
-<!-- The main application database dialogs -->
-<xsl:import href="ApplicationDlgs.xsl"/>
-<!-- The main application resources and definitions -->
-<xsl:import href="ApplicationResAndDefs.xsl"/>
-<!-- The main application unit with application class implementation -->
-<xsl:import href="ApplicationUnit.xsl"/>
-<!-- The database implementation -->
-<xsl:import href="Engine.xsl"/>
+<!-- Template to create base class file for fixed database forms -->
+<xsl:import href="ObjectWindowsApplication.xsl"/>
 
 <!-- Template to create formular implementation code per formular definition 
 
@@ -57,6 +49,25 @@
 Export application code to <xsl:value-of select="$basedir"/>
 
 
+<xsl:call-template name="createApplicationUnit">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+
+<xsl:call-template name="createApplication">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+
+<xsl:call-template name="createApplicationMenu">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+
+<xsl:call-template name="createApplicationRcDefines">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+
+<xsl:variable name="ApplicationID" select="//lbDMF/@applicationid"/>
+<xsl:variable name="OrginalApplicationName" select="//lbDMF/applications/application[@ID=$ApplicationID]/@name"/>
+<xsl:variable name="ApplicationName" select="concat(substring-before($OrginalApplicationName, ' '), substring-after($OrginalApplicationName, ' '))"/>
 
 </xsl:template>
 

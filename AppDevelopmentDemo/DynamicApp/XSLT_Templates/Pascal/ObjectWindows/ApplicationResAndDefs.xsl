@@ -56,10 +56,152 @@
 
 <xsl:template name="createApplicationResource">
 
+<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/MainApp.rc" method="text">#include "owindows.inc"
+#include "ostddlgs.inc"
+#include "rcdefs.pas"
+
+men_Main MENU
+BEGIN
+	POPUP "&amp;File"
+	BEGIN
+		MENUITEM "&amp;New", cm_FileNew
+		MENUITEM "&amp;Open...", cm_FileOpen
+		MENUITEM SEPARATOR
+		MENUITEM "&amp;Save", cm_FileSave, GRAYED
+		MENUITEM "Save &amp;as...", cm_FileSaveAs, GRAYED
+		MENUITEM SEPARATOR
+		MENUITEM "&amp;Print...", cm_Print, GRAYED
+		MENUITEM SEPARATOR
+		MENUITEM "E&amp;xit", cm_Exit
+	END
+	
+	POPUP "&amp;Formulars"
+	BEGIN
+	<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularId" select="@ID"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+		MENUITEM "<xsl:value-of select="$FormularName"/>", cm_<xsl:value-of select="$FormularName"/></xsl:for-each>
+	END
+END
+
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularId" select="@ID"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+DIALOG_<xsl:value-of select="$FormularName"/> DIALOG 203, 48, 250, 180
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "<xsl:value-of select="$FormularName"/>"
+BEGIN
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
+	<xsl:variable name="FieldName" select="@name"/>
+	<xsl:variable name="TableName" select="@tablename"/>
+	LTEXT "<xsl:value-of select="$FieldName"/>", -1, 10, <xsl:value-of select="10+20*(position()-1)"/>, 50, 8, WS_CHILD | WS_VISIBLE
+	EDITTEXT 105+<xsl:value-of select="@ID"/>, 60, <xsl:value-of select="8+20*(position()-1)"/>, 120, 12
+</xsl:for-each>
+	CONTROL "Ok", 100, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 10, 32, 12
+	CONTROL "Cancel", 101, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 50, 32, 12
+END
+</xsl:for-each>
+
+DIALOG_Template DIALOG 203, 48, 250, 170
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Anwendungen"
+BEGIN
+	LTEXT "Name", -1, 10, 27, 22, 8, WS_CHILD | WS_VISIBLE
+	EDITTEXT 100, 41, 25, 63, 12
+	CONTROL "Id", -1, "STATIC", SS_LEFT | WS_CHILD | WS_VISIBLE, 10, 11, 22, 8
+	EDITTEXT 101, 41, 9, 63, 12, ES_LEFT | WS_CHILD | WS_VISIBLE | WS_BORDER | WS_GROUP | WS_TABSTOP
+	CONTROL "Ok", 102, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 165, 146, 32, 20
+	CONTROL "Cancel", 103, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 211, 146, 32, 20
+END
+
+</exsl:document>
 </xsl:template>
 
 <xsl:template name="createApplicationRcDefines">
 
+<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/rcdefs.pas" method="text">Unit RcDefs;
+
+Interface
+
+const 
+    men_Main  = 100;
+	id_FirstRec = 101;
+	id_PrevRec = 102;
+	id_NextRec = 103;
+	id_LastRec = 104;
+	cm_Print  = 105;
+	cm_About  = 106;
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularId" select="@ID"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+	cm_<xsl:value-of select="$FormularName"/> = cm_About + <xsl:value-of select="$FormularId"/>;</xsl:for-each>
+
+Implementation
+End.
+</exsl:document>
 </xsl:template>
 
 </xsl:stylesheet>

@@ -57,6 +57,152 @@
 <xsl:template name="createApplicationUnit">
 		<xsl:param name="ApplicationID"/>
 
+<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/AppUnit.pas" method="text">Unit AppUnit;
+
+Interface
+
+Uses WinTypes, WinProcs, OWindows, RcDefs, DataDlgs;
+
+{ Command IDs }
+
+{$R MAINAPP.RES}
+
+Type
+  { Define a TApplication descendant }
+  T<xsl:value-of select="$ApplicationName"/>App = object(TApplication)
+    procedure InitMainWindow; virtual;
+  end;
+
+  PMainWindow = ^TMainWindow;
+  TMainWindow = object(TWindow)
+    Constructor Init(AParent: PWindowsObject; ATitle: PChar);
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+    Procedure show<xsl:value-of select="$FormularName"/>;</xsl:for-each>
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+    Procedure CM<xsl:value-of select="$FormularName"/>(var Msg: TMessage); Virtual cm_First + cm_<xsl:value-of select="$FormularName"/>;</xsl:for-each>
+  End;
+
+Implementation  
+
+{ Construct the T<xsl:value-of select="$ApplicationName"/>App's MainWindow object }
+procedure T<xsl:value-of select="$ApplicationName"/>App.InitMainWindow;
+begin
+  MainWindow := New(PMainWindow, Init(nil, 'Hello, Borland Object Pascal World for <xsl:value-of select="$ApplicationName"/>'));
+end;
+
+Constructor TMainWindow.Init(AParent: PWindowsObject; ATitle: PChar);
+Begin
+  Inherited Init(AParent, ATitle);
+  Attr.Menu := LoadMenu(HInstance, MakeIntResource(100));
+End;
+
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+Procedure TMainWindow.show<xsl:value-of select="$FormularName"/>;
+Var ReturnValue : Integer;
+Begin
+  ReturnValue := Application^.ExecDialog(New(P<xsl:value-of select="$FormularName"/>Dialog, Init(@Self)));
+End;
+</xsl:for-each>
+
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+Procedure TMainWindow.CM<xsl:value-of select="$FormularName"/>(var Msg: TMessage);
+Begin
+  show<xsl:value-of select="$FormularName"/>;
+End;
+</xsl:for-each>
+
+Begin
+
+End.
+</exsl:document>
 </xsl:template>
 
 </xsl:stylesheet>
