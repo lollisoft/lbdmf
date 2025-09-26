@@ -334,8 +334,9 @@ Begin
   {
   MessageBox(HWindow, '<xsl:value-of select="$FormularName"/>', '<xsl:value-of select="$ApplicationName"/>', mb_Ok);
   ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init(@Self, 'DIALOG_<xsl:value-of select="$FormularName"/>'));
-  }
   ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init);
+  }
+  ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init(@Self));
   ReturnValue := Application^.ExecDialog(ADialog);
 End;
 </xsl:for-each>
@@ -409,7 +410,7 @@ Uses WinTypes, WinProcs, OWindows, ODialogs, RcDefs, BWCC;
 Type
   P<xsl:value-of select="$FormularName"/>Dialog = ^T<xsl:value-of select="$FormularName"/>Dialog;
   T<xsl:value-of select="$FormularName"/>Dialog = object(TDialog)
-    constructor Init;  
+    constructor Init(AParent: PWindowsObject);  
   End;
 </xsl:for-each>
 
@@ -438,10 +439,10 @@ Implementation
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
-constructor T<xsl:value-of select="$FormularName"/>Dialog.Init;
+constructor T<xsl:value-of select="$FormularName"/>Dialog.Init(AParent: PWindowsObject);
 begin
   {inherited Init(@self, 'DIALOG_<xsl:value-of select="$FormularName"/>');}
-  inherited Init(nil, 'DIALOG_<xsl:value-of select="$FormularName"/>');
+  inherited Init(AParent, 'DIALOG_<xsl:value-of select="$FormularName"/>');
 end;
 
 </xsl:for-each>
