@@ -33,6 +33,7 @@
 
 <!-- Template to create base class file for fixed database forms -->
 <xsl:import href="ObjectWindowsApplication.xsl"/>
+<xsl:import href="Engine.xsl"/>
 
 <!-- Template to create formular implementation code per formular definition 
 
