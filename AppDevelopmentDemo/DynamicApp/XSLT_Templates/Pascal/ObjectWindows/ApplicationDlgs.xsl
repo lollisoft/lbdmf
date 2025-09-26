@@ -60,12 +60,17 @@
 
 Interface
 
-Uses WinTypes, WinProcs, OWindows, ODialogs, RcDefs, Engine, BWCC;
+Uses WinTypes, WinProcs, OWindows, ODialogs, RcDefs, Engine, Idapi, DbiTypes, DbiErrs, BWCC;
+
+const
+  file_Handles = 40;
+  WM_DISPLAY = 2200;
 
 Type
   PBaseDataDialog = ^TBaseDataDialog;
   TBaseDataDialog = object(TDialog)
-    constructor Init(AParent: PWindowsObject);
+	hCur: hDBICur;
+    constructor Init(AParent: PWindowsObject; name: PChar);
     procedure idFirstRec(var Msg: TMessage);
        virtual id_First + id_FirstRec;
     procedure idLastRec(var Msg: TMessage);
@@ -74,7 +79,7 @@ Type
        virtual id_First + id_NextRec;
     procedure idPrevRec(var Msg: TMessage);
        virtual id_First + id_PrevRec;
-
+  
   End;
 
 
@@ -109,6 +114,18 @@ Type
 </xsl:for-each>
 
 Implementation
+
+{ TBaseDataDialog }
+constructor TBaseDataDialog.Init(AParent: PWindowsObject; name: PChar);
+begin
+  inherited Init(AParent, name);
+  if SetHandleCount(file_Handles) &lt;&gt; file_Handles then
+  begin
+    BWCCMessageBox(0, 'Not Enough File handles available', 'ERROR', mb_Ok);
+    PostQuitMessage(0);
+  end;
+  SetPrivateDir;
+end;
 
 procedure TBaseDataDialog.idFirstRec(var Msg: TMessage);
 begin
