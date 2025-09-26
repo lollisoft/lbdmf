@@ -333,8 +333,9 @@ Var ReturnValue : Integer;
 Begin
   {
   MessageBox(HWindow, '<xsl:value-of select="$FormularName"/>', '<xsl:value-of select="$ApplicationName"/>', mb_Ok);
-  }
   ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init(@Self, 'DIALOG_<xsl:value-of select="$FormularName"/>'));
+  }
+  ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init);
   ReturnValue := Application^.ExecDialog(ADialog);
 End;
 </xsl:for-each>
@@ -380,7 +381,7 @@ End.
 
 Interface
 
-Uses WinTypes, WinProcs, OWindows, ODialogs, RcDefs;
+Uses WinTypes, WinProcs, OWindows, ODialogs, RcDefs, BWCC;
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -408,11 +409,42 @@ Uses WinTypes, WinProcs, OWindows, ODialogs, RcDefs;
 Type
   P<xsl:value-of select="$FormularName"/>Dialog = ^T<xsl:value-of select="$FormularName"/>Dialog;
   T<xsl:value-of select="$FormularName"/>Dialog = object(TDialog)
-  
+    constructor Init;  
   End;
 </xsl:for-each>
 
 Implementation
+
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+constructor T<xsl:value-of select="$FormularName"/>Dialog.Init;
+begin
+  {inherited Init(@self, 'DIALOG_<xsl:value-of select="$FormularName"/>');}
+  inherited Init(nil, 'DIALOG_<xsl:value-of select="$FormularName"/>');
+end;
+
+</xsl:for-each>
 
 Begin
 
