@@ -139,8 +139,12 @@ BEGIN
 	LTEXT "<xsl:value-of select="$FieldName"/>", -1, 10, <xsl:value-of select="10+20*(position()-1)"/>, 50, 8, WS_CHILD | WS_VISIBLE
 	EDITTEXT 105+<xsl:value-of select="@ID"/>, 60, <xsl:value-of select="8+20*(position()-1)"/>, 120, 12
 </xsl:for-each>
-	CONTROL "Ok", 100, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 10, 32, 12
-	CONTROL "Cancel", 101, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 50, 32, 12
+	CONTROL "Ok", 100, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 10, 50, 12
+	CONTROL "Cancel", 101, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 35, 50, 12
+	CONTROL "First", id_FirstRec, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 60, 50, 12
+	CONTROL "Previous", id_PrevRec, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 85, 50, 12
+	CONTROL "Next", id_NextRec, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 110, 50, 12
+	CONTROL "Last", id_LastRec, "BorBtn", BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP, 190, 135, 50, 12
 END
 </xsl:for-each>
 
