@@ -232,6 +232,11 @@ Uses WinTypes, WinProcs, OWindows, RcDefs, DataDlgs;
 {$R MAINAPP.RES}
 
 Type
+  { Define a TApplication descendant }
+  T<xsl:value-of select="$ApplicationName"/>App = object(TApplication)
+    procedure InitMainWindow; virtual;
+  end;
+
   PMainWindow = ^TMainWindow;
   TMainWindow = object(TWindow)
     Constructor Init(AParent: PWindowsObject; ATitle: PChar);
@@ -284,27 +289,20 @@ Type
 </xsl:variable>
     Procedure CM<xsl:value-of select="$FormularName"/>(var Msg: TMessage); Virtual cm_First + cm_<xsl:value-of select="$FormularName"/>;</xsl:for-each>
   End;
-	
-Type
-
-  { Define a TApplication descendant }
-  T<xsl:value-of select="$ApplicationName"/>App = object(TApplication)
-    procedure InitMainWindow; virtual;
-  end;
 
 Implementation  
-
-Constructor TMainWindow.Init(AParent: PWindowsObject; ATitle: PChar);
-Begin
-  Inherited Init(AParent, ATitle);
-  Attr.Menu := LoadMenu(HInstance, MakeIntResource(100));
-End;
 
 { Construct the T<xsl:value-of select="$ApplicationName"/>App's MainWindow object }
 procedure T<xsl:value-of select="$ApplicationName"/>App.InitMainWindow;
 begin
   MainWindow := New(PMainWindow, Init(nil, 'Hello, Borland Object Pascal World for <xsl:value-of select="$ApplicationName"/>'));
 end;
+
+Constructor TMainWindow.Init(AParent: PWindowsObject; ATitle: PChar);
+Begin
+  Inherited Init(AParent, ATitle);
+  Attr.Menu := LoadMenu(HInstance, MakeIntResource(100));
+End;
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
