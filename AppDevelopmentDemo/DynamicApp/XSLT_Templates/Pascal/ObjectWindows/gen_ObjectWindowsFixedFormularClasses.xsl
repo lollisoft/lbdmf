@@ -53,11 +53,15 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
 
+<xsl:call-template name="createDataDialogUnit">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+
 <xsl:call-template name="createApplication">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
 
-<xsl:call-template name="createApplicationMenu">
+<xsl:call-template name="createApplicationResource">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
 
