@@ -109,9 +109,10 @@ const
 	<xsl:variable name="TableName" select="@tablename"/>
 	
 { FieldNums }
-  F<xsl:value-of select="$TableName"/>_<xsl:value-of select="$FieldName"/>Num      = <xsl:value-of select="last()"/>;
+  F<xsl:value-of select="$TableName"/>_<xsl:value-of select="$FieldName"/>Num      = <xsl:value-of select="position()"/>;
   <xsl:value-of select="$TableName"/>_<xsl:value-of select="$FieldName"/>_len      = 32;
 <xsl:if test="position()=last()">
+  F<xsl:value-of select="$TableName"/>_IDNum      = <xsl:value-of select="last()+1"/>;
 { Name of table to be created }
   <xsl:value-of select="$TableName"/>TblName = '<xsl:value-of select="$TableName"/>';
 { Type of Table }
@@ -819,20 +820,17 @@ begin
   DbiError(DbiInitRecord(hCur, pRecBuf));
 
   { Fill each field with the structure's data }
-  DbiError(DbiPutField(hCur, FNameNum, pRecBuf, @PRec^.FName));
-  DbiError(DbiPutField(hCur, LNameNum, pRecBuf, @PRec^.LName));
-  DbiError(DbiPutField(hCur, Address1Num, pRecBuf, @PRec^.Address1));
-  DbiError(DbiPutField(hCur, Address2Num, pRecBuf, @PRec^.Address2));
-  DbiError(DbiPutField(hCur, CityNum, pRecBuf, @PRec^.City));
-  DbiError(DbiPutField(hCur, StateNum, pRecBuf, @PRec^.State));
-  DbiError(DbiPutField(hCur, ZipNum, pRecBuf, @PRec^.Zip));
-  DbiError(DbiPutField(hCur, HPhoneNum, pRecBuf, @PRec^.HPhone));
-  DbiError(DbiPutField(hCur, WPhoneNum, pRecBuf, @PRec^.WPhone));
-  DbiError(DbiPutField(hCur, EmpIDNum, pRecBuf, @PRec^.EmpID));
-  DbiError(DbiPutField(hCur, DepartmentNum, pRecBuf, @PRec^.Department));
-
-  RetVal := SetDate(Date1, PRec^.StartDate);
-
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
+	<xsl:variable name="FFieldName" select="@name"/>
+	<xsl:variable name="FTableName" select="@tablename"/>
+  DbiError(DbiPutField(hCur, F<xsl:value-of select="$FTableName"/>_<xsl:value-of select="$FFieldName"/>Num, pRecBuf, @PRec^.<xsl:value-of select="$FieldName"/>Field));
+<xsl:if test="position()=last()">
+  DbiError(DbiPutField(hCur, F<xsl:value-of select="$FTableName"/>_IDNum, pRecBuf, @PRec^.IdField));
+</xsl:if>
+</xsl:for-each>
+{ We do not yet have dates here ... }
+{  RetVal := SetDate(Date1, PRec^.StartDate); }
+{
   if RetVal = DBIERR_NONE then
   begin
     DbiError(DbiPutField(hCur, StartDateNum, pRecBuf, @Date1));
@@ -842,10 +840,12 @@ begin
       SetDate(Date2, PRec^.EndDate);
       DbiError(DbiPutField(hCur, EndDateNum, pRecBuf, @Date2));
     end
-    else DbiError(DbiPutField(hCur, EndDateNum, pRecBuf, nil));  { XXX AddRec}
+    else DbiError(DbiPutField(hCur, EndDateNum, pRecBuf, nil)); } { XXX AddRec}
 
+{
     DbiError(DbiOpenBlob(hCur, pRecBuf, CommentsNum, dbiREADWRITE));
     DbiError(DbiPutBlob(hCur, pRecBuf, CommentsNum, 0, strlen(PRec^.Comments)+1, @PRec^.Comments));
+}
 
     if(Add) then
     begin
@@ -864,11 +864,14 @@ begin
     end;
 
     { NOW YOU MUST FREE the blob. }
+{	
     DbiError(DbiFreeBlob(hCur, pRecBuf, CommentsNum));
+}
     freemem(PRecBuf, sizeof(T<xsl:value-of select="$TableName"/>RecordType));
     RetVal := GlobalDBIErr;
+{
   end;
-
+}
   <xsl:value-of select="$TableName"/>AddRecord := RetVal;
 end; { <xsl:value-of select="$TableName"/>AddRecord }
 
@@ -891,26 +894,27 @@ var
   Date1, Date2: longint;
 begin
     { Put each field into the data structure }
-  DbiError(DbiGetField(hCur, FNameNum, pRecBuf, @PRec^.FName, FieldEmpty));
-  DbiError(DbiGetField(hCur, LNameNum, pRecBuf, @Prec^.LName, FieldEmpty));
-  DbiError(DbiGetField(hCur, Address1Num, pRecBuf, @Prec^.Address1, FieldEmpty));
-  DbiError(DbiGetField(hCur, Address2Num, pRecBuf, @PRec^.Address2, FieldEmpty));
-  DbiError(DbiGetField(hCur, CityNum, pRecBuf, @PRec^.City, FieldEmpty));
-  DbiError(DbiGetField(hCur, StateNum, pRecBuf, @PRec^.State, FieldEmpty));
-  DbiError(DbiGetField(hCur, ZipNum, pRecBuf, @PRec^.Zip, FieldEmpty));
-  DbiError(DbiGetField(hCur, HPhoneNum, pRecBuf, @PRec^.HPhone, FieldEmpty));
-  DbiError(DbiGetField(hCur, WPhoneNum, pRecBuf, @PRec^.WPhone, FieldEmpty));
-  DbiError(DbiGetField(hCur, EmpIDNum, pRecBuf, @PRec^.EmpID, FieldEmpty));
-  DbiError(DbiGetField(hCur, DepartmentNum, pRecBuf, @PRec^.Department, FieldEmpty));
-
+<xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
+	<xsl:variable name="FFieldName" select="@name"/>
+	<xsl:variable name="FTableName" select="@tablename"/>
+  DbiError(DbiGetField(hCur, F<xsl:value-of select="$FTableName"/>_<xsl:value-of select="$FFieldName"/>Num, pRecBuf, @PRec^.<xsl:value-of select="$FieldName"/>Field, FieldEmpty));
+<xsl:if test="position()=last()">
+  DbiError(DbiGetField(hCur, F<xsl:value-of select="$FTableName"/>_IDNum, pRecBuf, @PRec^.IdField, FieldEmpty));
+</xsl:if>
+</xsl:for-each>
+{
   DbiError(DbiGetField(hCur, StartDateNum, pRecBuf, @Date1, FieldEmpty));
   DbiError(DbiDateDecode(Date1, MonthInt, Dayint, YearInt));
   DtRec.Month := MonthInt;
   DtRec.Day := DayInt;
   DtRec.Year := YearInt;
+}
   { Format the date to MM\DD\YYYY format }
+{
   wvsprintf(PRec^.StartDate, '%02u-%02u-%02u', DtRec);
+}  
                                                               { XXX FillRec }
+{
   DbiError(DbiGetField(hCur, EndDateNum, pRecBuf, nil, FieldEmpty));
   if FieldEmpty = false then
   begin
@@ -919,21 +923,27 @@ begin
     DtRec.Month := MonthInt;
     DtRec.Day := DayInt;
     DtRec.Year := YearInt;
+}
     { Format the date to MM\DD\YYYY format }
+{
     wvsprintf(PRec^.EndDate, '%02u-%02u-%02u', DtRec)
   end
   else strcopy(PRec^.EndDate, '');
+}
 
-
+{
   DbiError(DbiOpenBlob(hCur, pRecBuf, CommentsNum, dbiREADWRITE));
+}
   { Now get the size of the blob so that you can allocate the
   / correct amount of memory.  The BlobSize variable is a UINT32. }
+{
   DbiError(DbiGetBlobSize(hCur, pRecBuf, CommentsNum, BlobSize));
   DbiError(DbiGetBlob(hCur, pRecBuf, CommentsNum, 0, BlobSize,
                       @PRec^.Comments, Actual));
   PRec^.Comments[BlobSize] := #0;
   DbiError(DbiFreeBlob(hCur, pRecBuf, CommentsNum));
-  FillRec := DBIERR_NONE;
+}
+  <xsl:value-of select="$TableName"/>FillRec := DBIERR_NONE;
 end;
 
 {=============================================================================
@@ -967,12 +977,12 @@ begin
   if(Rslt = DBIERR_NONE) then
   begin
     { Fill the structure with the present record pointed to by hCur. }
-    DbiError(FillRec(hCur, pRecBuf, pRecord));
+    DbiError(<xsl:value-of select="$TableName"/>FillRec(hCur, pRecBuf, pRecord));
     { Now free the record lock on this record ONLY. }
     DbiError(DbiRelRecordLock(hCur, false));
   end;
   freemem(pRecBuf, sizeof(T<xsl:value-of select="$TableName"/>RecordType));
-  GetData := DBIERR_NONE;
+  <xsl:value-of select="$TableName"/>GetData := DBIERR_NONE;
 end; { <xsl:value-of select="$TableName"/>GetData }
 </xsl:if>
 </xsl:for-each>
