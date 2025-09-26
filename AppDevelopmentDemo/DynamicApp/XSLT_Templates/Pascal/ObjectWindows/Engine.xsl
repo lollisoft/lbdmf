@@ -54,25 +54,7 @@
 	</xsl:call-template>
 </xsl:variable>
 
-<xsl:template name="createEngineUnit">
-
-<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/Engine.pas" method="text">{$A+,B-,D+,F+,G+,I-,K+,L+,N+,P-,Q-,R-,S-,T-,V+,W+,X+,Y+}
-{$M 25000,8192}
-{************************************************}
-{                                                }
-{   Base functions for each data dialog          }
-{                                                }
-{                                                }
-{************************************************}
-unit Engine;
-
-interface
-uses WinTypes, WinProcs, strings, Idapi, DbiTypes, DbiErrs, BWCC, WinDos;
-const
-  AppName = '<xsl:value-of select="$ApplicationName"/>';
-  { Field Lengths }
-  MaxFieldSize    = 60; { Must be larger then any other field size below except
-                        / blob fields. }
+<xsl:template name="createEngineUnits">
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -98,6 +80,18 @@ const
 		<xsl:with-param name="substringOut" select="''"/>
 	</xsl:call-template>
 </xsl:variable>
+<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/Eng{$FormularId}.pas" method="text">{$A+,B-,D+,F+,G+,I-,K+,L+,N+,P-,Q-,R-,S-,T-,V+,W+,X+,Y+}
+{$M 25000,8192}
+{************************************************}
+{
+    Base functions for data dialog for
+	<xsl:value-of select="$FormularName"/>
+}
+{************************************************}
+unit Eng<xsl:value-of select="$FormularId"/>;
+
+interface
+uses WinTypes, WinProcs, strings, Idapi, DbiTypes, DbiErrs, BWCC, WinDos;
 
 const
   <xsl:value-of select="$FormularName"/>Index   = 1;
@@ -130,33 +124,6 @@ type
 </xsl:if>  
 </xsl:for-each>
 
-</xsl:for-each>
-
-<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
-<xsl:variable name="tempFormularName" select="@name"/>
-<xsl:variable name="FormularId" select="@ID"/>
-<xsl:variable name="FormularName">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-	<xsl:call-template name="SubstringReplace">
-		<xsl:with-param name="stringIn">
-			<xsl:value-of select="$tempFormularName"/>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'-'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="'>'"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-		</xsl:with-param>
-		<xsl:with-param name="substringIn" select="' '"/>
-		<xsl:with-param name="substringOut" select="''"/>
-	</xsl:call-template>
-</xsl:variable>
-
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
 	<xsl:variable name="FieldName" select="@name"/>
 	<xsl:variable name="TableName" select="@tablename"/>
@@ -180,11 +147,12 @@ const
 </xsl:for-each>
      );
 
+	 
+	 
 { Index Descriptor - describes the Indexes associated with the
   table. This index is going to be added to the table when the
   table is created. }
-
-  
+	 
 <xsl:for-each select="//lbDMF/formularfields/formular[@formularid=$FormularId]">
 	<xsl:variable name="FieldName" select="@name"/>
 	<xsl:variable name="TableName" select="@tablename"/>
@@ -281,87 +249,6 @@ type
 </xsl:if>  
 </xsl:for-each>
 
-</xsl:for-each>
-
-  DateRec = record
-    Month, Day, Year: word
-  end;
-
-  PMoveArray = ^TMoveArray;
-  TMoveArray = array[1..10000] of byte; { Used on procedure MoveFromOffset }
-
-{
-const
-  DefaultRecord1: TRecordType = (FName: 'Jack'; LName: 'Dolittle';
-                          Address1: '2734 Seabright Av.';
-                          Address2: '108 Santas Village Wy.';
-                          City: 'Nowheresville';
-                          State: 'CA';
-                          Zip: '95837';
-                          HPhone: '(408)555-1213';
-                          WPhone: '(408)555-1214';
-                          EmpId: 2293;
-                          StartDate: '12-24-90';
-                          EndDate: '01-20-91';
-                          Department: 'Marketing';
-                          Comments: 'Poor worker, fired promptly.');
-
-  DefaultRecord2: TRecordType = (FName: 'Frank'; LName: 'Zipple';
-                          Address1: '11432 1st Av.';
-                          Address2: '38322 Branch Av.';
-                          City: 'Walla Walla';
-                          State: 'AZ';
-                          Zip: '93947';
-                          HPhone: '(408)555-1220';
-                          WPhone: '(408)555-1221';
-                          EmpId: 2291;
-                          StartDate: '04-01-88';
-                          EndDate: '06-24-93';
-                          Department: 'Sales';
-                          Comments: 'Good worker.  Excellent experience.');
-
-  DefaultRecord3: TRecordType = (FName: 'Stan'; LName: 'Franich';
-                          Address1: '1102 Bell St.';
-                          Address2: '993 Worthington Wy.';
-                          City: 'Soquel';
-                          State: 'CA';
-                          Zip: '38487';
-                          HPhone: '(408)555-1230';
-                          WPhone: '(408)555-1231';
-                          EmpId: 2093;
-                          StartDate: '04-01-80';
-                          EndDate: '04-25-94';
-                          Department: 'Research';
-                          Comments: 'Excellent worker, quit for unknown reasons.');
-
-  DefaultRecord4: TRecordType = (FName: 'Brandy'; LName: 'Giberson';
-                          Address1: '1234 845th St.';
-                          Address2: '94832 Pacific Wy.';
-                          City: 'Portland';
-                          State: 'ME';
-                          Zip: '28356';
-                          HPhone: '(408)555-1240';
-                          WPhone: '(408)555-1241';
-                          EmpId: 374;
-                          StartDate: '10-20-84';
-                          EndDate: '04-09-92';
-                          Department: 'QA';
-                          Comments: 'Great worker.');
-}
-var
-  GlobalDBIErr: DBIResult;
-
-{ Functions }
-
-procedure SetPrivateDir;
-procedure AddInitialRecords(hCur: HDBICur);
-
-function FindTablesDir(var Dir: PChar; DirsBack: Byte): Boolean;
-function DbInit: DBIResult;
-function DbiError(RetVal: DBIResult): DBIResult;
-function GetTable(var hDb: hDBIdb; var TblName: PChar; var TblType: PChar; var hCur: hDBICur) : DBIResult;
-function CloseDb(hdb: hdbIDb; hCur: hDBICur): DBIResult;
-function DeleteRec(hCur: hDBICur): DBIResult;
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
 <xsl:variable name="FormularId" select="@ID"/>
@@ -397,281 +284,6 @@ function <xsl:value-of select="$TableName"/>GetData(hCur: hDBICur; pRecord: P<xs
 </xsl:if>
 </xsl:for-each>
 </xsl:for-each>
-function GoTop(hCur: hDBICur; MoveRec: BOOL): DBIResult;
-function GoBottom(hCur: hDBICur; MoveRec: BOOL): DBIResult;
-function SetIndex(hCur: hDBICur; uNum: word; FirstRec: BOOL): DBIResult;
-function GetNextRec(hCur: hDBICur): DBIResult;
-function GetPrevRec(hCur: hDBICur): DBIResult;
-function AtEOF( hCur: hDBICur): BOOL;
-function AtBOF( hCur: hDBICur): BOOL;
-function GetIndexNum (hCur: hDBICur): word;
-function Search(hCur: HDBICur; uCond: DBISearchCond; cKey: pBYTE): DBIResult;
-function GetRecordCount(hCur: HDBICur): longint;
-
-
-implementation
-
-procedure SetPrivateDir;
-var
-  PrivDir: String;
-  PPrivDir: PChar;
-  PTmp: PChar;
-  Rec: TSearchRec;
-  Error: array[0..200] of char;
-  IniFile: Boolean;
-
-begin
-  GetMem(PPrivDir, 255);
-  {Get private directory from .ini file if it exists.}
-  GetPrivateProfileString(AppName, 'PrivateDir', '.', PPrivDir, 255, 'BDE.INI');
-  {If it does not exist...}
-  if PPrivDir[0] = '.' then
-  begin
-    IniFile := False;
-    {Derive directory from executable directory.}
-    PrivDir := ParamStr(0);
-    StrPCopy(PPrivDir, PrivDir);
-    PTmp := StrRScan(PPRivDir, '\');
-    PTmp^ := #0;
-    DBISetPrivateDir(PPrivDir);
-  end
-  else
-    IniFile := True;
-  {Make sure the directory exists.}
-  FindFirst(PPrivDir, faDirectory, Rec);
-  if DosError &lt;&gt; 0 then
-  begin
-    StrCopy(Error, 'Error setting private directory to ');
-    StrCat(Error, PPrivDir);
-    StrCat(Error, '.  Using current directory.');
-    if IniFile = True then
-      StrCat (Error, '  Check BDE.INI file for private directory setting.');
-    MessageBox(0, Error, 'Warning', mb_Ok or mb_IconInformation);
-    {By default, the private directory is set to current drectory if DBISetPrivateDir
-     is not used or an error has occured setting private directory.}
-  end;
-  FreeMem(PPrivDir, 255);
-end;
-
-
-function FindTablesDir(var Dir: PChar; DirsBack: Byte): Boolean;
-var
-  TblDir: String[dbiMAXPATHLEN + 1];
-  PTblDir: PChar;
-  B: Byte;
-  Rec: TSearchRec;
-  Error: array[0..200] of char;
-  IniFile: Boolean;
-
-begin
-  {Get private directory from .ini file if it exists.}
-  GetPrivateProfileString(AppName, 'TblDir', '.', Dir, 255, 'BDE.INI');
-  {If it does not exist...}
-  if Dir[0] = '.' then
-  begin
-    IniFile := False;
-    {Derive table directory from executable directory.}
-    TblDir := ParamStr(0);
-    StrPCopy(Dir, TblDir);
-    for B := 1 to DirsBack do
-    begin
-      PTblDir := Dir;
-      PTblDir := StrRScan(PTblDir, '\');
-      if PTblDir = nil then
-      begin
-        BWCCMessageBox(0, 'An error occured finding tables directory!',
-                       'ERROR', mb_OK or mb_IconExclamation);
-        {Use relative path since a absolute path could not be found.}
-        StrCopy(Dir, '..\..\TABLES');
-        FindTablesDir := False;
-        Break;
-      end
-      else
-        PTblDir^ := #0;
-    end;
-    if Dir[0] &lt;&gt; '.' then
-    begin
-      {Directory extraction worked.}
-      StrCat(Dir, '\TABLES');
-      FindTablesDir := True;
-    end;
-  end
-  else
-    IniFile := True;
-  {Make sure the directory exists.}
-  FindFirst(Dir, faDirectory, Rec);
-  if DosError &lt;&gt; 0 then
-  begin
-    StrCopy(Error, 'Error setting tables directory to ');
-    StrCat(Error, Dir);
-    StrCat(Error, '.  Using relative path ..\..\TABLES.');
-    if IniFile = True then
-      StrCat (Error, '  Check BDE.INI file for table directory setting.');
-
-    MessageBox(0, Error, 'Warning', mb_Ok or mb_IconInformation);
-    StrCopy(Dir, '..\..\TABLES');
-  end;
-end;
-
-procedure AddInitialRecords(hCur: hDBICur);
-begin
-{
-  if AddRecord(hCur, @DefaultRecord1, true) &lt;&gt; DBIERR_NONE then
-     BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
-  if AddRecord(hCur, @DefaultRecord2, true) &lt;&gt; DBIERR_NONE then
-     BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
-  if AddRecord(hCur, @DefaultRecord3, true) &lt;&gt; DBIERR_NONE then
-     BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
-  if AddRecord(hCur, @DefaultRecord4, true) &lt;&gt; DBIERR_NONE then
-     BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
-}
-end;
-
-procedure MoveFromOffset(var Source: TMoveArray; var Dest; FromOffset, Size: word);
-var
-  L: LongInt;
-
-begin
-  L := (FromOffset - 1) * Size + 1;
-  move(Source[L], Dest, Size);
-end;
-
-function GetHexWord(w: Word): String;
-const
-  hexChars: array [0..$F] of Char =
-    '0123456789ABCDEF';
-begin
-  GetHexWord := hexChars[Hi(w) shr 4] +
-        hexChars[Hi(w) and $F] +
-        hexChars[Lo(w) shr 4] +
-        hexChars[Lo(w) and $F];
-end;
-{=============================================================================
-/  Name:   DbiError
-/  Description: This is function displays that is a message box about the
-/  error that occured.
-=============================================================================}
-
-function DbiError(RetVal: DBIResult): DBIResult;
-var
-  DbiErrString: array[0..128] of char;
-  ResStr: array[0..20] of char;
-  S: String;
-begin
-  S := GetHexWord(RetVal);
-  StrPCopy(ResStr, S);
-
-  if (retVal = DBIERR_NONE) then
-    GlobalDBIErr := DBIERR_NONE
-  else
-  begin
-     GlobalDBIErr := RetVal;
-     DbiGetErrorString(retVal, DbiErrString); { Get the error message }
-     BWCCMessageBox(0, DbiErrString, ResStr, mb_ok);
-  end;
-  DbiError := retVal;
-end;
-
-{=============================================================================
-/  Name:   SetDate
-/  Desc:   This function puts the date that is in the PChar into the
-/          Date variable.
-=============================================================================}
-
-function SetDate(var Dt: Longint; DateString: PChar): DBIResult;
-var
-    MonthInt: word;
-    DayInt: word;
-    YearInt: word;
-    MonthAry: array[0..2] of char;
-    DayAry: array[0..2] of char;
-    YearAry: array[0..4] of char;
-    Code: integer;
-    RetVal: DBIResult;
-begin
-    { Get the first two month's numbers (the first two numbers). }
-    strLCopy(MonthAry, DateString, 2);
-    strLCopy(DayAry, @DateString[3], 2);
-    strLCopy(YearAry, @DateString[6], 4);
-    val(MonthAry, MonthInt, Code);
-    val(DayAry, DayInt, Code);
-    val(YearAry, YearInt, Code);
-
-    RetVal := DbiDateEncode(MonthInt, DayInt, YearInt, Dt);
-    if RetVal &lt;&gt; DBIERR_NONE then
-       BWCCMessageBox(0, 'Invalid Date Format', 'Error', mb_OK);
-    SetDate := RetVal;
-end;
-
-{=============================================================================
-/  Name:   DbInit
-/  Desc:   This function starts up the engine.
-=============================================================================}
-function DbInit: DBIResult;
-var
-  PEnv: PDbiEnv;
-  rslt: DBIResult;
-begin
-  PEnv := nil;
-  rslt := DbiError(DbiInit(PEnv));
-  if (rslt &lt;&gt; DBIERR_NONE) then
-  begin
-       Dbinit := rslt;
-       exit;
-  end;
-
-  DbiDebugLayerOptions(11, 'EMPLOYEE.INF');
-
-  DbInit := rslt;
-
-end;
-
-{=============================================================================
-/  Name:   GetTable
-/  Desc:   This function opens a database and a table.
-=============================================================================}
-function GetTable(var hDb: hDBIdb; var TblName: PChar; var TblType: PChar; var hCur: hDBICur) : DBIResult;
-var
-  S: array[0..100] of Char;
-  TableDir: PChar;
-begin
-    GetMem(TableDir, dbiMAXPATHLEN + 1);
-    FindTablesDir(TableDir, 3);
-    { Open a standard database handle }
-    DbiError(DbiOpenDatabase(nil, nil, dbiREADWRITE, dbiOPENSHARED,
-                             nil, 0, nil, nil, hdb));
-    if (GlobalDBIErr &lt;&gt; DBIERR_NONE) then
-    begin
-      GetTable := GlobalDBIErr;
-      Exit;
-    end;
-    { Set the directory for the table handle }
-    DbiError(DbiSetDirectory(hdb, TableDir));
-
-    { Now open the table to acquire a cursor on the table. }
-    DbiError(DbiOpenTable(hdb, TblName, TblType, nil, nil, 0,
-             dbiREADWRITE, dbiOPENSHARED,
-             xltFIELD, FALSE, nil, hCur));
-    if (GlobalDBIErr &lt;&gt; DBIERR_NONE) then
-      GetTable := GlobalDBIErr
-    else
-      GetTable := DBIERR_NONE;
-    FreeMem(TableDir, dbiMAXPATHLEN + 1);
-end;
-
-
-{=============================================================================
-/  Name:   DeleteRec
-/  Desc:   This function deletes the record that is pointed to by the
-/          cursor.
-=============================================================================}
-
-function DeleteRec (hCur: hDBICur): DBIResult;
-begin
-    DbiError(DbiGetRecord(hCur, dbiWRITELOCK, nil, nil));
-    DbiError(DbiDeleteRecord(hCur, nil));
-    DeleteRec := GlobalDBIErr;
-end; { DeleteRec }
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -703,9 +315,16 @@ end; { DeleteRec }
 <xsl:if test="position()=1">
 function <xsl:value-of select="$TableName"/>AddRecord(hCur: hDBICur; PRec: P<xsl:value-of select="$TableName"/>RecordType; Add: BOOL): DBIResult;
 function <xsl:value-of select="$TableName"/>GetData(hCur: hDBICur; pRecord: P<xsl:value-of select="$TableName"/>RecordType): DBIResult;
+function <xsl:value-of select="$TableName"/>SetupIndex (hCur: hdbICur; IndexNum: word; FirstRec: BOOL): DBIResult;
+function <xsl:value-of select="$TableName"/>SetIndex (hCur: hDBICur; uNum: word; FirstRec: BOOL): DBIResult;
+function <xsl:value-of select="$TableName"/>GetIndexNum (hCur: hDBICur): word;
 </xsl:if>
 </xsl:for-each>
 </xsl:for-each>
+
+Implementation
+{Uses Engine;}
+
 
 <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
 <xsl:variable name="tempFormularName" select="@name"/>
@@ -984,9 +603,531 @@ begin
   freemem(pRecBuf, sizeof(T<xsl:value-of select="$TableName"/>RecordType));
   <xsl:value-of select="$TableName"/>GetData := DBIERR_NONE;
 end; { <xsl:value-of select="$TableName"/>GetData }
+
+{=============================================================================
+/  Name:   SetupIndex
+/  Desc:   This function switches to an index based upon the index array that
+/          is used to create the table, and the IndexNum that is passed into
+/          the function.  The IndexNum corresponds to an element in the array.
+=============================================================================}
+function <xsl:value-of select="$TableName"/>SetupIndex (hCur: hdbICur; IndexNum: word; FirstRec: BOOL): DBIResult;
+var
+  MyDesc: P<xsl:value-of select="$TableName"/>IDXDesc;       { Index Descriptor }
+begin
+  MyDesc := nil;
+  GetMem(MyDesc, sizeof(IdxDesc));
+
+  { Get any index descriptor, because ALL the tags have the same index name,
+  / but they have different tag names.
+  }
+
+  DbiError(DbiGetIndexDesc(hCur, 1, MyDesc^));
+
+  { Switch to the index based upon the IndexNum which reflects the element
+  / number of the idxDesc array.  the idxDesc array is the array of indexes
+  / used to create the table.
+  }
+
+  DbiError(DbiSwitchToIndex(hCur, MyDesc^.szName, X<xsl:value-of select="$TableName"/>IDXDesc[IndexNum].szTagName,
+                            IndexNum, FirstRec));
+
+  freeMem(MyDesc, sizeof(IdxDesc));
+  <xsl:value-of select="$TableName"/>SetupIndex := DBIERR_NONE;
+end;
+
+{=============================================================================
+/  Name:   <xsl:value-of select="$TableName"/>SetIndex
+/  Desc:   This function runs SetupIndex and moves the new cursor to the
+/          first record in the table.
+=============================================================================}
+function <xsl:value-of select="$TableName"/>SetIndex (hCur: hDBICur; uNum: word; FirstRec: BOOL): DBIResult;
+begin
+  { Move to the top of the table do not move forward one record past the crack. }
+  GoTop(hCur, FirstRec);
+  <xsl:value-of select="$TableName"/>SetupIndex(hCur, uNum, FirstRec);
+  GoTop(hCur, FirstRec);
+  <xsl:value-of select="$TableName"/>SetIndex := DBIERR_NONE;
+end;
+{=============================================================================
+/  Name:   <xsl:value-of select="$TableName"/>GetIndexNum
+/  Desc:   This function returns the index number that corresponds to
+/          the index found in the index array (idxDesc).
+=============================================================================}
+
+function <xsl:value-of select="$TableName"/>GetIndexNum (hCur: hDBICur): word;
+var
+  i: word;
+  Num: integer;          { set it to a value it can never reach. }
+  MyDesc: p<xsl:value-of select="$TableName"/>IDXDesc;    { Index Descriptor. }
+begin
+  i := 1;
+  Num := 300;
+
+  GetMem(MyDesc, sizeof(IdxDesc));
+
+  if (MyDesc = nil) then
+  begin
+      DbiExit;
+      <xsl:value-of select="$TableName"/>GetIndexNum := DBIERR_NOMEMORY;
+  end;
+
+  { Get information about the indexes }
+  DbiError(DbiGetIndexDesc(hCur, 0, MyDesc^));
+
+  { Loop until you found a match or until the maximum number of indexes
+   that are open on this table. }
+  while (i &lt; NumIndexes) and (Num &lt;&gt; 0) do
+  begin
+      { compare the current tagname with the names we know.  If it matches
+      / then return that element number of the index array. }
+     Num := strcomp(MyDesc^.szTagName, XIDXDesc[i].szTagName);
+      inc(i);
+  end;
+  FreeMem(MyDesc, sizeof(idxDesc));
+  { return the current index number. }
+  <xsl:value-of select="$TableName"/>GetIndexNum :=  i-1;
+end; { <xsl:value-of select="$TableName"/>GetIndexNum }
+
 </xsl:if>
 </xsl:for-each>
 </xsl:for-each>
+
+
+
+
+Begin
+
+End.</exsl:document>
+
+</xsl:for-each>
+
+<exsl:document href="{$basedir}/{$pas_appmoduledir}/{$ApplicationName}/Engine.pas" method="text">{$A+,B-,D+,F+,G+,I-,K+,L+,N+,P-,Q-,R-,S-,T-,V+,W+,X+,Y+}
+{$M 25000,8192}
+{************************************************}
+{                                                }
+{   Base functions for each data dialog          }
+{                                                }
+{                                                }
+{************************************************}
+unit Engine;
+
+interface
+uses WinTypes, WinProcs, strings, Idapi, DbiTypes, DbiErrs, BWCC, WinDos;
+const
+  AppName = '<xsl:value-of select="$ApplicationName"/>';
+  { Field Lengths }
+  MaxFieldSize    = 60; { Must be larger then any other field size below except
+                        / blob fields. }
+
+<xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularId" select="@ID"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>
+
+
+
+  
+
+</xsl:for-each>
+Type
+  DateRec = record
+    Month, Day, Year: word
+  end;
+
+  PMoveArray = ^TMoveArray;
+  TMoveArray = array[1..10000] of byte; { Used on procedure MoveFromOffset }
+
+{
+const
+  DefaultRecord1: TRecordType = (FName: 'Jack'; LName: 'Dolittle';
+                          Address1: '2734 Seabright Av.';
+                          Address2: '108 Santas Village Wy.';
+                          City: 'Nowheresville';
+                          State: 'CA';
+                          Zip: '95837';
+                          HPhone: '(408)555-1213';
+                          WPhone: '(408)555-1214';
+                          EmpId: 2293;
+                          StartDate: '12-24-90';
+                          EndDate: '01-20-91';
+                          Department: 'Marketing';
+                          Comments: 'Poor worker, fired promptly.');
+
+  DefaultRecord2: TRecordType = (FName: 'Frank'; LName: 'Zipple';
+                          Address1: '11432 1st Av.';
+                          Address2: '38322 Branch Av.';
+                          City: 'Walla Walla';
+                          State: 'AZ';
+                          Zip: '93947';
+                          HPhone: '(408)555-1220';
+                          WPhone: '(408)555-1221';
+                          EmpId: 2291;
+                          StartDate: '04-01-88';
+                          EndDate: '06-24-93';
+                          Department: 'Sales';
+                          Comments: 'Good worker.  Excellent experience.');
+
+  DefaultRecord3: TRecordType = (FName: 'Stan'; LName: 'Franich';
+                          Address1: '1102 Bell St.';
+                          Address2: '993 Worthington Wy.';
+                          City: 'Soquel';
+                          State: 'CA';
+                          Zip: '38487';
+                          HPhone: '(408)555-1230';
+                          WPhone: '(408)555-1231';
+                          EmpId: 2093;
+                          StartDate: '04-01-80';
+                          EndDate: '04-25-94';
+                          Department: 'Research';
+                          Comments: 'Excellent worker, quit for unknown reasons.');
+
+  DefaultRecord4: TRecordType = (FName: 'Brandy'; LName: 'Giberson';
+                          Address1: '1234 845th St.';
+                          Address2: '94832 Pacific Wy.';
+                          City: 'Portland';
+                          State: 'ME';
+                          Zip: '28356';
+                          HPhone: '(408)555-1240';
+                          WPhone: '(408)555-1241';
+                          EmpId: 374;
+                          StartDate: '10-20-84';
+                          EndDate: '04-09-92';
+                          Department: 'QA';
+                          Comments: 'Great worker.');
+}
+var
+  GlobalDBIErr: DBIResult;
+
+{ Functions }
+
+procedure SetPrivateDir;
+procedure AddInitialRecords(hCur: HDBICur);
+
+function FindTablesDir(var Dir: PChar; DirsBack: Byte): Boolean;
+function DbInit: DBIResult;
+function DbiError(RetVal: DBIResult): DBIResult;
+function GetTable(var hDb: hDBIdb; var TblName: PChar; var TblType: PChar; var hCur: hDBICur) : DBIResult;
+function CloseDb(hdb: hdbIDb; hCur: hDBICur): DBIResult;
+function DeleteRec(hCur: hDBICur): DBIResult;
+function GoTop(hCur: hDBICur; MoveRec: BOOL): DBIResult;
+function GoBottom(hCur: hDBICur; MoveRec: BOOL): DBIResult;
+function GetNextRec(hCur: hDBICur): DBIResult;
+function GetPrevRec(hCur: hDBICur): DBIResult;
+function AtEOF( hCur: hDBICur): BOOL;
+function AtBOF( hCur: hDBICur): BOOL;
+function Search(hCur: HDBICur; uCond: DBISearchCond; cKey: pBYTE): DBIResult;
+function GetRecordCount(hCur: HDBICur): longint;
+
+
+implementation
+
+Uses <xsl:for-each select="formulare/formular[@applicationid=$ApplicationID][@typid='1']">
+<xsl:variable name="tempFormularName" select="@name"/>
+<xsl:variable name="FormularId" select="@ID"/>
+<xsl:variable name="FormularName">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+	<xsl:call-template name="SubstringReplace">
+		<xsl:with-param name="stringIn">
+			<xsl:value-of select="$tempFormularName"/>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'-'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="'>'"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+		</xsl:with-param>
+		<xsl:with-param name="substringIn" select="' '"/>
+		<xsl:with-param name="substringOut" select="''"/>
+	</xsl:call-template>
+</xsl:variable>	Eng<xsl:value-of select="$FormularId"/><xsl:if test="position()!=last()">,</xsl:if> {<xsl:value-of select="$FormularName"/>}
+</xsl:for-each>;
+
+procedure SetPrivateDir;
+var
+  PrivDir: String;
+  PPrivDir: PChar;
+  PTmp: PChar;
+  Rec: TSearchRec;
+  Error: array[0..200] of char;
+  IniFile: Boolean;
+
+begin
+  GetMem(PPrivDir, 255);
+  {Get private directory from .ini file if it exists.}
+  GetPrivateProfileString(AppName, 'PrivateDir', '.', PPrivDir, 255, 'BDE.INI');
+  {If it does not exist...}
+  if PPrivDir[0] = '.' then
+  begin
+    IniFile := False;
+    {Derive directory from executable directory.}
+    PrivDir := ParamStr(0);
+    StrPCopy(PPrivDir, PrivDir);
+    PTmp := StrRScan(PPRivDir, '\');
+    PTmp^ := #0;
+    DBISetPrivateDir(PPrivDir);
+  end
+  else
+    IniFile := True;
+  {Make sure the directory exists.}
+  FindFirst(PPrivDir, faDirectory, Rec);
+  if DosError &lt;&gt; 0 then
+  begin
+    StrCopy(Error, 'Error setting private directory to ');
+    StrCat(Error, PPrivDir);
+    StrCat(Error, '.  Using current directory.');
+    if IniFile = True then
+      StrCat (Error, '  Check BDE.INI file for private directory setting.');
+    MessageBox(0, Error, 'Warning', mb_Ok or mb_IconInformation);
+    {By default, the private directory is set to current drectory if DBISetPrivateDir
+     is not used or an error has occured setting private directory.}
+  end;
+  FreeMem(PPrivDir, 255);
+end;
+
+
+function FindTablesDir(var Dir: PChar; DirsBack: Byte): Boolean;
+var
+  TblDir: String[dbiMAXPATHLEN + 1];
+  PTblDir: PChar;
+  B: Byte;
+  Rec: TSearchRec;
+  Error: array[0..200] of char;
+  IniFile: Boolean;
+
+begin
+  {Get private directory from .ini file if it exists.}
+  GetPrivateProfileString(AppName, 'TblDir', '.', Dir, 255, 'BDE.INI');
+  {If it does not exist...}
+  if Dir[0] = '.' then
+  begin
+    IniFile := False;
+    {Derive table directory from executable directory.}
+    TblDir := ParamStr(0);
+    StrPCopy(Dir, TblDir);
+    for B := 1 to DirsBack do
+    begin
+      PTblDir := Dir;
+      PTblDir := StrRScan(PTblDir, '\');
+      if PTblDir = nil then
+      begin
+        BWCCMessageBox(0, 'An error occured finding tables directory!',
+                       'ERROR', mb_OK or mb_IconExclamation);
+        {Use relative path since a absolute path could not be found.}
+        StrCopy(Dir, '..\..\TABLES');
+        FindTablesDir := False;
+        Break;
+      end
+      else
+        PTblDir^ := #0;
+    end;
+    if Dir[0] &lt;&gt; '.' then
+    begin
+      {Directory extraction worked.}
+      StrCat(Dir, '\TABLES');
+      FindTablesDir := True;
+    end;
+  end
+  else
+    IniFile := True;
+  {Make sure the directory exists.}
+  FindFirst(Dir, faDirectory, Rec);
+  if DosError &lt;&gt; 0 then
+  begin
+    StrCopy(Error, 'Error setting tables directory to ');
+    StrCat(Error, Dir);
+    StrCat(Error, '.  Using relative path ..\..\TABLES.');
+    if IniFile = True then
+      StrCat (Error, '  Check BDE.INI file for table directory setting.');
+
+    MessageBox(0, Error, 'Warning', mb_Ok or mb_IconInformation);
+    StrCopy(Dir, '..\..\TABLES');
+  end;
+end;
+
+procedure AddInitialRecords(hCur: hDBICur);
+begin
+{
+  if AddRecord(hCur, @DefaultRecord1, true) &lt;&gt; DBIERR_NONE then
+     BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
+  if AddRecord(hCur, @DefaultRecord2, true) &lt;&gt; DBIERR_NONE then
+     BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
+  if AddRecord(hCur, @DefaultRecord3, true) &lt;&gt; DBIERR_NONE then
+     BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
+  if AddRecord(hCur, @DefaultRecord4, true) &lt;&gt; DBIERR_NONE then
+     BWCCMessageBox(0, 'Error Adding Record', 'Error!', mb_ok);
+}
+end;
+
+procedure MoveFromOffset(var Source: TMoveArray; var Dest; FromOffset, Size: word);
+var
+  L: LongInt;
+
+begin
+  L := (FromOffset - 1) * Size + 1;
+  move(Source[L], Dest, Size);
+end;
+
+function GetHexWord(w: Word): String;
+const
+  hexChars: array [0..$F] of Char =
+    '0123456789ABCDEF';
+begin
+  GetHexWord := hexChars[Hi(w) shr 4] +
+        hexChars[Hi(w) and $F] +
+        hexChars[Lo(w) shr 4] +
+        hexChars[Lo(w) and $F];
+end;
+{=============================================================================
+/  Name:   DbiError
+/  Description: This is function displays that is a message box about the
+/  error that occured.
+=============================================================================}
+
+function DbiError(RetVal: DBIResult): DBIResult;
+var
+  DbiErrString: array[0..128] of char;
+  ResStr: array[0..20] of char;
+  S: String;
+begin
+  S := GetHexWord(RetVal);
+  StrPCopy(ResStr, S);
+
+  if (retVal = DBIERR_NONE) then
+    GlobalDBIErr := DBIERR_NONE
+  else
+  begin
+     GlobalDBIErr := RetVal;
+     DbiGetErrorString(retVal, DbiErrString); { Get the error message }
+     BWCCMessageBox(0, DbiErrString, ResStr, mb_ok);
+  end;
+  DbiError := retVal;
+end;
+
+{=============================================================================
+/  Name:   SetDate
+/  Desc:   This function puts the date that is in the PChar into the
+/          Date variable.
+=============================================================================}
+
+function SetDate(var Dt: Longint; DateString: PChar): DBIResult;
+var
+    MonthInt: word;
+    DayInt: word;
+    YearInt: word;
+    MonthAry: array[0..2] of char;
+    DayAry: array[0..2] of char;
+    YearAry: array[0..4] of char;
+    Code: integer;
+    RetVal: DBIResult;
+begin
+    { Get the first two month's numbers (the first two numbers). }
+    strLCopy(MonthAry, DateString, 2);
+    strLCopy(DayAry, @DateString[3], 2);
+    strLCopy(YearAry, @DateString[6], 4);
+    val(MonthAry, MonthInt, Code);
+    val(DayAry, DayInt, Code);
+    val(YearAry, YearInt, Code);
+
+    RetVal := DbiDateEncode(MonthInt, DayInt, YearInt, Dt);
+    if RetVal &lt;&gt; DBIERR_NONE then
+       BWCCMessageBox(0, 'Invalid Date Format', 'Error', mb_OK);
+    SetDate := RetVal;
+end;
+
+{=============================================================================
+/  Name:   DbInit
+/  Desc:   This function starts up the engine.
+=============================================================================}
+function DbInit: DBIResult;
+var
+  PEnv: PDbiEnv;
+  rslt: DBIResult;
+begin
+  PEnv := nil;
+  rslt := DbiError(DbiInit(PEnv));
+  if (rslt &lt;&gt; DBIERR_NONE) then
+  begin
+       Dbinit := rslt;
+       exit;
+  end;
+
+  DbiDebugLayerOptions(11, 'EMPLOYEE.INF');
+
+  DbInit := rslt;
+
+end;
+
+{=============================================================================
+/  Name:   GetTable
+/  Desc:   This function opens a database and a table.
+=============================================================================}
+function GetTable(var hDb: hDBIdb; var TblName: PChar; var TblType: PChar; var hCur: hDBICur) : DBIResult;
+var
+  S: array[0..100] of Char;
+  TableDir: PChar;
+begin
+    GetMem(TableDir, dbiMAXPATHLEN + 1);
+    FindTablesDir(TableDir, 3);
+    { Open a standard database handle }
+    DbiError(DbiOpenDatabase(nil, nil, dbiREADWRITE, dbiOPENSHARED,
+                             nil, 0, nil, nil, hdb));
+    if (GlobalDBIErr &lt;&gt; DBIERR_NONE) then
+    begin
+      GetTable := GlobalDBIErr;
+      Exit;
+    end;
+    { Set the directory for the table handle }
+    DbiError(DbiSetDirectory(hdb, TableDir));
+
+    { Now open the table to acquire a cursor on the table. }
+    DbiError(DbiOpenTable(hdb, TblName, TblType, nil, nil, 0,
+             dbiREADWRITE, dbiOPENSHARED,
+             xltFIELD, FALSE, nil, hCur));
+    if (GlobalDBIErr &lt;&gt; DBIERR_NONE) then
+      GetTable := GlobalDBIErr
+    else
+      GetTable := DBIERR_NONE;
+    FreeMem(TableDir, dbiMAXPATHLEN + 1);
+end;
+
+
+{=============================================================================
+/  Name:   DeleteRec
+/  Desc:   This function deletes the record that is pointed to by the
+/          cursor.
+=============================================================================}
+
+function DeleteRec (hCur: hDBICur): DBIResult;
+begin
+    DbiError(DbiGetRecord(hCur, dbiWRITELOCK, nil, nil));
+    DbiError(DbiDeleteRecord(hCur, nil));
+    DeleteRec := GlobalDBIErr;
+end; { DeleteRec }
 
 
 {=============================================================================
@@ -1098,76 +1239,6 @@ begin
       BWCCMessageBox(0, 'Error closing database', 'ERROR in wmClose', mb_Ok);
   CloseDb := DbiExit;
 end;
-{=============================================================================
-/  Name:   SetupIndex
-/  Desc:   This function switches to an index based upon the index array that
-/          is used to create the table, and the IndexNum that is passed into
-/          the function.  The IndexNum corresponds to an element in the array.
-=============================================================================}
-function SetupIndex (hCur: hdbICur; IndexNum: word; FirstRec: BOOL): DBIResult;
-var
-  MyDesc: PIDXDesc;       { Index Descriptor }
-begin
-  MyDesc := nil;
-  GetMem(MyDesc, sizeof(IdxDesc));
-
-  { Get any index descriptor, because ALL the tags have the same index name,
-  / but they have different tag names.
-  }
-
-  DbiError(DbiGetIndexDesc(hCur, 1, MyDesc^));
-
-  { Switch to the index based upon the IndexNum which reflects the element
-  / number of the idxDesc array.  the idxDesc array is the array of indexes
-  / used to create the table.
-  }
-
-  DbiError(DbiSwitchToIndex(hCur, MyDesc^.szName, XIDXDesc[IndexNum].szTagName,
-                            IndexNum, FirstRec));
-
-  freeMem(MyDesc, sizeof(IdxDesc));
-  SetupIndex := DBIERR_NONE;
-end;
-
-{=============================================================================
-/  Name:   GetIndexNum
-/  Desc:   This function returns the index number that corresponds to
-/          the index found in the index array (idxDesc).
-=============================================================================}
-
-function GetIndexNum (hCur: hDBICur): word;
-var
-  i: word;
-  Num: integer;          { set it to a value it can never reach. }
-  MyDesc: pIDXDesc;    { Index Descriptor. }
-begin
-  i := 1;
-  Num := 300;
-
-  GetMem(MyDesc, sizeof(IdxDesc));
-
-  if (MyDesc = nil) then
-  begin
-      DbiExit;
-      GetIndexNum := DBIERR_NOMEMORY;
-  end;
-
-  { Get information about the indexes }
-  DbiError(DbiGetIndexDesc(hCur, 0, MyDesc^));
-
-  { Loop until you found a match or until the maximum number of indexes
-   that are open on this table. }
-  while (i &lt; NumIndexes) and (Num &lt;&gt; 0) do
-  begin
-      { compare the current tagname with the names we know.  If it matches
-      / then return that element number of the index array. }
-     Num := strcomp(MyDesc^.szTagName, XIDXDesc[i].szTagName);
-      inc(i);
-  end;
-  FreeMem(MyDesc, sizeof(idxDesc));
-  { return the current index number. }
-  GetIndexNum :=  i-1;
-end; { GetIndexNum }
 
 {=============================================================================
 /  Name:   Search()
@@ -1264,19 +1335,6 @@ begin
   Search := Result;
 end;
 
-{=============================================================================
-/  Name:   SetIndex
-/  Desc:   This function runs SetupIndex and moves the new cursor to the
-/          first record in the table.
-=============================================================================}
-function SetIndex (hCur: hDBICur; uNum: word; FirstRec: BOOL): DBIResult;
-begin
-  { Move to the top of the table do not move forward one record past the crack. }
-  GoTop(hCur, FirstRec);
-  SetupIndex(hCur, uNum, FirstRec);
-  GoTop(hCur, FirstRec);
-  SetIndex := DBIERR_NONE;
-end;
 
 function GetRecordCount(hCur: HDBICur): longint;
 var
@@ -1322,6 +1380,7 @@ end;
 begin
 end.
 </exsl:document>
+
 
 </xsl:template>
 
