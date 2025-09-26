@@ -53,6 +53,11 @@ Export application code to <xsl:value-of select="$basedir"/>
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
 
+
+<xsl:call-template name="createEngineUnit">
+<xsl:with-param name="ApplicationID" select="$ApplicationID"/>
+</xsl:call-template>
+
 <xsl:call-template name="createDataDialogUnit">
 <xsl:with-param name="ApplicationID" select="$ApplicationID"/>
 </xsl:call-template>
