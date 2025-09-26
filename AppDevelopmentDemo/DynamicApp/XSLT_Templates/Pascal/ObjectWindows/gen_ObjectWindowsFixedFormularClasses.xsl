@@ -31,8 +31,15 @@
 
 <xsl:import href="../../include/lbDMFBaseTemplates.xsl"/>
 
-<!-- Template to create base class file for fixed database forms -->
-<xsl:import href="ObjectWindowsApplication.xsl"/>
+<!-- The main application -->
+<xsl:import href="Application.xsl"/>
+<!-- The main application database dialogs -->
+<xsl:import href="ApplicationDlgs.xsl"/>
+<!-- The main application resources and definitions -->
+<xsl:import href="ApplicationResAndDefs.xsl"/>
+<!-- The main application unit with application class implementation -->
+<xsl:import href="ApplicationUnit.xsl"/>
+<!-- The database implementation -->
 <xsl:import href="Engine.xsl"/>
 
 <!-- Template to create formular implementation code per formular definition 
