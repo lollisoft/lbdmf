@@ -331,11 +331,6 @@ Procedure TMainWindow.show<xsl:value-of select="$FormularName"/>;
 Var ADialog : P<xsl:value-of select="$FormularName"/>Dialog;
 Var ReturnValue : Integer;
 Begin
-  {
-  MessageBox(HWindow, '<xsl:value-of select="$FormularName"/>', '<xsl:value-of select="$ApplicationName"/>', mb_Ok);
-  ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init(@Self, 'DIALOG_<xsl:value-of select="$FormularName"/>'));
-  ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init);
-  }
   ADialog := New(P<xsl:value-of select="$FormularName"/>Dialog, Init(@Self));
   ReturnValue := Application^.ExecDialog(ADialog);
 End;
@@ -441,7 +436,6 @@ Implementation
 </xsl:variable>
 constructor T<xsl:value-of select="$FormularName"/>Dialog.Init(AParent: PWindowsObject);
 begin
-  {inherited Init(@self, 'DIALOG_<xsl:value-of select="$FormularName"/>');}
   inherited Init(AParent, 'DIALOG_<xsl:value-of select="$FormularName"/>');
 end;
 
