@@ -20,6 +20,10 @@ export prefix=$1
 
 export VERSION=1.3.5
 
+# Move to have same relative directory structure
+mkdir wxWrapper.app/Contents/Library
+mv wxWrapper.app/Contents/Frameworks wxWrapper.app/Contents/Library
+
 cp ../../../Database/*.sql wxWrapper.app/Contents/Resources
 cp splash.png wxWrapper.app/Contents/Resources
 
