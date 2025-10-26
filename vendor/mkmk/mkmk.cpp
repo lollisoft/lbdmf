@@ -12,11 +12,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.114.2.40 $
+ * $Revision: 1.114.2.41 $
  * $Name:  $
- * $Id: mkmk.cpp,v 1.114.2.40 2025/04/05 16:16:40 lothar Exp $
+ * $Id: mkmk.cpp,v 1.114.2.41 2025/10/26 15:23:31 lothar Exp $
  *
  * $Log: mkmk.cpp,v $
+ * Revision 1.114.2.41  2025/10/26 15:23:31  lothar
+ * Adapted makefile creation for mac(relative path's)
+ *
  * Revision 1.114.2.40  2025/04/05 16:16:40  lothar
  * This file seems to clash with HEAD bransh when migrating to git.
  * So update it in the bransh to probably fix this. Why does the
@@ -2481,7 +2484,7 @@ void write_wx_framework_Target(char* modulename) {
         
         change_install_names(true);
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).        
-        printf("\t\t$(CC) $(LDFLAGS) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
+        printf("\t\t$(CC) $(LDFLAGS) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Library/Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) `wx-config --libs` -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
         
         change_install_names(false);
         
@@ -2575,7 +2578,7 @@ void write_framework_Target(char* modulename) {
         
         change_install_names(true);
 //\todo Rewrite to be more convient to make system (begun with LDFLAGS).        
-        printf("\t\t$(CC) $(LDFLAGS) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
+        printf("\t\t$(CC) $(LDFLAGS) -dynamiclib -W1,-single_module -compatibility_version 1 -current_version 1 -install_name \"@executable_path/../Library/Frameworks/%s.framework/Versions/A/%s\" -seg1addr 0xb0000000 $(OBJS) $(OBJDEP) -o $(PROGRAM).framework/Versions/A/$(PROGRAM) $(VENDORLIBS)\n", modulename, modulename);
         
         change_install_names(false);
         
@@ -2589,6 +2592,7 @@ void write_framework_Target(char* modulename) {
   printf("\t\tchmod +x mkLinks.sh\n");
   printf("\t\t./mkLinks.sh");
   printf("\t\trm mkLinks.sh\n");
+  printf("\t\tinstall_name_tool -add_rpath ~/Library/Frameworks %s.framework/Versions/A/%s\n", modulename, modulename);
 
 
 #undef UNIX
@@ -2708,7 +2712,7 @@ void ShowHelp(int argc, char *argv[])
 
   fprintf(stderr, "Enhanced by Lothar Behrens (lothar.behrens@lollisoft.de)\n\n");
 
-  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.40 $\n");
+  fprintf(stderr, "MKMK: makefile generator $Revision: 1.114.2.41 $\n");
   fprintf(stderr, "Usage: MKMK lib|exe|dll|so modulname includepath,[includepath,...] file1 [file2 file3...]\n");
 
   fprintf(stderr, "Your parameters are: ");
