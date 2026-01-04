@@ -1,0 +1,184 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<XMI xmi.version="1.2" xmlns:UML="org.omg.xmi.namespace.UML">
+<XMI.header>
+	<XMI.documentation>
+		<XMI.exporter>Bouml</XMI.exporter>
+		<XMI.exporterVersion>1.4.6</XMI.exporterVersion>
+	</XMI.documentation>
+	<XMI.metamodel XMI.name="UML" XMI.version="1.4"/>
+</XMI.header>
+<XMI.content>
+	<UML:Model name="MusicAttributeCatalog" xmi.id="BOUML_0x20a19b0">
+		<UML:Namespace.ownedElement>
+			<UML:Package xmi.id="BOUML_0x20a16e0" name ="MusicAttributeCatalog">
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="ProductVersion" value="1.0.0.0"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingProductCode" value="78056379-D0A1-4761-AE24-6C524717844B"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingService" value="generate"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingUpgradeCode" value="A8D3B198-EED5-4EE9-AD0B-16BC5B53E2B9"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingNamespaceName" value="Lollisoft"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingProductName" value="Lollisoft Logging Service"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="DataStoreBaseAddress" value="net.tcp://cloud.lollisoft.de:49381"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingStrategy" value="server"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="UpgradeCode" value="CB62682A-0913-4CB5-9A25-8F128C270B86"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingManufacturerName" value="Lollisoft Software Development"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="StsBaseAddress" value="net.tcp://cloud.lollisoft.de:8000"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingProductVersion" value="1.0.0.0"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="ProductCode" value="3835BA80-B3FA-4C70-8673-8919F2CE268A"/>
+				</UML:ModelElement.taggedValue>
+				<UML:ModelElement.taggedValue>
+					<UML:TaggedValue tag="LoggingImplementation" value="client"/>
+				</UML:ModelElement.taggedValue>
+				<UML:Namespace.ownedElement>
+					<UML:Class name="MusicalAttribute" xmi.id="BOUML_0x20a1460" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x20a1230" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Value" xmi.id="BOUML_0x20a1180" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Name)" xmi.id="BOUML_0x20a10c0">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x20a13c0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x20a13c0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x20a1460">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x20a1460"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Association name="(Name)" xmi.id="BOUML_0x20a2f40">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x20a1320">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x20a1320"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x20a1460">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x20a1460"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="MusicalGenre" xmi.id="BOUML_0x20a13c0" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x20a2d10" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+					<UML:Association name="(Name)" xmi.id="BOUML_0x20a2c50">
+						<UML:Association.connection>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="none" isOrdered="false" isNavigable="true" type="BOUML_0x20a1320">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x20a1320"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+							<UML:AssociationEnd visibility="private" ownerScope="instance" name="" aggregation="aggregate" isOrdered="false" isNavigable="true" type="BOUML_0x20a13c0">
+								<UML:AssociationEnd.participant>
+									<UML:Class xmi.idref="BOUML_0x20a13c0"/>
+								</UML:AssociationEnd.participant>
+								<UML:ModelElement.stereotype>
+									<UML:Stereotype name="masterdetail_action"/>
+								</UML:ModelElement.stereotype>
+								<UML:ModelElement.taggedValue>
+									<UML:TaggedValue tag="stereotype" value="masterdetail_action"/>
+								</UML:ModelElement.taggedValue>
+							</UML:AssociationEnd>
+						</UML:Association.connection>
+					</UML:Association>
+					<UML:Class name="MusicalGenreAttribute" xmi.id="BOUML_0x20a1320" visibility="public" isAbstract="false" isActive="false" >
+						<UML:Classifier.feature>
+							<UML:Attribute name="Name" xmi.id="BOUML_0x20a2ae0" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="Description" xmi.id="BOUML_0x20a2a30" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+							<UML:Attribute name="ExampleSong" xmi.id="BOUML_0x20a2980" visibility="private" ownerScope="instance">
+								<UML:StructuralFeature.type>
+									<UML:DataType xmi.idref="BOUML_datatype_0"/>
+								</UML:StructuralFeature.type>
+							</UML:Attribute>
+						</UML:Classifier.feature>
+					</UML:Class>
+				<!-- for pack MusicAttributeCatalog-->
+				</UML:Namespace.ownedElement>
+			</UML:Package>
+			<UML:DataType xmi.id="BOUML_datatype_0" name = "string" visibility="private" isRoot="false" isLeaf="false" isAbstract="false"/>
+		</UML:Namespace.ownedElement>
+	</UML:Model>
+</XMI.content>
+</XMI>
