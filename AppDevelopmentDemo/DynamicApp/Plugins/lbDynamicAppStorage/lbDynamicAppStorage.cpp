@@ -2147,7 +2147,7 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			_LOG << "Create database... (script is " << (const char*) result << ")" LOG_
 			sampleQuery->skipFKCollecting();
 			
-			if ((metaapp->getApplicationDatabaseBackend() != NULL) && (strcmp(metaapp->getApplicationDatabaseBackend(), "") == 0)) {
+			if ((metaapp->getApplicationDatabaseBackend() != NULL) && (strcmp(metaapp->getApplicationDatabaseBackend(), "PostgreSQL") == 0)) {
 				// Do an additional SQL command to create the PostgreSQL plsql handler, but ignore any failures
 				sampleQuery->query("CREATE OR REPLACE FUNCTION plpgsql_call_handler()"
 								   "RETURNS language_handler AS"
