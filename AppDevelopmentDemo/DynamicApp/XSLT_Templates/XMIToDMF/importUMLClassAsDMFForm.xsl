@@ -769,7 +769,7 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 
 <xsl:variable name="classname" select="@name"/>
 <xsl:variable name="classID" select="@xmi:id"/>
-exec "DropFormular"('<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of select="@name"/>');
+exec DropFormular '<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of select="@name"/>', @Success
 
 
 INSERT INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value"/>', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
@@ -990,6 +990,14 @@ UPDATE actions set name = '<xsl:value-of select="$ActionName"/>' where name = '<
     <xsl:param name="Property"/>
     <xsl:param name="FromFormularID"/>
     <xsl:param name="ToFormularID"/>
+	
+<xsl:variable name="ActionType" select="./xmi:Extension/stereotype/@name"/>
+<xsl:variable name="ActionName" select="//packagedElement[@xmi:type='uml:Association']/memberEnd[@xmi:idref=$Property]/../@name"/>
+<xsl:variable name="FromFormName" select="//packagedElement[@xmi:type='uml:Class'][@xmi:id=$FromFormularID]/@name"/>
+
+-- Create SQLSERVER based action
+-- Select action type ActionType: <xsl:value-of select="$ActionType"/>, Property: '<xsl:value-of select="$Property"/>'.
+	
 <xsl:variable name="IsMasterDetail"><xsl:value-of select="//lbDMF:masterdetail_action[@base_Element=$Property]/@base_Element"/></xsl:variable>
 <xsl:variable name="IsDetailMaster"><xsl:value-of select="//lbDMF:detailmaster_action[@base_Element=$Property]/@base_Element"/></xsl:variable>
 -- Select action type IsMasterDetail: <xsl:value-of select="$IsMasterDetail"/>, IsDetailMaster: <xsl:value-of select="$IsDetailMaster"/>

@@ -86,8 +86,6 @@
 <xsl:value-of select="$activity"/></xsl:template>
 
 	<xsl:template match="/">
--- Speedup many times
-BEGIN TRANSACTION;
 
 -- Params XSLDatabaseBackendSystem: <xsl:value-of select="$XSLDatabaseBackendSystem"/>
 -- Params XSLDatabaseBackendApplication: <xsl:value-of select="$XSLDatabaseBackendApplication"/>
@@ -98,6 +96,9 @@ BEGIN TRANSACTION;
 --
 	
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
+-- Speedup many times
+BEGIN TRANSACTION;
+
 SET SESSION AUTHORIZATION 'postgres';
 
 CREATE OR REPLACE FUNCTION plpgsql_call_handler()
@@ -190,6 +191,9 @@ end;
   LANGUAGE 'plpgsql' VOLATILE;
 </xsl:if>
 <xsl:if test="$TargetDBType = 'MSSQL'">
+IF OBJECT_ID('lbDMF_DropTable', 'P') IS NOT NULL
+    DROP PROCEDURE lbDMF_DropTable;
+GO
 CREATE PROCEDURE lbDMF_DropTable @Table VARCHAR(50)
 AS
 BEGIN
@@ -210,9 +214,11 @@ BEGIN
 	
 	DEALLOCATE hSqlProc
 END
-
 GO
 
+IF OBJECT_ID('lbDMF_DropProc', 'P') IS NOT NULL
+    DROP PROCEDURE lbDMF_DropProc;
+GO
 CREATE  PROCEDURE lbDMF_DropProc @Proc VARCHAR(50)
 AS
 BEGIN
@@ -234,9 +240,11 @@ BEGIN
 	
 	DEALLOCATE hSqlProc
 END
-
 GO
 
+IF OBJECT_ID('lbDMF_DropConstraint', 'P') IS NOT NULL
+    DROP PROCEDURE lbDMF_DropConstraint;
+GO
 CREATE  PROCEDURE lbDMF_DropConstraint @Name VARCHAR(50)
 AS
 BEGIN
@@ -244,7 +252,7 @@ BEGIN
 	DECLARE hSqlProc CURSOR LOCAL FOR
 		SELECT 'DROP CONSTRAINT ' + pr.name
 		FROM sysobjects pr
-		WHERE pr.xtype IN ('F) AND upper(pr.name) = upper(@Name)
+		WHERE pr.xtype IN ('F') AND upper(pr.name) = upper(@Name)
 		
 	OPEN hSqlProc
 	FETCH hSqlProc INTO @Statement
@@ -257,8 +265,11 @@ BEGIN
 	
 	DEALLOCATE hSqlProc
 END
-
 GO
+
+-- Speedup many times
+BEGIN TRANSACTION;
+
 </xsl:if>
 
 <!-- Generate SQL statements to drop tables before creating them -->
@@ -350,6 +361,8 @@ GO
 
 
 <xsl:if test="$TargetDBType = 'PostgreSQL'">
+-- Speedup many times
+BEGIN TRANSACTION;
 SET SESSION AUTHORIZATION 'dba';
 </xsl:if>	
 	
