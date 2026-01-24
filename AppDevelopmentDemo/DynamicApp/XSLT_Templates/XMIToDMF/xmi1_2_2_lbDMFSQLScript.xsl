@@ -367,7 +367,223 @@ insert into anwendungen_formulare (anwendungid, formularid) values(GetOrCreateAp
   </xsl:if>
 <xsl:if test="$TargetDBType = 'MSSQL'">
 
-select "DropFormular"('<xsl:value-of select="../../@name"/>', '<xsl:value-of select="@name"/>');
+DROP PROCEDURE DropProc
+GO
+
+CREATE PROCEDURE DropProc @Proc VARCHAR(50)
+AS
+BEGIN
+	DECLARE @Statement VARCHAR(200)
+	DECLARE hSqlProc CURSOR LOCAL FOR
+		SELECT 'DROP ' + case pr.xtype when 
+			'P' then 'PROCEDURE ' else 'FUNCTION ' end + pr.name
+		FROM sysobjects pr
+		WHERE pr.xtype IN ('P','FN','TF') AND upper(pr.name) = upper(@Proc)
+		
+	OPEN hSqlProc
+	FETCH hSqlProc INTO @Statement
+	WHILE (@@fetch_status = 0)
+		BEGIN
+			EXECUTE (@Statement)
+			FETCH hSqlProc INTO @Statement
+		END
+	CLOSE hSqlProc
+	
+	DEALLOCATE hSqlProc
+END
+GO
+
+CREATE PROCEDURE GetOrCreateApplication
+    @FNName NVARCHAR(100),
+    @applicationid INT OUTPUT -- Output variable to return the ID
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @uid INT;
+    DECLARE @applicationname NVARCHAR(100) = @FNName;
+
+    -- 1. Check if application already exists
+    SELECT @applicationid = id 
+    FROM anwendungen 
+    WHERE name = @applicationname;
+
+    -- 2. If it exists, exit early
+    IF @applicationid IS NOT NULL
+        RETURN;
+
+    -- 3. If not found, insert new application
+    -- SQL Server uses '+' for concatenation instead of '||'
+    INSERT INTO anwendungen (name, titel, modulename, functor, interface) 
+    VALUES (@applicationname, 'Application ' + @applicationname, 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
+
+    -- Get the ID of the record just inserted
+    SET @applicationid = SCOPE_IDENTITY();
+
+    -- 4. Check for user presence
+    SELECT @uid = id FROM users WHERE userid = 'user';
+
+    IF @uid IS NULL
+    BEGIN
+        -- Insert User and default configuration
+        INSERT INTO users (userid, passwort, lastapp) 
+        VALUES ('user', 'TestUser', (SELECT TOP 1 id FROM anwendungen WHERE name = 'lbDMF Manager'));
+
+        INSERT INTO formulartypen (handlerinterface, namespace, handlermodule, handlerfunctor, beschreibung) 
+        VALUES ('lb_I_DatabaseForm','','-','','Dynamisch aufgebautes Datenbankformular');
+
+        -- Bulk insert action types
+        INSERT INTO action_types (bezeichnung, action_handler, module) VALUES 
+        ('Buttonpress', '', ''),
+        ('SQL query', 'instanceOflbSQLQueryAction', 'lbDatabaseForm'),
+        ('Open form', 'instanceOflbFormAction', 'lbDatabaseForm'),
+        ('Open detail form', 'instanceOflbDetailFormAction', 'lbDatabaseForm'),
+        ('Open master form', 'instanceOflbMasterFormAction', 'lbDatabaseForm'),
+        ('Open Database Report', 'instanceOflbDBReportAction', 'lbDatabaseReport'),
+        ('Perform XSLT transformation', 'instanceOflbDMFXslt', 'lbDMFXslt');
+    END
+
+    -- 5. Final setup for the new application
+    INSERT INTO user_anwendungen (userid, anwendungenid) VALUES (1, @applicationid);
+    
+    INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) VALUES
+    ('DBUser', 'dba', @applicationid),
+    ('DBPass', 'trainres', @applicationid);
+
+    IF @applicationname = 'lbDMF Manager'
+        INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) 
+        VALUES ('DBName', 'lbDMF', @applicationid);
+    ELSE
+        INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) 
+        VALUES ('DBName', 'lbDMF Manager', @applicationid);
+
+END
+GO
+
+CREATE PROCEDURE GetOrCreateActionType
+    @TypeName NVARCHAR(255),
+    @ActionID INT OUTPUT -- Used to return the ID to the caller
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- 1. Try to find the existing action type
+    SELECT @ActionID = id 
+    FROM action_types 
+    WHERE module = @TypeName 
+      AND action_handler = 'instanceOf' + @TypeName;
+
+    -- 2. If it does not exist, create it
+    IF @ActionID IS NULL
+    BEGIN
+        INSERT INTO action_types (bezeichnung, module, action_handler) 
+        VALUES ('Action of type ' + @TypeName, @TypeName, 'instanceOf' + @TypeName);
+
+        -- 3. Retrieve the ID of the row just inserted
+        SET @ActionID = SCOPE_IDENTITY();
+    END
+
+    -- The ID is now stored in the @ActionID output variable
+END
+GO
+
+CREATE PROCEDURE ConnectActionToFormular
+    @Action NVARCHAR(255),
+    @Formular NVARCHAR(255), -- Note: This parameter was unused in your source logic
+    @ActionID INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- 1. Attempt to find the existing action type
+    -- SQL Server uses '+' for string concatenation
+    SELECT @ActionID = id 
+    FROM action_types 
+    WHERE module = @Action 
+      AND action_handler = 'instanceOf' + @Action;
+
+    -- 2. If not found, perform the insert
+    IF @ActionID IS NULL
+    BEGIN
+        INSERT INTO action_types (bezeichnung, module, action_handler) 
+        VALUES ('Action of type ' + @Action, @Action, 'instanceOf' + @Action);
+
+        -- 3. Get the new ID using SCOPE_IDENTITY() instead of recursion
+        SET @ActionID = SCOPE_IDENTITY();
+    END
+
+    -- Return the ID to the caller via the OUTPUT parameter
+END
+GO
+
+CREATE PROCEDURE DropFormular
+    @AppName NVARCHAR(255),
+    @FormName NVARCHAR(255),
+    @Success BIT OUTPUT -- Returns 1 for true, 0 for false
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET @Success = 0;
+
+    DECLARE @AppID INT;
+    DECLARE @FormID INT;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- 1. Identify IDs
+        SELECT @AppID = id FROM anwendungen WHERE name = @AppName;
+        SELECT @FormID = id FROM formulare WHERE name = @FormName AND anwendungid = @AppID;
+
+        -- 2. If IDs are found, proceed with deletions
+        IF @AppID IS NOT NULL AND @FormID IS NOT NULL
+        BEGIN
+            DELETE FROM formular_parameters WHERE formularid = @FormID;
+            DELETE FROM anwendungen_formulare WHERE anwendungid = @AppID AND formularid = @FormID;
+            DELETE FROM formular_actions WHERE formular = @FormID;
+            DELETE FROM formulare WHERE anwendungid = @AppID AND id = @FormID;
+
+            SET @Success = 1; -- Equivalent to returning true
+        END
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        SET @Success = 0;
+        -- Optional: THROW; -- Re-throw error to the calling application
+    END CATCH
+END
+GO
+
+CREATE FUNCTION GetFormularId (
+    @applicationid INT,
+    @applicationname NVARCHAR(255)
+)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @formularid INT;
+
+    SELECT @formularid = id 
+    FROM formulare 
+    WHERE anwendungid = @applicationid 
+      AND name = @applicationname;
+
+    RETURN @formularid;
+END
+GO
+
+declare @Success bit
+declare @applicationid int
+
+exec GetOrCreateApplication '<xsl:value-of select="../../@name"/>', @applicationid
+
+-- Hack
+DELETE FROM [actions]
+
+
+exec DropFormular '<xsl:value-of select="../../@name"/>', '<xsl:value-of select="@name"/>', @applicationid
 
 insert into formulare (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ)
 	values ('<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', 'style.png', GetOrCreateApplication('<xsl:value-of select="../../@name"/>'), 1);
@@ -428,7 +644,7 @@ insert into column_types (name, tablename, specialcolumn, controltype) values ('
 
 <xsl:variable name="parameters" select="./UML:BehavioralFeature.parameter/@name"/>
 
-insert into "action_types" (bezeichnung) values ('Validator');
+insert into action_types (bezeichnung) values ('Validator');
 
 insert into actions (name, typ, source) values ('<xsl:value-of select="@name"/>', (select id from action_types where bezeichnung = 'Validator'), '<xsl:value-of select="$parameters"/>');	
 

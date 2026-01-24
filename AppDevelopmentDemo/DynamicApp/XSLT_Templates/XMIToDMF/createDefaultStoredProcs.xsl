@@ -32,6 +32,7 @@
 <xsl:template name="log_message">
     <xsl:param name="Message"/>
     <xsl:param name="ApplicationName"/>
+	<xsl:param name="TargetDatabaseType"/>
 
 UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || '<xsl:value-of select="$Message"/>') where name = '<xsl:value-of select="$ApplicationName"/>';
 	
@@ -40,16 +41,54 @@ UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' a
 <xsl:template name="log_error">
     <xsl:param name="Message"/>
     <xsl:param name="ApplicationName"/>
+	<xsl:param name="TargetDatabaseType"/>
 
+	<xsl:choose>
+		<xsl:when test="$TargetDatabaseType='PostgreSQL'">
+UPDATE "anwendungen" 
+SET "model_complete" = 0, 
+    "model_errors" = COALESCE("model_errors", '') || CHR(10) || '<xsl:value-of select="$Message"/>'
+WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
+		</xsl:when>
+		<xsl:when test="$TargetDatabaseType='Sqlite'">
 UPDATE "anwendungen" SET "model_complete" = 0, "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || '<xsl:value-of select="$Message"/>') where name = '<xsl:value-of select="$ApplicationName"/>';
+		</xsl:when>
+		<xsl:when test="$TargetDatabaseType='MSSQL'">
+UPDATE anwendungen 
+SET model_complete = 0, 
+    model_errors = ISNULL(model_errors, '') + CHAR(10) + '<xsl:value-of select="$Message"/>'
+WHERE name = '<xsl:value-of select="$ApplicationName"/>';
+		</xsl:when>
+	</xsl:choose>
+	
 	
 </xsl:template>
 
 <xsl:template name="log_message_finish">
     <xsl:param name="Message"/>
     <xsl:param name="ApplicationName"/>
+	<xsl:param name="TargetDatabaseType"/>
 
+	<xsl:choose>
+		<xsl:when test="$TargetDatabaseType='PostgreSQL'">
+UPDATE "anwendungen" 
+SET "model_errors" = COALESCE("model_errors", '') || CHR(10) || '<xsl:value-of select="$Message"/>' || CHR(0)
+WHERE "name" = '<xsl:value-of select="$ApplicationName"/>';
+		</xsl:when>
+		<xsl:when test="$TargetDatabaseType='Sqlite'">
 UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' as TEXT) || '<xsl:value-of select="$Message"/>' || cast(X'00' as TEXT)) where name = '<xsl:value-of select="$ApplicationName"/>';
+		</xsl:when>
+		<xsl:when test="$TargetDatabaseType='MSSQL'">
+UPDATE anwendungen
+SET model_errors = ISNULL(model_errors, '') 
+                 + CHAR(10) 
+                 + '<xsl:value-of select="$Message"/>' 
+                 + CHAR(0)
+WHERE name = '<xsl:value-of select="$ApplicationName"/>';
+		</xsl:when>
+	</xsl:choose>
+	
+	
 	
 </xsl:template>
 
@@ -62,7 +101,6 @@ UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' a
 	<xsl:param name="database_name"/>
 	<xsl:param name="database_user"/>
 	<xsl:param name="database_pass"/>
-
 	<xsl:choose>
 		<xsl:when test="$TargetDatabaseType='PostgreSQL'">
 -- Create default stored procedures for <xsl:value-of select="$TargetDatabaseType"/>. Version ignored.
@@ -411,6 +449,9 @@ drop table tempactions;
 		</xsl:when>
 		<xsl:when test="$TargetDatabaseType='MSSQL'">
 -- Create default stored procedures for <xsl:value-of select="$TargetDatabaseType"/>. Version ignored.
+IF OBJECT_ID('DropTable', 'P') IS NOT NULL
+    DROP PROCEDURE DropTable;
+GO
 
 CREATE PROCEDURE DropTable @Table VARCHAR(50)
 AS
@@ -419,7 +460,7 @@ BEGIN
 	DECLARE hSqlProc CURSOR LOCAL FOR
 		SELECT 'DROP TABLE ' + pr.name
 		FROM sysobjects pr
-		WHERE pr.xtype IN ('U') AND upper(pr.name) = upper(@Proc)
+		WHERE pr.xtype IN ('U') AND upper(pr.name) = upper(@Table)
 		
 	OPEN hSqlProc
 	FETCH hSqlProc INTO @Statement
@@ -432,7 +473,10 @@ BEGIN
 	
 	DEALLOCATE hSqlProc
 END
+GO
 
+IF OBJECT_ID('DropProc', 'P') IS NOT NULL
+    DROP PROCEDURE DropProc;
 GO
 
 CREATE  PROCEDURE DropProc @Proc VARCHAR(50)
@@ -456,7 +500,10 @@ BEGIN
 	
 	DEALLOCATE hSqlProc
 END
+GO
 
+IF OBJECT_ID('createapplication', 'P') IS NOT NULL
+    DROP PROCEDURE createapplication;
 GO
 
 CREATE  PROC createapplication(@FNName varchar) AS
@@ -504,9 +551,11 @@ BEGIN
 	end
   end
 end
-
 GO
 
+IF OBJECT_ID('getapplication', 'P') IS NOT NULL
+    DROP PROCEDURE getapplication;
+GO
 
 CREATE PROC getapplication(@FNName varchar) AS
 BEGIN
@@ -527,9 +576,52 @@ BEGIN
   set @applicationid = ('exec getapplication ' + @FNName)
   Select @applicationid
 end
-
 GO
 
+IF OBJECT_ID('DropFormular', 'P') IS NOT NULL
+    DROP PROCEDURE DropFormular;
+GO
+
+CREATE PROCEDURE DropFormular
+    @appname NVARCHAR(255),
+    @formname NVARCHAR(255),
+    @success BIT OUTPUT -- Returns 1 for true, 0 for false
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @appid INT;
+    DECLARE @formid INT;
+
+    -- 1. Look up the IDs
+    SELECT @appid = id FROM anwendungen WHERE name = @appname;
+    SELECT @formid = id FROM formulare WHERE name = @formname AND anwendungid = @appid;
+
+    -- 2. Exit early if either ID is missing
+    IF @appid IS NULL OR @formid IS NULL
+    BEGIN
+        SET @success = 0;
+        RETURN;
+    END
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- 3. Perform deletions in order of dependency
+        DELETE FROM formular_parameters WHERE formularid = @formid;
+        DELETE FROM anwendungen_formulare WHERE anwendungid = @appid AND formularid = @formid;
+        DELETE FROM formular_actions WHERE formular = @formid;
+        DELETE FROM formulare WHERE anwendungid = @appid AND id = @formid;
+
+        COMMIT TRANSACTION;
+        SET @success = 1;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        SET @success = 0;
+        -- Optional: THROW; 
+    END CATCH
+END;
+GO
 
 /*
 CREATE FUNCTION getorcreateactiontype(varchar)
