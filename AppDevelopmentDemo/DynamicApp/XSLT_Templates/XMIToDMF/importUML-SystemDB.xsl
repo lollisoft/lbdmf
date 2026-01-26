@@ -129,6 +129,8 @@ so unclear if that tenplate is XMI version agnostic.
 		
 declare @Success bit	
 
+exec getorcreateapplication '<xsl:value-of select="$AppName"/>'
+
 	</xsl:when>
 </xsl:choose>
 		

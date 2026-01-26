@@ -507,53 +507,7 @@ GO
 IF OBJECT_ID('getorcreateapplication', 'P') IS NOT NULL
     DROP PROCEDURE getorcreateapplication;
 GO
-<!--
-CREATE  PROC createapplication(@FNName varchar) AS
-BEGIN
-  declare @applicationid int;
-  declare @uid int;
-  declare @applicationname char(100);
 
-  set @applicationname = @FNName;
-  set @applicationid = (select id from anwendungen where name = @applicationname);
-  if @applicationid is null
-  begin
-	insert into anwendungen 
-	(name, titel, modulename, functor, interface) values(@applicationname, 'Application ' + @applicationname, 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
-	set @uid = (select id from users where userid = 'user')
-	if @uid is null 
-    begin
-		declare @appid as int
-		set @appid = (select id FROM "anwendungen" WHERE "name" = 'lbDMF Manager');
-		INSERT INTO "users" (userid, passwort, lastapp) values ('user', 'TestUser', @appid);
-		INSERT INTO "formulartypen" ("handlerinterface", "namespace", "handlermodule", "handlerfunctor", "beschreibung") VALUES ('lb_I_DatabaseForm','','-','','Dynamisch aufgebautes Datenbankformular');
-		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Buttonpress', '', '');
-		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('SQL query', 'instanceOflbSQLQueryAction', 'lbDatabaseForm');
-		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open form', 'instanceOflbFormAction', 'lbDatabaseForm');
-		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open detail form', 'instanceOflbDetailFormAction', 'lbDatabaseForm');
-		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open master form', 'instanceOflbMasterFormAction', 'lbDatabaseForm');
-		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open Database Report', 'instanceOflbDBReportAction', 'lbDatabaseReport');
-		INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Perform XSLT transformation', 'instanceOflbDMFXslt', 'lbDMFXslt');
-    end
-
-
-	set @applicationid = getorcreateapplication(@applicationname);
-	insert into user_anwendungen (userid, anwendungenid) values (1, @applicationid);
-	if @applicationname = 'lbDMF Manager' 
-    begin
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBName', 'lbDMF', @applicationid);
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBUser', 'dba', @applicationid);
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBPass', 'trainres', @applicationid);
-	end
-	if @applicationname != 'lbDMF Manager' 
-    begin
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBName', '<xsl:value-of select="$database_name"/>', @applicationid);
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBUser', '<xsl:value-of select="$database_user"/>', @applicationid);
-		insert into anwendungs_parameter (parametername, parametervalue, anwendungid) values('DBPass', '<xsl:value-of select="$database_pass"/>', @applicationid);
-	end
-  end
-end
--->
 CREATE PROCEDURE getorcreateapplication
     @applicationname VARCHAR(255)
 AS
