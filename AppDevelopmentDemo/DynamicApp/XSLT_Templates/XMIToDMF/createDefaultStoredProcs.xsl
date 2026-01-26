@@ -101,6 +101,9 @@ WHERE name = '<xsl:value-of select="$ApplicationName"/>';
 	<xsl:param name="database_name"/>
 	<xsl:param name="database_user"/>
 	<xsl:param name="database_pass"/>
+
+-- Create default stored procedures for <xsl:value-of select="$TargetDatabaseType"/>. Version ignored.
+
 	<xsl:choose>
 		<xsl:when test="$TargetDatabaseType='PostgreSQL'">
 -- Create default stored procedures for <xsl:value-of select="$TargetDatabaseType"/>. Version ignored.
@@ -448,7 +451,6 @@ drop table tempactions;
 
 		</xsl:when>
 		<xsl:when test="$TargetDatabaseType='MSSQL'">
--- Create default stored procedures for <xsl:value-of select="$TargetDatabaseType"/>. Version ignored.
 IF OBJECT_ID('DropTable', 'P') IS NOT NULL
     DROP PROCEDURE DropTable;
 GO

@@ -158,6 +158,19 @@ BEGIN TRANSACTION;
 		</xsl:call-template>	
 
 </xsl:if>
+<xsl:if test="$TargetDBType = 'MSSQL'">
+
+		<xsl:call-template name="createDefaultStoredProcs">
+			<xsl:with-param name="ApplicationID" select="@xmi.id"/>
+			<xsl:with-param name="ApplicationName" select="@name"/>
+			<xsl:with-param name="TargetDatabaseType" select="$TargetDBType"/>
+			<xsl:with-param name="TargetDatabaseVersion" select="$TargetDBVersion"/>
+			<xsl:with-param name="database_name" select="$database_name"/>
+			<xsl:with-param name="database_user" select="$database_user"/>
+			<xsl:with-param name="database_pass" select="$database_pass"/>
+		</xsl:call-template>	
+
+</xsl:if>
 	
 -- Package: <xsl:value-of select="@name"/>
 -- Skip rewrite
