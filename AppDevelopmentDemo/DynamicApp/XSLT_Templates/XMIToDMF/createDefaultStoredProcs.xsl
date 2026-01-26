@@ -80,11 +80,11 @@ UPDATE "anwendungen" SET "model_errors" = (SELECT "model_errors" || cast(X'0A' a
 		</xsl:when>
 		<xsl:when test="$TargetDatabaseType='MSSQL'">
 UPDATE anwendungen
-SET model_errors = ISNULL(model_errors, '') 
-                 + CHAR(10) 
-                 + '<xsl:value-of select="$Message"/>' 
-                 + CHAR(0)
+SET model_errors = CONCAT(model_errors, CHAR(10), '<xsl:value-of select="$Message"/>')
 WHERE name = '<xsl:value-of select="$ApplicationName"/>';
+
+
+
 		</xsl:when>
 	</xsl:choose>
 	
@@ -504,10 +504,10 @@ BEGIN
 END
 GO
 
-IF OBJECT_ID('createapplication', 'P') IS NOT NULL
-    DROP PROCEDURE createapplication;
+IF OBJECT_ID('getorcreateapplication', 'P') IS NOT NULL
+    DROP PROCEDURE getorcreateapplication;
 GO
-
+<!--
 CREATE  PROC createapplication(@FNName varchar) AS
 BEGIN
   declare @applicationid int;
@@ -537,7 +537,7 @@ BEGIN
     end
 
 
-	--set @applicationid = getorcreateapplication(@applicationname);
+	set @applicationid = getorcreateapplication(@applicationname);
 	insert into user_anwendungen (userid, anwendungenid) values (1, @applicationid);
 	if @applicationname = 'lbDMF Manager' 
     begin
@@ -553,6 +553,84 @@ BEGIN
 	end
   end
 end
+-->
+CREATE PROCEDURE getorcreateapplication
+    @applicationname VARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DECLARE @applicationid INT;
+    DECLARE @uid INT;
+
+    -- 1. Check if application already exists
+    SELECT @applicationid = id 
+    FROM anwendungen 
+    WHERE name = @applicationname;
+
+    IF @applicationid IS NOT NULL
+    BEGIN
+        SELECT @applicationid AS Result;
+        RETURN @applicationid;
+    END
+
+    -- 2. Insert new application
+    -- SQL Server uses '+' for concatenation instead of '||'
+    INSERT INTO anwendungen (name, titel, modulename, functor, interface) 
+    VALUES (@applicationname, 'Application ' + @applicationname, 'lbDynApp', 'instanceOfApplication', 'lb_I_Application');
+
+    -- Get the ID of the record just inserted
+    SET @applicationid = SCOPE_IDENTITY();
+
+    -- 3. Check for 'user' and initialize default system data if missing
+    SELECT @uid = id FROM users WHERE userid = 'user';
+
+    IF @uid IS NULL
+    BEGIN
+        INSERT INTO "users" (userid, passwort, lastapp) 
+        VALUES ('user', 'TestUser', (SELECT id FROM "anwendungen" WHERE "name" = 'lbDMF Manager'));
+
+        SET @uid = SCOPE_IDENTITY();
+
+        INSERT INTO "formulartypen" ("handlerinterface", "namespace", "handlermodule", "handlerfunctor", "beschreibung") 
+        VALUES ('lb_I_DatabaseForm','','-','','Dynamisch aufgebautes Datenbankformular');
+
+        INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Buttonpress', '', '');
+        INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('SQL query', 'instanceOflbSQLQueryAction', 'lbWorkflowEngine');
+        INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open form', 'instanceOflbFormAction', 'lbDatabaseForm');
+        INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open detail form', 'instanceOflbDetailFormAction', 'lbWorkflowEngine');
+        INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open master form', 'instanceOflbMasterFormAction', 'lbWorkflowEngine');
+        INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('CreateReport', 'instanceOflbExecuteAction', 'lbDatabaseForm');
+        INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Open Database Report', 'instanceOflbDBReportAction', 'lbDatabaseReport');
+        INSERT INTO "action_types" (bezeichnung, action_handler, module) VALUES ('Perform XSLT transformation', 'instanceOflbDMFXslt', 'lbDMFXslt');
+        INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('FormValidator', '', '');
+        INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('InitialNode', '', '');
+        INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('SendSignalAction', 'instanceOflbSendSignalAction', 'lbDMFBasicActionSteps');
+        INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('DecisionNode', 'instanceOflbDecisionAction', 'lbDMFBasicActionSteps');
+        INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('OpaqueAction', 'instanceOflbOpAqueOperation', 'lbWorkflowEngine');
+        INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('FinalNode', '', '');
+    END
+
+    -- 4. Associate User with Application
+    INSERT INTO user_anwendungen (userid, anwendungenid) 
+    VALUES (@uid, @applicationid);
+
+    -- 5. Insert Parameters
+    IF @applicationname = 'lbDMF Manager'
+    BEGIN
+        INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) VALUES('DBName', 'lbDMF', @applicationid);
+        INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) VALUES('DBUser', 'dba', @applicationid);
+        INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) VALUES('DBPass', 'trainres', @applicationid);
+    END
+    ELSE
+    BEGIN
+        INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) VALUES('DBName', '<xsl:value-of select="$database_name"/>', @applicationid);
+        INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) VALUES('DBUser', '<xsl:value-of select="$database_user"/>', @applicationid);
+        INSERT INTO anwendungs_parameter (parametername, parametervalue, anwendungid) VALUES('DBPass', '<xsl:value-of select="$database_pass"/>', @applicationid);
+    END
+
+    SELECT @applicationid AS Result;
+    RETURN @applicationid;
+END;
 GO
 
 IF OBJECT_ID('getapplication', 'P') IS NOT NULL

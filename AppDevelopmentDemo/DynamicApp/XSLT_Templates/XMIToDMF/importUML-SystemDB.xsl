@@ -129,46 +129,6 @@ so unclear if that tenplate is XMI version agnostic.
 		
 declare @Success bit	
 
--- Bruteforce first
-
-exec lbDMF_dropTable 'formular_parameters';
-exec lbDMF_dropTable 'foreignkey_visibledata_mapping';
-exec lbDMF_dropTable 'column_types';
-exec lbDMF_dropTable 'codegentarget';
-exec lbDMF_dropTable 'applevel_plugin_registry';
-exec lbDMF_dropTable 'anwendungsberechtigungen';
-exec lbDMF_dropTable 'anwendungs_parameter';
-exec lbDMF_dropTable 'anwendungen_formulare';
-exec lbDMF_dropTable 'regressiontest';
-exec lbDMF_dropTable 'formularfields';
-exec lbDMF_dropTable 'formularfieldparameter';
-exec lbDMF_dropTable 'formulare';
-exec lbDMF_dropTable 'formulartypen';
-exec lbDMF_dropTable 'user_anwendungen';
-exec lbDMF_dropTable 'users';
-exec lbDMF_dropTable 'report_elements';
-exec lbDMF_dropTable 'report_element_types';
-exec lbDMF_dropTable 'report_parameters';
-exec lbDMF_dropTable 'report_texts';
-exec lbDMF_dropTable 'reports';
-exec lbDMF_dropTable 'translations';
-exec lbDMF_dropTable 'dbcolumn';
-exec lbDMF_dropTable 'dbtype';
-exec lbDMF_dropTable 'dbforeignkey';
-exec lbDMF_dropTable 'dbprimarykey';
-exec lbDMF_dropTable 'dbtable';
-exec lbDMF_dropTable 'anwendungen';
-exec lbDMF_dropTable 'UserFilter';
-exec lbDMF_dropTable 'dbtableparameter';
-exec lbDMF_dropTable 'dbcolumnparameter';
-exec lbDMF_dropTable 'action_step_parameter';
-exec lbDMF_dropTable 'action_step_transitions';
-exec lbDMF_dropTable 'action_types';
-exec lbDMF_dropTable 'action_steps';
-exec lbDMF_dropTable 'action_parameters';
-exec lbDMF_dropTable 'actions';
-exec lbDMF_dropTable 'formular_actions';
-
 	</xsl:when>
 </xsl:choose>
 		
