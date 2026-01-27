@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd $DEVROOT/Projects/CPP
+cd $DEVROOT/Projects/lbdmf
 
 cat > AppDevelopment/XSLT_Templates/XMIToDMF/XMISettings.xsl << EOF
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:exsl="http://exslt.org/common" extension-element-prefixes="exsl">
