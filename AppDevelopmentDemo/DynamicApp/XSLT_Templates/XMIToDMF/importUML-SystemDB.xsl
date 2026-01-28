@@ -351,7 +351,7 @@ COMMIT;
 	<xsl:when test="$TargetDBType='PostgreSQL'">
 INSERT INTO "action_types" ("bezeichnung", "action_handler", "module") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', 'instanceOflbAction', 'lbDatabaseForm');
 
-INSERT INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = '<xsl:value-of select="$TypeName"/>'), '<xsl:value-of select="./ownedParameter/@name"/>', '');
+INSERT INTO "actions" ("name", "typ", "source", "target") VALUES ('<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>', (select "id" from "action_types" where "bezeichnung" = '<xsl:value-of select="$TypeName"/>'), '<xsl:value-of select="./ownedParameter/@name"/>', '(select "id" from "anwendungen" where "name" = '<xsl:value-of select="$ApplicationName"/>')');
 
 INSERT INTO "formular_actions" ("formular", "action", "event") VALUES ((select "id" from "formulare" where "name" = '<xsl:value-of select="$FormName"/>'), (select "id" from "actions" where "name" = '<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>'), 'event<xsl:value-of select="$Name"/>_<xsl:value-of select="$ID"/>_<xsl:value-of select="$TypeName"/>');
 	</xsl:when>
