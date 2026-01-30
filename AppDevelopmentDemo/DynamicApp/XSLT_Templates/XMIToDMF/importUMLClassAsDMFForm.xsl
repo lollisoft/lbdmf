@@ -841,8 +841,12 @@ insert into anwendungen_formulare (anwendungid, formularid) values(getorcreateap
 <xsl:variable name="classID" select="@xmi:id"/>
 exec DropFormular '<xsl:value-of select="$ApplicationName"/>', '<xsl:value-of select="@name"/>', @Success
 
+<xsl:variable name="ToolbarImageName">
+<xsl:if test="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value"/></xsl:if>
+<xsl:if test="./xmi:Extension/taggedValue[@tag='lbDMF:toolbarimagefile']/@value!=''"><xsl:value-of select="./xmi:Extension/taggedValue[@tag='lbDMF:toolbarimagefile']/@value"/></xsl:if>
+</xsl:variable>
 
-INSERT INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="./xmi:Extension/taggedValue[@tag='toolbarimage']/@value"/>', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
+INSERT INTO "formulare" (name, menuname, eventname, menuhilfe, toolbarimage, anwendungid, typ) select '<xsl:value-of select="@name"/>', '<xsl:value-of select="@name"/> verwalten', 'manage<xsl:value-of select="@name"/>', 'Edit data of <xsl:value-of select="@name"/>', '<xsl:value-of select="$ToolbarImageName"/>', id, 1 FROM "anwendungen" where name = 'lbDMF Manager';
 <!--
 <xsl:for-each select="./ownedAttribute[@xmi:type='uml:Property']/type[@xmi:idref='BOUML_datatype_ForeignKey']">
 <xsl:call-template name="buildMSSQLVisibleFieldMapping">
