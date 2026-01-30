@@ -958,7 +958,7 @@ ALTER TABLE "<xsl:value-of select="//packagedElement[@xmi:id=$primaryTableID]/@n
 			<xsl:when test="$backendType='boolean'">BIT</xsl:when>
 			<xsl:when test="$backendType='float'">float</xsl:when>
 			<xsl:when test="$backendType='int'"><xsl:variable name="primaryKey" select="./xmi:Extension/stereotype[@name='lbDMF:pk']/../../@name"/><xsl:choose><xsl:when test="$primaryKey!=''">INTEGER IDENTITY (1, 1) NOT NULL</xsl:when><xsl:otherwise>INTEGER</xsl:otherwise></xsl:choose></xsl:when>
-			<xsl:when test="$backendType='string'">char(255)</xsl:when>
+			<xsl:when test="$backendType='string'">nvarchar(255)</xsl:when>
 			<xsl:when test="$backendType='bigstring'">TEXT</xsl:when>
 			<xsl:when test="$backendType='richtext'">TEXT</xsl:when>
 			<xsl:when test="$backendType='image'">TEXT</xsl:when>
