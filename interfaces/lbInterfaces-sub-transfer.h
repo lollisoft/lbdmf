@@ -111,7 +111,7 @@ public:
 
         virtual lbErrCodes LB_STDCALL requestString(char* ident, char*& data) = 0;
 
-        virtual lbErrCodes LB_STDCALL requestString(char* ident) = 0;
+        virtual lbErrCodes LB_STDCALL requestProtocolName(char* ident) = 0;
 
         virtual lbErrCodes LB_STDCALL requestInteger(char* ident, int& data) = 0;
 
@@ -124,26 +124,26 @@ public:
          * Data member operations
          */
 
-        virtual void LB_STDCALL add(int i) = 0;
-        virtual void LB_STDCALL add(const char* c) = 0;
-        virtual void LB_STDCALL add(short s) = 0;
-        virtual void LB_STDCALL add(long l) = 0;
-        virtual void LB_STDCALL add(unsigned short us) = 0;
-        virtual void LB_STDCALL add(unsigned int ui) = 0;
-        virtual void LB_STDCALL add(unsigned long ul) = 0;
-        virtual void LB_STDCALL add(const void* buf, int len) = 0;
+        virtual void LB_STDCALL addInt(int i) = 0;
+        virtual void LB_STDCALL addString(const char* c) = 0;
+        virtual void LB_STDCALL addShort(short s) = 0;
+        virtual void LB_STDCALL addLong(long l) = 0;
+        virtual void LB_STDCALL addUShort(unsigned short us) = 0;
+        virtual void LB_STDCALL addUInt(unsigned int ui) = 0;
+        virtual void LB_STDCALL addULong(unsigned long ul) = 0;
+        virtual void LB_STDCALL addBuffer(const void* buf, int len) = 0;
 /*...e*/
 
 /*...ssimple getters:8:*/
-        virtual lbErrCodes LB_STDCALL get(int& i) = 0;
-        virtual lbErrCodes LB_STDCALL get(char* & c) = 0;
-        virtual lbErrCodes LB_STDCALL get(short & s) = 0;
-        virtual lbErrCodes LB_STDCALL get(long & l) = 0;
-        virtual lbErrCodes LB_STDCALL get(unsigned short & us) = 0;
-        virtual lbErrCodes LB_STDCALL get(unsigned int & ui) = 0;
-        virtual lbErrCodes LB_STDCALL get(unsigned long & ul) = 0;
+        virtual lbErrCodes LB_STDCALL getInt(int& i) = 0;
+        virtual lbErrCodes LB_STDCALL getString(char* & c) = 0;
+        virtual lbErrCodes LB_STDCALL getShort(short & s) = 0;
+        virtual lbErrCodes LB_STDCALL getLong(long & l) = 0;
+        virtual lbErrCodes LB_STDCALL getUShort(unsigned short & us) = 0;
+        virtual lbErrCodes LB_STDCALL getUInt(unsigned int & ui) = 0;
+        virtual lbErrCodes LB_STDCALL getULong(unsigned long & ul) = 0;
 
-        virtual lbErrCodes LB_STDCALL get(void* & v, int & len) = 0;
+        virtual lbErrCodes LB_STDCALL getBuffer(void* & v, int & len) = 0;
 /*...e*/
         
         /**

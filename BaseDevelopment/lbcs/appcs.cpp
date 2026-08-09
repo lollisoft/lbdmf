@@ -503,7 +503,7 @@ lbErrCodes err = ERR_NONE;
          * other thread using one request->
          */
         char* buffer = NULL;
-        if (request->get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+        if (request->getString(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
                 return ERR_APP_SERVER_REQUEST_CHAR;
         } else {
 
@@ -860,7 +860,7 @@ lbErrCodes err = ERR_NONE;
          * other thread using one request->
          */
         char* buffer = NULL;
-        if (request->get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+        if (request->getString(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
                 return ERR_APP_SERVER_REQUEST_CHAR;
         } else {
 
@@ -1283,7 +1283,7 @@ void LB_STDCALL lbAppServer::run(const char* server, const char* service) {
 
         if (server != NULL && service != NULL) {
                 UAP_REQUEST(getModuleInstance(), lb_I_String, serverAddress)
-                serverAddress->setData("servername/servicename");
+                serverAddress->setString("servername/servicename");
                 serverAddress->replace("servername", server);
                 serverAddress->replace("servicename", service);
                 if (transfer->init(serverAddress->charrep(), true) != ERR_NONE) {
@@ -1498,7 +1498,7 @@ lbErrCodes LB_STDCALL lbAppServer::dispatch(lb_I_Transfer_Data* request, lb_I_Tr
         }
         else {
                 char* buffer = NULL;
-                if (request->get(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
+                if (request->getString(buffer) == ERR_TRANSFER_DATA_INCORRECT_TYPE) {
                         return ERR_APP_SERVER_REQUEST_CHAR;
                 } else {
 
@@ -1674,8 +1674,8 @@ bool LB_STDCALL lbAppServer::isConnected(lb_I_Transfer_Data* request) {
 /*...slbAppServer\58\\58\makeProtoErrAnswer\40\\46\\46\\46\\41\:0:*/
 lbErrCodes lbAppServer::makeProtoErrAnswer(lb_I_Transfer_Data* result, char* msg, char* where) {
         char buf[100];
-        result->add("Error");
-        result->add(msg);
+        result->addString("Error");
+        result->addString(msg);
         
         sprintf(buf, "%s Cause: %s", where, msg);
         
@@ -1709,7 +1709,7 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 /*...e*/
 
 /*...srequest data:8:*/
-        if (request->requestString("Connect") != ERR_NONE) {
+        if (request->requestProtocolName("Connect") != ERR_NONE) {
                 result->makeProtoErrAnswer("Error: No Connect request", "lbAppServer::HandleConnect(...)");
                 return ERR_APP_SERVER_HANDLECONNECT;
         }
@@ -1751,9 +1751,9 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
 
         if (!connections->exists(&keybase)) {
                 _CL_LOG << "Connect client: " << keybase->charrep() LOG_
-                result->add("Accept");
-                result->add("InstanceName");
-                result->add("BusMaster");
+                result->addString("Accept");
+                result->addString("InstanceName");
+                result->addString("BusMaster");
                 
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, conn)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, param)
@@ -1775,14 +1775,14 @@ lbErrCodes LB_STDCALL lbAppServer::HandleConnect(lb_I_Transfer_Data* request, lb
                 connections->insert(&ukKey, &keybase);
                 
                 if (!connections->exists(&keybase)) {
-                        _CL_LOG << "Connecting client failed: " << keybase->charrep() LOG_
+                        _CL_LOGALWAYS << "Connecting client failed: " << keybase->charrep() LOG_
                 }
         } else {
                 //result->add("Deny");
                 //result->add("Already connected");
-                result->add("Accept");
-                result->add("InstanceName");
-                result->add("BusMaster");
+                result->addString("Accept");
+                result->addString("InstanceName");
+                result->addString("BusMaster");
                 _CL_LOG << "lbAppServer::HandleConnect(...) Error: Client "  << keybase->charrep() << " already connected!" LOG_
                 return ERR_APP_SERVER_HANDLECONNECT;
         }
@@ -1811,7 +1811,7 @@ lbErrCodes lbAppServer::HandleDisconnect(lb_I_Transfer_Data* request,
 */
 
 /*...srequest data:8:*/
-        if (request->requestString("Disconnect") != ERR_NONE) {
+        if (request->requestProtocolName("Disconnect") != ERR_NONE) {
                 _CL_LOG << "Disconnect missing" LOG_
                 result->makeProtoErrAnswer("Error: No Connect request", "lbAppServer::HandleConnect(...)");
                 return ERR_APP_SERVER_HANDLECONNECT;
@@ -1855,8 +1855,8 @@ lbErrCodes lbAppServer::HandleDisconnect(lb_I_Transfer_Data* request,
         *key += Tid->charrep();
 
         
-        result->add("Succeed");
-        result->add(clienthost);
+        result->addString("Succeed");
+        result->addString(clienthost);
         
         connections->remove(&kbKey);
         

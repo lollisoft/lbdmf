@@ -31,10 +31,18 @@
 /*...sRevision history:0:*/
 /************************************************************************************************************
  * $Locker:  $
- * $Revision: 1.58.2.4 $
+ * $Revision: 1.58.2.5 $
  * $Name:  $
- * $Id: lbobject.h,v 1.58.2.4 2025/04/12 10:54:06 lothar Exp $
+ * $Id: lbobject.h,v 1.58.2.5 2026/08/09 15:30:09 lothar Exp $
  * $Log: lbobject.h,v $
+ * Revision 1.58.2.5  2026/08/09 15:30:09  lothar
+ * Modifications that let me finally mix Watcom 11 and Visual C++ 6.0 compilers.
+ * Demonstrates integration attempts for the ApplicationBus to be provided by
+ * Visual C++ to enable integration of CORBA without the need to backport any
+ * CORBA solution into Watcom 11, what would be a bad decision. This way
+ * I smoothly can transition and use even old Watcom 11 code bases or Power++.
+ * And now it made sense to integrate my framework into Power++.
+ *
  * Revision 1.58.2.4  2025/04/12 10:54:06  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
@@ -410,43 +418,44 @@ class lbString : public lb_I_String
 {
 public:	
 
-	void LB_STDCALL trim(bool fromright = true);
-	void LB_STDCALL toLower();
+	virtual void LB_STDCALL trim(bool fromright = true);
+	virtual void LB_STDCALL toLower();
 
-	char* LB_STDCALL stristr(const char *String, const char *Pattern);
-	char* LB_STDCALL strristr(const char *String, const char *Pattern);
+	virtual char* LB_STDCALL stristr(const char *String, const char *Pattern);
+	virtual char* LB_STDCALL strristr(const char *String, const char *Pattern);
 
-	void LB_STDCALL setData(const char* p);
-	char* LB_STDCALL getData() const;
+	virtual void LB_STDCALL setString(const char* p);
+	virtual void LB_STDCALL appendString(const char* p);
+	virtual char* LB_STDCALL getData() const;
 
 // Interface definition (the order) must be equal to the deriving implementations declataion.
 //#define BREAK_MIXING_COMPILERS
 #ifdef BREAK_MIXING_COMPILERS
-	lb_I_String& LB_STDCALL operator += (const char* toAppend);
-	lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend);
-	lb_I_String& LB_STDCALL operator = (const char* toAppend);
-	lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend);
+	virtual lb_I_String& LB_STDCALL operator += (const char* toAppend);
+	virtual lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend);
+	virtual lb_I_String& LB_STDCALL operator = (const char* toAppend);
+	virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend);
 #endif
 
 #ifndef BREAK_MIXING_COMPILERS
-	lb_I_String& LB_STDCALL operator += (const char* toAppend);
-	lb_I_String& LB_STDCALL operator = (const char* toAppend);
-	lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend);
-	lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend);
+	virtual lb_I_String& LB_STDCALL operator += (const char* toAppend);
+	virtual lb_I_String& LB_STDCALL operator = (const char* toAppend);
+	virtual lb_I_String& LB_STDCALL operator += (const lb_I_String* toAppend);
+	virtual lb_I_String& LB_STDCALL operator = (const lb_I_String* toAppend);
 #endif
 
-	int LB_STDCALL operator == (const char* toCompare) const;
-	int LB_STDCALL operator == (const lb_I_String* toCompare) const;
+	virtual int LB_STDCALL operator == (const char* toCompare) const;
+	virtual int LB_STDCALL operator == (const lb_I_String* toCompare) const;
 	
-	lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with, bool nocase = false);
+	virtual lb_I_String& LB_STDCALL replace(const char* toReplace, const char* with, bool nocase = false);
  
-	lb_I_String* LB_STDCALL left(int until);
-	lb_I_String* LB_STDCALL right(int from);
-	int LB_STDCALL strpos(const char* with);
-	int LB_STDCALL rstrpos(const char* with);
+	virtual lb_I_String* LB_STDCALL left(int until);
+	virtual lb_I_String* LB_STDCALL right(int from);
+	virtual int LB_STDCALL strpos(const char* with);
+	virtual int LB_STDCALL rstrpos(const char* with);
 
-	lb_I_String& LB_STDCALL substitutePlaceholder(lb_I_Parameter* params);
-	lb_I_Container* LB_STDCALL split(const char split_char);
+	virtual lb_I_String& LB_STDCALL substitutePlaceholder(lb_I_Parameter* params);
+	virtual lb_I_Container* LB_STDCALL split(const char split_char);
 	
 	DECLARE_LB_KEYBASE()
 
@@ -575,6 +584,25 @@ public:
 private:
     char* key;
 	long longdata;
+};
+/*...e*/
+/*...sclass lbLong:0:*/
+class lbULong : public lb_I_ULong
+{
+public:
+	lbULong();
+	virtual ~lbULong();
+
+	DECLARE_LB_UNKNOWN()
+
+	DECLARE_LB_KEYBASE()
+	
+	virtual void LB_STDCALL setData(unsigned long p);
+	virtual unsigned long LB_STDCALL getData() const;
+	
+private:
+    char* key;
+	unsigned long longdata;
 };
 /*...e*/
 

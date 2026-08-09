@@ -117,7 +117,7 @@ public:
 	lbErrCodes LB_STDCALL requestString(char* ident, char*& data);
 	lbErrCodes LB_STDCALL requestBoolean(char* ident, bool& data);
 	
-	lbErrCodes LB_STDCALL requestString(char* ident);
+	lbErrCodes LB_STDCALL requestProtocolName(char* ident);
 	
 	lbErrCodes LB_STDCALL requestInteger(char* ident, int& data);
 	
@@ -129,32 +129,32 @@ public:
 	 * Data member operations
 	 */
 
-	void LB_STDCALL add(int i);
-	void LB_STDCALL add(const char* c);
-	void LB_STDCALL add(short s);
-	void LB_STDCALL add(long l);
-	void LB_STDCALL add(unsigned short us);
-    void LB_STDCALL add(unsigned int ui);
-	void LB_STDCALL add(unsigned long ul);
-	void LB_STDCALL add(const void* buf, int len);
+	virtual void LB_STDCALL addInt(int i);
+	virtual void LB_STDCALL addString(const char* c);
+	virtual void LB_STDCALL addShort(short s);
+	virtual void LB_STDCALL addLong(long l);
+	virtual void LB_STDCALL addUShort(unsigned short us);
+    virtual void LB_STDCALL addUInt(unsigned int ui);
+	virtual void LB_STDCALL addULong(unsigned long ul);
+	virtual void LB_STDCALL addBuffer(const void* buf, int len);
 /*...e*/
 
 /*...sgetters:8:*/
-	lbErrCodes LB_STDCALL get(int& i);
-	lbErrCodes LB_STDCALL get(char* & c);
-	lbErrCodes LB_STDCALL get(short & s);
-	lbErrCodes LB_STDCALL get(long & l);
-	lbErrCodes LB_STDCALL get(unsigned short & us);
-    lbErrCodes LB_STDCALL get(unsigned int & ui);
-    lbErrCodes LB_STDCALL get(unsigned long & ul);
+	virtual lbErrCodes LB_STDCALL getInt(int& i);
+	virtual lbErrCodes LB_STDCALL getString(char* & c);
+	virtual lbErrCodes LB_STDCALL getShort(short & s);
+	virtual lbErrCodes LB_STDCALL getLong(long & l);
+	virtual lbErrCodes LB_STDCALL getUShort(unsigned short & us);
+    virtual lbErrCodes LB_STDCALL getUInt(unsigned int & ui);
+    virtual lbErrCodes LB_STDCALL getULong(unsigned long & ul);
 
-	lbErrCodes LB_STDCALL get(void* & v, int & len);
+	virtual lbErrCodes LB_STDCALL getBuffer(void* & v, int & len);
 /*...e*/
 	
 	/**
 	 * The really function who is adding
 	 */
-	void LB_STDCALL LB_STDCALL add(const void* buf, int len, LB_PACKET_TYPE type);
+	virtual void LB_STDCALL LB_STDCALL add(const void* buf, int len, LB_PACKET_TYPE type);
 
 
 	/**
