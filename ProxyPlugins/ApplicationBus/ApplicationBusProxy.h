@@ -26,13 +26,13 @@ public:
 		// Return the server instance for the given class name.
 		//lb_I_String* LB_STDCALL getServerInstance(char* className);
       
-		void LB_STDCALL AnounceUser(char* name, char* password);
+		virtual void LB_STDCALL AnounceUser(char* name, char* password);
       
-		lb_I_String* LB_STDCALL Echo(char* text);
+		virtual lb_I_String* LB_STDCALL Echo(char* text);
                 
-		lb_I_String* LB_STDCALL findBackend(char* service);
+		virtual lb_I_String* LB_STDCALL findBackend(char* service);
       
-		void LB_STDCALL registerBackend(char* backend, char* server = NULL);
+		virtual void LB_STDCALL registerBackend(char* backend, char* server = NULL);
 private:
         int Connect();
         int Disconnect();

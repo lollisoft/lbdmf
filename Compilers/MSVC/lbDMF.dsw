@@ -7,6 +7,10 @@ Project: "Application"=..\..\Appdevelopmentdemo\App\Application.dsp - Package Ow
 
 Package=<5>
 {{{
+    begin source code control
+    Application
+    ..\..\appdevelopmentdemo\app
+    end source code control
 }}}
 
 Package=<4>
@@ -14,6 +18,34 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name lbHook
     End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApplicationBusProxy"=..\..\PROXYPLUGINS\APPLICATIONBUS\ApplicationBusProxy\ApplicationBusProxy.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    ApplicationBusProxy
+    ..\..\proxyplugins\applicationbus
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "DBTest"=..\..\..\..\..\Tests\VCTest\DBTest\DBTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
 }}}
 
 ###############################################################################
@@ -38,38 +70,35 @@ Package=<5>
 
 Package=<4>
 {{{
-}}}
-
-###############################################################################
-
-Project: "dbTest"=..\..\REGRESSIONTESTS\DATABASE\dbTest\dbTest.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-}}}
-
-###############################################################################
-
-Project: "lbClasses"=..\..\Basedevelopment\lbClasses\lbClasses.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
+    Begin Project Dependency
+    Project_Dep_Name Application
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name DBTest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lbClasses
+    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name lbHook
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lbMetaApplication
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name lbModule
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Plain_ODBC_Test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApplicationBusProxy
     End Project Dependency
 }}}
 
 ###############################################################################
 
-Project: "lbDB"=..\..\BASEDEVELOPMENT\LBDB\lbDB\lbDB.dsp - Package Owner=<4>
+Project: "lbClasses"=..\..\Basedevelopment\lbClasses\lbClasses.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

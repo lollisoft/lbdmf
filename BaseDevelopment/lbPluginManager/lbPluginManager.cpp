@@ -31,11 +31,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
 * $Locker:  $
-* $Revision: 1.91.2.8 $
+* $Revision: 1.91.2.9 $
 * $Name:  $
-* $Id: lbPluginManager.cpp,v 1.91.2.8 2025/04/12 10:54:06 lothar Exp $
+* $Id: lbPluginManager.cpp,v 1.91.2.9 2026/08/09 15:29:48 lothar Exp $
 *
 * $Log: lbPluginManager.cpp,v $
+* Revision 1.91.2.9  2026/08/09 15:29:48  lothar
+* Modifications that let me finally mix Watcom 11 and Visual C++ 6.0 compilers.
+* Demonstrates integration attempts for the ApplicationBus to be provided by
+* Visual C++ to enable integration of CORBA without the need to backport any
+* CORBA solution into Watcom 11, what would be a bad decision. This way
+* I smoothly can transition and use even old Watcom 11 code bases or Power++.
+* And now it made sense to integrate my framework into Power++.
+*
 * Revision 1.91.2.8  2025/04/12 10:54:06  lothar
 * Changed my address and copyright start and ending year to reflect
 * my upcoming new home and timeframe of development.
@@ -732,7 +740,7 @@ bool LB_STDCALL lbPluginManager::tryLoad(const char* module, const char* path) {
 
         UAP(lb_I_Unknown, ukPlugin)
         UAP_REQUEST(getModuleInstance(), lb_I_String, pluginName)
-        pluginName->setData(module);
+        pluginName->setString(module);
 
         UAP(lb_I_KeyBase, key)
         QI(pluginName, lb_I_KeyBase, key)
@@ -849,7 +857,7 @@ bool LB_STDCALL lbPluginManager::tryLoadServerModule(const char* module, const c
 
         UAP(lb_I_Unknown, ukPlugin)
         UAP_REQUEST(getModuleInstance(), lb_I_String, pluginName)
-        pluginName->setData(module);
+        pluginName->setString(module);
 
         UAP(lb_I_KeyBase, key)
         QI(pluginName, lb_I_KeyBase, key)
@@ -969,7 +977,7 @@ bool LB_STDCALL lbPluginManager::tryLoadUnitTestModule(const char* module, const
 
         UAP(lb_I_Unknown, ukPlugin)
         UAP_REQUEST(getModuleInstance(), lb_I_String, pluginName)
-        pluginName->setData(module);
+        pluginName->setString(module);
 
         UAP(lb_I_KeyBase, key)
         QI(pluginName, lb_I_KeyBase, key)
@@ -1081,11 +1089,11 @@ void LB_STDCALL lbPluginManager::initialize() {
                 strcat(pluginDir, getenv("USERPROFILE"));
                 strcat(pluginDir, "\\");
                 strcat(pluginDir, "plugins");
-				_CL_LOGALWAYS << "Created path to plugins: " << pluginDir LOG_
-				if (!DirectoryExists(pluginDir)) {
-					_CL_LOGALWAYS << "Create the directory for you so you then can place plugins there..." LOG_
-					createDirectory(pluginDir); 
-				}
+                                _CL_LOGALWAYS << "Created path to plugins: " << pluginDir LOG_
+                                if (!DirectoryExists(pluginDir)) {
+                                        _CL_LOGALWAYS << "Create the directory for you so you then can place plugins there..." LOG_
+                                        createDirectory(pluginDir); 
+                                }
         } else {
                 char* temp = pluginDir;
                 pluginDir = (char*) malloc(strlen(pluginDir)+1);
@@ -1569,7 +1577,7 @@ void LB_STDCALL lbPluginManager::runInstallers() {
 }
 /*...sbool LB_STDCALL lbPluginManager\58\\58\beginEnumPlugins\40\\41\:0:*/
 bool LB_STDCALL lbPluginManager::beginEnumPlugins() {
-	_LOGALWAYS << "lbPluginManager::beginEnumPlugins() called..." LOG_
+        _LOGALWAYS << "lbPluginManager::beginEnumPlugins() called..." LOG_
         if (!isInitialized) initialize();
 
         PluginModules->finishIteration();

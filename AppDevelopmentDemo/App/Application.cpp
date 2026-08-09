@@ -317,7 +317,7 @@ lbErrCodes LB_STDCALL lbApplication::initialize(const char* user, const char* ap
         } else
                 if (LogonUser == NULL) {
                 REQUEST(getModuleInstance(), lb_I_String, LogonUser)
-                LogonUser->setData(user);
+                LogonUser->setString(user);
         }
 
         if (app == NULL) {
@@ -325,7 +325,7 @@ lbErrCodes LB_STDCALL lbApplication::initialize(const char* user, const char* ap
         } else
         if (LogonApplication == NULL) {
                 REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
-                LogonApplication->setData(app);
+                LogonApplication->setString(app);
         }
 
         // Register my handler identifers
@@ -392,12 +392,12 @@ lbErrCodes LB_STDCALL lbApplication::initialize(const char* user, const char* ap
 }
 /*...e*/
 lbErrCodes LB_STDCALL lbApplication::getUserName(lb_I_String** user) {
-        (*user)->setData(LogonUser->charrep());
+        (*user)->setString(LogonUser->charrep());
         return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbApplication::getApplicationName(lb_I_String** app) {
-        (*app)->setData(LogonApplication->charrep());
+        (*app)->setString(LogonApplication->charrep());
         return ERR_NONE;
 }
 lbErrCodes LB_STDCALL lbApplication::setUserName(const char* user) {
@@ -405,7 +405,7 @@ lbErrCodes LB_STDCALL lbApplication::setUserName(const char* user) {
                 REQUEST(getModuleInstance(), lb_I_String, LogonUser)
         }
 
-        LogonUser->setData(user);
+        LogonUser->setString(user);
         return ERR_NONE;
 }
 
@@ -414,7 +414,7 @@ lbErrCodes LB_STDCALL lbApplication::setApplicationName(const char* app) {
                 REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
         }
 
-        LogonApplication->setData(app);
+        LogonApplication->setString(app);
         return ERR_NONE;
 }
 

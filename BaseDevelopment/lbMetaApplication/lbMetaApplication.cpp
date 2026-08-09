@@ -31,11 +31,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.18 $
+ * $Revision: 1.188.2.19 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.18 2025/08/02 08:36:35 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.19 2026/08/09 15:29:48 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.19  2026/08/09 15:29:48  lothar
+ * Modifications that let me finally mix Watcom 11 and Visual C++ 6.0 compilers.
+ * Demonstrates integration attempts for the ApplicationBus to be provided by
+ * Visual C++ to enable integration of CORBA without the need to backport any
+ * CORBA solution into Watcom 11, what would be a bad decision. This way
+ * I smoothly can transition and use even old Watcom 11 code bases or Power++.
+ * And now it made sense to integrate my framework into Power++.
+ *
  * Revision 1.188.2.18  2025/08/02 08:36:35  lothar
  * Renamed lOp variables
  *
@@ -1405,15 +1413,15 @@ lbErrCodes LB_STDCALL lb_MetaApplication::getGUI(lb_I_GUI** _gui) {
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\getUserName\40\lb_I_String\42\\42\ user\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::getUserName(lb_I_String** user) {
-	if (LogonUser == NULL) (*user)->setData("");
-	else (*user)->setData(LogonUser->charrep());
+	if (LogonUser == NULL) (*user)->setString("");
+	else (*user)->setString(LogonUser->charrep());
 	return ERR_NONE;
 }
 /*...e*/
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\getApplicationName\40\lb_I_String\42\\42\ app\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::getApplicationName(lb_I_String** app) {
-	if (LogonApplication == NULL) (*app)->setData("");
-	else (*app)->setData(LogonApplication->charrep());
+	if (LogonApplication == NULL) (*app)->setString("");
+	else (*app)->setString(LogonApplication->charrep());
 	return ERR_NONE;
 }
 /*...e*/
@@ -1434,7 +1442,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::setUserName(const char* user) {
         	REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	}
 
-	LogonUser->setData(user);
+	LogonUser->setString(user);
 	return ERR_NONE;
 }
 /*...e*/
@@ -1446,7 +1454,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::setApplicationName(const char* app) {
         	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	}
 
-       	LogonApplication->setData(app);
+       	LogonApplication->setString(app);
 	return ERR_NONE;
 }
 /*...e*/
@@ -1475,7 +1483,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	} else
 		if (LogonUser == NULL && _logged_in) {
 			REQUEST(getModuleInstance(), lb_I_String, LogonUser)
-			LogonUser->setData(user);
+			LogonUser->setString(user);
 		}
 
 	if (appName == NULL) {
@@ -1483,7 +1491,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	} else
 		if (LogonApplication == NULL) {
 			REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
-			LogonApplication->setData(appName);
+			LogonApplication->setString(appName);
 		}
 
 
@@ -1723,6 +1731,7 @@ lbErrCodes				LB_STDCALL lb_MetaApplication::switchApplication(lb_I_Unknown* uk)
 			setAutoload(tempautoload);
 		}
 	}
+	return err;
 }
 
 void                    LB_STDCALL lb_MetaApplication::deinitApplicationSwitcher() {
@@ -1922,10 +1931,10 @@ lbErrCodes LB_STDCALL lb_MetaApplication::propertyChanged(lb_I_Unknown* uk) {
 
 		UAP(lb_I_KeyBase, key)
 
-		name->setData("name");
+		name->setString("name");
 		param->getUAPString(*&name, *&parameterName);
 
-		name->setData("value");
+		name->setString("value");
 		param->getUAPString(*&name, *&value);
 
 		QI(parameterName, lb_I_KeyBase, key)
@@ -2020,41 +2029,41 @@ lb_I_Parameter* LB_STDCALL lb_MetaApplication::getParameter() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Boolean, b)
 
 
-	parameter->setData("General");
+	parameter->setString("General");
 	//--------------------------------------------------------
-	parameterGeneral->setData("Base directory");
+	parameterGeneral->setString("Base directory");
 	dirloc->setData(_dirloc);
 	paramGeneral->setUAPDirLocation(*&parameterGeneral, *&dirloc);
 
-	parameterGeneral->setData("Autoselect last application");
+	parameterGeneral->setString("Autoselect last application");
 	b->setData(_autoselect);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
-	parameterGeneral->setData("Autorefresh updated data");
+	parameterGeneral->setString("Autorefresh updated data");
 	b->setData(_autorefresh);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
-	parameterGeneral->setData("Autoopen last application");
+	parameterGeneral->setString("Autoopen last application");
 	b->setData(_autoload);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
-	parameterGeneral->setData("Prefer database configuration");
+	parameterGeneral->setString("Prefer database configuration");
 	b->setData(_force_use_database);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
-	parameterGeneral->setData("Application Database backend");
+	parameterGeneral->setString("Application Database backend");
 	*value = _application_database_backend;
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
 
-	parameterGeneral->setData("System Database backend");
+	parameterGeneral->setString("System Database backend");
 	*value = _system_database_backend;
 	paramGeneral->setUAPString(*&parameterGeneral, *&value);
 
-	parameterGeneral->setData("Use application Database backend");
+	parameterGeneral->setString("Use application Database backend");
 	b->setData(_use_application_database_backend);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
-	parameterGeneral->setData("Use system Database backend");
+	parameterGeneral->setString("Use system Database backend");
 	b->setData(_use_system_database_backend);
 	paramGeneral->setUAPBoolean(*&parameterGeneral, *&b);
 
@@ -2122,7 +2131,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 			REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 		}
 
-	LogonUser->setData(user);
+	LogonUser->setString(user);
 
 	if (application == NULL) {
 		_CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
@@ -2131,7 +2140,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 			REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
         }
 
-	LogonApplication->setData(application);
+	LogonApplication->setString(application);
 
 	char* applicationName = getenv("TARGET_APPLICATION");
 
@@ -2231,7 +2240,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 					app->initialize(user, application);
 
 					// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call.
-					LogonApplication->setData(application);
+					LogonApplication->setString(application);
 					free(applicationName);
 
 		} else {
@@ -2352,7 +2361,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 					app->initialize(user, application);
 
 					// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call.
-					LogonApplication->setData(application);
+					LogonApplication->setString(application);
 					free(applicationName);
 				} else {
 					_LOG << "Error: Query to get application data failed. '" << buffer << "'" LOG_
@@ -2401,7 +2410,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::loadApplication(const char* user, cons
 		app->setGUI(gui);
 		app->initialize();
 		// Setting currently loaded application here, because it may be overwritten by app->initialize() when set prior that call.
-		LogonApplication->setData(application);
+		LogonApplication->setString(application);
 
 		_CL_LOG << "Meta application has " << app->getRefCount() << " references." LOG_
 
@@ -2421,8 +2430,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBar(const char* toolbarName)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
-	parameter->setData("toolbarName");
-	value->setData(toolbarName);
+	parameter->setString("toolbarName");
+	value->setString(toolbarName);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2445,8 +2454,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBar(const char* toolbarName)	{
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
-	parameter->setData("toolbarName");
-	value->setData(toolbarName);
+	parameter->setString("toolbarName");
+	value->setString(toolbarName);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2474,29 +2483,29 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addToolBarTool(const char* toolbarName
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
-	parameter->setData("toolbarName");
-	value->setData(toolbarName);
+	parameter->setString("toolbarName");
+	value->setString(toolbarName);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("tooltype");
-	value->setData(tooltype);
+	parameter->setString("tooltype");
+	value->setString(tooltype);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("entry");
-	value->setData(entry);
+	parameter->setString("entry");
+	value->setString(entry);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("evHandler");
-	value->setData(evHandler);
+	parameter->setString("evHandler");
+	value->setString(evHandler);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("toolbarimage");
-	value->setData(toolbarimage);
+	parameter->setString("toolbarimage");
+	value->setString(toolbarimage);
 	param->setUAPString(*&parameter, *&value);
 
 	if (afterentry != NULL) {
-		parameter->setData("afterentry");
-		value->setData(afterentry);
+		parameter->setString("afterentry");
+		value->setString(afterentry);
 		param->setUAPString(*&parameter, *&value);
 	}
 
@@ -2520,12 +2529,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeToolBarButton(const char* toolba
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
-	parameter->setData("toolbarName");
-	value->setData(toolbarName);
+	parameter->setString("toolbarName");
+	value->setString(toolbarName);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("entry");
-	value->setData(entry);
+	parameter->setString("entry");
+	value->setString(entry);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2548,12 +2557,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleToolBarButton(const char* toolba
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
-	parameter->setData("toolbarName");
-	value->setData(toolbarName);
+	parameter->setString("toolbarName");
+	value->setString(toolbarName);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("entry");
-	value->setData(entry);
+	parameter->setString("entry");
+	value->setString(entry);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2577,13 +2586,13 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuBar(const char* name, const cha
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
-	parameter->setData("name");
-	value->setData(name);
+	parameter->setString("name");
+	value->setString(name);
 	param->setUAPString(*&parameter, *&value);
 
 	if (after != NULL) {
-		parameter->setData("after");
-		value->setData(after);
+		parameter->setString("after");
+		value->setString(after);
 		param->setUAPString(*&parameter, *&value);
 
 	}
@@ -2609,8 +2618,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeMenuBar(const char* name) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
-	parameter->setData("name");
-	value->setData(name);
+	parameter->setString("name");
+	value->setString(name);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2639,23 +2648,23 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addTextField(const char* name, int x, 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
-        parameter->setData("text");
-        value->setData(name);
+        parameter->setString("text");
+        value->setString(name);
         param->setUAPString(*&parameter, *&value);
 
-        parameter->setData("x");
+        parameter->setString("x");
         i->setData(x);
         param->setUAPInteger(*&parameter, *&i);
 
-        parameter->setData("y");
+        parameter->setString("y");
         i->setData(y);
         param->setUAPInteger(*&parameter, *&i);
 
-        parameter->setData("w");
+        parameter->setString("w");
         i->setData(w);
         param->setUAPInteger(*&parameter, *&i);
 
-        parameter->setData("h");
+        parameter->setString("h");
         i->setData(h);
         param->setUAPInteger(*&parameter, *&i);
 
@@ -2681,8 +2690,8 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(const char* msg) {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 
-	parameter->setData("msg");
-	value->setData(msg);
+	parameter->setString("msg");
+	value->setString(msg);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2704,7 +2713,7 @@ bool LB_STDCALL lb_MetaApplication::askYesNo(const char* msg) {
 
 	// Got a name of the file. Create an input stream.
 
-	parameter->setData("result");
+	parameter->setString("result");
 	param->getUAPString(*&parameter, *&value);
 
 	if (strcmp(value->charrep(), "yes") == 0) return true;
@@ -2789,11 +2798,11 @@ void LB_STDCALL lb_MetaApplication::msgBox(const char* title, const char* msg) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
-	parameter->setData("msg");
-	value->setData(msg);
+	parameter->setString("msg");
+	value->setString(msg);
 	param->setUAPString(*&parameter, *&value);
-	parameter->setData("title");
-	value->setData(title);
+	parameter->setString("title");
+	value->setString(title);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2821,8 +2830,8 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(const cha
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
-	parameter->setData("extension");
-	value->setData(extensions);
+	parameter->setString("extension");
+	value->setString(extensions);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2836,7 +2845,7 @@ lb_I_InputStream* LB_STDCALL lb_MetaApplication::askOpenFileReadStream(const cha
 
 	// Got a name of the file. Create an input stream.
 
-	parameter->setData("result");
+	parameter->setString("result");
 	param->getUAPString(*&parameter, *&value);
 
 	if (strcmp(value->charrep(), "") == 0) return NULL;
@@ -2862,23 +2871,23 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addLabel(const char* text, int x, int 
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 
-	parameter->setData("labeltext");
-	value->setData(text);
+	parameter->setString("labeltext");
+	value->setString(text);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("x");
+	parameter->setString("x");
 	i->setData(x);
 	param->setUAPInteger(*&parameter, *&i);
 
-	parameter->setData("y");
+	parameter->setString("y");
 	i->setData(y);
 	param->setUAPInteger(*&parameter, *&i);
 
-	parameter->setData("w");
+	parameter->setString("w");
 	i->setData(w);
 	param->setUAPInteger(*&parameter, *&i);
 
-	parameter->setData("h");
+	parameter->setString("h");
 	i->setData(h);
 	param->setUAPInteger(*&parameter, *&i);
 
@@ -2905,27 +2914,27 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addButton(const char* buttonText, cons
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
 
-	parameter->setData("buttontext");
-	value->setData(buttonText);
+	parameter->setString("buttontext");
+	value->setString(buttonText);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("handlername");
-	value->setData(evHandler);
+	parameter->setString("handlername");
+	value->setString(evHandler);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("x");
+	parameter->setString("x");
 	i->setData(x);
 	param->setUAPInteger(*&parameter, *&i);
 
-	parameter->setData("y");
+	parameter->setString("y");
 	i->setData(y);
 	param->setUAPInteger(*&parameter, *&i);
 
-	parameter->setData("w");
+	parameter->setString("w");
 	i->setData(w);
 	param->setUAPInteger(*&parameter, *&i);
 
-	parameter->setData("h");
+	parameter->setString("h");
 	i->setData(h);
 	param->setUAPInteger(*&parameter, *&i);
 
@@ -2951,8 +2960,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::enableEvent(const char* name) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 
-	parameter->setData("handlername");
-	value->setData(name);
+	parameter->setString("handlername");
+	value->setString(name);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -2976,8 +2985,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::disableEvent(const char* name) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 
-	parameter->setData("handlername");
-	value->setData(name);
+	parameter->setString("handlername");
+	value->setString(name);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -3001,8 +3010,8 @@ lbErrCodes LB_STDCALL lb_MetaApplication::toggleEvent(const char* name) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 
 
-	parameter->setData("handlername");
-	value->setData(name);
+	parameter->setString("handlername");
+	value->setString(name);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -3055,16 +3064,16 @@ void LB_STDCALL lb_MetaApplication::firePropertyChangeEvent(const char* name, co
 
 	eman->resolveEvent((const char*) name, PropertyEvent);
 
-	Name->setData("eventId");
+	Name->setString("eventId");
 	evId->setData(PropertyEvent);
 	param->setUAPInteger(*&Name, *&evId);
 
-	Name->setData("value");
-	Value->setData((const char*) value);
+	Name->setString("value");
+	Value->setString((const char*) value);
 	param->setUAPString(*&Name, *&Value);
 
-	Name->setData("name");
-	Value->setData((const char*) name);
+	Name->setString("name");
+	Value->setString((const char*) name);
 	param->setUAPString(*&Name, *&Value);
 
 	UAP(lb_I_Unknown, uk)
@@ -3208,21 +3217,21 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntry(const char* in_menu, cons
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
 
-	parameter->setData("menubar");
-	value->setData(in_menu);
+	parameter->setString("menubar");
+	value->setString(in_menu);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("menuname");
-	value->setData(entry);
+	parameter->setString("menuname");
+	value->setString(entry);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("handlername");
-	value->setData(evHandler);
+	parameter->setString("handlername");
+	value->setString(evHandler);
 	param->setUAPString(*&parameter, *&value);
 
 	if (afterentry && (strcmp(afterentry, "") != 0)) {
-		parameter->setData("after");
-		value->setData(afterentry);
+		parameter->setString("after");
+		value->setString(afterentry);
 		param->setUAPString(*&parameter, *&value);
 	}
 
@@ -3248,12 +3257,12 @@ lbErrCodes LB_STDCALL lb_MetaApplication::removeMenuEntry(const char* in_menu, c
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
 
-	parameter->setData("menubar");
-	value->setData(in_menu);
+	parameter->setString("menubar");
+	value->setString(in_menu);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("menuname");
-	value->setData(entry);
+	parameter->setString("menuname");
+	value->setString(entry);
 	param->setUAPString(*&parameter, *&value);
 
 	UAP(lb_I_Unknown, uk)
@@ -3277,25 +3286,25 @@ lbErrCodes LB_STDCALL lb_MetaApplication::addMenuEntryCheckable(const char* in_m
 	UAP_REQUEST(getModuleInstance(), lb_I_Parameter, param)
 
 
-	parameter->setData("menubar");
-	value->setData(in_menu);
+	parameter->setString("menubar");
+	value->setString(in_menu);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("menuname");
-	value->setData(entry);
+	parameter->setString("menuname");
+	value->setString(entry);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("handlername");
-	value->setData(evHandler);
+	parameter->setString("handlername");
+	value->setString(evHandler);
 	param->setUAPString(*&parameter, *&value);
 
-	parameter->setData("checkable");
-	value->setData("yes");
+	parameter->setString("checkable");
+	value->setString("yes");
 	param->setUAPString(*&parameter, *&value);
 
 	if (afterentry && (strcmp(afterentry, "") != 0)) {
-		parameter->setData("after");
-		value->setData(afterentry);
+		parameter->setString("after");
+		value->setString(afterentry);
 		param->setUAPString(*&parameter, *&value);
 	}
 
@@ -3664,7 +3673,7 @@ bool LB_STDCALL lb_MetaApplication::askForDirectory(lb_I_DirLocation* loc) {
 
 	// Got a name of the file. Create an input stream.
 
-	parameter->setData("result");
+	parameter->setString("result");
 	param->getUAPString(*&parameter, *&value);
 
 	if (strcmp(value->charrep(), "") == 0) return false;
@@ -3885,7 +3894,7 @@ lbErrCodes LB_STDCALL lb_EventManager::registerEvent(const char* EvName, int & E
 
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
 	UAP_REQUEST(getModuleInstance(), lb_I_String, stringData)
-	stringData->setData(EvName);
+	stringData->setString(EvName);
 
 	UAP(lb_I_KeyBase, sk)
 	QI(stringData, lb_I_Unknown, sk)
@@ -3972,7 +3981,7 @@ lbErrCodes LB_STDCALL lb_EventManager::resolveEvent(const char* EvName, int & ev
 
 /*...sSetup key \40\get a string\44\ store the char\42\ value and get a key from it\41\:8:*/
 	UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-	stringKey->setData(EvName);
+	stringKey->setString(EvName);
 
 	UAP(lb_I_KeyBase, kk)
 	QI(stringKey, lb_I_Unknown, kk)
