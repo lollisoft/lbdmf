@@ -30,11 +30,19 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.106.2.8 $
+ * $Revision: 1.106.2.9 $
  * $Name:  $
- * $Id: lbInterfaces-sub-classes.h,v 1.106.2.8 2025/04/12 10:54:06 lothar Exp $
+ * $Id: lbInterfaces-sub-classes.h,v 1.106.2.9 2026/08/09 15:30:09 lothar Exp $
  *
  * $Log: lbInterfaces-sub-classes.h,v $
+ * Revision 1.106.2.9  2026/08/09 15:30:09  lothar
+ * Modifications that let me finally mix Watcom 11 and Visual C++ 6.0 compilers.
+ * Demonstrates integration attempts for the ApplicationBus to be provided by
+ * Visual C++ to enable integration of CORBA without the need to backport any
+ * CORBA solution into Watcom 11, what would be a bad decision. This way
+ * I smoothly can transition and use even old Watcom 11 code bases or Power++.
+ * And now it made sense to integrate my framework into Power++.
+ *
  * Revision 1.106.2.8  2025/04/12 10:54:06  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
@@ -694,19 +702,26 @@ public:
 
 	virtual char* LB_STDCALL strristr(const char* String, const char* Pattern) = 0;
 
-        /**
-         * \brief Set the string data from char*
-         * 
-         * \param p Input char const * data .
-         */
-        virtual void LB_STDCALL setData(const char* p) = 0;
-        
-        /**
-         * \brief Return char* representation.
-         *
-         * \return char* value.
-         */
-        virtual char* LB_STDCALL getData() const = 0;
+	/**
+	 * \brief Set the string data from char*
+	 * 
+	 * \param p Input char const * data .
+	 */
+	virtual void LB_STDCALL setString(const char* p) = 0;
+	
+	/**
+	 * \brief Append the string data from char*
+	 * 
+	 * \param p Input char const * data .
+	 */
+	virtual void LB_STDCALL appendString(const char* p) = 0;
+	
+	/**
+	 * \brief Return char* representation.
+	 *
+	 * \return char* value.
+	 */
+	virtual char* LB_STDCALL getData() const = 0;
 
 	/** \brief Adds the given char* array.
 	 *
@@ -746,11 +761,11 @@ public:
 
 	virtual lb_I_Container* LB_STDCALL split(const char split_char) = 0;
 
-        /**
-         * \brief Set data from other lb_I_String instance.
-         *
-         * This member is used in lb_I_Container implementation via clone.
-         */
+	/**
+	 * \brief Set data from other lb_I_String instance.
+	 *
+	 * This member is used in lb_I_Container implementation via clone.
+	 */
     virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;
 };
 /*...e*/
@@ -945,6 +960,24 @@ public:
         virtual void LB_STDCALL setData(long p) = 0;
         virtual long LB_STDCALL getData() const = 0;
 	virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
+};
+/*...e*/
+/*...sclass lb_I_Long:0:*/
+/**
+ * \brief A basic long class.
+ *
+ * This is a set of base interfaces that are compatible to the lb_I_Container interface.
+ */
+class lb_I_ULong : public lb_I_KeyBase {
+protected:
+        lb_I_ULong() {}
+        virtual ~lb_I_ULong() {}
+
+public:
+        
+        virtual void LB_STDCALL setData(unsigned long p) = 0;
+        virtual unsigned long LB_STDCALL getData() const = 0;
+		virtual lbErrCodes LB_STDCALL setData( lb_I_Unknown * uk) = 0;        
 };
 /*...e*/
 

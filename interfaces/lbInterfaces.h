@@ -1037,6 +1037,7 @@ PRIMARY KEY (id),
         class lb_I_Streamable;
         class lb_I_Integer;
         class lb_I_Long;
+        class lb_I_ULong;
     class lb_I_Float;
     class lb_I_Double;
     class lb_I_Container;
@@ -2424,13 +2425,11 @@ void LB_STDCALL TF::registerTests() { \
  * If it could be created by REQUEST, the UAP_REQUEST macro - requesting an instance for a particular
  * interface - must also request the base class of it self to have the UAP class.
  */
-#ifndef _MSC_VER
 class lb_I_Reference : public lb_I_Unknown {
 public:
         virtual lbErrCodes LB_STDCALL set(lb_I_Unknown* r) = 0;
         virtual lbErrCodes LB_STDCALL get(lb_I_Unknown*& r) = 0;
 };
-#endif
 /*...e*/
 
 /*...sclass lb_I_gcManager:0:*/
@@ -4600,7 +4599,7 @@ void LB_STDCALL cls::enumPlugins() { \
         UAP(lb_I_KeyBase, Key##plugin##namespace) \
         UAP(lb_I_Unknown, ukPlugin##plugin##namespace) \
         \
-        s##plugin##namespace->setData(#plugin); \
+        s##plugin##namespace->setString(#plugin); \
         QI(s##plugin##namespace, lb_I_KeyBase, Key##plugin##namespace) \
         QI(P##plugin##namespace, lb_I_Unknown, ukPlugin##plugin##namespace) \
         \
@@ -4629,7 +4628,7 @@ void LB_STDCALL cls::enumPlugins() { \
         UAP(lb_I_KeyBase, Key##plugin##namespace) \
         UAP(lb_I_Unknown, ukPlugin##plugin##namespace) \
         \
-        s##plugin##namespace->setData(#plugin); \
+        s##plugin##namespace->setString(#plugin); \
         QI(s##plugin##namespace, lb_I_KeyBase, Key##plugin##namespace) \
         QI(P##plugin##namespace, lb_I_Unknown, ukPlugin##plugin##namespace) \
         \
@@ -5481,6 +5480,7 @@ UAPDECL(lb_I_VisitableHelper)
 //UAPDECL(lb_I_Streamable)
 UAPDECL(lb_I_Integer)
 UAPDECL(lb_I_Long)
+UAPDECL(lb_I_ULong)
 UAPDECL(lb_I_Float)
 UAPDECL(lb_I_Double)
 UAPDECL(lb_I_Container)

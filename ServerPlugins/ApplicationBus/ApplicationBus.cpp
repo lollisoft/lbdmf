@@ -99,7 +99,7 @@ lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Trans
         add(your tid")
 */
 
-        if (request->requestString("Connect") != ERR_NONE) {
+        if (request->requestProtocolName("Connect") != ERR_NONE) {
                 result->makeProtoErrAnswer("Error: No Connect request", "lbAppServer::HandleConnect(...)");
                 return ERR_APP_SERVER_HANDLECONNECT;
         }
@@ -139,9 +139,9 @@ lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Trans
         *key += Tid->charrep();
         
         if (connections->exists(&keybase)) {
-                result->add("Accept");
-                result->add("InstanceName");
-                result->add(ServerInstance->charrep());
+                result->addString("Accept");
+                result->addString("InstanceName");
+                result->addString(ServerInstance->charrep());
                 
                 UAP_REQUEST(getModuleInstance(), lb_I_Parameter, conn)
                 UAP_REQUEST(getModuleInstance(), lb_I_String, param)
@@ -160,8 +160,8 @@ lbErrCodes ApplicationBus::HandleConnect(lb_I_Transfer_Data* request, lb_I_Trans
                 connections->insert(&uk, &keybase);
         } else {
                 _CL_LOG << "lbAppServer::HandleConnect(...) Not accepted." LOG_
-                result->add("Deny");
-                result->add("Already connected");
+                result->addString("Deny");
+                result->addString("Already connected");
                 return ERR_APP_SERVER_HANDLECONNECT;
         }
     _CL_LOG << "lbAppServer::HandleConnect(...) Succeeded." LOG_
@@ -184,7 +184,7 @@ lbErrCodes ApplicationBus::HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Tr
         add(your tid")
 */
 
-        if (request->requestString("Disconnect") != ERR_NONE) {
+        if (request->requestProtocolName("Disconnect") != ERR_NONE) {
                 result->makeProtoErrAnswer("Error: No Connect request", "lbAppServer::HandleConnect(...)");
                 return ERR_APP_SERVER_HANDLECONNECT;
         }
@@ -207,8 +207,8 @@ lbErrCodes ApplicationBus::HandleDisconnect(lb_I_Transfer_Data* request, lb_I_Tr
 
         _CL_LOG << "Got hostname: " << clienthost << ", pid: " << pid << ", tid: " << tid << "." LOG_
         
-        result->add("Accept");
-        result->add(clienthost);
+        result->addString("Accept");
+        result->addString(clienthost);
         
         return ERR_NONE;
 }
@@ -278,7 +278,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
 */
 /*...e*/
 
-        if (request->requestString("BusMaster.ApplicationBus.Echo") != ERR_NONE) {
+        if (request->requestProtocolName("BusMaster.ApplicationBus.Echo") != ERR_NONE) {
                 result->makeProtoErrAnswer("Error: Echo function identifer not sent", "ApplicationBus::Echo(...)");
                 return ERR_TRANSFER_PROTOCOL;
         }
@@ -291,8 +291,8 @@ lbErrCodes LB_STDCALL ApplicationBus::_Echo(lb_I_Transfer_Data* request, lb_I_Tr
             Echo(text);
 
 
-        result->add("text");
-        result->add(text);
+        result->addString("text");
+        result->addString(text);
         free(text);
             
 
@@ -328,7 +328,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_findBackend(lb_I_Transfer_Data* request, 
 */
 /*...e*/
 
-        if (request->requestString("BusMaster.ApplicationBus.findBackend") != ERR_NONE) {
+        if (request->requestProtocolName("BusMaster.ApplicationBus.findBackend") != ERR_NONE) {
                 result->makeProtoErrAnswer("Error: findBackend function identifer not sent", "ApplicationBus::findBackend(...)");
                 return ERR_TRANSFER_PROTOCOL;
         }
@@ -342,8 +342,8 @@ lbErrCodes LB_STDCALL ApplicationBus::_findBackend(lb_I_Transfer_Data* request, 
         backend = findBackend(service);
 
 
-        result->add("backend");
-        result->add(backend->charrep());
+        result->addString("backend");
+        result->addString(backend->charrep());
 
     return err;
 }
@@ -381,7 +381,7 @@ lbErrCodes LB_STDCALL ApplicationBus::_registerBackend(lb_I_Transfer_Data* reque
 */
 /*...e*/
 
-        if (request->requestString("BusMaster.ApplicationBus.registerBackend") != ERR_NONE) {
+        if (request->requestProtocolName("BusMaster.ApplicationBus.registerBackend") != ERR_NONE) {
                 result->makeProtoErrAnswer("Error: registerBackend function identifer not sent", "ApplicationBus::registerBackend(...)");
                 return ERR_TRANSFER_PROTOCOL;
         }

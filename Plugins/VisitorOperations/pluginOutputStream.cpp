@@ -95,6 +95,7 @@ public:
 	void LB_STDCALL visit(lb_I_String*); // { _CL_LOG << "visit(lb_I_String*)" LOG_ }
     void LB_STDCALL visit(lb_I_Integer*); //{ _LOG << "visit(lb_I_Integer*)" << i->charrep() LOG_ }
 	void LB_STDCALL visit(lb_I_Long*) { _CL_LOG << "visit(lb_I_Long*)" LOG_ }
+	void LB_STDCALL visit(lb_I_ULong*) { _CL_LOG << "visit(lb_I_ULong*)" LOG_ }
 	void LB_STDCALL visit(lb_I_Container*) { _CL_LOG << "visit(lb_I_Container*)" LOG_ } 
 	void LB_STDCALL visit(lb_I_Database*) { _CL_LOG << "visit(lb_I_Database*)" LOG_ } 
 	void LB_STDCALL visit(lb_I_ColumnBinding*) { _CL_LOG << "visit(lb_I_ColumnBinding*)" LOG_ } 

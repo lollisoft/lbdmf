@@ -52,6 +52,7 @@ virtual void LB_STDCALL visit(lb_I_Boolean*) = 0;
 virtual void LB_STDCALL visit(lb_I_String*) = 0; 
 virtual void LB_STDCALL visit(lb_I_Integer*) = 0; 
 virtual void LB_STDCALL visit(lb_I_Long*) = 0;
+virtual void LB_STDCALL visit(lb_I_ULong*) = 0;
 virtual void LB_STDCALL visit(lb_I_Container*) = 0; 
 virtual void LB_STDCALL visit(lb_I_Database*) = 0; 
 virtual void LB_STDCALL visit(lb_I_ColumnBinding*) = 0; 
