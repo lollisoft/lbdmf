@@ -23,8 +23,8 @@ CFG=lbHook - Win32 Debug
 
 # Begin Project
 # PROP AllowPerConfigDependencies 0
-# PROP Scc_ProjName ""
-# PROP Scc_LocalPath ""
+# PROP Scc_ProjName "lbHook"
+# PROP Scc_LocalPath "."
 CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
@@ -84,7 +84,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"..\..\..\dll\lbHookMSC.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy Debug\lbHook.lib ..\..\..\dll\libs\lbHookMSC.lib
+PostBuild_Cmds=copy Debug\lbHookMSC.lib ..\..\..\dll\libs\lbHookMSC.lib
 # End Special Build Tool
 
 !ENDIF 

@@ -617,9 +617,7 @@ public:
 #ifdef _MSC_VER
      lbStringKey(char* file, int line)
 	 {
-		ref = STARTREF;
-		data = NULL;
-		further_lock = 1;
+		ref = 0;
 		key = "";
 	}
 #endif
