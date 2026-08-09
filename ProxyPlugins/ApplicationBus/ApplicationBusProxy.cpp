@@ -38,16 +38,16 @@ lbErrCodes LB_STDCALL ApplicationBusProxy::setData(lb_I_Unknown* uk) {
 }
 
 ApplicationBusProxy::ApplicationBusProxy() {
-        _CL_LOG << "Init ApplicationBusProxy" LOG_
-        REQUEST(getModuleInstance(), lb_I_String, serverInstance)
+	_CL_LOG << "Init ApplicationBusProxy" LOG_
+	REQUEST(getModuleInstance(), lb_I_String, serverInstance)
     if (ABSConnection == NULL) {
         /**
          * Initialize the tcp connection...
          */
-                _CL_LOG << "Initialize the tcp connection..." LOG_
+		_CL_LOG << "Initialize the tcp connection..." LOG_
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
         
-                // The name of the lbDMF Busmaster must be defined in hosts or DNS
+		// The name of the lbDMF Busmaster must be defined in hosts or DNS
         if (ABSConnection->init("localhost/busmaster") == ERR_SOCKET_INIT) {
             _CL_LOG << "Connect to localhost/busmaster failed." LOG_
             return;
@@ -61,23 +61,23 @@ ApplicationBusProxy::ApplicationBusProxy() {
 }
 
 ApplicationBusProxy::~ApplicationBusProxy() {
-        _CL_LOG << "ApplicationBusProxy::~ApplicationBusProxy() called" LOG_
+	_CL_LOG << "ApplicationBusProxy::~ApplicationBusProxy() called" LOG_
     if (ABSConnection != NULL) {
-                _CL_LOG << "Call Disconnect" LOG_
-                Disconnect();
-        }
+		_CL_LOG << "Call Disconnect" LOG_
+		Disconnect();
+	}
 }
 
 void ApplicationBusProxy::setServerName(const char* servername, const char* servicename) {
     _CL_LOG << "ApplicationBusProxy::setServerName(" << servername << "," << servicename << ") called" LOG_
-        _CL_LOG << "Initialize the tcp connection to " << servername << ":" << servicename << "..." LOG_
-        REQUEST(getModuleInstance(), lb_I_String, server)
-        REQUEST(getModuleInstance(), lb_I_String, service)
+	_CL_LOG << "Initialize the tcp connection to " << servername << ":" << servicename << "..." LOG_
+	REQUEST(getModuleInstance(), lb_I_String, server)
+	REQUEST(getModuleInstance(), lb_I_String, service)
         
     if (ABSConnection != NULL) {
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
 
-        serverInstance->setData("servername/servicename");
+        serverInstance->setString("servername/servicename");
         serverInstance->replace("servername", servername);
         serverInstance->replace("servicename", servicename);
         
@@ -93,25 +93,25 @@ void ApplicationBusProxy::setServerName(const char* servername, const char* serv
 
 //\todo Remove as it is unused.
 int ApplicationBusProxy::Connect() {
-        char* answer;
-        char buf[100] = "";
-        UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
-        UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
-        UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
-        client->setServerSide(0);
-        result->setServerSide(0);
-        
-        ABSConnection->gethostname(*&temp);
-                
-        _CL_LOGALWAYS << "ApplicationBusProxy::Connect() Connects with hostname = " << temp->charrep() LOG_
-        
-        client->add("Connect");
-        client->add("Host");
-        client->add(temp->charrep());
-        client->add("Pid");
-        client->add(lbGetCurrentProcessId());
-        client->add("Tid");
-        client->add(lbGetCurrentThreadId());
+    char* answer;
+    char buf[100] = "";
+    UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
+    UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
+    UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
+    client->setServerSide(0);
+    result->setServerSide(0);
+    
+    ABSConnection->gethostname(*&temp);
+            
+    _CL_LOGALWAYS << "ApplicationBusProxy::Connect() Connects with hostname = " << temp->charrep() LOG_
+    
+    client->addString("Connect");
+    client->addString("Host");
+    client->addString(temp->charrep());
+    client->addString("Pid");
+    client->addULong(lbGetCurrentProcessId());
+    client->addString("Tid");
+    client->addULong(lbGetCurrentThreadId());
 
     _CL_LOG << "Send prepared packets..." LOG_
     
@@ -120,51 +120,51 @@ int ApplicationBusProxy::Connect() {
     *ABSConnection >> *&result;
     _CL_LOG << "Got answer..." LOG_
 
-        // Handle the request
-        int count = result->getPacketCount();
+    // Handle the request
+    int count = result->getPacketCount();
 
-        result->resetPositionCount();
+    result->resetPositionCount();
                 
     _CL_LOG << "Have " << count << " packets..." LOG_
-        while (count--) {
-                LB_PACKET_TYPE type;
-                int i = 0;
-                char *buffer;
-                char msg[100];
-                result->getPacketType(type);
+    while (count--) {
+        LB_PACKET_TYPE type;
+        int i = 0;
+        char *buffer;
+        char msg[100];
+        result->getPacketType(type);
 
-                switch (type) {
-                        case PACKET_LB_CHAR:
-                                result->get(buffer);
-                                
-                                if (strcmp(buffer, "Accept") == 0) {
-                                        connected = true;
-                                        _CL_LOG << "Connection accepted." LOG_
-                                        result->incrementPosition();
-                                        result->get(buffer);
-                                        if (strcmp(buffer, "InstanceName") == 0) {
-                                                result->incrementPosition();
-                                                result->get(buffer);
-                                                *serverInstance = buffer;
-                                                _CL_LOG << "Have server instanve = " << serverInstance->charrep() LOG_
-                                                return 1;
-                                        }
-                                }
-                                break;
-                                
-                        default:
-                                _CL_LOG << "Unknown packet type!" LOG_
-                                
-                                break;
-                }
-                        
-                result->incrementPosition();
-        }
-
-        _CL_LOG << "Connection failed!" LOG_
-        connected = false;
+        switch (type) {
+            case PACKET_LB_CHAR:
+                result->getString(buffer);
                 
-        return 0;
+                if (strcmp(buffer, "Accept") == 0) {
+                        connected = true;
+                        _CL_LOG << "Connection accepted." LOG_
+                        result->incrementPosition();
+                        result->getString(buffer);
+                        if (strcmp(buffer, "InstanceName") == 0) {
+                                result->incrementPosition();
+                                result->getString(buffer);
+                                serverInstance->setString(buffer);
+                                _CL_LOGALWAYS << "Have server instanve = " << serverInstance->charrep() LOG_
+                                return 1;
+                        }
+                }
+                break;
+                    
+            default:
+                _CL_LOG << "Unknown packet type!" LOG_
+                
+                break;
+        }
+                
+        result->incrementPosition();
+    }
+
+    _CL_LOG << "Connection failed!" LOG_
+    connected = false;
+            
+    return 0;
 }
 
 int ApplicationBusProxy::Disconnect() {
@@ -181,13 +181,13 @@ int ApplicationBusProxy::Disconnect() {
 
         ABSConnection->gethostname(*&temp);
 
-        client->add("Disconnect");
-        client->add("Host");
-        client->add(temp->charrep());
-        client->add("Pid");
-        client->add(lbGetCurrentProcessId());
-        client->add("Tid");
-        client->add(lbGetCurrentThreadId());
+        client->addString("Disconnect");
+        client->addString("Host");
+        client->addString(temp->charrep());
+        client->addString("Pid");
+        client->addULong(lbGetCurrentProcessId());
+        client->addString("Tid");
+        client->addULong(lbGetCurrentThreadId());
 
         ABSConnection->init(NULL);
 
@@ -209,7 +209,7 @@ int ApplicationBusProxy::Disconnect() {
 
                 switch (type) {
                         case PACKET_LB_CHAR:
-                                result->get(buffer);
+                                result->getString(buffer);
                                 
                                 if (strcmp(buffer, "Succeed") == 0) {
                                         _CL_LOG << "Disconnected successfull" LOG_
@@ -254,13 +254,13 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
         *requestString = serverInstance->charrep();
         *requestString += ".ApplicationBus.AnounceUser";
         
-        user_info->add(requestString->charrep());
+        user_info->addString(requestString->charrep());
 
-    user_info->add("name");
-    user_info->add(name);
+    user_info->addString("name");
+    user_info->addString(name);
             
-    user_info->add("password");
-    user_info->add(password);
+    user_info->addString("password");
+    user_info->addString(password);
             
         
         ABSConnection->init(NULL);
@@ -294,13 +294,13 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
         
-        *requestString = serverInstance->charrep();
-        *requestString += ".ApplicationBus.Echo";
+        requestString->setString(serverInstance->charrep());
+        requestString->appendString(".ApplicationBus.Echo");
         
-        user_info->add(requestString->charrep());
+        user_info->addString(requestString->charrep());
         
-    user_info->add("text");
-    user_info->add(text);
+    user_info->addString("text");
+    user_info->addString(text);
         
         ABSConnection->init(NULL);
         
@@ -316,17 +316,17 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
             _CL_LOG << "Error in recieving Echo answer" LOG_
         }
 
-        ABSConnection->close();
-        
         char* temptext;
         
         if (result->requestString("text", temptext) != ERR_NONE) {
                 _CL_LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
         } else {
                 _CL_LOG << "Parameter result: 'text' = '" << temptext << "'" LOG_
-                *echo = temptext;
+                echo->setString(temptext);
         }
-        
+
+        ABSConnection->close();
+				
         echo++;
         return echo.getPtr();
 }
@@ -350,13 +350,13 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
         
-        *requestString = serverInstance->charrep();
-        *requestString += ".ApplicationBus.findBackend";
+        requestString->setString(serverInstance->charrep());
+        requestString->appendString(".ApplicationBus.findBackend");
         
-        user_info->add(requestString->charrep());
+        user_info->addString(requestString->charrep());
         
-    user_info->add("service");
-    user_info->add(service);
+    user_info->addString("service");
+    user_info->addString(service);
         
         ABSConnection->init(NULL);
         
@@ -378,8 +378,7 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
                 _LOG << "Error in recieving parameter from Echo. Parameter 'backend' wrong or not given." LOG_
                 return NULL;
         } else {
-                *backend = _backend;
-                free(_backend);
+                backend->setString(_backend);
                 _CL_LOG << "Server returned backend = " << backend->charrep() LOG_
         }
         backend++;
@@ -404,19 +403,19 @@ void LB_STDCALL ApplicationBusProxy::registerBackend(char* backend, char* server
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, requestString)
         
-        *requestString = serverInstance->charrep();
-        *requestString += ".ApplicationBus.registerBackend";
+        requestString->setString(serverInstance->charrep());
+        requestString->appendString(".ApplicationBus.registerBackend");
         
-        user_info->add(requestString->charrep());
+        user_info->addString(requestString->charrep());
         
-    user_info->add("backend");
-    user_info->add(backend);
+    user_info->addString("backend");
+    user_info->addString(backend);
         
-    user_info->add("server");
+    user_info->addString("server");
         if (server == NULL) {
-                user_info->add("");
+                user_info->addString("");
     } else {
-                user_info->add(server);
+                user_info->addString(server);
         }
         
         ABSConnection->init(NULL);
