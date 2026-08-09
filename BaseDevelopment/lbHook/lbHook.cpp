@@ -420,6 +420,9 @@ extern "C" DLLEXPORT const char* LB_CDECL getOsType() {
 #ifdef __WATCOMC__
         return osIsWindows;
 #endif
+#ifdef _MSC_VER
+        return osIsWindows;
+#endif
 #ifdef OSX
         return osIsMac;
 #endif
@@ -716,12 +719,22 @@ extern "C" DLLEXPORT bool LB_CDECL DirectoryExists(char *filename)
 {
         if (FileExists(filename)) return true;
 #ifdef WINDOWS
+#ifndef _MSC_VER
         if (_mkdir(filename) == -1) return true;
+#endif
+#ifdef _MSC_VER
+        if (CreateDirectory(filename, NULL) == -1) return true;
+#endif
 #endif
 #ifdef LINUX
         if (mkdir(filename, 0777) == -1) return true;
 #endif
+#ifndef _MSC_VER
         rmdir(filename);
+#endif
+#ifdef _MSC_VER
+        if (RemoveDirectory(filename) == -1) return true;
+#endif
         return false;
 }
 
@@ -1121,6 +1134,14 @@ DLLEXPORT lb_I_Module* LB_CDECL getModuleInstance() {
         strcat(temp, functor);
         functor = temp;
 #endif
+#endif
+// Mixed mode lbHookMsc need to force using _
+#ifdef _MSC_VER
+        char* temp = (char*) malloc(strlen(functor)+2);
+        temp[0] = 0;
+        strcat(temp, "_");
+        strcat(temp, functor);
+        functor = temp;
 #endif
 #endif
 

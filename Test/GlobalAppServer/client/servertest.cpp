@@ -42,6 +42,8 @@ void runTest(const char* servername, const char* servicename)
 {
         int count = 0;
 
+        _CL_LOGALWAYS << "Run application bus tests..." LOG_
+
         UAP_REQUEST(getModuleInstance(), lb_I_ApplicationBus, client)
         
         if (client != NULL) {
@@ -55,24 +57,24 @@ void runTest(const char* servername, const char* servicename)
                 }
                 
                 while (count++ < 1) {
-                        UAP(lb_I_String, echo)
-                        UAP(lb_I_String, backend)
+                        UAP_REQUEST(getModuleInstance(), lb_I_String, echo)
+                        UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
 
                         //client->AnounceUser("lothar", "test");
 
                         char* text = "Hallo Server, dies ist eine Echo - Message";
-                        echo = client->Echo(text);
+                        echo->setString(client->Echo(text)->charrep());
                         
                         _CL_LOG << "Echo result is: " << echo->charrep() LOG_
                         
                         
-                        backend = client->findBackend("lbDMFManager");
+                        backend->setString(client->findBackend("lbDMFManager")->charrep());
                         
                         
                         if (backend != NULL) _CL_LOG << "Backend is " << backend->charrep() LOG_
                 }
         } else {
-                _CL_LOG << "Error: Can't find application bus." LOG_
+                _CL_LOGALWAYS << "Error: Can't find application bus." LOG_
         }       
 }
 
