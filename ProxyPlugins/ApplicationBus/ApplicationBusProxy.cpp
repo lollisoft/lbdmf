@@ -103,7 +103,7 @@ int ApplicationBusProxy::Connect() {
     
     ABSConnection->gethostname(*&temp);
             
-    _CL_LOGALWAYS << "ApplicationBusProxy::Connect() Connects with hostname = " << temp->charrep() LOG_
+    _CL_LOG << "ApplicationBusProxy::Connect() Connects with hostname = " << temp->charrep() LOG_
     
     client->addString("Connect");
     client->addString("Host");
@@ -146,7 +146,7 @@ int ApplicationBusProxy::Connect() {
                                 result->incrementPosition();
                                 result->getString(buffer);
                                 serverInstance->setString(buffer);
-                                _CL_LOGALWAYS << "Have server instanve = " << serverInstance->charrep() LOG_
+                                _CL_LOG << "Have server instanve = " << serverInstance->charrep() LOG_
                                 return 1;
                         }
                 }
@@ -277,7 +277,7 @@ void LB_STDCALL ApplicationBusProxy::AnounceUser(char* name, char* password) {
 }
       
 lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
-        _CL_LOGALWAYS << "ApplicationBusProxy::Echo(" << text << ")" LOG_
+        _CL_LOG << "ApplicationBusProxy::Echo(" << text << ")" LOG_
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
         UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
         UAP_REQUEST(getModuleInstance(), lb_I_String, echo)
@@ -332,7 +332,7 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
 }
       
 lb_I_String* LB_STDCALL ApplicationBusProxy::findBackend(char* service) {
-        _CL_LOGALWAYS << "ApplicationBusProxy::findBackend(" << service << ")" LOG_
+        _CL_LOG << "ApplicationBusProxy::findBackend(" << service << ")" LOG_
         UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, result)
         UAP_REQUEST(getModuleInstance(), lb_I_String, temp)
         UAP_REQUEST(getModuleInstance(), lb_I_String, backend)
