@@ -207,7 +207,7 @@ public:
 	 * index over all interfaces to zero.
 	 */
 	virtual void LB_STDCALL setCurrentSearchInterface(const char* iface) = 0;
-	virtual lb_I_FunctorEntity* LB_STDCALL getFirstEntity() = 0;
+	virtual lb_I_FunctorEntity* LB_STDCALL getFirstEntity(bool withPrefix = true) = 0;
 };
 /*...e*/
 
