@@ -30,11 +30,14 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.149.2.8 $
+ * $Revision: 1.149.2.9 $
  * $Name:  $
- * $Id: lbModule.cpp,v 1.149.2.8 2026/08/09 15:29:48 lothar Exp $
+ * $Id: lbModule.cpp,v 1.149.2.9 2026/08/13 04:29:23 lothar Exp $
  *
  * $Log: lbModule.cpp,v $
+ * Revision 1.149.2.9  2026/08/13 04:29:23  lothar
+ * Added transparent multi compiler support
+ *
  * Revision 1.149.2.8  2026/08/09 15:29:48  lothar
  * Modifications that let me finally mix Watcom 11 and Visual C++ 6.0 compilers.
  * Demonstrates integration attempts for the ApplicationBus to be provided by
@@ -2151,7 +2154,7 @@ public:
         DECLARE_LB_UNKNOWN()
 
         void LB_STDCALL setCurrentSearchInterface(const char* iface);
-        lb_I_FunctorEntity* LB_STDCALL getFirstEntity();
+        lb_I_FunctorEntity* LB_STDCALL getFirstEntity(bool withPrefix = true);
 
         void initIntefaceList();
 
@@ -2210,258 +2213,264 @@ void LB_STDCALL lbHCInterfaceRepository::setCurrentSearchInterface(const char* i
         CurrentSearchMode = 1;
 }
 
-/*...slb_I_FunctorEntity\42\ LB_STDCALL lbHCInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
-lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
+/*...slb_I_FunctorEntity\42\ LB_STDCALL lbHCInterfaceRepository\58\\58\getFirstEntity\40\bool withBrefix = true\41\:0:*/
+lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity(bool withPrefix) {
+	if (CurrentSearchMode == 0) {
+		printf("SearchMode not set. Please call first lbHCInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
+		return NULL;
+	}
+	
+	if (CurrentSearchMode != 1) {
+		printf("SearchMode currently not provided.\n");
+		return NULL;
+	}
 
-        if (CurrentSearchMode == 0) {
-                printf("SearchMode not set. Please call first lbHCInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
-                return NULL;
-        }
-        
-        if (CurrentSearchMode != 1) {
-                printf("SearchMode currently not provided.\n");
-                return NULL;
-        }
-
-        const char* module = NULL;
-        const char* functor = NULL;
-        bool  found = false;
+	char* module = NULL;
+	char* functor = (char*)malloc(256); 
+	bool  found = false;
 
 // Add code here to overload exsisting interface definitions by custom repository
 
 #ifndef LINUX
-        #ifdef __WATCOMC__
-        #define PREFIX "_"
-        #endif
-        #ifdef __MINGW32__
-        #define PREFIX ""
-        #endif
-        #ifdef _MSC_VER
-        #define PREFIX ""
-        #endif
+	#ifdef __WATCOMC__
+	#define PREFIX "_"
+	#endif
+	#ifdef __MINGW32__
+	#define PREFIX ""
+	#endif
+	#ifdef _MSC_VER
+	#define PREFIX ""
+	#endif
 #endif
 #ifdef LINUX
-#define PREFIX ""
+        #define PREFIX ""
 #endif
 
+        const char* prefix = "";
+
+        if (withPrefix == true) {
+                prefix = PREFIX;
+        }
+
         if (strcmp(searchArgument, "lb_I_CriticalSection") == 0) {
-                functor = PREFIX "instanceOflbCritSect";
+                sprintf(functor, "%sinstanceOflbCritSect", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Lock") == 0) {
-                functor = PREFIX "instanceOflbLock";
+                sprintf(functor, "%sinstanceOflbLock", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
     if (strcmp(searchArgument, "lb_I_Float") == 0) {
-        functor = PREFIX "instanceOfFloat";
+        sprintf(functor, "%sinstanceOfFloat", prefix);
         module = "lbClasses";
         found = true;
     }
-        else
+    else
     if (strcmp(searchArgument, "lb_I_Double") == 0) {
-        functor = PREFIX "instanceOfDouble";
+        sprintf(functor, "%sinstanceOfDouble", prefix);
         module = "lbClasses";
         found = true;
     }
     else
     if (strcmp(searchArgument, "lb_I_Long") == 0) {
-        functor = PREFIX "instanceOfLong";
+        sprintf(functor, "%sinstanceOfLong", prefix);
         module = "lbClasses";
         found = true;
     }
-        else
-        if (strcmp(searchArgument, "lb_I_Boolean") == 0) {
-                functor = PREFIX "instanceOfBoolean";
-                module = "lbClasses";
-                found = true;
+    else
+    if (strcmp(searchArgument, "lb_I_Boolean") == 0) {
+        sprintf(functor, "%sinstanceOfBoolean", prefix);
+        module = "lbClasses";
+        found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_String") == 0) {
-                functor = PREFIX "instanceOfString";
+                sprintf(functor, "%sinstanceOfString", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Parameter") == 0) {
-                functor = PREFIX "instanceOfParameter";
+                sprintf(functor, "%sinstanceOfParameter", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Thread") == 0) {
-                functor = PREFIX "instanceOflbThread";
+                sprintf(functor, "%sinstanceOflbThread", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Container") == 0) {
-                functor = PREFIX "instanceOfSkipList";
+                sprintf(functor, "%sinstanceOfSkipList", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_InputStream") == 0) {
-                functor = PREFIX "instanceOfInputStream";
+                sprintf(functor, "%sinstanceOfInputStream", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_OutputStream") == 0) {
-                functor = PREFIX "instanceOfOutputStream";
+                sprintf(functor, "%sinstanceOfOutputStream", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Log") == 0) {
-                functor = PREFIX "instanceOfLogger";
+                sprintf(functor, "%sinstanceOfLogger", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_KeyBase") == 0) {
-                functor = PREFIX "instanceOfIntegerKey";
+                sprintf(functor, "%sinstanceOfIntegerKey", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Integer") == 0) {
-                functor = PREFIX "instanceOfInteger";
+                sprintf(functor, "%sinstanceOfInteger", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_FileLocation") == 0) {
-                functor = PREFIX "instanceOfFileLocation";
+                sprintf(functor, "%sinstanceOfFileLocation", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_DirLocation") == 0) {
-                functor = PREFIX "instanceOfDirLocation";
+                sprintf(functor, "%sinstanceOfDirLocation", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Database") == 0) {
-                functor = PREFIX "instanceOfDatabase";
+                sprintf(functor, "%sinstanceOfDatabase", prefix);
                 module = "lbDB";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_PluginManager") == 0) {
-                functor = PREFIX "instanceOfPluginManager";
+                sprintf(functor, "%sinstanceOfPluginManager", prefix);
                 module = "lbPluginManager";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Plugin") == 0) {
-                functor = PREFIX "instanceOfPlugin";
+                sprintf(functor, "%sinstanceOfPlugin", prefix);
                 module = "lbPluginManager";
                 found = true;
         }
         else
+        // This is no longer used a long time, but I may add it arain for runtime reconfigurability.
+        // Or I may provide am override configuration file to keep much as fixed and ome to be overridden.
         if (strcmp(searchArgument, "lb_I_InterfaceRepository") == 0) {
-                functor = "instanceOfInterfaceRepository";
+                sprintf(functor, "%sinstanceOfInterfaceRepository", prefix);
                 module = "lbDOMConfig";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_MetaApplication") == 0) {
-                functor = PREFIX "instanceOfMetaApplication";
+                sprintf(functor, "%sinstanceOfMetaApplication", prefix);
                 module = "lbMetaApplication";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_EventMapper") == 0) {
-                functor = PREFIX "instanceOfEventMapper";
+                sprintf(functor, "%sinstanceOfEventMapper", prefix);
                 module = "lbMetaApplication";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_EventManager") == 0) {
-                functor = PREFIX "instanceOfEventManager";
+                sprintf(functor, "%sinstanceOfEventManager", prefix);
                 module = "lbMetaApplication";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Dispatcher") == 0) {
-                functor = PREFIX "instanceOfDispatcher";
+                sprintf(functor, "%sinstanceOfDispatcher", prefix);
                 module = "lbMetaApplication";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_EvHandler") == 0) {
-                functor = PREFIX "instanceOfEvHandler";
+                sprintf(functor, "%sinstanceOfEvHandler", prefix);
                 module = "lbMetaApplication";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Locale") == 0) {
-                functor = PREFIX "instanceOfLocale";
+                sprintf(functor, "%sinstanceOfLocale", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Socket") == 0) {
-                functor = PREFIX "instanceOflbSocket";
+                sprintf(functor, "%sinstanceOflbSocket", prefix);
                 module = "lbtransfer";
                 found = true;
         }
         else
         // lbDMF_ACEWrapper instead of lbtransfer when paying with ACE version. But currently it has problems between Mac OS X and Windows XP. (Maybe TCP_NODELAY doesn't work).
         if (strcmp(searchArgument, "lb_I_Transfer") == 0) {
-                functor = PREFIX "instanceOflbTransfer";
+                sprintf(functor, "%sinstanceOflbTransfer", prefix);
                 module = "lbtransfer";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Transfer_DataObject") == 0) {
-                functor = PREFIX "instanceOflbTransferDataObject";
+                sprintf(functor, "%sinstanceOflbTransferDataObject", prefix);
                 module = "lbtransfer";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_Transfer_Data") == 0) {
-                functor = PREFIX "instanceOflbTransferData";
+                sprintf(functor, "%sinstanceOflbTransferData", prefix);
                 module = "lbtransfer";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_BinaryData") == 0) {
-                functor = PREFIX "instanceOfBinaryData";
+                sprintf(functor, "%sinstanceOfBinaryData", prefix);
                 module = "lbClasses";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_ApplicationServer") == 0) {
-                functor = PREFIX "instanceOflbAppServer";
+                sprintf(functor, "%sinstanceOflbAppServer", prefix);
                 module = "lbcs";
                 found = true;
         }
         else
 ///\todo Implement this as 'search in plugins'.
         if (strcmp(searchArgument, "lb_I_ApplicationBus") == 0) {
-                functor = "instanceOfApplicationBusProxy";
+                sprintf(functor, "%sinstanceOfApplicationBusProxy", prefix);
                 module = "ApplicationBusProxy";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_FormularAction_Manager") == 0) {
-                functor = PREFIX "instanceOflbFormularActions";
+                sprintf(functor, "%sinstanceOflbFormularActions", prefix);
                 module = "lbWorkflowEngine";
                 found = true;
         }
         else
         if (strcmp(searchArgument, "lb_I_DirectoryBrowser") == 0) {
-                functor = PREFIX "instanceOfDirectoryBrowser";
+                sprintf(functor, "%sinstanceOfDirectoryBrowser", prefix);
                 module = "lbClasses";
                 found = true;
         }
-        
 
         lbFunctorEntity* fe = new lbFunctorEntity;
 
@@ -2471,6 +2480,8 @@ lb_I_FunctorEntity* LB_STDCALL lbHCInterfaceRepository::getFirstEntity() {
         _fe->setModule(module);
         _fe->setFunctor(functor);
 
+        free(functor);
+        
         if (!found) {
                 // searchArgument gets overwritten by first use of _LOG :-)
                 char *iface = strdup(searchArgument);
@@ -3727,10 +3738,36 @@ lbErrCodes LB_STDCALL lbModule::request(const char* request, lb_I_Unknown** resu
                 *result = _result.getPtr();
                 
                 if (*result == NULL) {
+                    UAP(lb_I_FunctorEntity, e1)
+
+                    e1 = newInterfaceRepository->getFirstEntity(false);
+
+                    char* functor1 = e1->getFunctor();
+                    char* module1  = e1->getModule();
+
+                    if (functor1 == NULL || module1 == NULL) {
+                        _LOG << "Error: Requested interface (" << request << ") not found in repository!" LOG_
+                        free(buf);
+                        return ERR_MODULE_NO_INTERFACE;
+                    }
+
+                    err = makeInstance(functor1, module1, &_result);
+
+                    if (err == ERR_MEMORY_ALLOC) {
+                        free(buf);
+                        return err;
+                    }
+
+                    //QI(result, lb_I_InterfaceRepository, newInterfaceRepository)
+                    *result = _result.getPtr();
+
+                    if (*result == NULL) {
                         _CL_LOG << "Error: Requesting for " << request << " failed!" LOG_
                         free(buf);
                         return ERR_MODULE_NOT_FOUND;
+                    }
                 }
+                
                 _result++;
                 if (isVerbose()) Instances();
         } else {
