@@ -65,13 +65,11 @@ void runTest(const char* servername, const char* servicename)
                         char* text = "Hallo Server, dies ist eine Echo - Message";
                         echo->setString(client->Echo(text)->charrep());
                         
-                        _CL_LOG << "Echo result is: " << echo->charrep() LOG_
-                        
+                        _CL_LOGALWAYS << "Echo result is: " << echo->charrep() LOG_
                         
                         backend->setString(client->findBackend("lbDMFManager")->charrep());
-                        
-                        
-                        if (backend != NULL) _CL_LOG << "Backend is " << backend->charrep() LOG_
+
+                        _CL_LOGALWAYS << "Backend is " << backend->charrep() LOG_
                 }
         } else {
                 _CL_LOGALWAYS << "Error: Can't find application bus." LOG_
