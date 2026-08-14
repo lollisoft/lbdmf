@@ -4,10 +4,10 @@ projectIdent
 VpeMain
 1
 WRect
--21
--37
-10282
-9955
+5
+9
+9290
+9083
 2
 MProject
 3
@@ -139,7 +139,7 @@ WFileName
 41
 basedevelopment\lbtransfer\lbtransfer.tgt
 0
-2
+10
 31
 VComponent
 32
@@ -155,7 +155,7 @@ WFileName
 29
 basedevelopment\lbcs\lbcs.tgt
 0
-5
+1
 34
 VComponent
 35
@@ -187,7 +187,7 @@ WFileName
 32
 serverplugins\applicationbus.tgt
 0
-3
+2
 40
 VComponent
 41
