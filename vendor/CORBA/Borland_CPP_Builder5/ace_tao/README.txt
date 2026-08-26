@@ -1,0 +1,1 @@
+Unpack the self deflating executable to vendor\CORBA\Borland_CPP_Builder5 to enable seamless building.
