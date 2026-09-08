@@ -1109,7 +1109,7 @@ lb_I_Form* LB_STDCALL lb_wxGUI::addCustomForm(lb_I_Form* form, const char* formN
         UAP(lb_I_KeyBase, key)
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-        fName->setData(formName);
+        fName->setString(formName);
 
         QI(fName, lb_I_KeyBase, key)
 
@@ -1252,7 +1252,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::createDBForm(const char* formName, const
         UAP(lb_I_KeyBase, key)
 
         UAP_REQUEST(getModuleInstance(), lb_I_String, fName)
-        fName->setData(formName);
+        fName->setString(formName);
 
         QI(fName, lb_I_KeyBase, key)
 
@@ -1540,7 +1540,7 @@ lb_I_FixedDatabaseForm* LB_STDCALL lb_wxGUI::findCustomDBForm(const char* name) 
         UAP(lb_I_KeyBase, key)
         UAP(lb_I_Unknown, uk)
 
-        fName->setData(name);
+        fName->setString(name);
 
         QI(fName, lb_I_KeyBase, key)
 
@@ -1574,7 +1574,7 @@ lb_I_DatabaseForm* LB_STDCALL lb_wxGUI::findDBForm(const char* name) {
         UAP(lb_I_KeyBase, key)
         UAP(lb_I_Unknown, uk)
 
-        fName->setData(name);
+        fName->setString(name);
 
         QI(fName, lb_I_KeyBase, key)
 
@@ -1948,11 +1948,11 @@ void lb_wxFrame::OnTimer(wxTimerEvent& WXUNUSED(event)) {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 	
-	parameter->setData("msg");
-	value->setData("lb_wxFrame::OnTimer");
+	parameter->setString("msg");
+	value->setString("lb_wxFrame::OnTimer");
 	param->setUAPString(*&parameter, *&value);
-	parameter->setData("title");
-	value->setData("Timer triggered");
+	parameter->setString("title");
+	value->setString("Timer triggered");
 	param->setUAPString(*&parameter, *&value);
 	
 	UAP(lb_I_Unknown, uk)
@@ -2255,18 +2255,18 @@ void lb_wxFrame::OnPropertyGridChange ( wxPropertyGridEvent& event )
 
         eman->resolveEvent((const char*) PropertyName.c_str(), PropertyEvent);
 
-        name->setData("eventId");
+        name->setString("eventId");
         evId->setData(PropertyEvent);
         param->setUAPInteger(*&name, *&evId);
 
         _LOG << "Property '" << PropertyName.c_str() << "' changed to '" << PropValue.c_str() << "'" LOG_
 
-        name->setData("value");
-        value->setData((const char*) PropValue.c_str());
+        name->setString("value");
+        value->setString((const char*) PropValue.c_str());
         param->setUAPString(*&name, *&value);
 
-        name->setData("name");
-        value->setData((const char*) PropertyName.c_str());
+        name->setString("name");
+        value->setString((const char*) PropertyName.c_str());
         param->setUAPString(*&name, *&value);
 
         UAP(lb_I_Unknown, uk)
@@ -2440,7 +2440,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::setPreferredPropertyPanelByNamespace(lb_I_Unkn
         UAP_REQUEST(getModuleInstance(), lb_I_String, _namespace)
         QI(uk, lb_I_Parameter, param)
 
-        parameter->setData("namespace");
+        parameter->setString("namespace");
         param->getUAPString(*&parameter, *&_namespace);
 
         if (PanelNamespace == NULL) {
@@ -2462,9 +2462,9 @@ lbErrCodes LB_STDCALL lb_wxFrame::showMsgBox(lb_I_Unknown* uk) {
         UAP_REQUEST(getModuleInstance(), lb_I_String, title)
         QI(uk, lb_I_Parameter, param)
 
-        parameter->setData("msg");
+        parameter->setString("msg");
         param->getUAPString(*&parameter, *&msg);
-        parameter->setData("title");
+        parameter->setString("title");
         param->getUAPString(*&parameter, *&title);
 
         gui->msgBox(title->charrep(), msg->charrep());
@@ -3708,7 +3708,7 @@ lbErrCodes LB_STDCALL lb_wxFrame::showLeftPropertyBar(lb_I_Unknown* uk) {
 
                         param = meta->getParameter();
 
-                        group->setData("General");
+                        group->setString("General");
 
                         currentProperties->setUAPParameter(*&group, *&param);
                 }
