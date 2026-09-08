@@ -310,7 +310,11 @@
 #endif
 /*...e*/
 /*...s LOG_:0:*/
-#define  LOG_  << '\n'; }
+#ifdef _MSC_VER
+#define  LOG_  << "\n" ; cout.flush(); }
+#else
+#define  LOG_  << '\n' ; }
+#endif
 /*...e*/
 
 #define _CL_VERBOSE \

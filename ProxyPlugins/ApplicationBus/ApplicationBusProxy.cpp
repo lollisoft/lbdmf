@@ -288,7 +288,6 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
         user_info->setServerSide(0);
         result->setServerSide(0);
         
-        
         user_info->setClientPid(lbGetCurrentProcessId());
         user_info->setClientTid(lbGetCurrentThreadId());
 
@@ -299,8 +298,8 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
         
         user_info->addString(requestString->charrep());
         
-    user_info->addString("text");
-    user_info->addString(text);
+		user_info->addString("text");
+		user_info->addString(text);
         
         ABSConnection->init(NULL);
         
@@ -321,7 +320,15 @@ lb_I_String* LB_STDCALL ApplicationBusProxy::Echo(char* text) {
         if (result->requestString("text", temptext) != ERR_NONE) {
                 _CL_LOG << "Error in recieving parameter from Echo. Parameter 'text' wrong or not given." LOG_
         } else {
-                _CL_LOG << "Parameter result: 'text' = '" << temptext << "'" LOG_
+#ifdef LINUX
+                _CL_LOGALWAYS << "Linux: Parameter result: 'text' = '" << temptext << "'" LOG_
+#endif
+#ifdef _MSC_VER
+                _CL_LOGALWAYS << "Msvc: Parameter result: 'text' = '" << temptext << "'" LOG_
+#endif
+#ifdef __WATCOMC__
+                _CL_LOGALWAYS << "Watcom: Parameter result: 'text' = '" << temptext << "'" LOG_
+#endif
                 echo->setString(temptext);
         }
 
