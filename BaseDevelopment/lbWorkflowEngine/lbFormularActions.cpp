@@ -225,7 +225,7 @@ char* lbFormularActions::getActionTargetID(const char* reversed_event) {
 	}
 	UAP_REQUEST(getModuleInstance(), lb_I_String, What)
 	
-	What->setData(reversed_event);
+	What->setString(reversed_event);
 	What->trim();
 
 	database->init();

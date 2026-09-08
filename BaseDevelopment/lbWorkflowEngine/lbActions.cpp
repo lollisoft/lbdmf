@@ -622,7 +622,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 		REQUEST(getModuleInstance(), lb_I_Container, actions)
 	}
 
-	parameter->setData("id");
+	parameter->setString("id");
 	params->getUAPLong(*&parameter, *&id);
 
 	UAP(lb_I_Action_Step_Transitions, trans)
@@ -750,7 +750,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				action_handler->trim();
 				module->trim();
 
-				key->setData(module->charrep());
+				key->setString(module->charrep());
 				*key += *&action_handler;
 
 				QI(key, lb_I_KeyBase, ukey)
@@ -838,7 +838,7 @@ long LB_STDCALL lbAction::delegate(lb_I_Parameter* params) {
 				action_handler->trim();
 				module->trim();
 
-				key->setData(module->charrep());
+				key->setString(module->charrep());
 				*key += *&action_handler;
 
 				QI(key, lb_I_KeyBase, ukey)
@@ -989,7 +989,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 			stepid->setData(*&uk);
 
-			parameter->setData("id");
+			parameter->setString("id");
 			params->setUAPLong(*&parameter, *&stepid);
 
 			_LOG << "Delegate action (" << stepid->charrep() << ") ..." LOG_
@@ -1055,7 +1055,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 					id = query->getAsLong(1);
 
-					parameter->setData("id");
+					parameter->setString("id");
 					params->setUAPLong(*&parameter, *&id);
 
 					long nextStep = delegate(*&params);
@@ -1084,7 +1084,7 @@ void LB_STDCALL lbAction::execute(lb_I_Parameter* params) {
 
 					id = query->getAsLong(1);
 
-					parameter->setData("id");
+					parameter->setString("id");
 					params->setUAPLong(*&parameter, *&id);
 
 					long nextStep = delegate(*&params);

@@ -120,20 +120,20 @@ bool LB_STDCALL lbMasterFormAction::openMasterForm(lb_I_String* formularname, lb
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
-	parameter->setData("DBName");
+	parameter->setString("DBName");
 	params->getUAPString(*&parameter, *&DBName);
-	parameter->setData("DBUser");
+	parameter->setString("DBUser");
 	params->getUAPString(*&parameter, *&DBUser);
-	parameter->setData("DBPass");
+	parameter->setString("DBPass");
 	params->getUAPString(*&parameter, *&DBPass);
-	parameter->setData("source Form");
+	parameter->setString("source Form");
 	params->getUAPString(*&parameter, *&detailForm);
-	parameter->setData("source value");
+	parameter->setString("source value");
 	params->getUAPString(*&parameter, *&SourceFieldValue);
-	parameter->setData("actionID");
+	parameter->setString("actionID");
 	actionID->setData(myActionID);
 	params->setUAPLong(*&parameter, *&actionID);
-	parameter->setData("application");
+	parameter->setString("application");
 	params->getUAPString(*&parameter, *&app);
 
 	UAP(lb_I_GUI, gui)
