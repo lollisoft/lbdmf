@@ -2909,448 +2909,451 @@ lbErrCodes LB_STDCALL lb_wxFrame::removeToolBar(lb_I_Unknown* uk) {
 
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addToolBar\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addToolBar(lb_I_Unknown* uk) {
-        lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
-#ifndef USE_WXAUI_TOOLBAR
-        wxToolBar* tb;
-#endif
-#ifdef USE_WXAUI_TOOLBAR
-        wxAuiToolBar* tb;
-#endif
+	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+	#ifndef USE_WXAUI_TOOLBAR
+	wxToolBar* tb;
+	#endif
+	#ifdef USE_WXAUI_TOOLBAR
+	wxAuiToolBar* tb;
+	#endif
 
-        UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
-        UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+	UAP_REQUEST(getModuleInstance(), lb_I_String, name)
 
-        UAP(lb_I_Parameter, params)
-        QI(uk, lb_I_Parameter, params)
+	UAP(lb_I_Parameter, params)
+	QI(uk, lb_I_Parameter, params)
 
-        if (params != NULL) {
-                err = ERR_NONE;
+	if (params != NULL) {
+		err = ERR_NONE;
 
-                *parameter = "toolbarName";
-                params->getUAPString(*&parameter, *&name);
-        }
+		*parameter = "toolbarName";
+		params->getUAPString(*&parameter, *&name);
+	}
 
-/*...sInit main toolbar \40\exit tool\41\:8:*/
-#ifdef USE_WXAUI_TOOLBAR
-        wxAuiToolBar* maintb;
-#endif
-#ifndef USE_WXAUI_TOOLBAR
-        wxToolBar* maintb;
-#endif
+	/*...sInit main toolbar \40\exit tool\41\:8:*/
+	#ifdef USE_WXAUI_TOOLBAR
+	wxAuiToolBar* maintb;
+	#endif
+	#ifndef USE_WXAUI_TOOLBAR
+	wxToolBar* maintb;
+	#endif
 
-#ifdef USE_WXAUI_TOOLBAR
-        maintb = (wxAuiToolBar*) m_mgr.GetPane("Main Toolbar").window;
-#endif
-#ifndef USE_WXAUI_TOOLBAR
-        maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
-#endif
+	#ifdef USE_WXAUI_TOOLBAR
+	maintb = (wxAuiToolBar*) m_mgr.GetPane("Main Toolbar").window;
+	#endif
+	#ifndef USE_WXAUI_TOOLBAR
+	maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
+	#endif
 
-        if (maintb == NULL) {
-#ifdef USE_WXAUI_TOOLBAR
-				wxAuiToolBarItemArray prepend_items;
-				wxAuiToolBarItemArray append_items;
+	if (maintb == NULL) {
+		#ifdef USE_WXAUI_TOOLBAR
+		wxAuiToolBarItemArray prepend_items;
+		wxAuiToolBarItemArray append_items;
 
-				maintb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxAUI_TB_DEFAULT_STYLE); // | wxAUI_TB_OVERFLOW);
-				maintb->SetCustomOverflowItems(prepend_items, append_items);
-#endif
-#ifdef USE_WXAUI
-                maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
-#endif
+		maintb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+		wxAUI_TB_DEFAULT_STYLE); // | wxAUI_TB_OVERFLOW);
+		maintb->SetCustomOverflowItems(prepend_items, append_items);
+		#endif
+		#ifdef USE_WXAUI
+		maintb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
+		#endif
 
-#ifdef USE_WXAUI
-                m_mgr.AddPane(maintb, wxAuiPaneInfo().
-							Name(wxT("Main Toolbar")).Caption("Main Toolbar").
-							ToolbarPane().Top().
-							Fixed().
-							LeftDockable(false).RightDockable(false));
-                m_mgr.Update();
-#endif
-#ifdef USE_WXAUI_TOOLBAR
-				m_mgr.AddPane(maintb, wxAuiPaneInfo().
-							Name("Main Toolbar").Caption("Main Toolbar").
-							ToolbarPane().Top().
-							Fixed().
-							LeftDockable(false).RightDockable(false));
-#endif
+		#ifdef USE_WXAUI
+		m_mgr.AddPane(maintb, wxAuiPaneInfo().
+		Name(wxT("Main Toolbar")).Caption("Main Toolbar").
+		ToolbarPane().Top().
+		Fixed().
+		LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
+		#endif
+		#ifdef USE_WXAUI_TOOLBAR
+		m_mgr.AddPane(maintb, wxAuiPaneInfo().
+		Name("Main Toolbar").Caption("Main Toolbar").
+		ToolbarPane().Top().
+		Fixed().
+		LeftDockable(false).RightDockable(false));
+		#endif
 
-                wxImage::AddHandler(new wxXPMHandler);
-                wxImage::AddHandler(new wxPNGHandler);
+		wxImage::AddHandler(new wxXPMHandler);
+		wxImage::AddHandler(new wxPNGHandler);
 
-                maintb->SetToolBitmapSize(wxSize(32, 32));
+		maintb->SetToolBitmapSize(wxSize(32, 32));
 
-                UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarfile)
-                UAP_REQUEST(getModuleInstance(), lb_I_String, images)
-                UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarfile)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, images)
+		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
 
-                *toolbarfile += app->getDirLocation();
+		*toolbarfile += app->getDirLocation();
 
-#ifdef OSX
-                *images = "/toolbarimages/";
-#endif
-#ifdef LINUX
-                *images = "/toolbarimages/";
-#endif
-#ifdef WINDOWS
-                *images = "\\toolbarimages\\";
-#endif
-                *toolbarfile += images->charrep();
+		#ifdef OSX
+		*images = "/toolbarimages/";
+		#endif
+		#ifdef LINUX
+		*images = "/toolbarimages/";
+		#endif
+		#ifdef WINDOWS
+		*images = "\\toolbarimages\\";
+		#endif
+		*toolbarfile += images->charrep();
 
-                #ifdef OSX
-                if (opendir(toolbarfile->charrep()) == NULL) {
-                        UAP(lb_I_String, pName)
-                        pName = app->getProcessName();
-                        *toolbarfile = "./";
-                        *toolbarfile += pName->charrep();
-                        *toolbarfile += ".app/Contents/Resources/toolbarimages/";
-                }
-                #endif
-                #ifdef LINUX
-                if (opendir(toolbarfile->charrep()) == NULL) {
-                        *toolbarfile = "./";
-                        *toolbarfile += "toolbarimages/";
-                }
-                #endif
+		#ifdef OSX
+		if (opendir(toolbarfile->charrep()) == NULL) {
+			UAP(lb_I_String, pName)
+			pName = app->getProcessName();
+			*toolbarfile = "./";
+			*toolbarfile += pName->charrep();
+			*toolbarfile += ".app/Contents/Resources/toolbarimages/";
+		}
+		#endif
+		#ifdef LINUX
+		if (opendir(toolbarfile->charrep()) == NULL) {
+			*toolbarfile = "./";
+			*toolbarfile += "toolbarimages/";
+		}
+		#endif
 
-                *toolbarfile += "exit.png";
+		*toolbarfile += "exit.png";
 
 
-                if (!wxFile::Exists(toolbarfile->charrep())) {
-                    // Fallback
-#ifdef OSX
-#endif
-#ifdef LINUX
-                    *toolbarfile = "/usr/share/lbdmf";
-                    *toolbarfile += images->charrep();
-                    *toolbarfile += "exit.png";
-#endif
-#ifdef WINDOWS
-#endif
-                }
+		if (!wxFile::Exists(toolbarfile->charrep())) {
+			// Fallback
+			#ifdef OSX
+			#endif
+			#ifdef LINUX
+			*toolbarfile = "/usr/share/lbdmf";
+			*toolbarfile += images->charrep();
+			*toolbarfile += "exit.png";
+			#endif
+			#ifdef WINDOWS
+			*toolbarfile = "..\\Test\\GUI\\wxWrapper";
+			*toolbarfile += images->charrep();
+			*toolbarfile += "exit.png";
+			#endif
+		}
 
-                wxImage* im;
+		wxImage* im;
 
-                im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+		im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
 
-#ifdef LBWXVERSION_CURRENT
-				wxVector<wxBitmap> bitmaps;
-                wxBitmap bm = wxBitmap(*im);
-				bitmaps.push_back(bm);
+		#ifdef LBWXVERSION_CURRENT
+		wxVector<wxBitmap> bitmaps;
+		wxBitmap bm = wxBitmap(*im);
+		bitmaps.push_back(bm);
 
-                // DYNAMIC_TOOL_QUIT indirection workaround for wxAuiToolBar::OnLeftUp(wxMouseEvent& evt) issue
-                maintb->AddTool(DYNAMIC_TOOL_QUIT, (const char*) _trans("Exit"), bm, _trans("Exit"));
-#else
-                wxBitmap bm = wxBitmap(*im);
+		// DYNAMIC_TOOL_QUIT indirection workaround for wxAuiToolBar::OnLeftUp(wxMouseEvent& evt) issue
+		maintb->AddTool(DYNAMIC_TOOL_QUIT, (const char*) _trans("Exit"), bm, _trans("Exit"));
+		#else
+		wxBitmap bm = wxBitmap(*im);
 
-                maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
-#endif
-                maintb->Realize();
+		maintb->AddTool(DYNAMIC_QUIT, bm, _trans("Exit"));
+		#endif
+		maintb->Realize();
 
-#ifdef USE_WXAUI_TOOLBAR
-                wxSize s = wxSize(maintb->GetToolBitmapSize().GetWidth()*maintb->GetToolCount(), maintb->GetToolBitmapSize().GetHeight());
-#endif
-#ifdef USE_WXAUI
-                wxSize s = wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight());
-#endif
+		#ifdef USE_WXAUI_TOOLBAR
+		wxSize s = wxSize(maintb->GetToolBitmapSize().GetWidth()*maintb->GetToolCount(), maintb->GetToolBitmapSize().GetHeight());
+		#endif
+		#ifdef USE_WXAUI
+		wxSize s = wxSize(maintb->GetToolSize().GetWidth()*maintb->GetToolsCount(), maintb->GetToolSize().GetHeight());
+		#endif
 
-                maintb->SetSize(s);
-                maintb->SetMinSize(s);
-                maintb->Fit();
+		maintb->SetSize(s);
+		maintb->SetMinSize(s);
+		maintb->Fit();
 
-#ifndef USE_WXAUI
-#ifndef USE_WXAUI_TOOLBAR
-                SetToolBar(maintb);
-#endif
-#endif
+		#ifndef USE_WXAUI
+		#ifndef USE_WXAUI_TOOLBAR
+		SetToolBar(maintb);
+		#endif
+		#endif
 
-#ifdef USE_WXAUI
-                m_mgr.DetachPane(maintb);
+		#ifdef USE_WXAUI
+		m_mgr.DetachPane(maintb);
 
-                m_mgr.AddPane(maintb, wxAuiPaneInfo().
-                          Name("Main Toolbar").Caption("Main Toolbar").
-                          ToolbarPane().Top().
-                          Fixed().
-                          LeftDockable(false).RightDockable(false));
-                m_mgr.Update();
-#endif
-#ifdef USE_WXAUI_TOOLBAR
-                m_mgr.DetachPane(maintb);
+		m_mgr.AddPane(maintb, wxAuiPaneInfo().
+		Name("Main Toolbar").Caption("Main Toolbar").
+		ToolbarPane().Top().
+		Fixed().
+		LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
+		#endif
+		#ifdef USE_WXAUI_TOOLBAR
+		m_mgr.DetachPane(maintb);
 
-                m_mgr.AddPane(maintb, wxAuiPaneInfo().
-                          Name("Main Toolbar").Caption("Main Toolbar").
-                          ToolbarPane().Top().
-                          Fixed().
-                          LeftDockable(false).RightDockable(false));
-                m_mgr.Update();
-#endif
-        }
-/*...e*/
+		m_mgr.AddPane(maintb, wxAuiPaneInfo().
+		Name("Main Toolbar").Caption("Main Toolbar").
+		ToolbarPane().Top().
+		Fixed().
+		LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
+		#endif
+	}
+	/*...e*/
 
-#ifndef USE_WXAUI
-#ifndef USE_WXAUI_TOOLBAR
-        tb = GetToolBar();
-#endif
-#endif
-#ifdef USE_WXAUI
-        tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
-#endif
-#ifdef USE_WXAUI_TOOLBAR
-        tb = (wxAuiToolBar*) m_mgr.GetPane(name->charrep()).window;
-#endif
+	#ifndef USE_WXAUI
+	#ifndef USE_WXAUI_TOOLBAR
+	tb = GetToolBar();
+	#endif
+	#endif
+	#ifdef USE_WXAUI
+	tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
+	#endif
+	#ifdef USE_WXAUI_TOOLBAR
+	tb = (wxAuiToolBar*) m_mgr.GetPane(name->charrep()).window;
+	#endif
 
-        if ((tb == NULL) && (params != NULL)) {
-#ifdef USE_WXAUI_TOOLBAR
-				wxAuiToolBarItemArray prepend_items;
-				wxAuiToolBarItemArray append_items;
+	if ((tb == NULL) && (params != NULL)) {
+		#ifdef USE_WXAUI_TOOLBAR
+		wxAuiToolBarItemArray prepend_items;
+		wxAuiToolBarItemArray append_items;
 
-				tb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                         wxAUI_TB_DEFAULT_STYLE); // | wxAUI_TB_OVERFLOW);
-				tb->SetCustomOverflowItems(prepend_items, append_items);
-#endif
-#ifdef USE_WXAUI
-                tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
-#endif
+		tb = new wxAuiToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+		wxAUI_TB_DEFAULT_STYLE); // | wxAUI_TB_OVERFLOW);
+		tb->SetCustomOverflowItems(prepend_items, append_items);
+		#endif
+		#ifdef USE_WXAUI
+		tb = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_HORIZONTAL);
+		#endif
 
-                wxImage::AddHandler(new wxXPMHandler);
-                wxImage::AddHandler(new wxPNGHandler);
+		wxImage::AddHandler(new wxXPMHandler);
+		wxImage::AddHandler(new wxPNGHandler);
 
-                tb->SetToolBitmapSize(wxSize(32, 32));
+		tb->SetToolBitmapSize(wxSize(32, 32));
 
-                err = ERR_NONE;
+		err = ERR_NONE;
 
-                *parameter = "toolbarName";
-                params->getUAPString(*&parameter, *&name);
+		*parameter = "toolbarName";
+		params->getUAPString(*&parameter, *&name);
 
-                wxImage::AddHandler(new wxXPMHandler);
-                wxImage::AddHandler(new wxPNGHandler);
+		wxImage::AddHandler(new wxXPMHandler);
+		wxImage::AddHandler(new wxPNGHandler);
 
-#ifndef USE_WXAUI
-#ifndef USE_WXAUI_TOOLBAR
-                SetToolBar(tb);
-#endif
-#endif
+		#ifndef USE_WXAUI
+		#ifndef USE_WXAUI_TOOLBAR
+		SetToolBar(tb);
+		#endif
+		#endif
 
-				//tb->Realize();
+		//tb->Realize();
 
-#ifdef USE_WXAUI
-                m_mgr.AddPane(tb, wxAuiPaneInfo().
-										Name(name->charrep()).Caption(name->charrep()).
-										ToolbarPane().Top().
-										//Fixed().
-										LeftDockable(false).RightDockable(false));
-                m_mgr.Update();
-#endif
-#ifdef USE_WXAUI_TOOLBAR
-				m_mgr.AddPane(tb, wxAuiPaneInfo().
-										Name(name->charrep()).Caption(name->charrep()).
-										ToolbarPane().Top().
-										//Fixed().
-										LeftDockable(false).RightDockable(false));
-                m_mgr.Update();
-#endif
+		#ifdef USE_WXAUI
+		m_mgr.AddPane(tb, wxAuiPaneInfo().
+		Name(name->charrep()).Caption(name->charrep()).
+		ToolbarPane().Top().
+		//Fixed().
+		LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
+		#endif
+		#ifdef USE_WXAUI_TOOLBAR
+		m_mgr.AddPane(tb, wxAuiPaneInfo().
+		Name(name->charrep()).Caption(name->charrep()).
+		ToolbarPane().Top().
+		//Fixed().
+		LeftDockable(false).RightDockable(false));
+		m_mgr.Update();
+		#endif
 
-                return ERR_NONE;
-        }
+		return ERR_NONE;
+	}
 
-        return err;
+	return err;
 }
 /*...e*/
 
 /*...slbErrCodes LB_STDCALL lb_wxFrame\58\\58\addTool_To_ToolBar\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_wxFrame::addTool_To_ToolBar(lb_I_Unknown* uk) {
-        lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
-        UAP(lb_I_Parameter, params)
+	lbErrCodes err = ERR_DISPATCH_PARAMETER_WRONG;
+	UAP(lb_I_Parameter, params)
 
-        QI(uk, lb_I_Parameter, params)
+	QI(uk, lb_I_Parameter, params)
 
-        if (params != NULL) {
-                UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
-                UAP_REQUEST(getModuleInstance(), lb_I_String, name)
-                UAP_REQUEST(getModuleInstance(), lb_I_String, tooltype)
-                UAP_REQUEST(getModuleInstance(), lb_I_String, entry)
-                UAP_REQUEST(getModuleInstance(), lb_I_String, evHandler)
-                UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarimage)
+	if (params != NULL) {
+		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, name)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, tooltype)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, entry)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, evHandler)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarimage)
 
-                *parameter = "toolbarName";
-                params->getUAPString(*&parameter, *&name);
-                *parameter = "tooltype";
-                params->getUAPString(*&parameter, *&tooltype);
-                *parameter = "entry";
-                params->getUAPString(*&parameter, *&entry);
-                *parameter = "evHandler";
-                params->getUAPString(*&parameter, *&evHandler);
-                *parameter = "toolbarimage";
-                params->getUAPString(*&parameter, *&toolbarimage);
+		*parameter = "toolbarName";
+		params->getUAPString(*&parameter, *&name);
+		*parameter = "tooltype";
+		params->getUAPString(*&parameter, *&tooltype);
+		*parameter = "entry";
+		params->getUAPString(*&parameter, *&entry);
+		*parameter = "evHandler";
+		params->getUAPString(*&parameter, *&evHandler);
+		*parameter = "toolbarimage";
+		params->getUAPString(*&parameter, *&toolbarimage);
 
-        toolbarimage->trim();
+		toolbarimage->trim();
 
-        if (*toolbarimage == "") {
-            _LOG << "Error: Could not add a tool with no image file name. It is an empty string!" LOG_
-            return ERR_NONE;
-        }
+		if (*toolbarimage == "") {
+			_LOG << "Error: Could not add a tool with no image file name. It is an empty string!" LOG_
+			return ERR_NONE;
+		}
 
-#ifdef USE_WXAUI_TOOLBAR
-                wxAuiToolBar* tb;
-#endif
-#ifdef USE_WXAUI
-                wxToolBar* tb;
-#endif
+		#ifdef USE_WXAUI_TOOLBAR
+		wxAuiToolBar* tb;
+		#endif
+		#ifdef USE_WXAUI
+		wxToolBar* tb;
+		#endif
 
-#ifndef USE_WXAUI
-#ifndef USE_WXAUI_TOOLBAR
-                tb = GetToolBar();
-#endif
-#endif
-#ifdef USE_WXAUI_TOOLBAR
-                tb = (wxAuiToolBar*) m_mgr.GetPane(name->charrep()).window;
-#endif
-#ifdef USE_WXAUI
-                tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
-#endif
+		#ifndef USE_WXAUI
+		#ifndef USE_WXAUI_TOOLBAR
+		tb = GetToolBar();
+		#endif
+		#endif
+		#ifdef USE_WXAUI_TOOLBAR
+		tb = (wxAuiToolBar*) m_mgr.GetPane(name->charrep()).window;
+		#endif
+		#ifdef USE_WXAUI
+		tb = (wxToolBar*) m_mgr.GetPane(name->charrep()).window;
+		#endif
 
-                if (tb != NULL) {
-                        UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
+		if (tb != NULL) {
+			UAP_REQUEST(getModuleInstance(), lb_I_EventManager, ev_manager)
 
-                        int EvNr = 0;
+			int EvNr = 0;
 
-                        if (ev_manager->resolveEvent(evHandler->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
-                                _CL_LOG << "ERROR: Could not resolve a toolbar entry (" << entry->charrep() << ")" LOG_
+			if (ev_manager->resolveEvent(evHandler->getData(), EvNr) == ERR_EVENT_NOTREGISTERED) {
+				_CL_LOG << "ERROR: Could not resolve a toolbar entry (" << entry->charrep() << ")" LOG_
 
-                                return ERR_EVENT_NOTREGISTERED;
-                        }
+				return ERR_EVENT_NOTREGISTERED;
+			}
 
-                        UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
+			UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, app)
 
-                        UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarfile)
-                        UAP_REQUEST(getModuleInstance(), lb_I_String, images)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, toolbarfile)
+			UAP_REQUEST(getModuleInstance(), lb_I_String, images)
 
-                        *toolbarfile = app->getDirLocation();
+			*toolbarfile = app->getDirLocation();
 
-#ifdef OSX
-                        *images = "/toolbarimages/";
-#endif
-#ifdef LINUX
-                        *images = "/toolbarimages/";
-#endif
-#ifdef WINDOWS
-                        *images = "\\toolbarimages\\";
-#endif
-                        *toolbarfile += images->charrep();
+			#ifdef OSX
+			*images = "/toolbarimages/";
+			#endif
+			#ifdef LINUX
+			*images = "/toolbarimages/";
+			#endif
+			#ifdef WINDOWS
+			*images = "\\toolbarimages\\";
+			#endif
+			*toolbarfile += images->charrep();
 
-#ifdef OSX
-                        if (opendir(toolbarfile->charrep()) == NULL) {
-                                UAP(lb_I_String, pName)
-                                pName = app->getProcessName();
-                                *toolbarfile = "./";
-                                *toolbarfile += pName->charrep();
-                                *toolbarfile += ".app/Contents/Resources/toolbarimages/";
-                        }
-#endif
-#ifdef LINUX
-                        if (opendir(toolbarfile->charrep()) == NULL) {
-                                *toolbarfile = "./";
-                                *toolbarfile += "toolbarimages/";
-                        }
-#endif
+			#ifdef OSX
+			if (opendir(toolbarfile->charrep()) == NULL) {
+				UAP(lb_I_String, pName)
+				pName = app->getProcessName();
+				*toolbarfile = "./";
+				*toolbarfile += pName->charrep();
+				*toolbarfile += ".app/Contents/Resources/toolbarimages/";
+			}
+			#endif
+			#ifdef LINUX
+			if (opendir(toolbarfile->charrep()) == NULL) {
+				*toolbarfile = "./";
+				*toolbarfile += "toolbarimages/";
+			}
+			#endif
 
-                        *toolbarfile += toolbarimage->charrep();
+			*toolbarfile += toolbarimage->charrep();
 
-                        if (!wxFile::Exists(toolbarfile->charrep())) {
-                            // Fallback
-#ifdef OSX
-#endif
-#ifdef LINUX
-                            *toolbarfile = "/usr/share/lbdmf";
-                            *toolbarfile += images->charrep();
-                            *toolbarfile += toolbarimage->charrep();
-#endif
-#ifdef WINDOWS
-#endif
-                        }
+			if (!wxFile::Exists(toolbarfile->charrep())) {
+				// Fallback
+				#ifdef OSX
+				#endif
+				#ifdef LINUX
+				*toolbarfile = "/usr/share/lbdmf";
+				*toolbarfile += images->charrep();
+				*toolbarfile += toolbarimage->charrep();
+				#endif
+				#ifdef WINDOWS
+				*toolbarfile = "..\\Test\\GUI\\wxWrapper";
+				*toolbarfile += images->charrep();
+				*toolbarfile += toolbarimage->charrep();
+				#endif
+			}
 
+			_LOG << "Add a toolbar tool with image '" << toolbarfile->charrep() << "'" LOG_
 
-                        _LOG << "Add a toolbar tool with image '" << toolbarfile->charrep() << "'" LOG_
+			wxString f = wxString(toolbarimage->charrep());
 
-                        wxString f = wxString(toolbarimage->charrep());
+			wxImage* im;
 
-                        wxImage* im;
+			if (f.Upper().Contains(".XPM") == 1) {
+				im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
+			}
 
-                        if (f.Upper().Contains(".XPM") == 1) {
-                                im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_XPM);
-                        }
+			if (f.Upper().Contains(".PNG") == 1) {
+				im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
+			}
 
-                        if (f.Upper().Contains(".PNG") == 1) {
-                                im = new wxImage(toolbarfile->charrep(), wxBITMAP_TYPE_PNG);
-                        }
+			#ifdef LBWXVERSION_CURRENT
+			wxVector<wxBitmap> bitmaps;
+			wxBitmap bm = wxBitmap(*im);
+			bitmaps.push_back(bm);
 
-#ifdef LBWXVERSION_CURRENT
-						wxVector<wxBitmap> bitmaps;
-						wxBitmap bm = wxBitmap(*im);
-						bitmaps.push_back(bm);
+			tb->AddTool(EvNr, entry->charrep(), bm, entry->charrep());
+			#else
+			wxBitmap bm = wxBitmap(*im);
 
-                        tb->AddTool(EvNr, entry->charrep(), bm, entry->charrep());
-#else
-						wxBitmap bm = wxBitmap(*im);
+			tb->AddTool(EvNr, bm, entry->charrep());
+			#endif
+			tb->Realize();
 
-                        tb->AddTool(EvNr, bm, entry->charrep());
-#endif
-                        tb->Realize();
+			#ifdef USE_WXAUI_TOOLBAR
+			_LOG << "Toolbar size is " << (long) tb->GetToolCount() << "." LOG_
+			#endif
+			#ifdef USE_WXAUI
+			_LOG << "Toolbar size is " << (long) tb->GetToolsCount() << "." LOG_
+			#endif
 
-#ifdef USE_WXAUI_TOOLBAR
-                        _LOG << "Toolbar size is " << (long) tb->GetToolCount() << "." LOG_
-#endif
-#ifdef USE_WXAUI
-                        _LOG << "Toolbar size is " << (long) tb->GetToolsCount() << "." LOG_
-#endif
+			//wxSize s = wxSize(tb->GetSize().GetHeight()*tb->GetToolsCount(), tb->GetSize().GetHeight());
+			//tb->Fit();
+			//tb->SetSize(wxSize(tb->GetSize().GetWidth()+5, tb->GetSize().GetHeight()+5));
+			//tb->Fit();
 
-                        //wxSize s = wxSize(tb->GetSize().GetHeight()*tb->GetToolsCount(), tb->GetSize().GetHeight());
-						//tb->Fit();
-                        //tb->SetSize(wxSize(tb->GetSize().GetWidth()+5, tb->GetSize().GetHeight()+5));
-						//tb->Fit();
+			#ifdef USE_WXAUI
+			wxToolBar* maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
+			m_mgr.DetachPane(maintb);
 
-#ifdef USE_WXAUI
-                        wxToolBar* maintb = (wxToolBar*) m_mgr.GetPane("Main Toolbar").window;
-                        m_mgr.DetachPane(maintb);
+			// Keep Main Toolbar the most left one
+			m_mgr.AddPane(maintb, wxAuiPaneInfo().
+			Name("Main Toolbar").Caption("Main Toolbar").
+			ToolbarPane().Top().
+			LeftDockable(false).RightDockable(false));
 
-						// Keep Main Toolbar the most left one
-                        m_mgr.AddPane(maintb, wxAuiPaneInfo().
-								Name("Main Toolbar").Caption("Main Toolbar").
-								ToolbarPane().Top().
-								LeftDockable(false).RightDockable(false));
+			m_mgr.DetachPane(tb);
+			m_mgr.AddPane(tb, wxAuiPaneInfo().
+			Name(name->charrep()).Caption(name->charrep()).
+			ToolbarPane().Top().
+			LeftDockable(false).RightDockable(false));
 
-                        m_mgr.DetachPane(tb);
-                        m_mgr.AddPane(tb, wxAuiPaneInfo().
-                                  Name(name->charrep()).Caption(name->charrep()).
-                                  ToolbarPane().Top().
-                                  LeftDockable(false).RightDockable(false));
+			m_mgr.Update();
+			#endif
+			#ifdef USE_WXAUI_TOOLBAR
+			wxAuiToolBar* maintb = (wxAuiToolBar*) m_mgr.GetPane("Main Toolbar").window;
+			m_mgr.DetachPane(maintb);
 
-						m_mgr.Update();
-#endif
-#ifdef USE_WXAUI_TOOLBAR
-                        wxAuiToolBar* maintb = (wxAuiToolBar*) m_mgr.GetPane("Main Toolbar").window;
-                        m_mgr.DetachPane(maintb);
+			// Keep Main Toolbar the most left one
+			m_mgr.AddPane(maintb, wxAuiPaneInfo().
+			Name("Main Toolbar").Caption("Main Toolbar").
+			ToolbarPane().Top().
+			LeftDockable(false).RightDockable(false));
 
-						// Keep Main Toolbar the most left one
-						m_mgr.AddPane(maintb, wxAuiPaneInfo().
-								Name("Main Toolbar").Caption("Main Toolbar").
-								ToolbarPane().Top().
-								LeftDockable(false).RightDockable(false));
+			m_mgr.DetachPane(tb);
+			m_mgr.AddPane(tb, wxAuiPaneInfo().
+			Name(name->charrep()).Caption(name->charrep()).
+			ToolbarPane().Top().
+			LeftDockable(false).RightDockable(false));
 
-                        m_mgr.DetachPane(tb);
-                        m_mgr.AddPane(tb, wxAuiPaneInfo().
-                                  Name(name->charrep()).Caption(name->charrep()).
-                                  ToolbarPane().Top().
-                                  LeftDockable(false).RightDockable(false));
-                        
-						m_mgr.Update();
-#endif
+			m_mgr.Update();
+			#endif
+		}
 
-                }
-
-                err = ERR_NONE;
-        }
-        return err;
-
+		err = ERR_NONE;
+	}
+	return err;
 }
 /*...e*/
 
