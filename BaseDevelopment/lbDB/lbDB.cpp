@@ -511,7 +511,7 @@ public:
 		ColumnSize = 0;
 		rows = 2;
 		mode = 0;
-		cbBufferLength = new long[rows];
+		cbBufferLength = new SQLLEN[rows];
 		cbBufferLength[0] = 0;
 		cbBufferLength[1] = 0;
 		isReadonly = true;
@@ -650,7 +650,11 @@ protected:
 	 * This normally contains the buffer length of the filled data. If there is NULL data,
 	 * it will indicated by SQL_NULL_DATA.
 	 */
-	long*		cbBufferLength;
+#ifdef CPUARCH_64
+	SQLLEN*		cbBufferLength;
+#else
+	SQLLEN*		cbBufferLength;
+#endif	
 #ifdef CPUARCH_64
 	SQLULEN
 #else	
@@ -1024,7 +1028,7 @@ int LB_STDCALL lbBoundColumns::getColumnIndex(const char* name) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-		stringKey->setData(name);
+		stringKey->setString(name);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
 
@@ -1053,7 +1057,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbBoundColumns::getColumnType(const char*
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-		stringKey->setData(name);
+		stringKey->setString(name);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
 
@@ -1083,7 +1087,7 @@ void LB_STDCALL lbBoundColumns::setReadonly(const char* column, bool updateable)
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-		stringKey->setData(column);
+		stringKey->setString(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
 
@@ -1118,7 +1122,7 @@ bool LB_STDCALL lbBoundColumns::getReadonly(const char* column) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-		stringKey->setData(column);
+		stringKey->setString(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
 
@@ -1333,7 +1337,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setLong(const char* column, lb_I_Long
     
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
     
-	Column->setData(column);
+	Column->setString(column);
     
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
@@ -1381,7 +1385,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setFloat(const char* column, lb_I_Flo
     
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
     
-	Column->setData(column);
+	Column->setString(column);
     
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
@@ -1429,7 +1433,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setDouble(const char* column, lb_I_Do
     
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
     
-	Column->setData(column);
+	Column->setString(column);
     
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
@@ -1482,7 +1486,7 @@ lbErrCodes      LB_STDCALL lbBoundColumns::setString(const char* column, lb_I_St
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
 
-	Column->setData(column);
+	Column->setString(column);
 
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
@@ -2570,7 +2574,7 @@ int LB_STDCALL lbQuery::hasFKColumn(const char* FKName) {
 		UAP(lb_I_KeyBase, key)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
-		s->setData(FKName);
+		s->setString(FKName);
 		//s->toLower();
 
 		QI(s, lb_I_KeyBase, key)
@@ -2684,7 +2688,7 @@ lb_I_String* LB_STDCALL lbQuery::getPKTable(const char* FKName) {
 	UAP(lb_I_KeyBase, key)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
-	s->setData(FKName);
+	s->setString(FKName);
 	//s->toLower();
 
 	QI(s, lb_I_KeyBase, key)
@@ -2804,7 +2808,7 @@ lb_I_String* LB_STDCALL lbQuery::getPKColumn(const char* FKName) {
 	      if (strcmp(comp1->charrep(), comp->charrep()) == 0) {
 	      	UAP_REQUEST(getModuleInstance(), lb_I_String, c)
 
-	      	c->setData((char const*) szPkCol);
+	      	c->setString((char const*) szPkCol);
 	      	c++;
 	      	free(szTable);
 	      	SQLFreeStmt(hstmt, SQL_DROP);
@@ -2998,8 +3002,8 @@ void LB_STDCALL lbQuery::prepareFKList() {
 
 	      UAP_REQUEST(getModuleInstance(), lb_I_String, PKTable_PKName)
 
-	      FKName->setData((char*) szFkCol);
-	      PKTable->setData((char*) szPkTable);
+	      FKName->setString((char*) szFkCol);
+	      PKTable->setString((char*) szPkTable);
 
 	      //FKName->toLower();
 	      //PKTable->toLower();
@@ -3132,7 +3136,7 @@ void LB_STDCALL lbQuery::prepareFKList() {
 				PKTable = q->getAsString(1);
 				PKName = q->getAsString(2);
 
-				FKName->setData(column);
+				FKName->setString(column);
 				//FKName->toLower();
 				//PKTable->toLower();
 
@@ -3287,7 +3291,7 @@ int LB_STDCALL lbQuery::getPKColumns() {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, PKName)
 
 		KeyPosition->setData(columns);
-		PKName->setData((char*) szPkCol);
+		PKName->setString((char*) szPkCol);
 
 		UAP(lb_I_Unknown, uk_PKName)
 		UAP(lb_I_KeyBase, key_Pos)
@@ -3465,7 +3469,7 @@ void LB_STDCALL lbQuery::setReadonly(const char* column, bool updateable) {
 	QI(col, lb_I_KeyBase, key)
 	QI(col, lb_I_Unknown, uk)
 
-	col->setData(column);
+	col->setString(column);
 
 	if (ReadOnlyColumns == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Container, ReadOnlyColumns)
@@ -4704,10 +4708,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 				char* b = (char*) malloc(strlen((const char*) buffer)+3);
 				b[0] = 0;
 				sprintf(b, "'%s'", (const char*) buffer);
-				result->setData(b);
+				result->setString(b);
 				free(b);
 			} else {
-				result->setData((char*) buffer);
+				result->setString((char*) buffer);
 				result->trim();
 			}
 
@@ -4727,10 +4731,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 				char* b = (char*) malloc(strlen((const char*) buffer)+3);
 				b[0] = 0;
 				sprintf(b, "'%s'", (const char*) buffer);
-				result->setData(b);
+				result->setString(b);
 				free(b);
 			} else {
-				result->setData((char*) buffer);
+				result->setString((char*) buffer);
 				result->trim();
 			}
 			break;
@@ -4757,14 +4761,14 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 #endif
 #endif
 			//sprintf(charrep, "%Ld", *(long long*) buffer);
-			result->setData(charrep);
+			result->setString(charrep);
 		}
 			break;
 		case SQL_INTEGER:
 		{
 			char charrep[100] = "";
 			sprintf(charrep, "%ld", *(long*) buffer);
-			result->setData(charrep);
+			result->setString(charrep);
 		}
 			break;
 #ifdef BIND_BOOL_DEFAULT
@@ -5896,7 +5900,7 @@ void LB_STDCALL lbBoundColumn::rebind() {
 /*...slb_I_String\42\ LB_STDCALL lbBoundColumn\58\\58\getColumnName\40\\41\:0:*/
 lb_I_String* LB_STDCALL lbBoundColumn::getColumnName() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
-	colName->setData(columnName);
+	colName->setString(columnName);
 	colName++;
 
 	return colName.getPtr();
@@ -7498,7 +7502,7 @@ public:
         DECLARE_LB_UNKNOWN()
 
 	void LB_STDCALL setCurrentSearchInterface(const char* iface);
-	lb_I_FunctorEntity* LB_STDCALL getFirstEntity();
+	lb_I_FunctorEntity* LB_STDCALL getFirstEntity(bool withPrefix = true);
 
 	void initIntefaceList();
 
@@ -7635,7 +7639,7 @@ void LB_STDCALL lbDBInterfaceRepository::setCurrentSearchInterface(const char* i
 }
 
 /*...slb_I_FunctorEntity\42\ LB_STDCALL lbDBInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
-lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
+lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity(bool withPrefix) {
 	if (CurrentSearchMode == 0) {
 		printf("SearchMode not set. Please call first lbDBInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
 		return NULL;

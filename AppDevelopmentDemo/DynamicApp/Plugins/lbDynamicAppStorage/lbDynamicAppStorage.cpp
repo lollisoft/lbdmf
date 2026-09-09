@@ -2021,10 +2021,10 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 			UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 			
-			parameter->setData("UML import settings");
+			parameter->setString("UML import settings");
 			//--------------------------------------------
 			
-			parameterXSL->setData("XSL file for application database");
+			parameterXSL->setString("XSL file for application database");
 			fileXSL->setData(XSLFileApplicationDatabase->getData());
 			paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 			
@@ -2253,10 +2253,10 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::load(lb_I_InputStream* iStr
 			UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 			UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 			
-			parameter->setData("UML import settings");
+			parameter->setString("UML import settings");
 			//--------------------------------------------
 			
-			parameterXSL->setData("XSL file for system database");
+			parameterXSL->setString("XSL file for system database");
 			fileXSL->setData(XSLFileSystemDatabase->getData());
 			paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 			
@@ -2488,9 +2488,9 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, filename)
-	param->setData("memorybuffer");
+	param->setString("memorybuffer");
 	exportparams->getUAPString(*&param, *&value);
-	param->setData("filename");
+	param->setString("filename");
 	exportparams->getUAPString(*&param, *&filename);
 	
 	
@@ -2564,10 +2564,10 @@ lbErrCodes LB_STDCALL lbDynamicAppBoUMLImportExport::save(lb_I_OutputStream* oSt
 		UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 		UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 		
-		parameter->setData("UML export settings");
+		parameter->setString("UML export settings");
 		//--------------------------------------------
 		
-		parameterXSL->setData("XSL file for application database");
+		parameterXSL->setString("XSL file for application database");
 		fileXSL->setData(XSLFileUMLExport->getData());
 		paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 		

@@ -139,7 +139,7 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("msg");
+	parameter->setString("msg");
 	param->getUAPString(*&parameter, *&msg);
 
 	COUT << msg->charrep();
@@ -158,13 +158,13 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
     switch (c) {
         case 'y':
         case 'Y':
-            parameter->setData("result");
-            result->setData("yes");
+            parameter->setString("result");
+            result->setString("yes");
             param->setUAPString(*&parameter, *&result);
             break;
         default:
-            parameter->setData("result");
-            result->setData("no");
+            parameter->setString("result");
+            result->setString("no");
             param->setUAPString(*&parameter, *&result);
     }
 
@@ -241,7 +241,7 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 	} else
 		if (LogonUser == NULL) {
 	        REQUEST(getModuleInstance(), lb_I_String, LogonUser)
-	        LogonUser->setData(user);
+	        LogonUser->setString(user);
 	}
 
 	if (app == NULL) {
@@ -249,7 +249,7 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 	} else
 	if (LogonApplication == NULL) {
 	        REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
-	        LogonApplication->setData(app);
+	        LogonApplication->setString(app);
 	}
 
 	eman->registerEvent("askYesNo", askYesNo);
@@ -263,12 +263,12 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 }
 /*...e*/
 lbErrCodes LB_STDCALL UIWrapper::getUserName(lb_I_String** user) {
-	(*user)->setData(LogonUser->charrep());
+	(*user)->setString(LogonUser->charrep());
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL UIWrapper::getApplicationName(lb_I_String** app) {
-	(*app)->setData(LogonApplication->charrep());
+	(*app)->setString(LogonApplication->charrep());
 	return ERR_NONE;
 }
 lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
@@ -276,7 +276,7 @@ lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
         	REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	}
 
-       	LogonUser->setData(user);
+       	LogonUser->setString(user);
 	return ERR_NONE;
 }
 
@@ -285,7 +285,7 @@ lbErrCodes LB_STDCALL UIWrapper::setApplicationName(const char* app) {
         	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	}
 
-       	LogonApplication->setData(app);
+       	LogonApplication->setString(app);
 	return ERR_NONE;
 }
 

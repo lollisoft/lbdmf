@@ -289,8 +289,8 @@ int main(int argc, char *argv[]) {
 		UAP_REQUEST(mm, lb_I_String, col)
 		UAP_REQUEST(mm, lb_I_String, val)
 
-		col->setData("btest");
-		val->setData("true");
+		col->setString("btest");
+		val->setString("true");
 
 		query2->setString(*&col, *&val);
 		query2->update();

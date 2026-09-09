@@ -80,15 +80,15 @@ lbErrCodes LB_STDCALL UIWrapper::askOpenFileReadStream(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("extension");
+	parameter->setString("extension");
 	param->getUAPString(*&parameter, *&name);
 
 	//"BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
 
 	printf("Choose a file. Default directory: %s, Name: %s\n", defaultdir->charrep(), name->charrep());
 
-	parameter->setData("result");
-	filepath->setData(fileanswer->charrep());
+	parameter->setString("result");
+	filepath->setString(fileanswer->charrep());
 	param->setUAPString(*&parameter, *&filepath);
 
 	return err;
@@ -130,9 +130,9 @@ lbErrCodes LB_STDCALL UIWrapper::showMsgBox(lb_I_Unknown* uk) {
         UAP_REQUEST(getModuleInstance(), lb_I_String, title)
         QI(uk, lb_I_Parameter, param)
 
-        parameter->setData("msg");
+        parameter->setString("msg");
         param->getUAPString(*&parameter, *&msg);
-        parameter->setData("title");
+        parameter->setString("title");
         param->getUAPString(*&parameter, *&title);
 
         printf("Message title: %s\nMessage: %s\n", title->charrep(), msg->charrep());
@@ -161,14 +161,14 @@ lbErrCodes LB_STDCALL UIWrapper::askYesNo(lb_I_Unknown* uk) {
 	ukAnswer = answerList->getElement(&keyAnswerNumber);
 	QI(ukAnswer, lb_I_String, answer)
 	
-	parameter->setData("msg");
+	parameter->setString("msg");
 	param->getUAPString(*&parameter, *&msg);
 
 	printf("Question: %s\n", msg->charrep());
 	printf("Answer: %s\n", answer->charrep());
 
-    parameter->setData("result");
-    result->setData(answer->charrep());
+    parameter->setString("result");
+    result->setString(answer->charrep());
     param->setUAPString(*&parameter, *&result);
 
     COUT << ENDL;
@@ -262,12 +262,12 @@ lbErrCodes LB_STDCALL UIWrapper::initialize(const char* user, const char* app) {
 }
 /*...e*/
 lbErrCodes LB_STDCALL UIWrapper::getUserName(lb_I_String** user) {
-	(*user)->setData(LogonUser->charrep());
+	(*user)->setString(LogonUser->charrep());
 	return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL UIWrapper::getApplicationName(lb_I_String** app) {
-	(*app)->setData(LogonApplication->charrep());
+	(*app)->setString(LogonApplication->charrep());
 	return ERR_NONE;
 }
 lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
@@ -275,7 +275,7 @@ lbErrCodes LB_STDCALL UIWrapper::setUserName(const char* user) {
         	REQUEST(getModuleInstance(), lb_I_String, LogonUser)
 	}
 
-       	LogonUser->setData(user);
+       	LogonUser->setString(user);
 	return ERR_NONE;
 }
 
@@ -284,7 +284,7 @@ lbErrCodes LB_STDCALL UIWrapper::setApplicationName(const char* app) {
         	REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
 	}
 
-       	LogonApplication->setData(app);
+       	LogonApplication->setString(app);
 	return ERR_NONE;
 }
 

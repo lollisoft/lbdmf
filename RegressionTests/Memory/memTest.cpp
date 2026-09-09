@@ -272,7 +272,7 @@ int main(int argc, char *argv[]) {
 		for (int i = 0; i < 50; i++) {
 			UAP_REQUEST(mm, lb_I_String, string)
 			printf("4a. lbModule instance has %d references.\n", mm->getRefCount());
-			string->setData("Test");
+			string->setString("Test");
 		}
 
 		printf("Ready.\n");
@@ -297,51 +297,51 @@ int main(int argc, char *argv[]) {
 		QI(string, lb_I_Unknown, uk)
 		QI(string, lb_I_KeyBase, key)
 
-		string->setData("Bla");
+		string->setString("Bla");
 
 		container->insert(&uk, &key);
-		string->setData("Bla2");
+		string->setString("Bla2");
 		container->insert(&uk, &key);
-		string->setData("Bla3");
+		string->setString("Bla3");
 		container->insert(&uk, &key);
 
-		string->setData("Other data");
+		string->setString("Other data");
 
 		container->deleteAll();
 
 		container->insert(&uk, &key);
-		string->setData("Bla2");
+		string->setString("Bla2");
 		container->insert(&uk, &key);
-		string->setData("Bla3");
+		string->setString("Bla3");
 		container->insert(&uk, &key);
 
 /*...sCONTAINER_TEST:16:*/
 	#ifdef CONTAINER_TEST
 
 	container->insert(&uk, &key);
-	string->setData("Bla1");
+	string->setString("Bla1");
 	container->insert(&uk, &key);
-	string->setData("Bla2");
+	string->setString("Bla2");
 	container->insert(&uk, &key);
-	string->setData("Bla3");
+	string->setString("Bla3");
 	container->insert(&uk, &key);
-	string->setData("Bla4");
+	string->setString("Bla4");
 	container->insert(&uk, &key);
 
 	container->deleteAll();
 
-	string->setData("Bla");
+	string->setString("Bla");
 	container->insert(&uk, &key);
-	string->setData("Bla1");
+	string->setString("Bla1");
 	container->insert(&uk, &key);
-	string->setData("Bla2");
+	string->setString("Bla2");
 	container->insert(&uk, &key);
-	string->setData("Bla3");
+	string->setString("Bla3");
 	container->insert(&uk, &key);
-	string->setData("Bla4");
+	string->setString("Bla4");
 	container->insert(&uk, &key);
 
-	string->setData("Bla3");
+	string->setString("Bla3");
 	#endif
 /*...e*/
 
@@ -411,10 +411,10 @@ int main(int argc, char *argv[]) {
 	#endif
 /*...e*/
 
-		string->setData("Bla2");
+		string->setString("Bla2");
 		container->remove(&key);
 
-		string->setData("Bla3");
+		string->setString("Bla3");
 		container->exists(&key);
 
 		//container->deleteAll();

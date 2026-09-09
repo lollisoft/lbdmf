@@ -174,8 +174,8 @@ int main(int argc, char *argv[]) {
 		UAP_REQUEST(mm, lb_I_String, string2)
 		char buf2[100] = "";
 		
-		string1->setData("Test basetypes...");
-		string2->setData("Test basetypes...");
+		string1->setString("Test basetypes...");
+		string2->setString("Test basetypes...");
 		
 		_CL_LOG << "Test (*&string1 == *&string2)" LOG_
 		

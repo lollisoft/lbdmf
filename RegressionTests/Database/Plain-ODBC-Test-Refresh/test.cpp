@@ -183,7 +183,7 @@ void update(HSTMT hstmt) {
 
 RETCODE absolute(HSTMT hstmt, int pos) {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched = 0;
+	SQLULEN  RowsFetched = 0;
 
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_ABSOLUTE, pos, &RowsFetched, &RowStat[0]);
 
@@ -196,7 +196,7 @@ RETCODE absolute(HSTMT hstmt, int pos) {
 
 RETCODE last(HSTMT hstmt) {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched = 0;
+	SQLULEN  RowsFetched = 0;
 
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_LAST, 0, &RowsFetched, &RowStat[0]);
 
@@ -209,7 +209,7 @@ RETCODE last(HSTMT hstmt) {
 
 RETCODE first(HSTMT hstmt) {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched = 0;
+	SQLULEN  RowsFetched = 0;
 
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_FIRST, 0, &RowsFetched, &RowStat[0]);
 
@@ -222,7 +222,7 @@ RETCODE first(HSTMT hstmt) {
 
 RETCODE next(HSTMT hstmt) {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched = 0;
+	SQLULEN  RowsFetched = 0;
 
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_NEXT, 0, &RowsFetched, &RowStat[0]);
 
@@ -235,7 +235,7 @@ RETCODE next(HSTMT hstmt) {
 
 RETCODE previous(HSTMT hstmt) {
 	UWORD   RowStat[20];
-	UDWORD  RowsFetched = 0;
+	SQLULEN  RowsFetched = 0;
 
 	RETCODE retcode = SQLExtendedFetch(hstmt, SQL_FETCH_PREV, 0, &RowsFetched, &RowStat[0]);
 
@@ -257,7 +257,7 @@ char* getColumnName(HSTMT hstmt, int col) {
 
 	SQLSMALLINT     DecimalDigits = 0;
 	SQLSMALLINT     Nullable = 0;
-	SQLUINTEGER     ColumnSize;
+	SQLULEN     ColumnSize;
 
 	SQLRETURN ret = SQLDescribeCol( hstmt, col, ColumnName,
 		BufferLength, &NameLength, &DataType,
@@ -431,7 +431,7 @@ UCHAR buf5[] = "select test, btest, btest1 from regressiontest";
 
 void bind(HSTMT hstmt) {
 	RETCODE retcode;
-	long cbBufferLength = 0;
+	SQLLEN cbBufferLength = 0;
 	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, test, sizeof(test), &cbBufferLength);
 	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
 	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, btest, sizeof(btest), &cbBufferLength);
@@ -442,7 +442,7 @@ void bind(HSTMT hstmt) {
 
 void unbind(HSTMT hstmt) {
 	RETCODE retcode;
-	long cbBufferLength = 0;
+	SQLLEN cbBufferLength = 0;
 	retcode = SQLBindCol(hstmt, 1, SQL_C_CHAR, NULL, sizeof(test), &cbBufferLength);
 	if (retcode != SQL_SUCCESS) dbError("SQLBindCol()", hstmt);
 	retcode = SQLBindCol(hstmt, 2, SQL_C_CHAR, NULL, sizeof(btest), &cbBufferLength);
@@ -453,7 +453,7 @@ void unbind(HSTMT hstmt) {
 
 void setQuery(unsigned char* q, HSTMT &hstmt) {
 	RETCODE retcode;
-	long cbBufferLength = 0;
+	SQLLEN cbBufferLength = 0;
 
 	if (hstmt != NULL) {
 		retcode = SQLFreeStmt (hstmt, SQL_CLOSE);

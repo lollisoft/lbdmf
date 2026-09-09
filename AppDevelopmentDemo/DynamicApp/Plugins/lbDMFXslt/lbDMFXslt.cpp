@@ -435,9 +435,9 @@ long LB_STDCALL lbDMFXslt::execute(lb_I_Parameter* execution_params) {
 		return next_action;
 	}
 
-	parameter->setData("memorybuffer");
+	parameter->setString("memorybuffer");
 	param->getUAPString(*&parameter, *&value);
-	parameter->setData("filename");
+	parameter->setString("filename");
 	param->getUAPString(*&parameter, *&filename);
 
 

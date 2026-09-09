@@ -432,13 +432,13 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 	} else {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 		
-		parameter->setData("DBName");
+		parameter->setString("DBName");
 		params->getUAPString(*&parameter, *&DBName);
-		parameter->setData("DBUser");
+		parameter->setString("DBUser");
 		params->getUAPString(*&parameter, *&DBUser);
-		parameter->setData("DBPass");
+		parameter->setString("DBPass");
 		params->getUAPString(*&parameter, *&DBPass);
-		parameter->setData("source Form");
+		parameter->setString("source Form");
 		
 		/* This form contains the data for the report.
 		 *
@@ -447,11 +447,11 @@ void LB_STDCALL lbDBReportAction::openReport(lb_I_String* reportname, lb_I_Param
 		
 		params->getUAPString(*&parameter, *&masterForm); 
 		
-		parameter->setData("source field");
+		parameter->setString("source field");
 		params->getUAPString(*&parameter, *&SourceFieldName);
-		parameter->setData("source value");
+		parameter->setString("source value");
 		params->getUAPString(*&parameter, *&SourceFieldValue);
-		parameter->setData("application");
+		parameter->setString("application");
 		params->getUAPString(*&parameter, *&app);
 		
 		/*...sGet the SQL query based on formular name\44\ application name\46\:16:*/

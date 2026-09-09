@@ -171,11 +171,11 @@ long LB_STDCALL lbSendSignalAction::execute(lb_I_Parameter* params) {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
-	parameter->setData("DBName");
+	parameter->setString("DBName");
 	params->getUAPString(*&parameter, *&DBName);
-	parameter->setData("DBUser");
+	parameter->setString("DBUser");
 	params->getUAPString(*&parameter, *&DBUser);
-	parameter->setData("DBPass");
+	parameter->setString("DBPass");
 	params->getUAPString(*&parameter, *&DBPass);
 
 // They are not used, thus commented out.	
