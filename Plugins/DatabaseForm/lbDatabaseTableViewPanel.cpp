@@ -572,7 +572,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::addComboField(const char* name, wxSize
 
 			t = sampleQuery->getPKTable(name);
 
-			table->setData(t->charrep());
+			table->setString(t->charrep());
 
 			QI(table, lb_I_KeyBase, key)
 
@@ -1494,15 +1494,15 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(const char* _SQLString, const cha
 
 	if (_DBName == NULL) {
 		REQUEST(getModuleInstance(), lb_I_String, _DBName)
-		_DBName->setData(DBName);
+		_DBName->setString(DBName);
 	}
 	if (_DBUser == NULL) {
 		REQUEST(getModuleInstance(), lb_I_String, _DBUser)
-		_DBUser->setData(DBUser);
+		_DBUser->setString(DBUser);
 	}
 	if (_DBPass == NULL) {
 		REQUEST(getModuleInstance(), lb_I_String, _DBPass)
-		_DBPass->setData(DBPass);
+		_DBPass->setString(DBPass);
 	}
 
 	sampleQuery = database->getQuery(DBName, 0);
@@ -1560,7 +1560,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::init(const char* _SQLString, const cha
 
 	if (SQLString == NULL) {
 		REQUEST(getModuleInstance(), lb_I_String, SQLString)
-		SQLString->setData(_SQLString);
+		SQLString->setString(_SQLString);
 	}
 
 	//sampleQuery->skipPeeking();
@@ -2196,7 +2196,7 @@ lbErrCodes  LB_STDCALL lbDatabaseTableViewPanel::open() {
 
 			t = sampleQuery->getPKTable(name->charrep());
 
-			table->setData(t->charrep());
+			table->setString(t->charrep());
 
 			QI(table, lb_I_KeyBase, key)
 
@@ -2731,7 +2731,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::ignoreForeignKeys(const char* toTable)
 	UAP(lb_I_Unknown, uk)
 	UAP(lb_I_KeyBase, key)
 
-	string->setData(toTable);
+	string->setString(toTable);
 
 	QI(string, lb_I_Unknown, uk)
 	QI(string, lb_I_KeyBase, key)
@@ -2767,21 +2767,21 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromMaster() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
 /*...sRetrieve parameter values:8:*/
-	parameter->setData("DBName");
+	parameter->setString("DBName");
 	_params->getUAPString(*&parameter, *&DBName);
-	parameter->setData("DBUser");
+	parameter->setString("DBUser");
 	_params->getUAPString(*&parameter, *&DBUser);
-	parameter->setData("DBPass");
+	parameter->setString("DBPass");
 	_params->getUAPString(*&parameter, *&DBPass);
-	parameter->setData("source Form");
+	parameter->setString("source Form");
 	_params->getUAPString(*&parameter, *&masterForm);
-	parameter->setData("source field");
+	parameter->setString("source field");
 	_params->getUAPString(*&parameter, *&SourceFieldName);
-	parameter->setData("source value");
+	parameter->setString("source value");
 	_params->getUAPString(*&parameter, *&SourceFieldValue);
-	parameter->setData("application");
+	parameter->setString("application");
 	_params->getUAPString(*&parameter, *&app);
-	parameter->setData("actionID");
+	parameter->setString("actionID");
 	_params->getUAPLong(*&parameter, *&actionID);
 	if (actionID->getData() == -1) {
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
@@ -3298,21 +3298,21 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 
 /*...sRetrieve parameter values:8:*/
-	parameter->setData("DBName");
+	parameter->setString("DBName");
 	_params->getUAPString(*&parameter, *&DBName);
-	parameter->setData("DBUser");
+	parameter->setString("DBUser");
 	_params->getUAPString(*&parameter, *&DBUser);
-	parameter->setData("DBPass");
+	parameter->setString("DBPass");
 	_params->getUAPString(*&parameter, *&DBPass);
-	parameter->setData("source Form");
+	parameter->setString("source Form");
 	_params->getUAPString(*&parameter, *&detailForm);
-	parameter->setData("source field");
+	parameter->setString("source field");
 	_params->getUAPString(*&parameter, *&SourceFieldName);
-	parameter->setData("source value");
+	parameter->setString("source value");
 	_params->getUAPString(*&parameter, *&SourceFieldValue);
-	parameter->setData("application");
+	parameter->setString("application");
 	_params->getUAPString(*&parameter, *&app);
-	parameter->setData("actionID");
+	parameter->setString("actionID");
 	_params->getUAPLong(*&parameter, *&actionID);
 	if (actionID->charrep() == NULL) {
 		meta->msgBox(_trans("Error"), _trans("No action ID has been transferred!"));
@@ -3711,7 +3711,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 /*...e*/
 
 
-	newQuery->setData(getQuery());
+	newQuery->setString(getQuery());
 
 	setFilter(newWhereClause->charrep());
 
@@ -3763,7 +3763,7 @@ void LB_STDCALL lbDatabaseTableViewPanel::updateFromDetail() {
 
 /*...svoid LB_STDCALL lbDatabaseTableViewPanel\58\\58\setFilter\40\char\42\ filter\41\:0:*/
 void LB_STDCALL lbDatabaseTableViewPanel::setFilter(const char* filter) {
-	if (filter != NULL) SQLWhere->setData(filter);
+	if (filter != NULL) SQLWhere->setString(filter);
 }
 /*...e*/
 
@@ -3896,7 +3896,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
 					UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 
-					cbName->setData(name->charrep());
+					cbName->setString(name->charrep());
 
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
@@ -3940,8 +3940,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 
 							QI(uk_mapping, lb_I_Long, FK_id)
 
-							col->setData(name->charrep());
-							val->setData(FK_id->charrep());
+							col->setString(name->charrep());
+							val->setString(FK_id->charrep());
 
 							sampleQuery->setNull(name->charrep(), false);
 							sampleQuery->setString(*&col, *&val);
@@ -3985,14 +3985,14 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 								wxCheckBox *check = (wxCheckBox*) w;
 								if (check->GetValue() == TRUE) {
 									wxString v = "true";
-									col->setData(name->charrep());
-									val->setData(v.c_str());
+									col->setString(name->charrep());
+									val->setString(v.c_str());
 
 									sampleQuery->setString(*&col, *&val);
 								} else {
 									wxString v = "false";
-									col->setData(name->charrep());
-									val->setData(v.c_str());
+									col->setString(name->charrep());
+									val->setString(v.c_str());
 
 									sampleQuery->setString(*&col, *&val);
 								}
@@ -4008,8 +4008,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 
 								wxString v = tx->GetValue();
 
-								col->setData(name->charrep());
-								val->setData(v.c_str());
+								col->setString(name->charrep());
+								val->setString(v.c_str());
 
 								sampleQuery->setString(*&col, *&val);
 							}
@@ -4023,8 +4023,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 
 								wxDateTime v = tx->GetValue();
 
-								col->setData(name->charrep());
-								val->setData(v.FormatISODate().c_str());
+								col->setString(name->charrep());
+								val->setString(v.FormatISODate().c_str());
 
 								sampleQuery->setString(*&col, *&val);
 								_LOG << "lbDatabaseTableViewPanel::lbDBUpdate() sets date column value to '" << val->charrep() << "'" LOG_
@@ -4040,8 +4040,8 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 
 								wxString v = tx->GetValue();
 
-								col->setData(name->charrep());
-								val->setData(v.c_str());
+								col->setString(name->charrep());
+								val->setString(v.c_str());
 
 								sampleQuery->setString(*&col, *&val);
 							}
@@ -4054,7 +4054,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 
 								wxString v = tx->GetValue();
 
-								col->setData(name->charrep());
+								col->setString(name->charrep());
 
 								UAP_REQUEST(getModuleInstance(), lb_I_BinaryData, binary)
 
@@ -4088,7 +4088,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBUpdate() {
 	if (sampleQuery->update() != ERR_NONE) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 
-		newTitle->setData(formName);
+		newTitle->setString(formName);
 
 		*newTitle += ": Update failed !";
 
@@ -4359,7 +4359,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 		if (sampleQuery->add() != ERR_NONE) {
 			UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 
-			newTitle->setData(formName);
+			newTitle->setString(formName);
 
 			*newTitle += ": Add failed !";
 
@@ -4420,7 +4420,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key1)
 					UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
 
-					cbName->setData(key->charrep());
+					cbName->setString(key->charrep());
 
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
@@ -4549,7 +4549,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
 		_CL_LOG << "Updating after add failed." LOG_
 
-		newTitle->setData(formName);
+		newTitle->setString(formName);
 
 		*newTitle += ": Missing fields !";
 
@@ -4613,7 +4613,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::lbDBAdd(lb_I_Unknown* uk) {
 						lbDBClear();
 						if (sampleQuery->update() != ERR_NONE) {
 							UAP_REQUEST(getModuleInstance(), lb_I_String, newTitle)
-							newTitle->setData(formName);
+							newTitle->setString(formName);
 							*newTitle += ": Add failed !";
 							_LOG << newTitle->charrep() LOG_
 							SetName(_trans(newTitle->charrep()));
@@ -4776,7 +4776,7 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 					lbErrCodes err = ERR_NONE;
 					UAP_REQUEST(getModuleInstance(), lb_I_Integer, key)
 					UAP_REQUEST(getModuleInstance(), lb_I_String, cbName)
-					cbName->setData(s->charrep());
+					cbName->setString(s->charrep());
 					UAP(lb_I_KeyBase, key_cbName)
 					UAP(lb_I_Unknown, uk_cbMapper)
 					UAP(lb_I_Container, cbMapper)
@@ -4856,32 +4856,32 @@ lbErrCodes LB_STDCALL lbDatabaseTableViewPanel::OnActionButton(lb_I_Unknown* uk)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, parameter)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, v)
 
-		parameter->setData("DBName");
-		v->setData(_DBName->charrep());
+		parameter->setString("DBName");
+		v->setString(_DBName->charrep());
 		param->setUAPString(*&parameter, *&v);
 
-		parameter->setData("DBUser");
-		v->setData(_DBUser->charrep());
+		parameter->setString("DBUser");
+		v->setString(_DBUser->charrep());
 		param->setUAPString(*&parameter, *&v);
 
-		parameter->setData("DBPass");
-		v->setData(_DBPass->charrep());
+		parameter->setString("DBPass");
+		v->setString(_DBPass->charrep());
 		param->setUAPString(*&parameter, *&v);
 
-		parameter->setData("source Form");
-		v->setData(base_formName);
+		parameter->setString("source Form");
+		v->setString(base_formName);
 		param->setUAPString(*&parameter, *&v);
 
-		parameter->setData("source field");
-		v->setData(s->charrep());
+		parameter->setString("source field");
+		v->setString(s->charrep());
 		param->setUAPString(*&parameter, *&v);
 
-		parameter->setData("source value");
-		v->setData(value.c_str());
+		parameter->setString("source value");
+		v->setString(value.c_str());
 		param->setUAPString(*&parameter, *&v);
 
 		UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
-		parameter->setData("application");
+		parameter->setString("application");
 
 		meta->getApplicationName(&v);
 

@@ -72,7 +72,7 @@ void FaxNumberProxy::setServerName(const char* servername, const char* servicena
     if (ABSConnection != NULL) {
         REQUEST(getModuleInstance(), lb_I_Transfer, ABSConnection)
 
-        serverInstance->setData("servername/servicename");
+        serverInstance->setString("servername/servicename");
         serverInstance->replace("servername", servername);
         serverInstance->replace("servicename", servicename);
         
@@ -93,13 +93,13 @@ int FaxNumberProxy::Connect() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
 
-	client->add("Connect");
-	client->add("Host");
-	client->add("localhost");
-	client->add("Pid");
-	client->add(lbGetCurrentProcessId());
-	client->add("Tid");
-	client->add(lbGetCurrentThreadId());
+	client->addString("Connect");
+	client->addString("Host");
+	client->addString("localhost");
+	client->addString("Pid");
+	client->addULong(lbGetCurrentProcessId());
+	client->addString("Tid");
+	client->addULong(lbGetCurrentThreadId());
 
     *ABSConnection << *&client;
     *ABSConnection >> *&result;
@@ -118,7 +118,7 @@ int FaxNumberProxy::Connect() {
 
 		switch (type) {
 			case PACKET_LB_CHAR:
-				result->get(buffer);
+				result->getString(buffer);
 				
 				if (strcmp(buffer, "Accept") == 0) {
 					connected = true;
@@ -148,9 +148,9 @@ int FaxNumberProxy::Disconnect() {
 
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, client)
 
-	client->add("Disconnect");
-	client->add("Host");
-	client->add("localhost");
+	client->addString("Disconnect");
+	client->addString("Host");
+	client->addString("localhost");
 
     *ABSConnection << *&client;
     *ABSConnection >> *&result;
@@ -168,7 +168,7 @@ int FaxNumberProxy::Disconnect() {
 
 		switch (type) {
 			case PACKET_LB_CHAR:
-				result->get(buffer);
+				result->getString(buffer);
 				
 				if (strcmp(buffer, "Succeed") == 0) {
 					_CL_LOG << "Disconnected successfull" LOG_
@@ -202,7 +202,7 @@ void LB_STDCALL FaxNumberProxy::AskForFaxNumber(lb_I_String* faxnumber) {
 	ABSConnection->gethostname(*&temp);
 	UAP_REQUEST(getModuleInstance(), lb_I_Transfer_Data, user_info)
 		
-    user_info->add("AskForFaxNumber");
+    user_info->addString("AskForFaxNumber");
 
 	
 	*ABSConnection << *&user_info;

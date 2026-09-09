@@ -308,7 +308,7 @@ bool FormularFieldInformation::isReadonly(const char* field) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
-	f->setData(field);
+	f->setString(field);
 	
 	f->trim();
 	
@@ -328,7 +328,7 @@ bool FormularFieldInformation::isSpecialColumn(const char* field) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
-	f->setData(field);
+	f->setString(field);
 	
 	f->trim();
 
@@ -346,7 +346,7 @@ char* FormularFieldInformation::getControlType(const char* name) {
 	lbErrCodes err = ERR_NONE;
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, f)
-	f->setData(name);
+	f->setString(name);
 	
 	f->trim();
 	

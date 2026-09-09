@@ -87,8 +87,8 @@ lbErrCodes LB_STDCALL FaxNumber::_AskForFaxNumber(lb_I_Transfer_Data* request, l
         AskForFaxNumber(*&faxnumber);
 
 
-        result->add("faxnumber");
-        result->add(faxnumber->charrep());
+        result->addString("faxnumber");
+        result->addString(faxnumber->charrep());
 
     return err;
 }

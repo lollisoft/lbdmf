@@ -30,11 +30,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.6 $
+ * $Revision: 1.1.2.7 $
  * $Name:  $
- * $Id: lbControlFactory.h,v 1.1.2.6 2025/04/12 10:54:06 lothar Exp $
+ * $Id: lbControlFactory.h,v 1.1.2.7 2026/09/09 06:55:16 lothar Exp $
  *
  * $Log: lbControlFactory.h,v $
+ * Revision 1.1.2.7  2026/09/09 06:55:16  lothar
+ * Changed some remains for setData to setString for ABI compatibility
+ *
  * Revision 1.1.2.6  2025/04/12 10:54:06  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
@@ -240,6 +243,7 @@ public:
 
 	void LB_STDCALL visit(lb_I_Integer*);
 	void LB_STDCALL visit(lb_I_Long*);
+	void LB_STDCALL visit(lb_I_ULong*);
 	void LB_STDCALL visit(lb_I_Boolean*);
 	void LB_STDCALL visit(lb_I_String*);
 	

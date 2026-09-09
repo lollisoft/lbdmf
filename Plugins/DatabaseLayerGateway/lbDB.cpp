@@ -1090,7 +1090,7 @@ int LB_STDCALL lbDatabaseLayerBoundColumns::getColumnIndex(const char* name) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-		stringKey->setData(name);
+		stringKey->setString(name);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
 
@@ -1118,7 +1118,7 @@ lb_I_Query::lbDBColumnTypes LB_STDCALL lbDatabaseLayerBoundColumns::getColumnTyp
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-		stringKey->setData(name);
+		stringKey->setString(name);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
 
@@ -1147,7 +1147,7 @@ void LB_STDCALL lbDatabaseLayerBoundColumns::setReadonly(const char* column, boo
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-		stringKey->setData(column);
+		stringKey->setString(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
 
@@ -1181,7 +1181,7 @@ bool LB_STDCALL lbDatabaseLayerBoundColumns::getReadonly(const char* column) {
 	lbErrCodes err = ERR_NONE;
 	if (boundColumns != NULL) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, stringKey)
-		stringKey->setData(column);
+		stringKey->setString(column);
 		UAP(lb_I_Unknown, ukdata)
 		UAP(lb_I_KeyBase, key)
 
@@ -1402,7 +1402,7 @@ lbErrCodes  LB_STDCALL lbDatabaseLayerBoundColumns::setString(const char* column
 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
 
-	Column->setData(column);
+	Column->setString(column);
 
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
@@ -1434,7 +1434,7 @@ lbErrCodes  LB_STDCALL lbDatabaseLayerBoundColumns::setLong(const char* column, 
     
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
     
-	Column->setData(column);
+	Column->setString(column);
     
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
@@ -1466,7 +1466,7 @@ lbErrCodes  LB_STDCALL lbDatabaseLayerBoundColumns::setFloat(const char* column,
     
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
     
-	Column->setData(column);
+	Column->setString(column);
     
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
@@ -1498,7 +1498,7 @@ lbErrCodes  LB_STDCALL lbDatabaseLayerBoundColumns::setDouble(const char* column
     
 	UAP_REQUEST(getModuleInstance(), lb_I_String, Column)
     
-	Column->setData(column);
+	Column->setString(column);
     
 	QI(Column, lb_I_KeyBase, key)
 	ukdata = ColumnNameMapping->getElement(&key);
@@ -2971,7 +2971,7 @@ int LB_STDCALL lbDatabaseLayerQuery::hasFKColumn(const char* FKName) {
 		UAP(lb_I_KeyBase, key)
 		UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
-		s->setData(FKName);
+		s->setString(FKName);
 		//s->toLower();
 
 		QI(s, lb_I_KeyBase, key)
@@ -3090,7 +3090,7 @@ lb_I_String* LB_STDCALL lbDatabaseLayerQuery::getPKTable(const char* FKName) {
 	UAP(lb_I_KeyBase, key)
 	UAP_REQUEST(getModuleInstance(), lb_I_String, s)
 
-	s->setData(FKName);
+	s->setString(FKName);
 	//s->toLower();
 
 	QI(s, lb_I_KeyBase, key)
@@ -3454,7 +3454,7 @@ void LB_STDCALL lbDatabaseLayerQuery::setReadonly(const char* column, bool updat
 	QI(col, lb_I_KeyBase, key)
 	QI(col, lb_I_Unknown, uk)
 
-	col->setData(column);
+	col->setString(column);
 
 	if (ReadOnlyColumns == NULL) {
 		REQUEST(getModuleInstance(), lb_I_Container, ReadOnlyColumns)
@@ -5004,10 +5004,10 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 				char* b = (char*) malloc(strlen((const char*) buffer)+3);
 				b[0] = 0;
 				sprintf(b, "'%s'", (char*) buffer);
-				result->setData(b);
+				result->setString(b);
 				free(b);
 			} else {
-				result->setData((char*) buffer);
+				result->setString((char*) buffer);
 				result->trim();
 			}
 
@@ -5033,14 +5033,14 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 			sprintf(charrep, "%lld", *(long long*) buffer);
 #endif
 			//sprintf(charrep, "%Ld", *(long long*) buffer);
-			result->setData(charrep);
+			result->setString(charrep);
 		}
 			break;
 		case SQL_INTEGER:
 		{
 			char charrep[100] = "";
 			sprintf(charrep, "%ld", *(long*) buffer);
-			result->setData(charrep);
+			result->setString(charrep);
 		}
 			break;
 #ifdef BIND_BOOL_DEFAULT
@@ -5052,17 +5052,17 @@ lbErrCodes LB_STDCALL lbDatabaseLayerBoundColumn::getAsString(lb_I_String* resul
 			bi = *(int*) buffer;
 
 			if (bi != 0) {
-				result->setData("true");
+				result->setString("true");
 			} else {
-				result->setData("false");
+				result->setString("false");
 			}
 #endif
 #ifndef OSX
 			bool b = *(bool*) buffer;
 			if (b == true) {
-				result->setData("true");
+				result->setString("true");
 			} else {
-				result->setData("false");
+				result->setString("false");
 			}
 #endif
 		}
@@ -5412,7 +5412,7 @@ void LB_STDCALL lbDatabaseLayerBoundColumn::rebind() {
 /*...slb_I_String\42\ LB_STDCALL lbDatabaseLayerBoundColumn\58\\58\getColumnName\40\\41\:0:*/
 lb_I_String* LB_STDCALL lbDatabaseLayerBoundColumn::getColumnName() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, colName)
-	colName->setData(columnName);
+	colName->setString(columnName);
 	colName++;
 
 	return colName.getPtr();
@@ -6329,7 +6329,7 @@ public:
         DECLARE_LB_UNKNOWN()
 
 	void LB_STDCALL setCurrentSearchInterface(const char* iface);
-	lb_I_FunctorEntity* LB_STDCALL getFirstEntity();
+	lb_I_FunctorEntity* LB_STDCALL getFirstEntity(bool withPrefix = true);
 
 	void initIntefaceList();
 
@@ -6466,7 +6466,7 @@ void LB_STDCALL lbDBInterfaceRepository::setCurrentSearchInterface(const char* i
 }
 
 /*...slb_I_FunctorEntity\42\ LB_STDCALL lbDBInterfaceRepository\58\\58\getFirstEntity\40\\41\:0:*/
-lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity() {
+lb_I_FunctorEntity* LB_STDCALL lbDBInterfaceRepository::getFirstEntity(bool withPrefix) {
 	if (CurrentSearchMode == 0) {
 		printf("SearchMode not set. Please call first lbDBInterfaceRepository::setCurrentSearchInterface(char* iface)\nOr any further other setCurrentSearch<Mode>(char* argument) function\n");
 		return NULL;

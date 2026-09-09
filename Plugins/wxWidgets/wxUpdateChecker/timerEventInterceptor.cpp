@@ -269,11 +269,11 @@ lbErrCodes LB_STDCALL lbTimerEventInterceptor::OnBeforeTimerEvent(lb_I_Unknown* 
 	UAP_REQUEST(getModuleInstance(), lb_I_String, value)
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 	
-	parameter->setData("msg");
-	value->setData("lbTimerEventInterceptor::OnBeforeTimerEvent");
+	parameter->setString("msg");
+	value->setString("lbTimerEventInterceptor::OnBeforeTimerEvent");
 	param->setUAPString(*&parameter, *&value);
-	parameter->setData("title");
-	value->setData("Interceptor triggered");
+	parameter->setString("title");
+	value->setString("Interceptor triggered");
 	param->setUAPString(*&parameter, *&value);
 	
 	UAP(lb_I_Unknown, uk)

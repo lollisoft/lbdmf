@@ -13,7 +13,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     04/01/98
-// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.24 2025/04/12 10:54:06 lothar Exp $
+// RCS-ID:      $Id: dynamic.cpp,v 1.174.2.25 2026/09/09 06:55:16 lothar Exp $
 // Copyright:   (c) Julian Smart and Markus Holzem
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
@@ -51,11 +51,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.174.2.24 $
+ * $Revision: 1.174.2.25 $
  * $Name:  $
- * $Id: dynamic.cpp,v 1.174.2.24 2025/04/12 10:54:06 lothar Exp $
+ * $Id: dynamic.cpp,v 1.174.2.25 2026/09/09 06:55:16 lothar Exp $
  *
  * $Log: dynamic.cpp,v $
+ * Revision 1.174.2.25  2026/09/09 06:55:16  lothar
+ * Changed some remains for setData to setString for ABI compatibility
+ *
  * Revision 1.174.2.24  2025/04/12 10:54:06  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
@@ -1408,7 +1411,7 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("extension");
+	parameter->setString("extension");
 	param->getUAPString(*&parameter, *&name);
 
 	//"BMP and GIF files (*.bmp;*.gif)|*.bmp;*.gif|PNG files (*.png)|*.png"
@@ -1420,12 +1423,12 @@ lbErrCodes LB_STDCALL MyApp::askOpenFileReadStream(lb_I_Unknown* uk) {
 	_CL_LOG << "Show up a file dialog." LOG_
 
 	if (fileDialog.ShowModal() == wxID_OK) {
-		parameter->setData("result");
-		filepath->setData(fileDialog.GetPath().c_str());
+		parameter->setString("result");
+		filepath->setString(fileDialog.GetPath().c_str());
 		param->setUAPString(*&parameter, *&filepath);
 	} else {
-		parameter->setData("result");
-		filepath->setData("");
+		parameter->setString("result");
+		filepath->setString("");
 		param->setUAPString(*&parameter, *&filepath);
 	}
 
@@ -1449,12 +1452,12 @@ lbErrCodes LB_STDCALL MyApp::askForDirectory(lb_I_Unknown* uk) {
 	wxDirDialog dirDialog(NULL, _trans("Choose a directory"));
 
 	if (dirDialog.ShowModal() == wxID_OK) {
-		parameter->setData("result");
-		filepath->setData(dirDialog.GetPath().c_str());
+		parameter->setString("result");
+		filepath->setString(dirDialog.GetPath().c_str());
 		param->setUAPString(*&parameter, *&filepath);
 	} else {
-		parameter->setData("result");
-		filepath->setData("");
+		parameter->setString("result");
+		filepath->setString("");
 		param->setUAPString(*&parameter, *&filepath);
 	}
 
@@ -1477,7 +1480,7 @@ lbErrCodes LB_STDCALL MyApp::setXRCFile(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("xrcfilename");
+	parameter->setString("xrcfilename");
 	param->getUAPString(*&parameter, *&filename);
 
     wxXmlResource::Get()->InitAllHandlers();
@@ -1501,18 +1504,18 @@ lbErrCodes LB_STDCALL MyApp::askYesNo(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("msg");
+	parameter->setString("msg");
 	param->getUAPString(*&parameter, *&msg);
 
 	wxMessageDialog msgDialog(NULL, msg->charrep(), _trans("Frage..."), wxYES_NO);
 
 	if (msgDialog.ShowModal() == wxID_YES) {
-		parameter->setData("result");
-		result->setData("yes");
+		parameter->setString("result");
+		result->setString("yes");
 		param->setUAPString(*&parameter, *&result);
 	} else {
-		parameter->setData("result");
-		result->setData("no");
+		parameter->setString("result");
+		result->setString("no");
 		param->setUAPString(*&parameter, *&result);
 	}
 
@@ -1536,7 +1539,7 @@ lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
 	if (frame == NULL) {
 		UAP(lb_I_KeyBase, mbarkey)
 
-		parameter->setData("name");
+		parameter->setString("name");
 		param->getUAPString(*&parameter, *&name);
 		QI(name, lb_I_KeyBase, mbarkey)
 
@@ -1546,11 +1549,11 @@ lbErrCodes LB_STDCALL MyApp::addMenuBar(lb_I_Unknown* uk) {
 
 		menubarQueue->insert(&uk, &mbarkey);
 	} else {
-		parameter->setData("name");
+		parameter->setString("name");
 		param->getUAPString(*&parameter, *&name);
 
 		if (param->Count() > 1) {
-			parameter->setData("after");
+			parameter->setString("after");
 			param->getUAPString(*&parameter, *&after);
 
 			wxMenu *menu = new wxMenu;
@@ -1604,11 +1607,11 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 		UAP_REQUEST(getModuleInstance(), lb_I_String, key)
 		UAP(lb_I_KeyBase, menuentrykey)
 
-		parameter->setData("menubar");
+		parameter->setString("menubar");
 		param->getUAPString(*&parameter, *&menubar);
-		parameter->setData("menuname");
+		parameter->setString("menuname");
 		param->getUAPString(*&parameter, *&menuname);
-		parameter->setData("handlername");
+		parameter->setString("handlername");
 		param->getUAPString(*&parameter, *&handlername);
 
 		*key = *&menubar;
@@ -1623,11 +1626,11 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 		_LOG << "Frame not yet up. Put new menu entry into the queue. '" << menuentrykey->charrep() << "'" LOG_
 		menuentryQueue->insert(&uk, &menuentrykey);
 	} else {
-		parameter->setData("menubar");
+		parameter->setString("menubar");
 		param->getUAPString(*&parameter, *&menubar);
-		parameter->setData("menuname");
+		parameter->setString("menuname");
 		param->getUAPString(*&parameter, *&menuname);
-		parameter->setData("handlername");
+		parameter->setString("handlername");
 		param->getUAPString(*&parameter, *&handlername);
 
 		if ((menubar->charrep() == NULL) || (menuname->charrep() == NULL) || (handlername->charrep() == NULL)) {
@@ -1647,7 +1650,7 @@ lbErrCodes LB_STDCALL MyApp::addMenuEntry(lb_I_Unknown* uk) {
 
 
 		if (param->Count() > 3) {
-			parameter->setData("checkable");
+			parameter->setString("checkable");
 			param->getUAPString(*&parameter, *&checkable);
 		}
 
@@ -1705,7 +1708,7 @@ lbErrCodes LB_STDCALL MyApp::removeMenuBar(lb_I_Unknown* uk) {
 	if (frame == NULL) {
 		_LOGERROR << "MyApp::removeMenuBar(): Illegal function call. The frame is NULL." LOG_
 	} else {
-		parameter->setData("name");
+		parameter->setString("name");
 		param->getUAPString(*&parameter, *&name);
 
 		wxMenuBar* mbar = frame->getMenuBar();
@@ -1753,9 +1756,9 @@ lbErrCodes LB_STDCALL MyApp::removeMenuEntry(lb_I_Unknown* uk) {
 	if (frame == NULL) {
 		_LOGERROR << "MyApp::removeMenuBar(): Illegal function call. The frame is NULL." LOG_
 	} else {
-		parameter->setData("menubar");
+		parameter->setString("menubar");
 		param->getUAPString(*&parameter, *&menubar);
-		parameter->setData("menuname");
+		parameter->setString("menuname");
 		param->getUAPString(*&parameter, *&menuname);
 
 		if ((menubar->charrep() == NULL) || (menuname->charrep() == NULL)) {
@@ -1801,7 +1804,7 @@ lbErrCodes LB_STDCALL MyApp::toggleEvent(lb_I_Unknown* uk) {
 	UAP(lb_I_Parameter, param)
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("handlername");
+	parameter->setString("handlername");
 	param->getUAPString(*&parameter, *&handlername);
 
 	int EvNr = 0;
@@ -1830,7 +1833,7 @@ lbErrCodes LB_STDCALL MyApp::disableEvent(lb_I_Unknown* uk) {
 	UAP(lb_I_Parameter, param)
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("handlername");
+	parameter->setString("handlername");
 	param->getUAPString(*&parameter, *&handlername);
 
 	int EvNr = 0;
@@ -1859,7 +1862,7 @@ lbErrCodes LB_STDCALL MyApp::enableEvent(lb_I_Unknown* uk) {
 	UAP(lb_I_Parameter, param)
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("handlername");
+	parameter->setString("handlername");
 	param->getUAPString(*&parameter, *&handlername);
 
 	int EvNr = 0;
@@ -1901,17 +1904,17 @@ lbErrCodes LB_STDCALL MyApp::addButton(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("buttontext");
+	parameter->setString("buttontext");
 	param->getUAPString(*&parameter, *&buttontext);
-	parameter->setData("handlername");
+	parameter->setString("handlername");
 	param->getUAPString(*&parameter, *&handlername);
-	parameter->setData("x");
+	parameter->setString("x");
 	param->getUAPInteger(*&parameter, *&x);
-	parameter->setData("y");
+	parameter->setString("y");
 	param->getUAPInteger(*&parameter, *&y);
-	parameter->setData("w");
+	parameter->setString("w");
 	param->getUAPInteger(*&parameter, *&w);
-	parameter->setData("h");
+	parameter->setString("h");
 	param->getUAPInteger(*&parameter, *&h);
 
 	int EvNr = 0;
@@ -1945,15 +1948,15 @@ lbErrCodes LB_STDCALL MyApp::addLabel(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("labeltext");
+	parameter->setString("labeltext");
 	param->getUAPString(*&parameter, *&buttontext);
-	parameter->setData("x");
+	parameter->setString("x");
 	param->getUAPInteger(*&parameter, *&x);
-	parameter->setData("y");
+	parameter->setString("y");
 	param->getUAPInteger(*&parameter, *&y);
-	parameter->setData("w");
+	parameter->setString("w");
 	param->getUAPInteger(*&parameter, *&w);
-	parameter->setData("h");
+	parameter->setString("h");
 	param->getUAPInteger(*&parameter, *&h);
 
 	wxStaticText *text = new wxStaticText(panel, -1, buttontext->getData(), wxPoint(x->getData(),y->getData()),
@@ -1978,15 +1981,15 @@ lbErrCodes LB_STDCALL MyApp::addTextField(lb_I_Unknown* uk) {
 
 	QI(uk, lb_I_Parameter, param)
 
-	parameter->setData("text");
+	parameter->setString("text");
 	param->getUAPString(*&parameter, *&buttontext);
-	parameter->setData("x");
+	parameter->setString("x");
 	param->getUAPInteger(*&parameter, *&x);
-	parameter->setData("y");
+	parameter->setString("y");
 	param->getUAPInteger(*&parameter, *&y);
-	parameter->setData("w");
+	parameter->setString("w");
 	param->getUAPInteger(*&parameter, *&w);
-	parameter->setData("h");
+	parameter->setString("h");
 	param->getUAPInteger(*&parameter, *&h);
 
 	wxTextCtrl *text = new

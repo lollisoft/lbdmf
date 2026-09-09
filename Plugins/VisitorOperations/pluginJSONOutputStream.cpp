@@ -231,6 +231,7 @@ public:
         lbJSONOutputStream& LB_STDCALL operator << (char*);
         lbJSONOutputStream& LB_STDCALL operator << (int);
         lbJSONOutputStream& LB_STDCALL operator << (long);
+        lbJSONOutputStream& LB_STDCALL operator << (unsigned long);
         lbJSONOutputStream& LB_STDCALL operator << (bool);
 
                 
@@ -437,6 +438,21 @@ lbJSONOutputStream& LB_STDCALL lbJSONOutputStream::operator << (long l) {
         return *this;
 }
 
+lbJSONOutputStream& LB_STDCALL lbJSONOutputStream::operator << (unsigned long l) {
+        if (currentnode != NULL) {
+                UAP_REQUEST(getModuleInstance(), lb_I_ULong, L)
+                L->setData(l);
+                json_t* value = json_new_number(L->charrep());
+                if (json_insert_child(currentnode, value) != JSON_OK) {
+                        _LOG << "lbJSONOutputStream::operator << (long) Error: Failed inserting child." LOG_
+                }
+                if (currentnode->type != JSON_ARRAY) currentnode = NULL; // Only one object could be added
+        } else {
+                _LOG << "Error: Could not add an element." LOG_
+        }
+        return *this;
+}
+
 lbJSONOutputStream& LB_STDCALL lbJSONOutputStream::operator << (bool b) {
         if (currentnode != NULL) {
                 json_t* value = (b == true) ? json_new_true() : json_new_false();
@@ -515,6 +531,10 @@ void LB_STDCALL lbJSONOutputStream::visit(lb_I_String* s) {
 }
 
 void LB_STDCALL lbJSONOutputStream::visit(lb_I_Long* l) {
+        *this << l->getData();
+}
+
+void LB_STDCALL lbJSONOutputStream::visit(lb_I_ULong* l) {
         *this << l->getData();
 }
 

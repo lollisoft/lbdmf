@@ -29,11 +29,14 @@
 /*...sHistory:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.1.2.5 $
+ * $Revision: 1.1.2.6 $
  * $Name:  $
- * $Id: lbControlFactoryVisitor.cpp,v 1.1.2.5 2025/04/12 10:54:06 lothar Exp $
+ * $Id: lbControlFactoryVisitor.cpp,v 1.1.2.6 2026/09/09 06:55:16 lothar Exp $
  *
  * $Log: lbControlFactoryVisitor.cpp,v $
+ * Revision 1.1.2.6  2026/09/09 06:55:16  lothar
+ * Changed some remains for setData to setString for ABI compatibility
+ *
  * Revision 1.1.2.5  2025/04/12 10:54:06  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
@@ -185,6 +188,10 @@ void LB_STDCALL lbUIElementFactoryAspect::visit(lb_I_Integer* i) {
 }
 
 void LB_STDCALL lbUIElementFactoryAspect::visit(lb_I_Long*) {
+
+}
+
+void LB_STDCALL lbUIElementFactoryAspect::visit(lb_I_ULong*) {
 
 }
 

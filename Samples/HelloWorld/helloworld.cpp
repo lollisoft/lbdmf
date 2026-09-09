@@ -116,14 +116,13 @@ int main(int argc, char *argv[]) {
 	lb_I_Module* mm = NULL;
 
 	mm = getModuleInstance();
-	
 
 	_CL_LOG << "Hello world" LOG_
 
 	UAP_REQUEST(mm, lb_I_String, string)
 
-	string->setData("Console logging...");
+	string->setString("Console logging...");
 	_CL_LOG << string->charrep() LOG_
 
-        return 0;
+	return 0;
 }

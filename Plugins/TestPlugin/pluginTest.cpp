@@ -134,7 +134,7 @@ void LB_STDCALL lbTest::Test_JSONWriteFile() {
 	UAP_REQUEST(getModuleInstance(), lb_I_Integer, valueInteger)
 	
 	*name = "string";
-	valueString->setData("Test");
+	valueString->setString("Test");
 	param->setUAPString(*&name, *&valueString);
 	
 	*name = "long";

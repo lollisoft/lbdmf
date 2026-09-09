@@ -556,38 +556,38 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                 UAP_REQUEST(getModuleInstance(), lb_I_String, value)
                 UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
-                parameter->setData("UML import settings");
+                parameter->setString("UML import settings");
                 //--------------------------------------------
                 /*
                  parameterXSL->setData("Ask for other XSL files");
                  boolXSL->setData(UseOtherXSLFile->getData());
                  paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
                  */
-                parameterXSL->setData("XMI UML input file");
+                parameterXSL->setString("XMI UML input file");
                 fileXSL->setData(XMIFileUMLProject->getData());
                 paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
-                parameterXSL->setData("XSL file for import settings");
+                parameterXSL->setString("XSL file for import settings");
                 fileXSL->setData(XSLFileImportSettings->getData());
                 paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
-                parameterXSL->setData("XSL file for system database");
+                parameterXSL->setString("XSL file for system database");
                 fileXSL->setData(XSLFileSystemDatabase->getData());
                 paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
-                parameterXSL->setData("XSL file for application database");
+                parameterXSL->setString("XSL file for application database");
                 fileXSL->setData(XSLFileApplicationDatabase->getData());
                 paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
 				
 				
 // Wird zuerst geladen und hat leeren String
-                parameterXSL->setData("System database backend type");
-                paramXSLDatabaseBackendSystem->setData(XSLDatabaseBackendSystem->getData());
+                parameterXSL->setString("System database backend type");
+                paramXSLDatabaseBackendSystem->setString(XSLDatabaseBackendSystem->getData());
                 paramXSL->setUAPString(*&parameterXSL, *&paramXSLDatabaseBackendSystem);
 
-                parameterXSL->setData("Application database backend type");
-                paramXSLDatabaseBackendApplication->setData(XSLDatabaseBackendApplication->getData());
+                parameterXSL->setString("Application database backend type");
+                paramXSLDatabaseBackendApplication->setString(XSLDatabaseBackendApplication->getData());
                 paramXSL->setUAPString(*&parameterXSL, *&paramXSLDatabaseBackendApplication);
 
 
@@ -597,22 +597,22 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 
                 param->setUAPParameter(*&parameter, *&paramXSL);
 
-                parameter->setData("UML export settings");
+                parameter->setString("UML export settings");
                 //--------------------------------------------
                 /*
                  parameterXSL->setData("Ask for other XSL files");
                  boolXSL->setData(UseOtherXSLFile->getData());
                  paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
                  */
-                parameterXSL->setData("XMI UML export file");
+                parameterXSL->setString("XMI UML export file");
                 fileXSL->setData(XMIFileUMLProjectExport->getData());
                 paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
-                parameterXSL->setData("XSL file for export settings");
+                parameterXSL->setString("XSL file for export settings");
                 fileXSL->setData(XSLFileExportSettings->getData());
                 paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
-                parameterXSL->setData("XSL file for UML export");
+                parameterXSL->setString("XSL file for UML export");
                 fileXSL->setData(XSLFileUMLExport->getData());
                 paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
@@ -621,27 +621,27 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 
                 param->setUAPParameter(*&parameter, *&paramUMLExport);
 
-                parameter->setData("Application Database settings");
+                parameter->setString("Application Database settings");
                 //--------------------------------------
 
-                parameterGeneral->setData("DB Name");
-                valueGeneral->setData(UMLImportTargetDBName->charrep());
+                parameterGeneral->setString("DB Name");
+                valueGeneral->setString(UMLImportTargetDBName->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("DB User");
-                valueGeneral->setData(UMLImportTargetDBUser->charrep());
+                parameterGeneral->setString("DB User");
+                valueGeneral->setString(UMLImportTargetDBUser->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("DB Password");
-                valueGeneral->setData(UMLImportTargetDBPass->charrep());
+                parameterGeneral->setString("DB Password");
+                valueGeneral->setString(UMLImportTargetDBPass->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("DB Schemaname");
-                valueGeneral->setData(GeneralDBSchemaname->charrep());
+                parameterGeneral->setString("DB Schemaname");
+                valueGeneral->setString(GeneralDBSchemaname->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("Sqlite plugin namespace");
-                valueGeneral->setData(DatabaseSettingNamespace->charrep());
+                parameterGeneral->setString("Sqlite plugin namespace");
+                valueGeneral->setString(DatabaseSettingNamespace->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
                 metaapp->registerPropertyChangeEventGroup(      parameter->charrep(), *&paramGeneral,
@@ -676,27 +676,27 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
                 UAP_REQUEST(getModuleInstance(), lb_I_String, value)
                 UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
-                parameter->setData("Application Database settings");
+                parameter->setString("Application Database settings");
                 //--------------------------------------
 
-                parameterGeneral->setData("DB Name");
-                valueGeneral->setData(UMLImportTargetDBName->charrep());
+                parameterGeneral->setString("DB Name");
+                valueGeneral->setString(UMLImportTargetDBName->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("DB User");
-                valueGeneral->setData(UMLImportTargetDBUser->charrep());
+                parameterGeneral->setString("DB User");
+                valueGeneral->setString(UMLImportTargetDBUser->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("DB Password");
-                valueGeneral->setData(UMLImportTargetDBPass->charrep());
+                parameterGeneral->setString("DB Password");
+                valueGeneral->setString(UMLImportTargetDBPass->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("DB Schemaname");
-                valueGeneral->setData(GeneralDBSchemaname->charrep());
+                parameterGeneral->setString("DB Schemaname");
+                valueGeneral->setString(GeneralDBSchemaname->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
-                parameterGeneral->setData("Sqlite plugin namespace");
-                valueGeneral->setData(DatabaseSettingNamespace->charrep());
+                parameterGeneral->setString("Sqlite plugin namespace");
+                valueGeneral->setString(DatabaseSettingNamespace->charrep());
                 paramGeneral->setUAPString(*&parameterGeneral, *&valueGeneral);
 
                 metaapp->registerPropertyChangeEventGroup(      parameter->charrep(), *&paramGeneral,
@@ -704,22 +704,22 @@ lbErrCodes LB_STDCALL lbDynamicApplication::editProperties(lb_I_Unknown* uk) {
 
                 param->setUAPParameter(*&parameter, *&paramGeneral);
 
-                parameter->setData("UML export settings");
+                parameter->setString("UML export settings");
                 //--------------------------------------------
                 /*
                  parameterXSL->setData("Ask for other XSL files");
                  boolXSL->setData(UseOtherXSLFile->getData());
                  paramXSL->setUAPBoolean(*&parameterXSL, *&boolXSL);
                  */
-                parameterXSL->setData("XMI UML export file");
+                parameterXSL->setString("XMI UML export file");
                 fileXSL->setData(XMIFileUMLProjectExport->getData());
                 paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
                 
-                parameterXSL->setData("XSL file for export settings");
+                parameterXSL->setString("XSL file for export settings");
                 fileXSL->setData(XSLFileExportSettings->getData());
                 paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
                 
-                parameterXSL->setData("XSL file for UML export");
+                parameterXSL->setString("XSL file for UML export");
                 fileXSL->setData(XSLFileUMLExport->getData());
                 paramUMLExport->setUAPFileLocation(*&parameterXSL, *&fileXSL);
                 
@@ -755,10 +755,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
 
                 UAP(lb_I_KeyBase, key)
 
-                name->setData("name");
+                name->setString("name");
                 param->getUAPString(*&name, *&parameterName);
 
-                name->setData("value");
+                name->setString("value");
                 param->getUAPString(*&name, *&value);
 
                 QI(parameterName, lb_I_KeyBase, key)
@@ -835,7 +835,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
                 }
 				// The new import settings to which database backend is used
                 if (strcmp(key->charrep(), "UML import settingsApplication database backend type") == 0) {
-                        if (XSLDatabaseBackendApplication != NULL) XSLDatabaseBackendApplication->setData(value->charrep());
+                        if (XSLDatabaseBackendApplication != NULL) XSLDatabaseBackendApplication->setString(value->charrep());
 						///\todo Add saving changed value as default settings value
 										UAP(lb_I_Parameter, SomeBaseSettings)
 										SomeBaseSettings = metaapp->getPropertySet("DynamicAppDefaultSettings");
@@ -859,7 +859,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::OnPropertiesDataChange(lb_I_Unknown*
                 }
 
                 if (strcmp(key->charrep(), "UML import settingsSystem database backend type") == 0) {
-                        if (XSLDatabaseBackendSystem != NULL) XSLDatabaseBackendSystem->setData(value->charrep());
+                        if (XSLDatabaseBackendSystem != NULL) XSLDatabaseBackendSystem->setString(value->charrep());
 						///\todo Add saving changed value as default settings value
 										UAP(lb_I_Parameter, SomeBaseSettings)
 										SomeBaseSettings = metaapp->getPropertySet("DynamicAppDefaultSettings");
@@ -1323,10 +1323,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationConfigurationToUMLX
                 UAP_REQUEST(getModuleInstance(), lb_I_String, value)
                 UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
-                parameter->setData("UML export settings");
+                parameter->setString("UML export settings");
                 //--------------------------------------------
 
-                parameterXSL->setData("XMI UML export file");
+                parameterXSL->setString("XMI UML export file");
                 fileXSL->setData(XMIFileUMLProject->getData());
                 paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
@@ -1450,10 +1450,10 @@ lbErrCodes LB_STDCALL lbDynamicApplication::importUMLXMIDocIntoApplication(lb_I_
                 UAP_REQUEST(getModuleInstance(), lb_I_String, value)
                 UAP_REQUEST(getModuleInstance(), lb_I_Integer, i)
 
-                parameter->setData("lbDMF Manager Import Definitions");
+                parameter->setString("lbDMF Manager Import Definitions");
                 //--------------------------------------------
 
-                parameterXSL->setData("XMI UML input file");
+                parameterXSL->setString("XMI UML input file");
                 fileXSL->setData(XMIFileUMLProject->getData());
                 paramXSL->setUAPFileLocation(*&parameterXSL, *&fileXSL);
 
@@ -3262,7 +3262,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const c
                 if (LogonUser == NULL) {
                         REQUEST(getModuleInstance(), lb_I_String, LogonUser)
                 }
-        LogonUser->setData(user);
+        LogonUser->setString(user);
 
         if (app == NULL) {
         _CL_LOG << "lb_MetaApplication::Initialize() app is NULL" LOG_
@@ -3270,7 +3270,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::initialize(const char* user, const c
                 if (LogonApplication == NULL) {
                         REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
                 }
-        LogonApplication->setData(app);
+        LogonApplication->setString(app);
 
     load();
 
@@ -3859,14 +3859,14 @@ void LB_STDCALL lbDynamicApplication::activateDBForms(const char* user, const ch
 
 /*...e*/
 lbErrCodes LB_STDCALL lbDynamicApplication::getUserName(lb_I_String** user) {
-        if (LogonUser == NULL) (*user)->setData("");
-        else (*user)->setData(LogonUser->charrep());
+        if (LogonUser == NULL) (*user)->setString("");
+        else (*user)->setString(LogonUser->charrep());
         return ERR_NONE;
 }
 
 lbErrCodes LB_STDCALL lbDynamicApplication::getApplicationName(lb_I_String** app) {
-        if (LogonApplication == NULL) (*app)->setData("");
-        else (*app)->setData(LogonApplication->charrep());
+        if (LogonApplication == NULL) (*app)->setString("");
+        else (*app)->setString(LogonApplication->charrep());
         return ERR_NONE;
 }
 lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(const char* user) {
@@ -3874,7 +3874,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::setUserName(const char* user) {
                 REQUEST(getModuleInstance(), lb_I_String, LogonUser)
         }
 
-        LogonUser->setData(user);
+        LogonUser->setString(user);
         return ERR_NONE;
 }
 
@@ -3883,7 +3883,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::setApplicationName(const char* app) 
                 REQUEST(getModuleInstance(), lb_I_String, LogonApplication)
         }
 
-        LogonApplication->setData(app);
+        LogonApplication->setString(app);
         return ERR_NONE;
 }
 
