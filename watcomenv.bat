@@ -63,6 +63,7 @@ if "%2"=="APPVEYOR" goto APPVEYORBUILD:
 
 rem explicite distribution mode
 if "%2"=="DISTMODE" goto DISTMODE:
+if "%2"=="NODIST" goto NODIST:
 
 if "%COMPUTERNAME%"=="ANAKIN" goto NODIST:
 if "%COMPUTERNAME%"=="T43" goto NODIST:
@@ -200,8 +201,8 @@ rem Some bin dirs for development
 rem set CVSBIN=%DEVROOT%\Tools\cvs
 set WATBIN=%DEVLW%\%BASE%\Tools\WATCOM\BINNT;%DEVROOT%\Tools\WATCOM\BINW
 set DEVBIN=%DEVLW%\%BASE%\bin
-
-set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw32\bin;
+rem Prefer the 64 bit compiler if both are present
+set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw64\bin;%DEVLW%\%BASE%\Tools\mingw32\bin;
 
 rem Some dll and bin search Paths
 set DLLROOT=%RUNROOT%\dll
@@ -211,8 +212,12 @@ set BINROOT=%RUNROOT%\bin;%RUNROOT%\%REPO_NAME%\bin
 
 set Path=%DEVLW%\%BASE%\bin;%SystemRoot%\system32;%DEVLW%\;%WATBIN%;%DEVBIN%;%DLLROOT%;%BINROOT%
 set Path=%Path%;q:\develop\tools\bin;q:\develop\tools\cygwin\bin;Q:\develop\Tools\Perl\bin;G:\gs\gs8.15\bin
-set Path=%Path%;Q:\develop\Tools\TP;Q:\develop\Tools\TP\TPU;Z:\Q\develop\Tools\doxygen\bin
-set Path=%path%;G:\FPC\2.0.4\bin\i386-win32;Z:\Q\develop\Tools\Graphviz2.26.3\bin
+set Path=%Path%;Q:\develop\Tools\TP;Q:\develop\Tools\TP\TPU
+set Path=%path%;G:\FPC\2.0.4\bin\i386-win32
+set Path=%path%;%DEVLW%\lbDMF\Develop\Tools\doxygen\bin
+rem Prefer Graphviz from installation
+set Path=%path%;C:\Programme\Graphviz2.26.3\bin
+set Path=%path%;%DEVLW%\Develop\Tools\Graphviz2.26.3\bin
 
 set Path=%Path%;%MINGWBIN%
 
