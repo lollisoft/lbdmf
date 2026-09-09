@@ -26,11 +26,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.145 $
+# * $Revision: 1.229.2.146 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.145 2025/08/03 09:42:34 lothar Exp $
+# * $Id: Makefile,v 1.229.2.146 2026/09/09 04:25:20 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.146  2026/09/09 04:25:20  lothar
+# * Added packages folder for thirdparty dependencies to hold them within my repo
+# *
 # * Revision 1.229.2.145  2025/08/03 09:42:34  lothar
 # * Change ../vendor/libxslt-1.1.21/libxslt to ../vendor/libxslt-1.1.22/libxslt
 # *
@@ -2432,7 +2435,7 @@ endif
 
 ifeq ($(OSTYPE), Windows_NT)
 ../vendor/libxml2-2.8.0:
-	$(TAR) -zxf ../vendor/libxml2-2.8.0.tar.gz --directory ../vendor
+	$(TAR) -zxf ../vendor/packages/libxml2-2.8.0.tar.gz --directory ../vendor
 endif
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -2484,7 +2487,7 @@ ifeq ($(OSTYPE), Windows_NT)
 	cp ../vendor/libxslt-1.1.22/libxslt/win32config.h ../vendor/libxslt-1.1.22/config.h
 
 ../vendor/libxslt-1.1.34: dummy
-	$(TAR) -zxf ../vendor/libxslt-1.1.34.tar.gz --directory ../vendor
+	$(TAR) -zxf ../vendor/packages/libxslt-1.1.34.tar.gz --directory ../vendor
 	cp ../vendor/makefile.module.libxslt ../vendor/libxslt-1.1.34/libxslt/makefile.module
 	cp ../vendor/makefile.libxslt.bootstrap ../vendor/libxslt-1.1.34/win32
 	$(MAKE) -s -C $@/win32 -f makefile.libxslt.bootstrap
