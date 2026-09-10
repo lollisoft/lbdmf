@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
 #endif
 	
 	UAP_REQUEST(getModuleInstance(), lb_I_String, string)
-	string->setData("# Makefile generated automatically. Do not change.");
+	string->setString("# Makefile generated automatically. Do not change.");
 	
 	COUT << string->charrep() << ENDL;
 
