@@ -26,11 +26,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.146 $
+# * $Revision: 1.229.2.147 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.146 2026/09/09 04:25:20 lothar Exp $
+# * $Id: Makefile,v 1.229.2.147 2026/09/10 10:28:40 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.147  2026/09/10 10:28:40  lothar
+# * Try to build libxslt-1.1.34 on Jenkins for XP
+# *
 # * Revision 1.229.2.146  2026/09/09 04:25:20  lothar
 # * Added packages folder for thirdparty dependencies to hold them within my repo
 # *
@@ -1981,7 +1984,7 @@ ALLTARGETS = \
 	../vendor/antlr3/src \
 	../vendor/databaselayer/src/Implementations/Sqllite \
 	../vendor/libxml2-2.8.0/win32/bin.mingw/libxml2.dll \
-	../vendor/libxslt-1.1.22/libxslt \
+	../vendor/libxslt-1.1.34/libxslt \
 	../vendor/wxJSON-1.2.1/src \
 	../AppDevelopmentDemo/App \
 	../AppDevelopmentDemo/DynamicApp/App \
