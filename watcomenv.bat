@@ -44,6 +44,7 @@ rem set lbDMFUser=
 
 if "%COMPUTERNAME%"=="ANAKIN" goto NODIST:
 if "%COMPUTERNAME%"=="T43" goto NODIST:
+if "%COMPUTERNAME%"=="DESKTOP-HEIU9F1" goto NODIST:
 
 goto DISTMODE:
 
