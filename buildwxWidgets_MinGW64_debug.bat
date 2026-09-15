@@ -8,6 +8,7 @@ rem Developer hosts using Q: are untested.
 if "%1"=="" goto UNDECIDED:
 if "%1"=="DISTMODE" goto DISTMODE:
 if "%1"=="NODIST" goto NODIST:
+if "%1"=="NODISTPRESET" goto NODISTPRESET:
 
 :UNDECIDED
 pause Please select DISTMODE or NODIST as first parameter
@@ -21,13 +22,19 @@ goto STARTBUILDING:
 :NODIST
 pause Starting in NODIST
 call watcomenv.bat exit NODIST
+@rem Override WXDIR from this point on. wxWidgets uses Windows backslash for path separators. 
+set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx
 cd %DEVLW%\lbDMF
 goto STARTBUILDING:
 
-:STARTBUILDING
-
+:NODISTPRESET
+pause Starting in NODISTPRESET
 @rem Override WXDIR from this point on. wxWidgets uses Windows backslash for path separators. 
-set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx
+set WXDIR=%DEVROOT%\wxwin\wx
+cd %DEVROOT%\Projects\%REPO_NAME%
+goto STARTBUILDING:
+
+:STARTBUILDING
 set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw64\bin
 
 @rem Get an explicite version that always ensures to build the code
@@ -45,6 +52,7 @@ rem set Path=%Path%;Q:\develop\Tools\Bakefile\src
 
 if "%1"=="DISTMODE" goto CREATE_WXBUILDSCRIPT_DISTMODE:
 if "%1"=="NODIST" goto CREATE_WXBUILDSCRIPT_NODIST:
+if "%1"=="NODISTPRESET" goto CREATE_WXBUILDSCRIPT_NODIST:
 
 :CREATE_WXBUILDSCRIPT_DISTMODE
 
@@ -102,12 +110,12 @@ echo ) >> doBuildWx.bat
 goto FINALIZE:
 
 :CREATE_WXBUILDSCRIPT_NODIST
-
 @rem Override WXDIR from this point on. wxWidgets uses Windows backslash for path separators. 
 set WXDIR=%DEVLW%\Develop\wxwin\wx
 set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin;%DEVLW%\%BASE%\Tools\mingw64\bin
 
 echo del readme.txt > doBuildWx.bat
+echo pause Start building wxWidgets in CREATE_WXBUILDSCRIPT_NODIST mode > doBuildWx.bat
 
 echo set DRIVE=%DEVLW% >> doBuildWx.bat
 echo set WXDIR=%DEVLW%\Develop\wxwin\wx >> doBuildWx.bat
@@ -130,8 +138,8 @@ rem echo curl -k -L -o lbDMF-BinbuildTools-1.3.4-vc.exe http://sourceforge.net/p
 rem echo lbDMF-BinbuildTools-1.3.4-vc.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
 rem echo ) >> doBuildWx.bat
 echo IF NOT EXIST %WXDIR%\build\msw ( >> doBuildWx.bat
-echo curl -k -L -o wxMSW-%WX_VERSION%-Setup.exe %WX_DOWNLOAD% >> doBuildWx.bat
-echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR% >> doBuildWx.bat
+echo pause Start 7z command
+echo %DEVLW%\%BASE%\Projects\bin\7z x %DEVLW%\Develop\Projects\lbdmf\vendor\packages\wxWidgets-3.2.2.1.7z -o%DEVLW%\Develop\wxwin\wx >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo cd %WXDIR%\build\msw >> doBuildWx.bat
 echo copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx >> doBuildWx.bat
@@ -153,6 +161,7 @@ goto FINALIZE:
 if "%1"=="" goto BUILD_DISTMODE:
 if "%1"=="DISTMODE" goto BUILD_DISTMODE:
 if "%1"=="NODIST" goto BUILD_NODIST:
+if "%1"=="NODISTPRESET" goto BUILD_NODIST_PRESET:
 
 :BUILD_DISTMODE
 
@@ -170,6 +179,16 @@ echo IF EXIST %DEVLW%\lbDMF\GetDoUMLBin.txt ( call %DEVLW%\lbDMF\InstallDoUMLBin
 echo IF EXIST %DEVLW%\lbDMF\GetDoUMLSrc.txt ( call %DEVLW%\lbDMF\InstallDoUMLSrc.bat ) >> doBuildWx.bat
 echo cd %DEVLW%\develop\Projects\lbdmf >> doBuildWx.bat
 call watcomenv.bat %DEVLW%\develop\Projects\lbdmf\doBuildWx.bat NODIST
+goto EXIT:
+
+
+:BUILD_NODIST_PRESET
+
+echo IF EXIST %DEVLW%\lbDMF\GetACE.txt ( call %DEVLW%\lbDMF\InstallACE.bat ) >> doBuildWx.bat
+echo IF EXIST %DEVLW%\lbDMF\GetDoUMLBin.txt ( call %DEVLW%\lbDMF\InstallDoUMLBin.bat ) >> doBuildWx.bat
+echo IF EXIST %DEVLW%\lbDMF\GetDoUMLSrc.txt ( call %DEVLW%\lbDMF\InstallDoUMLSrc.bat ) >> doBuildWx.bat
+echo cd %DEVLW%\develop\Projects\lbdmf >> doBuildWx.bat
+call watcomenv.bat %DEVLW%\develop\Projects\lbdmf\doBuildWx.bat NODISTPRESET
 goto EXIT:
 
 
