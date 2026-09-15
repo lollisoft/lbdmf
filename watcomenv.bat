@@ -64,16 +64,26 @@ if "%2"=="APPVEYOR" goto APPVEYORBUILD:
 rem explicite distribution mode
 if "%2"=="DISTMODE" goto DISTMODE:
 if "%2"=="NODIST" goto NODIST:
+if "%2"=="NODISTPRESET" goto NODISTPRESET:
 
 if "%COMPUTERNAME%"=="ANAKIN" goto NODIST:
 if "%COMPUTERNAME%"=="T43" goto NODIST:
 if "%COMPUTERNAME%"=="DESKTOP-D1P98N4" goto NODIST:
 if "%COMPUTERNAME%"=="LOLLISOF-CD2812" goto NODIST:
 if "%COMPUTERNAME%"=="LAPTOP-02RLMPT3" goto NODIST:
+if "%COMPUTERNAME%"=="DESKTOP-HEIU9F1" goto NODIST:
 
 goto DISTMODE:
 
+:NODISTPRESET
+set MODE=NODISTPRESET
+goto MODE_HAS_BEEN_SET:
+
 :NODIST
+set MODE=NODIST
+goto MODE_HAS_BEEN_SET:
+
+:MODE_HAS_BEEN_SET
 
 set DEVLW=q:
 set BASE=develop
@@ -322,6 +332,21 @@ set BISON_PKGDATADIR=/cygdrive/q/develop/Tools/cygwin/usr/share/bison
 
 rem set CONSOLE_DETACH=no
 rem wdw ..\..\bin\%1
+
+REM Direct call to NODIST means check
+if "%MODE%"=="NODISTPRESET" goto NOCHECKWX:
+if "%MODE%"=="NODIST" goto CHECKWX:
+
+goto NOCHECKWX
+
+:CHECKWX
+REM Loop - Does not yet work as expected
+call %DEVROOT%\Projects\%REPO_NAME%\CheckAndBuildPrerequisites.bat %2
+
+:NOCHECKWX
+REM Means no mode = NODIST or already ran through NODISTPRESET
+
+NO
 start /D %DEVROOT%\Projects\%REPO_NAME%\BaseDevelopment %1
 goto EXIT:
 
