@@ -76,11 +76,11 @@ if "%COMPUTERNAME%"=="DESKTOP-HEIU9F1" goto NODIST:
 goto DISTMODE:
 
 :NODISTPRESET
-set MODE=NODISTPRESET
+set DEPLOYMODE=NODISTPRESET
 goto MODE_HAS_BEEN_SET:
 
 :NODIST
-set MODE=NODIST
+set DEPLOYMODE=NODIST
 goto MODE_HAS_BEEN_SET:
 
 :MODE_HAS_BEEN_SET
@@ -334,8 +334,8 @@ rem set CONSOLE_DETACH=no
 rem wdw ..\..\bin\%1
 
 REM Direct call to NODIST means check
-if "%MODE%"=="NODISTPRESET" goto NOCHECKWX:
-if "%MODE%"=="NODIST" goto CHECKWX:
+if "%DEPLOYMODE%"=="NODISTPRESET" goto NOCHECKWX:
+if "%DEPLOYMODE%"=="NODIST" goto CHECKWX:
 
 goto NOCHECKWX
 
@@ -344,7 +344,7 @@ REM Loop - Does not yet work as expected
 call %DEVROOT%\Projects\%REPO_NAME%\CheckAndBuildPrerequisites.bat %2
 
 :NOCHECKWX
-REM Means no mode = NODIST or already ran through NODISTPRESET
+REM Means no DEPLOYMODE = NODIST or already ran through NODISTPRESET
 
 NO
 start /D %DEVROOT%\Projects\%REPO_NAME%\BaseDevelopment %1
