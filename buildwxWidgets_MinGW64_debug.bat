@@ -20,7 +20,6 @@ call watcomenv.bat exit DISTMODE
 goto STARTBUILDING:
 
 :NODIST
-pause Starting in NODIST
 call watcomenv.bat exit NODIST
 @rem Override WXDIR from this point on. wxWidgets uses Windows backslash for path separators. 
 set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx
@@ -28,7 +27,6 @@ cd %DEVLW%\lbDMF
 goto STARTBUILDING:
 
 :NODISTPRESET
-pause Starting in NODISTPRESET
 @rem Override WXDIR from this point on. wxWidgets uses Windows backslash for path separators. 
 set WXDIR=%DEVROOT%\wxwin\wx
 cd %DEVROOT%\Projects\%REPO_NAME%

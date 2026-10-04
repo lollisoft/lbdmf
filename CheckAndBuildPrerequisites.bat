@@ -1,4 +1,4 @@
-IF NOT EXIST %WXDIR%\build\msw GOTO BUILDWX:
+IF NOT EXIST %DEVLW%\%BASE%\wxwin\wx\build\msw GOTO BUILDWX:
 
 echo Call final Development Console
 call watcomenv.bat "" NODISTPRESET
@@ -9,8 +9,6 @@ exit
 IF NOT EXIST %RUNROOT%\bin goto MISSING_SRCINSTALLER:
 
 call buildwxWidgets_MinGW64_debug.bat NODISTPRESET
-
-call watcomenv.bat "" NODIST
 
 exit
 
