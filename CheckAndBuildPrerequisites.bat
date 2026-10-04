@@ -25,4 +25,7 @@ xcopy C:\lbDMF\Develop\Projects\bin %RUNROOT%\bin
 xcopy /S /E C:\lbDMF\Develop\Tools %DEVLW%\%BASE%\Tools
 xcopy /S /E %DEVLW%\%BASE%\Projects\lbdmf\vendor\BinBuildTools\bison-2.4.2-deploymentfiles\Tools %DEVLW%\%BASE%\Tools
 
+copy %DEVLW%\%BASE%\Projects\lbdmf\vendor\BinBuildTools\m4.exe %RUNROOT%\bin
+copy %DEVLW%\%BASE%\Projects\lbdmf\vendor\BinBuildTools\cygsigsegv-2.dll %RUNROOT%\bin
+
 call buildwxWidgets_MinGW64_debug.bat NODIST
