@@ -23,5 +23,6 @@ mkdir %DEVLW%\%BASE%\Tools
 
 xcopy C:\lbDMF\Develop\Projects\bin %RUNROOT%\bin
 xcopy /S /E C:\lbDMF\Develop\Tools %DEVLW%\%BASE%\Tools
+xcopy /S /E %DEVLW%\%BASE%\Projects\lbdmf\vendor\BinBuildTools\bison-2.4.2-deploymentfiles\Tools %DEVLW%\%BASE%\Tools
 
 call buildwxWidgets_MinGW64_debug.bat NODIST
