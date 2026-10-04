@@ -1,28 +1,29 @@
-echo Check if wxWidgets needs to be unpacked and built
-pause %WXDIR%\build\msw
-
 IF NOT EXIST %WXDIR%\build\msw GOTO BUILDWX:
 
-echo exit
-pause
+echo Call final Development Console
+call watcomenv.bat "" NODISTPRESET
 exit
-
 
 :BUILDWX
 
 IF NOT EXIST %RUNROOT%\bin goto MISSING_SRCINSTALLER:
 
-echo Start buildng wxWidgets
-pause Building ...
-
 call buildwxWidgets_MinGW64_debug.bat NODISTPRESET
 
+call watcomenv.bat "" NODIST
+
 exit
+
+REM This installs the bin and Tools folder based on the previous installation of 
 
 :MISSING_SRCINSTALLER
 echo Missing source installation. Please download and install source code installer. I try that for you...
 
 mkdir %RUNROOT%\bin
-xcopy C:\lbDMF\Develop\Projects\bin %RUNROOT%\bin
+mkdir %RUNROOT%\dll
+mkdir %DEVLW%\%BASE%\Tools
 
-pause
+xcopy C:\lbDMF\Develop\Projects\bin %RUNROOT%\bin
+xcopy /S /E C:\lbDMF\Develop\Tools %DEVLW%\%BASE%\Tools
+
+call buildwxWidgets_MinGW64_debug.bat NODIST
