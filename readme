@@ -1,30 +1,40 @@
 		    DMF - Distributed Multiplatform Framework
-		     Copyright (C)  Lothar Behrens 2000-2025
+		     Copyright (C)  Lothar Behrens 2000-2026
 
 This framework was intented to be independend from compiler and vendor frameworks
-like MFC or Watcom class libraries. Multiplatform stays currently for Windows and
-Linux. More OS systems are welcome, but I am unable to test it.
+like MFC or Watcom class libraries. Multiplatform stays currently for Windows,
+Linux and Mac OS X. More OS systems are welcome, but I am unable to test it.
 
 The part Distributed is currently not integrated, because of my complete rewrite
 of my work to use COM like dynamic loading of classes. The part of distributed may
-be implemented with a CORBA compilant system and a wrapper class that is configured
-local in my system.
+be implemented with a CORBA compliant system and a wrapper class that is configured
+local in my system. Actually, I have ported back a core to be usable with Watcom 11
+and thus probably as well with Open Watcom. Also building a part with Visual C++ 6.0
+on XP is again supported as I made ABI compatibility changes to support wrapping using
+Visual C++ 6.0 or newer when Watcom can't be used. That is tested with my own client
+server implementation based upon the initial application bus attempt that may be compared
+to an ESB. The analysis with the help of AI gave me a feeling that it is going in that
+direction - maybe only marginally or say it is a micro ESB. The goal there is to integrate
+CORBA or other middleware instead using my own implementation by keeping only the
+application bus interface and write a different client proxy hiding the details.
 
 Generally I write a pure abstract class (interface) and a corresponding cpp file
-implementing the interface. Loading instances from interfaces is dony by a name
-of the interface - the identifer of that class it self.
+implementing the interface. Loading instances from interfaces is done by a name
+of the interface - the identifer of that class it self - yet without any GUID registration.
+The interfaces may be modified or should only be modified in the same manner like COM IDL
+interfaces ahe handled. That seems a stable and elegant solution to follow as well.
 
-The object repository uses a XML file that configures, which implementation is used
-in the current environment. Please pay attention of the different mangling on each
-platform. On linux, modify the xml file so that the functor has no prefix (_).
-Each interface like lb_I_Container for a container is
+The object repository initially used a XML file that configures, which implementation is
+used in the current environment. Now the lbModule has the responsibility for that. Please
+pay attention of the different mangling on each platform. On linux, modify the xml file so
+that the functor has no prefix (_). Each interface like lb_I_Container for a container is
 configured pointing to a module (DLL/so) and a functor, that creates the instance.
+That rules apply also to the old XML variant I skipped since a long time.
 
-There is one main tool that helps me to build the source code on all platforms. The
-tool is mkmk. It enables me to define a directory or more with a bunch of files to
-add into a makefile that it basically writes in some parts. On Windows I currently
-provide a precompiled version. On other platforms it will be build at the very
-beginning.
+There is one main tool that helps me to build the source code on all platforms. The tool is mkmk.
+It enables me to define a directory or more with a bunch of files to add into a makefile that it
+basically writes in some parts. On Windows I currently provide a precompiled Visual C++ 6.0 version.
+On other platforms it will be build at the very beginning.
 
 Hint: The mkmk tool was orginally written by Luis Crespo. His publication is at:
 http://www.cubic.org/~submissive/sourcerer/mkmk.htm		
@@ -35,6 +45,27 @@ while creating a migration from CVS to GitHub. See the following link where it s
 https://github.com/lollisoft/lbdmf/commits?since=1999-01-01&until=2001-12-31&after=6a40475cb952e5540f858869a3ea657a8a800a5a+209
 
 First commit was at https://github.com/lollisoft/lbdmf/commit/03d12150d4abcf8af7daaf8a0545bb9298308d45
+
+Installation in a nutshell:
+
+On windows, you should use the source code installer. That automatically installs to C:\lbDMF and pulls all
+prerequisites and let you the option to initially start building wxWidgets that will be pulled when you want
+to build it. Also a MinGW64 compiler will be installed or you choose the 32 Bit variant, then the same applies
+with a 32 Bit MinGW.
+
+On other platforms, you generally have a source tgz file, (s)rpms or Mac OS X DMG files per hardware architecture.
+
+Only on Windows, the source code installer creates a slightly different source tree.
+
+If you then try building on Windows, you have the option to contribute. That is done by creating a folder C:\Q and
+map that as a drive Q: and then therein create the exact folder structure Q:\Develop\Projects and within that folder
+the repository should be placed (Q:\Develop\Projects\lbdmf). In that lbdmf is the code structure as you see in Github.
+Currently I have tested building a source tree from Github by renaming lbdmf-main to lbdmf and then open watcomenv.bat.
+That automatically pulls over the required files from the source code installer provided prerequisiites and builds
+wxWidgets automatically again for the Q: drive. That strict distinction let you test your changes in development mode without
+touching the installed source release.
+
+Currently the integration into the repo build is done with the 64 Bit version. The 32 Bit version may follow.
 
 Requirements:
 
@@ -48,7 +79,10 @@ Windows:
 	Open Watcom compiler. The Microsoft Visual C++ compiler is mostly not tested at the
 	current and most older releases. Therefore you need to stick to MinGW or - for some
 	networking part of code you may use Watcom compiler and the corresponding watcom
-	project file at the root folder (lbdmf.wpj).
+	project file at the root folder (lbdmf.wpj). One exception now is the lbApplicationBus
+	proxy that may be alternatively compiled using Visual C++ 6.0 to test multi compiler ABI
+	compatibility 	for proxy code that relies on third party code only usable within
+	Visual C++ 6.0 and up.
 
 	You most easily can download the source code setup executable. It has an option to pull
 	prerequisites like the MinGW compiler and wxWidgets. Basically the source code installer
@@ -85,8 +119,9 @@ Post setup:
 	a hint text. This is somewhat old and you can ignore that and close the text editor if you
 	have installed the source code to the default location C:\lbDMF.
 	
-	Restart the lbDMF Develop console and start building using the make command. If the build
-	has been succeeded, you type make install and then type wxWrapper.
+	Restart the lbDMF Develop console and start building using the make command if it not starts building
+	wxWidgets within the 64 Bit version. If the build has been succeeded, you type make install and then
+	type wxWrapper.
 	
 	These are therefore your commands to get the application building and started:
 	
