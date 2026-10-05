@@ -1,21 +1,34 @@
 IF NOT EXIST %DEVLW%\%BASE%\wxwin\wx\build\msw GOTO BUILDWX:
 
-echo Call final Development Console
+@echo Call final Development Console
 call watcomenv.bat "" NODISTPRESET
 exit
 
 :BUILDWX
 
-IF NOT EXIST %RUNROOT%\bin goto MISSING_SRCINSTALLER:
-
+IF NOT EXIST %RUNROOT%\bin goto MISSING_SRCINSTALLER_COPIED:
 call buildwxWidgets_MinGW64_debug.bat NODISTPRESET
 
 exit
 
 REM This installs the bin and Tools folder based on the previous installation of 
 
-:MISSING_SRCINSTALLER
-echo Missing source installation. Please download and install source code installer. I try that for you...
+:MISSING_SRCINSTALLER_COPIED
+@cls
+@echo Need to copy stuff from source installation. Checking source location...
+pause
+
+if NOT EXIST C:\lbDMF goto DOWNLOAD_SOURCEINSTALLER:
+goto SKIP:
+
+:DOWNLOAD_SOURCEINSTALLER
+@cls
+@echo Please download and run source code installer manually first into it's standard folder on C:\lbDMF.
+pause
+
+exit
+
+:SKIP
 
 mkdir %RUNROOT%\bin
 mkdir %RUNROOT%\dll
