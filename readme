@@ -57,15 +57,18 @@ On other platforms, you generally have a source tgz file, (s)rpms or Mac OS X DM
 
 Only on Windows, the source code installer creates a slightly different source tree.
 
-If you then try building on Windows, you have the option to contribute. That is done by creating a folder C:\Q and
-map that as a drive Q: and then therein create the exact folder structure Q:\Develop\Projects and within that folder
-the repository should be placed (Q:\Develop\Projects\lbdmf). In that lbdmf is the code structure as you see in Github.
-Currently I have tested building a source tree from Github by renaming lbdmf-main to lbdmf and then open watcomenv.bat.
-That automatically pulls over the required files from the source code installer provided prerequisiites and builds
-wxWidgets automatically again for the Q: drive. That strict distinction let you test your changes in development mode without
+If you then try building on Windows, you have the option to contribute. That is done by
+creating a folder C:\Q and map that as a drive Q: and then therein create the exact folder
+structure Q:\Develop\Projects and within that folder the repository should be placed
+(Q:\Develop\Projects\lbdmf). In that lbdmf is the code structure as you see in Github.
+Currently I have tested building a source tree from Github by renaming lbdmf-main to lbdmf
+and then open watcomenv.bat. That automatically pulls over the required files from the source
+code installer provided prerequisiites and builds wxWidgets automatically again for the Q: drive.
+That strict distinction let you test your changes in development mode without
 touching the installed source release.
 
-Currently the integration into the repo build is done with the 64 Bit version. The 32 Bit version may follow.
+Currently the integration into the repo build is done with the 64 Bit version.
+The 32 Bit version may follow.
 
 Requirements:
 
