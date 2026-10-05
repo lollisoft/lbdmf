@@ -1,3 +1,28 @@
+#    DMF Distributed Multiplatform Framework (the initial goal of this library)
+#    This file is part of lbDMF.
+#    Copyright (C) 2000-2025  Lothar Behrens (lothar.behrens@lollisoft.de)
+#
+#    This library is free software; you can redistribute it and/or
+#    modify it under the terms of the GNU Lesser General Public
+#    License as published by the Free Software Foundation; either
+#    version 2.1 of the License, or (at your option) any later version.
+#
+#    This library is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#    Lesser General Public License for more details.
+#
+#    You should have received a copy of the GNU Lesser General Public
+#    License along with this library; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+#    The author of this work will be reached by e-Mail or paper mail.
+#    e-Mail: lothar.behrens@lollisoft.de
+#    p-Mail: Lothar Behrens
+#            Odenwaldstr. 14
+#
+#            63150 Heusenstamm (germany)
 # Standard template
 
 ifeq ($(OSTYPE), Windows_NT)
@@ -79,12 +104,16 @@ endif
 ifeq ($(OSTYPE), Windows_NT)
 
 
-MOD_INCL_MINGW=$(STD_INCL_MINGW) -DALLOW_SUBTYPING -DBUILD_MICO_DLL -D_WINDOWS -Wno-narrowing -fpermissive -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/Interfaces -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/ProxyPlugins -I../include -I../include/windows
-MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -DALLOW_SUBTYPING -DBUILD_MICO_DLL -D_WINDOWS -Wno-narrowing -fpermissive -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/Interfaces -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/ProxyPlugins -I../include -I../include/windows
-
+MOD_INCL_MINGW=$(STD_INCL_MINGW) -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/Interfaces -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/ProxyPlugins
+# Additions regarding MICO
+MOD_INCL_MINGW+= -DALLOW_SUBTYPING -DBUILD_MICO_DLL -D_WINDOWS -Wno-narrowing -fpermissive -I../include -I../include/windows
+MOD_INCL_MINGW_CPP=$(STD_INCL_MINGW_CPP) -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/Interfaces -I$(DEVROOT_MAKE_APPLICATIONS)$(RELPATH_MAKE)/AppDevelopment/ProxyPlugins
+# Additions regarding MICO
+MOD_INCL_MINGW_CPP+= -DALLOW_SUBTYPING -DBUILD_MICO_DLL -D_WINDOWS -Wno-narrowing -fpermissive -I../include -I../include/windows
 MOD_INCL=$(STD_INCL) -I=$(DEVROOT)$(RELPATH)\\AppDevelopment\\Interfaces
 MOD_INCL_CPP=$(STD_INCL_CPP) -I=$(DEVROOT_MAKE)$(RELPATH_MAKE)/AppDevelopment/Interfaces
 LIBS = $(BASE_LIBS) $(DEVROOT_MAKE)/projects/dll/libs/lbhook.lib,../../../../tools/watcom/lib386/nt/odbc32.lib
+MINGWLIBS += -lwsock32
 
 # use global setup
 #COMPILER=MICROSOFT
@@ -134,169 +163,150 @@ VENDORLIBS=$(HOME)/lib/lbhook.so /usr/lib/libiodbc.dylib
 endif    
 
 endif
-Path=/cygdrive/c/Program Files/GNU/WinCvs 1.2:/cygdrive/c/Q/develop/Tools/curl:/cygdrive/c/Q/develop/Tools/7Zip/7-Zip:/cygdrive/c/lbDMF/develop/Tools/MSC/VC98/Bin:/cygdrive/c/lbDMF/develop/Tools/MSC/VC98/Lib:/cygdrive/c/lbDMF/develop/bin:/cygdrive/c/Windows/system32:/cygdrive/c:/cygdrive/c/lbDMF/develop/Tools/WATCOM/BINNT:/cygdrive/c/lbDMF/develop/Tools/WATCOM/BINW:/cygdrive/c/lbDMF/develop/bin:/dll:/usr/bin:/lbdmf/bin:/cygdrive/q/develop/tools/bin:/cygdrive/q/develop/tools/cygwin/bin:/cygdrive/q/develop/Tools/Perl/bin:/cygdrive/g/gs/gs8.15/bin:/cygdrive/q/develop/Tools/TP:/cygdrive/q/develop/Tools/TP/TPU:/cygdrive/g/FPC/2.0.4/bin/i386-win32:/cygdrive/c/Programme/Graphviz2.26.3/bin:/cygdrive/c/lbDMF/Develop/Tools/doxygen/bin:/cygdrive/c/lbDMF/Develop/Tools/Graphviz2.26.3/bin:/cygdrive/c/lbDMF/develop/Tools/mingw/bin:/cygdrive/c/lbDMF/develop/Tools/mingw32/bin:/cygdrive/e/Program Files/Powersoft/Power21/System:/cygdrive/q/develop/Tools/Bakefile:/cygdrive/c/lbDMF/develop/bin:/cygdrive/c/develop/Tools/Perl/bin:/cygdrive/c/develop/Tools/doxygen/bin:/cygdrive/c/lbDMF/develop/Projects/lbdmf/vendor/ACE_wrappers/lib:/cygdrive/c/develop/Tools/GCC_XML/bin:/cygdrive/c/Programme/Beaver Debugger:/cygdrive/c/lbDMF/develop/Tools/MinGW/msys/1.0/bin
+Path=/cygdrive/c/Program Files/GNU/WinCvs 1.2:/cygdrive/q/Q/develop/Tools/curl:/cygdrive/q/Q/develop/Tools/7Zip/7-Zip:/cygdrive/q/develop/Tools/MSC/VC98/Bin:/cygdrive/q/develop/Tools/MSC/VC98/Lib:/cygdrive/q/develop/bin:/cygdrive/c/Windows/system32:/cygdrive/q:/cygdrive/q/develop/Tools/WATCOM/BINNT:/cygdrive/q/develop/Tools/WATCOM/BINW:/cygdrive/q/develop/bin:/dll:/usr/bin:/lbdmf/bin:/cygdrive/q/develop/tools/bin:/cygdrive/q/develop/tools/cygwin/bin:/cygdrive/q/develop/Tools/Perl/bin:/cygdrive/g/gs/gs8.15/bin:/cygdrive/q/develop/Tools/TP:/cygdrive/q/develop/Tools/TP/TPU:/cygdrive/g/FPC/2.0.4/bin/i386-win32:/cygdrive/c/Programme/Graphviz2.26.3/bin:/cygdrive/q/lbDMF/Develop/Tools/doxygen/bin:/cygdrive/q/lbDMF/Develop/Tools/Graphviz2.26.3/bin:/cygdrive/q/develop/Tools/mingw/bin:/cygdrive/q/develop/Tools/mingw64/bin:/cygdrive/q/develop/Tools/mingw32/bin:/cygdrive/e/Program Files/Powersoft/Power21/System:/cygdrive/q/develop/Tools/Bakefile:/cygdrive/q/develop/bin:/cygdrive/q/develop/Tools/Perl/bin:/cygdrive/q/develop/Tools/doxygen/bin:/cygdrive/q/develop/Projects/lbdmf/vendor/ACE_wrappers/lib:/cygdrive/q/develop/Tools/GCC_XML/bin:/cygdrive/c/Programme/Beaver Debugger:/cygdrive/q/develop/Tools/MinGW/msys/1.0/bin
 OBJ =o
 all: orb.dll
 orb.dll.lnk: makefile $(OBJS)
 		echo NAME orb.dll > $@
-		echo FIL address.$(OBJ) >> $@
-		echo FIL any.$(OBJ) >> $@
-		echo FIL basic_seq.$(OBJ) >> $@
-		echo FIL boa.$(OBJ) >> $@
-		echo FIL buffer.$(OBJ) >> $@
-		echo FIL codec.$(OBJ) >> $@
-		echo FIL codeset.$(OBJ) >> $@
-		echo FIL context.$(OBJ) >> $@
-		echo FIL current.$(OBJ) >> $@
 		echo FIL dii.$(OBJ) >> $@
-		echo FIL dispatch.$(OBJ) >> $@
-		echo FIL dsi.$(OBJ) >> $@
-		echo FIL dynany.$(OBJ) >> $@
-		echo FIL dynany_impl.$(OBJ) >> $@
+		echo FIL typecode.$(OBJ) >> $@
+		echo FIL any.$(OBJ) >> $@
+		echo FIL codec.$(OBJ) >> $@
+		echo FIL buffer.$(OBJ) >> $@
+		echo FIL context.$(OBJ) >> $@
 		echo FIL except.$(OBJ) >> $@
 		echo FIL except2.$(OBJ) >> $@
+		echo FIL dispatch.$(OBJ) >> $@
+		echo FIL string.$(OBJ) >> $@
+		echo FIL object.$(OBJ) >> $@
+		echo FIL address.$(OBJ) >> $@
+		echo FIL ior.$(OBJ) >> $@
+		echo FIL orb.$(OBJ) >> $@
+		echo FIL boa.$(OBJ) >> $@
+		echo FIL dsi.$(OBJ) >> $@
+		echo FIL transport.$(OBJ) >> $@
+		echo FIL iop.$(OBJ) >> $@
+		echo FIL util.$(OBJ) >> $@
+		echo FIL basic_seq.$(OBJ) >> $@
+		echo FIL ssl.$(OBJ) >> $@
 		echo FIL fixed.$(OBJ) >> $@
 		echo FIL intercept.$(OBJ) >> $@
-		echo FIL iop.$(OBJ) >> $@
-		echo FIL ioptypes.$(OBJ) >> $@
-		echo FIL ior.$(OBJ) >> $@
-		echo FIL memcheck.$(OBJ) >> $@
-		echo FIL memtrace.$(OBJ) >> $@
-		echo FIL object.$(OBJ) >> $@
-		echo FIL orb.$(OBJ) >> $@
-		echo FIL orb_all.$(OBJ) >> $@
-		echo FIL orb_excepts.$(OBJ) >> $@
-		echo FIL os-unix.$(OBJ) >> $@
-		echo FIL os-windows.$(OBJ) >> $@
-		echo FIL poa.$(OBJ) >> $@
-		echo FIL poa_base.$(OBJ) >> $@
-		echo FIL poa_impl.$(OBJ) >> $@
+		echo FIL dynany.$(OBJ) >> $@
+		echo FIL codeset.$(OBJ) >> $@
+		echo FIL queue.$(OBJ) >> $@
+		echo FIL static.$(OBJ) >> $@
+		echo FIL current.$(OBJ) >> $@
 		echo FIL policy.$(OBJ) >> $@
 		echo FIL policy2.$(OBJ) >> $@
 		echo FIL policy_impl.$(OBJ) >> $@
-		echo FIL queue.$(OBJ) >> $@
+		echo FIL poa.$(OBJ) >> $@
+		echo FIL poa_base.$(OBJ) >> $@
+		echo FIL poa_impl.$(OBJ) >> $@
 		echo FIL service_info.$(OBJ) >> $@
-		echo FIL ssl.$(OBJ) >> $@
-		echo FIL ssliop.$(OBJ) >> $@
-		echo FIL static.$(OBJ) >> $@
-		echo FIL string.$(OBJ) >> $@
-		echo FIL tckind.$(OBJ) >> $@
-		echo FIL transport.$(OBJ) >> $@
-		echo FIL typecode.$(OBJ) >> $@
-		echo FIL uni_base64.$(OBJ) >> $@
-		echo FIL uni_fromuni.$(OBJ) >> $@
-		echo FIL uni_touni.$(OBJ) >> $@
-		echo FIL uni_unicode.$(OBJ) >> $@
-		echo FIL util.$(OBJ) >> $@
 		echo FIL value.$(OBJ) >> $@
 		echo FIL valuetype.$(OBJ) >> $@
 		echo FIL valuetype_impl.$(OBJ) >> $@
-		echo FIL win32def.$(OBJ) >> $@
-		echo FIL win32dll.$(OBJ) >> $@
-address.$(OBJ): makefile address.cc
-		@echo Build address.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oaddress.$(OBJ) address.cc
-any.$(OBJ): makefile any.cc
-		@echo Build any.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oany.$(OBJ) any.cc
-basic_seq.$(OBJ): makefile basic_seq.cc
-		@echo Build basic_seq.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -obasic_seq.$(OBJ) basic_seq.cc
-boa.$(OBJ): makefile boa.cc
-		@echo Build boa.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oboa.$(OBJ) boa.cc
-buffer.$(OBJ): makefile buffer.cc
-		@echo Build buffer.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -obuffer.$(OBJ) buffer.cc
-codec.$(OBJ): makefile codec.cc
-		@echo Build codec.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ocodec.$(OBJ) codec.cc
-codeset.$(OBJ): makefile codeset.cc uni_conversion.h uni_types.h \
-		 uni_strtypes.h uni_errors.h
-		@echo Build codeset.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ocodeset.$(OBJ) codeset.cc
-context.$(OBJ): makefile context.cc
-		@echo Build context.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ocontext.$(OBJ) context.cc
-current.$(OBJ): makefile current.cc
-		@echo Build current.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ocurrent.$(OBJ) current.cc
+		echo FIL orb_excepts.$(OBJ) >> $@
+		echo FIL dynany_impl.$(OBJ) >> $@
+		echo FIL os-windows.$(OBJ) >> $@
+		echo FIL ioptypes.$(OBJ) >> $@
+		echo FIL ssliop.$(OBJ) >> $@
+		echo FIL tckind.$(OBJ) >> $@
+		echo FIL uni_base64.$(OBJ) >> $@
+		echo FIL uni_unicode.$(OBJ) >> $@
+		echo FIL uni_fromuni.$(OBJ) >> $@
+		echo FIL uni_touni.$(OBJ) >> $@
+		echo FIL ../ir/ir_impl.$(OBJ) >> $@
+		echo FIL ../ir/ir.$(OBJ) >> $@
+		echo FIL ../ir/ir_base.$(OBJ) >> $@
+		echo FIL ../ir/ir_skel.$(OBJ) >> $@
+		echo FIL ../imr/imr_impl.$(OBJ) >> $@
+		echo FIL ../imr/imr.$(OBJ) >> $@
 dii.$(OBJ): makefile dii.cc
 		@echo Build dii.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odii.$(OBJ) dii.cc
-dispatch.$(OBJ): makefile dispatch.cc
-		@echo Build dispatch.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odispatch.$(OBJ) dispatch.cc
-dsi.$(OBJ): makefile dsi.cc
-		@echo Build dsi.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odsi.$(OBJ) dsi.cc
-dynany.$(OBJ): makefile dynany.cc
-		@echo Build dynany.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odynany.$(OBJ) dynany.cc
-dynany_impl.$(OBJ): makefile dynany_impl.cc
-		@echo Build dynany_impl.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odynany_impl.$(OBJ) dynany_impl.cc
+typecode.$(OBJ): makefile typecode.cc
+		@echo Build typecode.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -otypecode.$(OBJ) typecode.cc
+any.$(OBJ): makefile any.cc
+		@echo Build any.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oany.$(OBJ) any.cc
+codec.$(OBJ): makefile codec.cc
+		@echo Build codec.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ocodec.$(OBJ) codec.cc
+buffer.$(OBJ): makefile buffer.cc
+		@echo Build buffer.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -obuffer.$(OBJ) buffer.cc
+context.$(OBJ): makefile context.cc
+		@echo Build context.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ocontext.$(OBJ) context.cc
 except.$(OBJ): makefile except.cc
 		@echo Build except.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oexcept.$(OBJ) except.cc
 except2.$(OBJ): makefile except2.cc
 		@echo Build except2.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oexcept2.$(OBJ) except2.cc
+dispatch.$(OBJ): makefile dispatch.cc
+		@echo Build dispatch.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odispatch.$(OBJ) dispatch.cc
+string.$(OBJ): makefile string.cc
+		@echo Build string.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ostring.$(OBJ) string.cc
+object.$(OBJ): makefile object.cc
+		@echo Build object.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oobject.$(OBJ) object.cc
+address.$(OBJ): makefile address.cc
+		@echo Build address.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oaddress.$(OBJ) address.cc
+ior.$(OBJ): makefile ior.cc
+		@echo Build ior.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oior.$(OBJ) ior.cc
+orb.$(OBJ): makefile orb.cc
+		@echo Build orb.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oorb.$(OBJ) orb.cc
+boa.$(OBJ): makefile boa.cc
+		@echo Build boa.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oboa.$(OBJ) boa.cc
+dsi.$(OBJ): makefile dsi.cc
+		@echo Build dsi.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odsi.$(OBJ) dsi.cc
+transport.$(OBJ): makefile transport.cc
+		@echo Build transport.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -otransport.$(OBJ) transport.cc
+iop.$(OBJ): makefile iop.cc
+		@echo Build iop.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oiop.$(OBJ) iop.cc
+util.$(OBJ): makefile util.cc
+		@echo Build util.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -outil.$(OBJ) util.cc
+basic_seq.$(OBJ): makefile basic_seq.cc
+		@echo Build basic_seq.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -obasic_seq.$(OBJ) basic_seq.cc
+ssl.$(OBJ): makefile ssl.cc
+		@echo Build ssl.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ossl.$(OBJ) ssl.cc
 fixed.$(OBJ): makefile fixed.cc
 		@echo Build fixed.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ofixed.$(OBJ) fixed.cc
 intercept.$(OBJ): makefile intercept.cc
 		@echo Build intercept.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ointercept.$(OBJ) intercept.cc
-iop.$(OBJ): makefile iop.cc
-		@echo Build iop.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oiop.$(OBJ) iop.cc
-ioptypes.$(OBJ): makefile ioptypes.cc
-		@echo Build ioptypes.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oioptypes.$(OBJ) ioptypes.cc
-ior.$(OBJ): makefile ior.cc
-		@echo Build ior.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oior.$(OBJ) ior.cc
-memcheck.$(OBJ): makefile memcheck.cc
-		@echo Build memcheck.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -omemcheck.$(OBJ) memcheck.cc
-memtrace.$(OBJ): makefile memtrace.cc
-		@echo Build memtrace.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -omemtrace.$(OBJ) memtrace.cc
-object.$(OBJ): makefile object.cc
-		@echo Build object.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oobject.$(OBJ) object.cc
-orb.$(OBJ): makefile orb.cc
-		@echo Build orb.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oorb.$(OBJ) orb.cc
-orb_all.$(OBJ): makefile orb_all.cc address.cc any.cc basic_seq.cc boa.cc \
-		 buffer.cc codec.cc context.cc dii.cc dsi.cc iop.cc ior.cc object.cc \
-		 value.cc valuetype_impl.cc orb.cc string.cc except.cc transport.cc \
-		 dispatch.cc typecode.cc util.cc fixed.cc codeset.cc uni_conversion.h \
-		 uni_types.h uni_strtypes.h uni_errors.h queue.cc static.cc intercept.cc \
-		 os-unix.cc ssl.cc current.cc valuetype.cc policy2.cc dynany_impl.cc \
-		 policy_impl.cc service_info.cc ioptypes.cc tckind.cc orb_excepts.cc \
-		 policy.cc poa.cc poa_base.cc poa_impl.cc dynany.cc ssliop.cc
-		@echo Build orb_all.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oorb_all.$(OBJ) orb_all.cc
-orb_excepts.$(OBJ): makefile orb_excepts.cc
-		@echo Build orb_excepts.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oorb_excepts.$(OBJ) orb_excepts.cc
-os-unix.$(OBJ): makefile os-unix.cc
-		@echo Build os-unix.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oos-unix.$(OBJ) os-unix.cc
-os-windows.$(OBJ): makefile os-windows.cc
-		@echo Build os-windows.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oos-windows.$(OBJ) os-windows.cc
-poa.$(OBJ): makefile poa.cc
-		@echo Build poa.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -opoa.$(OBJ) poa.cc
-poa_base.$(OBJ): makefile poa_base.cc
-		@echo Build poa_base.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -opoa_base.$(OBJ) poa_base.cc
-poa_impl.$(OBJ): makefile poa_impl.cc
-		@echo Build poa_impl.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -opoa_impl.$(OBJ) poa_impl.cc
+dynany.$(OBJ): makefile dynany.cc
+		@echo Build dynany.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odynany.$(OBJ) dynany.cc
+codeset.$(OBJ): makefile codeset.cc uni_conversion.h uni_types.h \
+		 uni_strtypes.h uni_errors.h
+		@echo Build codeset.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ocodeset.$(OBJ) codeset.cc
+queue.$(OBJ): makefile queue.cc
+		@echo Build queue.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oqueue.$(OBJ) queue.cc
+static.$(OBJ): makefile static.cc
+		@echo Build static.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ostatic.$(OBJ) static.cc
+current.$(OBJ): makefile current.cc
+		@echo Build current.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ocurrent.$(OBJ) current.cc
 policy.$(OBJ): makefile policy.cc
 		@echo Build policy.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -opolicy.$(OBJ) policy.cc
@@ -306,52 +316,18 @@ policy2.$(OBJ): makefile policy2.cc
 policy_impl.$(OBJ): makefile policy_impl.cc
 		@echo Build policy_impl.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -opolicy_impl.$(OBJ) policy_impl.cc
-queue.$(OBJ): makefile queue.cc
-		@echo Build queue.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oqueue.$(OBJ) queue.cc
+poa.$(OBJ): makefile poa.cc
+		@echo Build poa.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -opoa.$(OBJ) poa.cc
+poa_base.$(OBJ): makefile poa_base.cc
+		@echo Build poa_base.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -opoa_base.$(OBJ) poa_base.cc
+poa_impl.$(OBJ): makefile poa_impl.cc
+		@echo Build poa_impl.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -opoa_impl.$(OBJ) poa_impl.cc
 service_info.$(OBJ): makefile service_info.cc
 		@echo Build service_info.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oservice_info.$(OBJ) service_info.cc
-ssl.$(OBJ): makefile ssl.cc
-		@echo Build ssl.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ossl.$(OBJ) ssl.cc
-ssliop.$(OBJ): makefile ssliop.cc
-		@echo Build ssliop.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ossliop.$(OBJ) ssliop.cc
-static.$(OBJ): makefile static.cc
-		@echo Build static.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ostatic.$(OBJ) static.cc
-string.$(OBJ): makefile string.cc
-		@echo Build string.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ostring.$(OBJ) string.cc
-tckind.$(OBJ): makefile tckind.cc
-		@echo Build tckind.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -otckind.$(OBJ) tckind.cc
-transport.$(OBJ): makefile transport.cc
-		@echo Build transport.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -otransport.$(OBJ) transport.cc
-typecode.$(OBJ): makefile typecode.cc
-		@echo Build typecode.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -otypecode.$(OBJ) typecode.cc
-uni_base64.$(OBJ): makefile uni_base64.cc uni_base64.h uni_types.h \
-		 uni_errors.h uni_support.h
-		@echo Build uni_base64.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ouni_base64.$(OBJ) uni_base64.cc
-uni_fromuni.$(OBJ): makefile uni_fromuni.cc uni_unicode.h uni_types.h \
-		 uni_base64.h uni_strtypes.h uni_errors.h uni_conversion.h
-		@echo Build uni_fromuni.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ouni_fromuni.$(OBJ) uni_fromuni.cc
-uni_touni.$(OBJ): makefile uni_touni.cc uni_unicode.h uni_types.h \
-		 uni_base64.h uni_strtypes.h uni_errors.h uni_conversion.h
-		@echo Build uni_touni.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ouni_touni.$(OBJ) uni_touni.cc
-uni_unicode.$(OBJ): makefile uni_unicode.cc uni_unicode.h uni_types.h \
-		 uni_base64.h uni_errors.h uni_support.h
-		@echo Build uni_unicode.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ouni_unicode.$(OBJ) uni_unicode.cc
-util.$(OBJ): makefile util.cc
-		@echo Build util.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -outil.$(OBJ) util.cc
 value.$(OBJ): makefile value.cc
 		@echo Build value.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ovalue.$(OBJ) value.cc
@@ -361,39 +337,86 @@ valuetype.$(OBJ): makefile valuetype.cc
 valuetype_impl.$(OBJ): makefile valuetype_impl.cc
 		@echo Build valuetype_impl.cc
 		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ovaluetype_impl.$(OBJ) valuetype_impl.cc
-win32def.$(OBJ): makefile win32def.cc
-		@echo Build win32def.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -owin32def.$(OBJ) win32def.cc
-win32dll.$(OBJ): makefile win32dll.cc
-		@echo Build win32dll.cc
-		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -owin32dll.$(OBJ) win32dll.cc
-OBJS = address.$(OBJ) any.$(OBJ) basic_seq.$(OBJ) boa.$(OBJ) buffer.$(OBJ) \
-		 codec.$(OBJ) codeset.$(OBJ) context.$(OBJ) current.$(OBJ) dii.$(OBJ) \
-		 dispatch.$(OBJ) dsi.$(OBJ) dynany.$(OBJ) dynany_impl.$(OBJ) \
-		 except.$(OBJ) except2.$(OBJ) fixed.$(OBJ) intercept.$(OBJ) iop.$(OBJ) \
-		 ioptypes.$(OBJ) ior.$(OBJ) memcheck.$(OBJ) memtrace.$(OBJ) \
-		 object.$(OBJ) orb.$(OBJ) orb_all.$(OBJ) orb_excepts.$(OBJ) \
-		 os-unix.$(OBJ) os-windows.$(OBJ) poa.$(OBJ) poa_base.$(OBJ) \
-		 poa_impl.$(OBJ) policy.$(OBJ) policy2.$(OBJ) policy_impl.$(OBJ) \
-		 queue.$(OBJ) service_info.$(OBJ) ssl.$(OBJ) ssliop.$(OBJ) static.$(OBJ) \
-		 string.$(OBJ) tckind.$(OBJ) transport.$(OBJ) typecode.$(OBJ) \
-		 uni_base64.$(OBJ) uni_fromuni.$(OBJ) uni_touni.$(OBJ) \
-		 uni_unicode.$(OBJ) util.$(OBJ) value.$(OBJ) valuetype.$(OBJ) \
-		 valuetype_impl.$(OBJ) win32def.$(OBJ) win32dll.$(OBJ)
-OBJLIST = address.$(OBJ), any.$(OBJ), basic_seq.$(OBJ), boa.$(OBJ), buffer.$(OBJ), \
-		 codec.$(OBJ), codeset.$(OBJ), context.$(OBJ), current.$(OBJ), \
-		 dii.$(OBJ), dispatch.$(OBJ), dsi.$(OBJ), dynany.$(OBJ), \
-		 dynany_impl.$(OBJ), except.$(OBJ), except2.$(OBJ), fixed.$(OBJ), \
-		 intercept.$(OBJ), iop.$(OBJ), ioptypes.$(OBJ), ior.$(OBJ), \
-		 memcheck.$(OBJ), memtrace.$(OBJ), object.$(OBJ), orb.$(OBJ), \
-		 orb_all.$(OBJ), orb_excepts.$(OBJ), os-unix.$(OBJ), os-windows.$(OBJ), \
-		 poa.$(OBJ), poa_base.$(OBJ), poa_impl.$(OBJ), policy.$(OBJ), \
-		 policy2.$(OBJ), policy_impl.$(OBJ), queue.$(OBJ), service_info.$(OBJ), \
-		 ssl.$(OBJ), ssliop.$(OBJ), static.$(OBJ), string.$(OBJ), tckind.$(OBJ), \
-		 transport.$(OBJ), typecode.$(OBJ), uni_base64.$(OBJ), \
-		 uni_fromuni.$(OBJ), uni_touni.$(OBJ), uni_unicode.$(OBJ), util.$(OBJ), \
-		 value.$(OBJ), valuetype.$(OBJ), valuetype_impl.$(OBJ), win32def.$(OBJ), \
-		 win32dll.$(OBJ)
+orb_excepts.$(OBJ): makefile orb_excepts.cc
+		@echo Build orb_excepts.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oorb_excepts.$(OBJ) orb_excepts.cc
+dynany_impl.$(OBJ): makefile dynany_impl.cc
+		@echo Build dynany_impl.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -odynany_impl.$(OBJ) dynany_impl.cc
+os-windows.$(OBJ): makefile os-windows.cc
+		@echo Build os-windows.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oos-windows.$(OBJ) os-windows.cc
+ioptypes.$(OBJ): makefile ioptypes.cc
+		@echo Build ioptypes.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -oioptypes.$(OBJ) ioptypes.cc
+ssliop.$(OBJ): makefile ssliop.cc
+		@echo Build ssliop.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ossliop.$(OBJ) ssliop.cc
+tckind.$(OBJ): makefile tckind.cc
+		@echo Build tckind.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -otckind.$(OBJ) tckind.cc
+uni_base64.$(OBJ): makefile uni_base64.cc uni_base64.h uni_types.h \
+		 uni_errors.h uni_support.h
+		@echo Build uni_base64.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ouni_base64.$(OBJ) uni_base64.cc
+uni_unicode.$(OBJ): makefile uni_unicode.cc uni_unicode.h uni_types.h \
+		 uni_base64.h uni_errors.h uni_support.h
+		@echo Build uni_unicode.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ouni_unicode.$(OBJ) uni_unicode.cc
+uni_fromuni.$(OBJ): makefile uni_fromuni.cc uni_unicode.h uni_types.h \
+		 uni_base64.h uni_strtypes.h uni_errors.h uni_conversion.h
+		@echo Build uni_fromuni.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ouni_fromuni.$(OBJ) uni_fromuni.cc
+uni_touni.$(OBJ): makefile uni_touni.cc uni_unicode.h uni_types.h \
+		 uni_base64.h uni_strtypes.h uni_errors.h uni_conversion.h
+		@echo Build uni_touni.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -ouni_touni.$(OBJ) uni_touni.cc
+../ir/ir_impl.$(OBJ): makefile ../ir/ir_impl.cc
+		@echo Build ..\\ir/ir_impl.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -o../ir/ir_impl.$(OBJ) ../ir/ir_impl.cc
+../ir/ir.$(OBJ): makefile ../ir/ir.cc
+		@echo Build ..\\ir/ir.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -o../ir/ir.$(OBJ) ../ir/ir.cc
+../ir/ir_base.$(OBJ): makefile ../ir/ir_base.cc
+		@echo Build ..\\ir/ir_base.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -o../ir/ir_base.$(OBJ) ../ir/ir_base.cc
+../ir/ir_skel.$(OBJ): makefile ../ir/ir_skel.cc
+		@echo Build ..\\ir/ir_skel.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -o../ir/ir_skel.$(OBJ) ../ir/ir_skel.cc
+../imr/imr_impl.$(OBJ): makefile ../imr/imr_impl.cc
+		@echo Build ..\\imr/imr_impl.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -o../imr/imr_impl.$(OBJ) ../imr/imr_impl.cc
+../imr/imr.$(OBJ): makefile ../imr/imr.cc
+		@echo Build ..\\imr/imr.cc
+		$(CPPMINGW)  -c $(CPP_MINGW_DLLOPS) $(MOD_INCL_MINGW_CPP) -o../imr/imr.$(OBJ) ../imr/imr.cc
+OBJS = dii.$(OBJ) typecode.$(OBJ) any.$(OBJ) codec.$(OBJ) buffer.$(OBJ) \
+		 context.$(OBJ) except.$(OBJ) except2.$(OBJ) dispatch.$(OBJ) \
+		 string.$(OBJ) object.$(OBJ) address.$(OBJ) ior.$(OBJ) orb.$(OBJ) \
+		 boa.$(OBJ) dsi.$(OBJ) transport.$(OBJ) iop.$(OBJ) util.$(OBJ) \
+		 basic_seq.$(OBJ) ssl.$(OBJ) fixed.$(OBJ) intercept.$(OBJ) dynany.$(OBJ) \
+		 codeset.$(OBJ) queue.$(OBJ) static.$(OBJ) current.$(OBJ) policy.$(OBJ) \
+		 policy2.$(OBJ) policy_impl.$(OBJ) poa.$(OBJ) poa_base.$(OBJ) \
+		 poa_impl.$(OBJ) service_info.$(OBJ) value.$(OBJ) valuetype.$(OBJ) \
+		 valuetype_impl.$(OBJ) orb_excepts.$(OBJ) dynany_impl.$(OBJ) \
+		 os-windows.$(OBJ) ioptypes.$(OBJ) ssliop.$(OBJ) tckind.$(OBJ) \
+		 uni_base64.$(OBJ) uni_unicode.$(OBJ) uni_fromuni.$(OBJ) \
+		 uni_touni.$(OBJ) ../ir/ir_impl.$(OBJ) ../ir/ir.$(OBJ) \
+		 ../ir/ir_base.$(OBJ) ../ir/ir_skel.$(OBJ) ../imr/imr_impl.$(OBJ) \
+		 ../imr/imr.$(OBJ)
+OBJLIST = dii.$(OBJ), typecode.$(OBJ), any.$(OBJ), codec.$(OBJ), buffer.$(OBJ), \
+		 context.$(OBJ), except.$(OBJ), except2.$(OBJ), dispatch.$(OBJ), \
+		 string.$(OBJ), object.$(OBJ), address.$(OBJ), ior.$(OBJ), orb.$(OBJ), \
+		 boa.$(OBJ), dsi.$(OBJ), transport.$(OBJ), iop.$(OBJ), util.$(OBJ), \
+		 basic_seq.$(OBJ), ssl.$(OBJ), fixed.$(OBJ), intercept.$(OBJ), \
+		 dynany.$(OBJ), codeset.$(OBJ), queue.$(OBJ), static.$(OBJ), \
+		 current.$(OBJ), policy.$(OBJ), policy2.$(OBJ), policy_impl.$(OBJ), \
+		 poa.$(OBJ), poa_base.$(OBJ), poa_impl.$(OBJ), service_info.$(OBJ), \
+		 value.$(OBJ), valuetype.$(OBJ), valuetype_impl.$(OBJ), \
+		 orb_excepts.$(OBJ), dynany_impl.$(OBJ), os-windows.$(OBJ), \
+		 ioptypes.$(OBJ), ssliop.$(OBJ), tckind.$(OBJ), uni_base64.$(OBJ), \
+		 uni_unicode.$(OBJ), uni_fromuni.$(OBJ), uni_touni.$(OBJ), \
+		 ../ir/ir_impl.$(OBJ), ../ir/ir.$(OBJ), ../ir/ir_base.$(OBJ), \
+		 ../ir/ir_skel.$(OBJ), ../imr/imr_impl.$(OBJ), ../imr/imr.$(OBJ)
 FILE = FIL
 FILE += $(OBJLIST)
 LNK=orb.lnk

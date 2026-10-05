@@ -4,7 +4,7 @@ The list may be incomplete. If so, please notify me, I will correct it.
 They are as follows:
 
 lbDMF - Distributed Multiplatform Framework
-	Copyright (c) 2000-2009 Lothar Behrens 
+	Copyright (c) 2000-2026 Lothar Behrens 
 	http:///lbdmf.sourceforge.net
 
 Sqlite

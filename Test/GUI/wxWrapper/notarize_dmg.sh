@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export VERSION=1.3.5
+export VERSION=1.3.6
 
 export ARCH_CODESIGNING=`uname -p`
 

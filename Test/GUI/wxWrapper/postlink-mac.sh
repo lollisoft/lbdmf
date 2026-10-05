@@ -3,7 +3,7 @@
 
 export prefix=$1
 
-export VERSION=1.3.5
+export VERSION=1.3.6
 
 # Move to have same relative directory structure
 mkdir wxWrapper.app/Contents/Library
