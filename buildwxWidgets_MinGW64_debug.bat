@@ -17,6 +17,7 @@ exit
 :DISTMODE
 pause Starting in DISTMODE
 call watcomenv.bat exit DISTMODE
+set WXDIR_BATCH=%DEVLW%\%BASE%\wxwin\wx
 goto STARTBUILDING:
 
 :NODIST
@@ -57,7 +58,7 @@ if "%1"=="NODISTPRESET" goto CREATE_WXBUILDSCRIPT_NODIST:
 echo del readme.txt > doBuildWx.bat
 
 echo set DRIVE=%DEVLW% >> doBuildWx.bat
-echo set WXDIR=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
+echo set WXDIR_BATCH=%DEVLW%\lbDMF\Develop\wxwin\wx >> doBuildWx.bat
 echo %DEVLW% >> doBuildWx.bat
 
 echo echo First try Windows 10 supplied cUrl >> doBuildWx.bat
@@ -80,23 +81,23 @@ echo IF NOT EXIST %DEVLW%\lbDMF\Develop\Projects\bin\bison.exe ( >> doBuildWx.ba
 echo curl -k -L -o lbDMF-BinbuildTools-1.3.4-vc.exe http://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.3.4/lbDMF-BinbuildTools-1.3.4-vc.exe/download >> doBuildWx.bat
 echo lbDMF-BinbuildTools-1.3.4-vc.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
 echo ) >> doBuildWx.bat
-echo IF NOT EXIST %WXDIR%\build\msw ( >> doBuildWx.bat
+echo IF NOT EXIST %WXDIR_BATCH%\build\msw ( >> doBuildWx.bat
 echo %Systemroot%\System32\curl -k -L -o wxMSW-%WX_VERSION%-Setup.exe %WX_DOWNLOAD% >> doBuildWx.bat
-echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR% >> doBuildWx.bat
+echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR_BATCH% >> doBuildWx.bat
 echo ) >> doBuildWx.bat
-echo IF NOT EXIST %WXDIR%\build\msw ( >> doBuildWx.bat
+echo IF NOT EXIST %WXDIR_BATCH%\build\msw ( >> doBuildWx.bat
 echo curl -k -L -o wxMSW-%WX_VERSION%-Setup.exe %WX_DOWNLOAD% >> doBuildWx.bat
-echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR% >> doBuildWx.bat
+echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR_BATCH% >> doBuildWx.bat
 echo ) >> doBuildWx.bat
-echo cd %WXDIR%\build\msw >> doBuildWx.bat
-echo copy /Y %WXDIR%\include\wx\msw\setup.h %WXDIR%\include\wx >> doBuildWx.bat
-echo copy /Y %DEVLW%\lbDMF\wxWidgets-config-debug.gcc %WXDIR%\build\msw\config.gcc >> doBuildWx.bat
+echo cd %WXDIR_BATCH%\build\msw >> doBuildWx.bat
+echo copy /Y %WXDIR_BATCH%\include\wx\msw\setup.h %WXDIR_BATCH%\include\wx >> doBuildWx.bat
+echo copy /Y %DEVLW%\lbDMF\wxWidgets-config-debug.gcc %WXDIR_BATCH%\build\msw\config.gcc >> doBuildWx.bat
 echo mingw32-make -f makefile.gcc clean >> doBuildWx.bat
 echo set Path=%SystemRoot%\system32 >> doBuildWx.bat
 echo set MINGWBIN=%DEVLW%\%BASE%\Tools\mingw\bin >> doBuildWx.bat
 echo set Path=%Path%;%MINGWBIN% >> doBuildWx.bat
 echo mingw32-make -f makefile.gcc all >> doBuildWx.bat
-echo copy %WXDIR%\lib\gcc_dll\*.dll %DEVLW%\%BASE%\Projects\dll >> doBuildWx.bat
+echo copy %WXDIR_BATCH%\lib\gcc_dll\*.dll %DEVLW%\%BASE%\Projects\dll >> doBuildWx.bat
 echo IF NOT EXIST %DEVLW%\lbDMF\XSLT ( >> doBuildWx.bat
 echo xcopy %DEVLW%\lbDMF\Develop\Projects\lbdmf\AppDevelopmentDemo\DynamicApp\XSLT_Templates %DEVLW%\lbDMF >> doBuildWx.bat
 echo move %DEVLW%\lbDMF\XSLT_Templates %DEVLW%\lbDMF\XSLT >> doBuildWx.bat
