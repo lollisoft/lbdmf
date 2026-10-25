@@ -61,7 +61,7 @@ pipeline {
                     steps {
                         unstash "thirdparty"
                         sh "cp thirdparty/* ./Projects/lbdmf/vendor"
-                        sh "./Projects/lbdmf/jenkinsbuild-osx.sh"
+                        sh "./Projects/lbdmf/jenkinsbuild-osxarm.sh"
                     }
                 }
             }
