@@ -43,7 +43,7 @@ pipeline {
                     steps {
                         unstash "thirdparty"
                         bat "copy thirdparty\\* .\\Projects\\lbdmf\\vendor\\*"
-						bat ".\Projects\lbdmf\ccbuild.bat"
+						bat ".\\Projects\\lbdmf\\ccbuild.bat"
                     }
                 }
                 stage('Mac_OS_X_Intel Build') {
