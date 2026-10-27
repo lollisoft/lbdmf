@@ -1,7 +1,0 @@
-all:
-	cd src && make -f Makefile.mac
-	mv src/fk .
-
-clean:
-	cd src && make -f Makefile.mac clean
-	rm -f fk

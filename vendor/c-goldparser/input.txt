@@ -1,5 +1,0 @@
-/*
- this is a comment
-*/
-word1 2354 word2
-

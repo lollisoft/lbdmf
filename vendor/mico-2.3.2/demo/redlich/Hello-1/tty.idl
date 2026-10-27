@@ -1,6 +1,0 @@
-// IDL --- Interface eines Terminals (tty)
-
-interface tty   {
-    void print(in string msg);
-};
-
