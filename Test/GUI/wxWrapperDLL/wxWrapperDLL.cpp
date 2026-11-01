@@ -2530,7 +2530,13 @@ void lb_wxFrame::populateFileLocation(wxPropertyGrid* pg, lb_I_Unknown* uk, lb_I
 #ifdef USE_PROPGRID_1_2_2
                 pg->Append(wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
 #else
-                pg->Append(new wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
+				// 1. Construct and append the property using your variables
+				wxPGProperty* fileProp = pg->Append(new wxFileProperty (name->charrep(), category_name->charrep(), s->charrep()));
+				// Explicitly show only the file name (e.g., hides 'C:\path\to\')
+				fileProp->SetAttribute(wxPG_FILE_SHOW_FULL_PATH, false);
+
+				// Re-enable to force displaying the full path
+				fileProp->SetAttribute(wxPG_FILE_SHOW_FULL_PATH, true);
 #endif
         }
 #else
