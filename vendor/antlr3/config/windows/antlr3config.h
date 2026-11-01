@@ -1,1 +1,0 @@
-/* Windows platform does not utilize a configuration file per this code base. Use makefile defines instead to tewak settings. */

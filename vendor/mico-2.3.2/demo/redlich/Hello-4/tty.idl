@@ -1,8 +1,0 @@
-// IDL
-
-module Hello3   {
-    interface tty {
-        oneway void print(in string msg);
-    };
-};
-
