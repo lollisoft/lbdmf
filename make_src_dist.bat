@@ -3,6 +3,7 @@
 set PACKAGINGROOT=%CD%
 set BINARIESROOT=%CD%\..
 set TOOLSFOLDER=Z:\Q\develop\Tools
+set DEPENDENCIESFOLDER=Z:\Q\develop\Dependencies
 set VENDORFOLDER=Z:\Q\develop\Projects\lbdmf\vendor
 set DEVROOT=dist\dist_iss_src\Develop\Projects\lbdmf
 
@@ -23,6 +24,7 @@ if not EXIST "dist\dist_iss_src\Develop\Projects\lib" mkdir dist\dist_iss_src\De
 if not EXIST "dist\dist_iss_src\Develop\Projects\dll\include" mkdir dist\dist_iss_src\Develop\Projects\dll\include
 if not EXIST "dist\dist_iss_src\Develop\Projects\lib\include" mkdir dist\dist_iss_src\Develop\Projects\lib\include
 
+if not EXIST "dist\dist_iss_Dependencies" mkdir dist\dist_iss_Dependencies
 if not EXIST "dist\dist_iss_MinGW" mkdir dist\dist_iss_MinGW
 
 @REM Prepare files for relative packaging mechanism
@@ -44,6 +46,10 @@ if not EXIST "dist\bindist_iss_MinGW_Libraries" mkdir dist\bindist_iss_MinGW_Lib
 if not EXIST "dist\bindist_iss_Watcom_Libraries" mkdir dist\bindist_iss_Watcom_Libraries
 
 7z x vendor\MinGW.zip -odist\dist_iss_MinGW
+copy vendor\7z2301-x64.exe dist\dist_iss_Dependencies
+copy vendor\MinGW64.7z dist\dist_iss_Dependencies
+copy vendor\wxMSW-3.2.2.1-Setup.exe dist\dist_iss_Dependencies
+
 copy vendor\libxslt-1.1.34.tar.gz dist\dist_iss_xslt
 
 copy %TOOLSFOLDER%\mingw\bin\mingwm10.dll dist\bindist_iss_MinGW_Libraries

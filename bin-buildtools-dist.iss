@@ -56,6 +56,8 @@ Source: "dist\dist_iss_BinBuildTools\doxygen\*.*"; DestDir: "{app}\Develop\Tools
 ;Dependency (VC Build)
 Source: "dist\dist_iss_MkMk\mkmk.exe"; DestDir: "{app}\Develop\Projects\bin"; CopyMode: alwaysoverwrite
 
+;Dependencies to former externally downloaded stuff via batch file.
+Source: "dist\dist_iss_Dependencies\*.*"; DestDir: "{app}\Dependencies"; CopyMode: alwaysoverwrite
 
 [Icons]
 ;Name: "{group}\lbDMF Develop"; Filename: "{app}\watcomenv.bat"; WorkingDir: "{app}\develop\projects\cpp\BaseDevelopment"
