@@ -82,11 +82,19 @@ echo curl -k -L -o lbDMF-BinbuildTools-1.3.6-vc.exe http://sourceforge.net/proje
 echo lbDMF-BinbuildTools-1.3.6-vc.exe /VERYSILENT /SP- /DIR=%DEVLW%\lbDMF >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %WXDIR_BATCH%\build\msw ( >> doBuildWx.bat
+echo IF NOT EXIST C:\lbDMF\Dependencies\wxMSW-%WX_VERSION%-Setup.exe ( >> doBuildWx.bat
 echo %Systemroot%\System32\curl -k -L -o wxMSW-%WX_VERSION%-Setup.exe %WX_DOWNLOAD% >> doBuildWx.bat
+echo ) else ( >> doBuildWx.bat
+echo copy C:\lbDMF\Dependencies\wxMSW-%WX_VERSION%-Setup.exe wxMSW-%WX_VERSION%-Setup.exe >> doBuildWx.bat
+echo ) >> doBuildWx.bat
 echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR_BATCH% >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo IF NOT EXIST %WXDIR_BATCH%\build\msw ( >> doBuildWx.bat
+echo IF NOT EXIST C:\lbDMF\Dependencies\wxMSW-%WX_VERSION%-Setup.exe ( >> doBuildWx.bat
 echo curl -k -L -o wxMSW-%WX_VERSION%-Setup.exe %WX_DOWNLOAD% >> doBuildWx.bat
+echo ) else ( >> doBuildWx.bat
+echo copy C:\lbDMF\Dependencies\wxMSW-%WX_VERSION%-Setup.exe wxMSW-%WX_VERSION%-Setup.exe >> doBuildWx.bat
+echo ) >> doBuildWx.bat
 echo wxMSW-%WX_VERSION%-Setup.exe /VERYSILENT /SP- /DIR=%WXDIR_BATCH% >> doBuildWx.bat
 echo ) >> doBuildWx.bat
 echo cd %WXDIR_BATCH%\build\msw >> doBuildWx.bat
