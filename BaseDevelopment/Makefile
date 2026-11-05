@@ -26,11 +26,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.147 $
+# * $Revision: 1.229.2.148 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.147 2026/09/10 10:28:40 lothar Exp $
+# * $Id: Makefile,v 1.229.2.148 2026/11/05 08:23:10 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.148  2026/11/05 08:23:10  lothar
+# * Added deletion of mkmk folder on Linux
+# *
 # * Revision 1.229.2.147  2026/09/10 10:28:40  lothar
 # * Try to build libxslt-1.1.34 on Jenkins for XP
 # *
@@ -2615,6 +2618,7 @@ ifeq ($(OSTYPE), linux)
 	cd ../BaseDevelopment
 
 ../vendor/mkmk: dummy
+	rm -rf $@/mkmk
 	$@/make.sh $@
 	cp $@/mkmk.out $(prefix)/bin/mkmk
 	cd ../BaseDevelopment
