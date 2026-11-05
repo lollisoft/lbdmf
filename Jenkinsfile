@@ -9,6 +9,7 @@ pipeline {
                 label "Master"
             }            
             steps {
+                cleanWs() // Wipes out the workspace before doing anything
                 sh "mkdir -p thirdparty"
                 sh "curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz > thirdparty/boost_1_59_0.tar.gz"
                 sh "curl -L http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.7z > thirdparty/boost_1_59_0.7z"
