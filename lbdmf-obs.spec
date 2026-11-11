@@ -4,7 +4,7 @@ Version:        1.3.6
 Release:        1
 License:        LGPL-2.1-or-later
 Group:          Development/Tools/Other
-Source:         %{name}-%{version}.obscpio
+Source:         %{name}-%{version}.tar.gz
 Url:            http://lollisoft.de
 Packager:       Lothar Behrens <lothar.behrens@lollisoft.de>
 
@@ -35,7 +35,6 @@ This is a framework to develop software. It's origin goal was to make me indepen
 # Unpack the .obscpio archive from SOURCES directly into Projects/lbdmf
 %setup -q -c -n Projects/lbdmf
 
-# Step back to the parent directory so DEVROOT sits right above Projects/lbdmf
 cd ..
 cp -p Projects/lbdmf/configure ./configure
 chmod +x ./configure
