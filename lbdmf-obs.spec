@@ -68,7 +68,7 @@ mkdir -p bin lib plugins
 
 # Run your custom configure wrapper to generate the top-level makefile with RPMBUILD=yes
 ./configure --prefix=%{buildroot}%{_prefix}
-make %{?_smp_mflags}
+make -j1 
 
 %install
 export DEVROOT=$(pwd)
