@@ -40,7 +40,7 @@ echo "Inhalt von SOURCES:"
 ls -la %{_sourcedir}
 echo "=== DIAGNOSE ENDE ==="
 
-chmod +x ./configure
+chmod +x /%{_sourcedir}/configure
 
 %build
 export DEVROOT=$(pwd)
