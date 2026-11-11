@@ -42,6 +42,11 @@ echo "=== DIAGNOSE ENDE ==="
 
 chmod +x /%{_sourcedir}/configure
 
+# Erstellt die erwartete Verzeichnisstruktur im leeren BUILD-Verzeichnis
+mkdir -p Projects/lbdmf
+cp -a %{_sourcedir}/* Projects/lbdmf/
+cp -p Projects/lbdmf/configure ./configure
+
 %build
 export DEVROOT=$(pwd)
 export MODULELIB=lbModule.so
