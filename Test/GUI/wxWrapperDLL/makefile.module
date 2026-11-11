@@ -159,7 +159,7 @@ endif
 
 C_SOOPS= -DCPUARCH_$(CPUARCH_BITS) $(DEBUG_CXX_FLAGS) $(C_SOOPS_WX)
 VENDORLIBS=-L$(prefix)/lib -llbHook 
-LDFLAGS=$(L_SOOPS) `wx-config --inplace --libs` 
+LDFLAGS=$(L_SOOPS) -Wl,--no-as-needed `wx-config --inplace --libs` 
 ifeq ($(LBWXVERSION), current)
 LIBS=
 endif

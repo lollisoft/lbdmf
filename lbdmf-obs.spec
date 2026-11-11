@@ -73,7 +73,7 @@ mkdir -p bin lib plugins
 
 # Run your custom configure wrapper to generate the top-level makefile with RPMBUILD=yes
 ./configure --prefix=%{buildroot}%{_prefix}
-make -j1 LD="cc -s -Wl,--no-as-needed" 
+make -j1
 
 %install
 export DEVROOT=$(pwd)
