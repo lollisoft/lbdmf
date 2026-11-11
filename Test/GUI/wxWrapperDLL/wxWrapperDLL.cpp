@@ -2178,13 +2178,13 @@ END_EVENT_TABLE()
 
 void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 {
-        _CL_LOG << "OnEraseBackground() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
+        _CL_LOG << "OnEraseBackground() called for " << event.GetEventObject()->GetClassInfo()->GetClassName().mb_str() << "." LOG_
     event.Skip();
 }
 
 void lb_wxFrame::OnSize(wxSizeEvent& event)
 {
-        _CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName() << "." LOG_
+        _CL_LOG << "OnSize() called for " << event.GetEventObject()->GetClassInfo()->GetClassName().mb_str() << "." LOG_
         //SetMinSize(event.GetSize());
 
 #ifdef SOLARIS
