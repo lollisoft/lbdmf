@@ -4,7 +4,7 @@ Version: 1.3.6
 Release: 1
 License: LGPL
 Group: Development/Tools
-Source: %{name}-%{version}.tar.gz
+Source: %{name}-%{version}.obscpio
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Packager: Lothar Behrens <lothar.behrens@lollisoft.de>
 Distribution: SUSE
@@ -40,7 +40,7 @@ You will need to install the following packages when building on 10.1:
 rm -rf $RPM_BUILD_ROOT 
 mkdir $RPM_BUILD_ROOT
 
-%setup -q
+%setup -T -D -n %{name}-%{version}
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" \
