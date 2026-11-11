@@ -84,6 +84,13 @@ export OSTYPE=linux
 export PATH=$(pwd)/bin:%{_bindir}:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=$(pwd)/lib:$LD_LIBRARY_PATH
 
+# Pre-create target directories inside BUILDROOT since RPM wipes BUILDROOT before %install
+mkdir -p %{buildroot}%{_bindir}
+mkdir -p %{buildroot}%{_prefix}/lib
+mkdir -p %{buildroot}%{_libdir}
+mkdir -p %{buildroot}%{_datadir}/lbdmf
+mkdir -p %{buildroot}%{_prefix}/plugins
+
 # Install directly into the RPM buildroot via your generated makefile target
 make install-strip
 
