@@ -1,0 +1,15 @@
+<services>
+  <service name="tar_scm">
+    <param name="url">https://github.com/lollisoft/lbdmf.git</param>
+    <param name="scm">git</param>
+    <param name="filename">lbdmf</param>
+    <param name="versionformat">1.3.6</param>
+    <param name="revision">main</param>
+    <param name="extract">lbdmf-obs.spec</param>
+  </service>
+  <service name="recompress" mode="buildtime">
+    <param name="file">*.tar</param>
+    <param name="compression">gz</param>
+  </service>
+</services>
+
