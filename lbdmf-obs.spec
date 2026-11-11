@@ -4,7 +4,6 @@ Version:        1.3.6
 Release:        1
 License:        LGPL-2.1-or-later
 Group:          Development/Tools/Other
-Source:         %{name}-%{version}.tar.gz
 Url:            http://lollisoft.de
 Packager:       Lothar Behrens <lothar.behrens@lollisoft.de>
 
