@@ -130,6 +130,7 @@ rm -f %{buildroot}%{_prefix}/lib/libwx_baseu* %{buildroot}%{_prefix}/lib/libwx_g
 %defattr(-,root,root,-)
 %{_bindir}/*
 %{_prefix}/lib/*
+%dir %{_prefix}/plugins
 %{_prefix}/plugins/*
 %{_datadir}/applications/wxWrapper.desktop
 %{_datadir}/lbdmf/
