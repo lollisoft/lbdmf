@@ -17,14 +17,14 @@ BuildRequires:  libxslt-devel
 BuildRequires:  unixODBC-devel >= 2.2.11
 BuildRequires:  update-desktop-files
 
-# Parallelbetrieb-Weiche: Moderne Systeme nutzen wxWidgets 3.2, alte nutzen 2.8
+# Parallel version support: wxWidgets 3.2 for modern openSUSE, 2.8 for older releases
 %if 0%{?suse_version} >= 1500
 BuildRequires:  wxWidgets-3_2-devel
 %else
 BuildRequires:  wxGTK-devel >= 2.8.12
 %endif
 
-# Laufzeitabhängigkeiten für Bibliotheken ermittelt RPM vollautomatisch
+# Shared library dependencies are detected automatically by rpmbuild
 Requires:       unixODBC >= 2.2.11
 
 %description
@@ -32,11 +32,11 @@ This is a framework to develop software. It's origin goal was to make me indepen
 (commercial) frameworks and development tools.
 
 %prep
-# Erstellt die von Ihrem configure-Wrapper und mkmk erwartete Struktur Projects/lbdmf/
-mkdir -p Projects/lbdmf
-find . -maxdepth 1 ! -name '.' ! -name 'Projects' ! -name 'BUILDROOT' -exec mv {} Projects/lbdmf/ \;
+# Unpack the .obscpio archive from SOURCES directly into Projects/lbdmf
+%setup -q -c -n Projects/lbdmf
 
-# Holen wir das configure-Skript auf die oberste Ebene zurück, damit es aus DEVROOT läuft
+# Step back to the parent directory so DEVROOT sits right above Projects/lbdmf
+cd ..
 cp -p Projects/lbdmf/configure ./configure
 chmod +x ./configure
 
@@ -59,7 +59,7 @@ export WX_CONFIG=%{_bindir}/wx-config
 
 mkdir -p bin lib plugins
 
-# Ihr eigener configure-Wrapper erzeugt das passende Top-Level makefile mit RPMBUILD=yes
+# Run your custom configure wrapper to generate the top-level makefile with RPMBUILD=yes
 ./configure --prefix=%{buildroot}%{_prefix}
 make %{?_smp_mflags}
 
@@ -72,10 +72,10 @@ export OSTYPE=linux
 export PATH=$(pwd)/bin:%{_bindir}:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=$(pwd)/lib:$LD_LIBRARY_PATH
 
-# Nutzt das von Ihrem configure-Wrapper generierte install-strip Target
+# Install directly into the RPM buildroot via your generated makefile target
 make install-strip
 
-# Desktop-Verknüpfung sauber im Buildroot ablegen
+# Install the desktop file cleanly into the buildroot
 mkdir -p %{buildroot}%{_datadir}/applications
 cat <<EOF > %{buildroot}%{_datadir}/applications/wxWrapper.desktop
 [Desktop Entry]
@@ -91,7 +91,7 @@ EOF
 
 %suse_update_desktop_file wxWrapper
 
-# Standard-XSL-Einstellungen hinterlegen
+# Install default XSL settings
 mkdir -p %{buildroot}%{_datadir}/lbdmf/XMIToDMF
 cat <<'EOF' > %{buildroot}%{_datadir}/lbdmf/XMIToDMF/XMISettings.xsl
 <xsl:stylesheet version="1.1" xmlns:xsl="http://w3.org" xmlns:exsl="http://exslt.org" extension-element-prefixes="exsl">
