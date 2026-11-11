@@ -205,4 +205,52 @@ export REPO_NAME
 Mac OS X:
 *********
 
-TBD
+The Mac OS X build works the same than that in Linux. Basically only difference would be the shell variables within the environment.
+
+Within the /etc/.profile I have made my settings as follows:
+
+# System-wide .profile for sh(1)
+
+if [ -x /usr/libexec/path_helper ]; then
+        eval `/usr/libexec/path_helper -s`
+fi
+
+if [ "${BASH-no}" != "no" ]; then
+        [ -r /etc/bashrc ] && . /etc/bashrc
+fi
+
+CVS_RSH=ssh
+MODULELIB=lbModule.so
+LBXMLFUNCTOR=getlbDOMConfigInstance
+LBMODULEFUNCTOR=getlb_ModuleInstance
+DEVROOT=~/develop
+LD_LIBRARY_PATH=~/lib:
+PLUGIN_DIR=~/plugins
+OSTYPE=osx
+PATH="/usr/local/bin:/sw/bin:/sw/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:~/bin:/usr/local/bin:/usr/brlcad/bin:/opt/local/bin"
+
+# On older OSX
+#DEVELOPER_TOOLS_PATH=/Developer/Tools
+#export DEVELOPER_TOOLS_PATH
+# On newer OSX
+DEVELOPER_TOOLS_PATH=/Library/Developer/CommandLineTools/usr/bin
+export DEVELOPER_TOOLS_PATH
+
+OSVERSION=`uname -r`
+export OSVERSION
+OSPLATFORM=`uname -p`
+export OSPLATFORM
+
+export CVS_RSH
+export MODULELIB
+export LBXMLFUNCTOR
+export LBMODULEFUNCTOR
+export DEVROOT
+export LD_LIBRARY_PATH
+export OSTYPE
+export PATH
+export PLUGIN_DIR
+REPO_NAME=lbdmf
+export REPO_NAME
+
+So you may make a similar setup but not systemwide.
