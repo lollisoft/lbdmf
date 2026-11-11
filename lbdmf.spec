@@ -17,7 +17,7 @@ Provides: lbdmf
 BuildRequires: libxslt-devel libxml2-devel bison flex wxGTK-devel >= 2.6.2 unixODBC-devel >= 2.2.11 update-desktop-files gcc-c++
 Requires: unixODBC >= 2.2.11 desktop-file-utils libxslt1 libwx_gtk3u_core-suse libwx_baseu-suse
 %else
-BuildRequires: libxslt-devel libxml2-devel bison flex wxGTK-devel >= 2.8.8 desktop-file-utils unixODBC-devel >= 2.2.11 gcc-c++
+BuildRequires: libxslt-devel libxml2-devel bison flex wxWidgets-3_2-devel desktop-file-utils unixODBC-devel >= 2.2.11 gcc-c++
 Requires: unixODBC >= 2.2.11 desktop-file-utils libxslt1 libwx_gtk3u_core-suse libwx_baseu-suse
 %endif
 
