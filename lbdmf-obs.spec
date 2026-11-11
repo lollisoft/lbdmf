@@ -19,7 +19,7 @@ BuildRequires:  update-desktop-files
 
 # Parallel version support: wxWidgets 3.2 for modern openSUSE, 2.8 for older releases
 %if 0%{?suse_version} >= 1500
-BuildRequires:  wxWidgets-3_2-devel
+BuildRequires:  wxGTK3-3_2-devel 
 %else
 BuildRequires:  wxGTK-devel >= 2.8.12
 %endif
