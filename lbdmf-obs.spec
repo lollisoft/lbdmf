@@ -60,6 +60,7 @@ export OSVERSION=$(uname -r)
 
 export PATH=$(pwd)/bin:%{_bindir}:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=$(pwd)/lib:$LD_LIBRARY_PATH
+export LDFLAGS=-Wl,--no-as-needed
 
 export CFLAGS="%{optflags}"
 export CXXFLAGS="%{optflags}"
