@@ -53,6 +53,11 @@ export MODULELIB=lbModule.so
 export LBXMLFUNCTOR=getlbDOMConfigInstance
 export LBMODULEFUNCTOR=getlb_ModuleInstance
 export OSTYPE=linux
+
+# Steuert im Makefile den 64-Bit-Pfad (x86_64) und die Systemerkennung
+export OSPLATFORM=$(uname -m)
+export OSVERSION=$(uname -r)
+
 export PATH=$(pwd)/bin:%{_bindir}:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=$(pwd)/lib:$LD_LIBRARY_PATH
 
