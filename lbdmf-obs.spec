@@ -120,6 +120,8 @@ cat <<'EOF' > %{buildroot}%{_datadir}/lbdmf/XMIToDMF/XMISettings.xsl
 <xsl:variable name="settingsfile_database_pass" select="'dbpass'"/>
 </xsl:stylesheet>
 EOF
+# Entfernt versehentlich mitkopierte System-wxWidgets-Bibliotheken, um Paketkonflikte zu vermeiden
+rm -f %{buildroot}%{_prefix}/lib/libwx_baseu* %{buildroot}%{_prefix}/lib/libwx_gtk3u*
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -127,6 +129,8 @@ EOF
 %files
 %defattr(-,root,root,-)
 %{_bindir}/*
+%{_prefix}/lib/*
+%{_prefix}/plugins/*
 %{_datadir}/applications/wxWrapper.desktop
 %{_datadir}/lbdmf/
 
