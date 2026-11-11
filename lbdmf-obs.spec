@@ -4,7 +4,7 @@ Version: 1.3.6
 Release: 1
 License: LGPL
 Group: Development/Tools
-Source: %{name}-%{version}.tgz
+Source: %{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-buildroot
 Packager: Lothar Behrens <lothar.behrens@lollisoft.de>
 Distribution: SUSE
