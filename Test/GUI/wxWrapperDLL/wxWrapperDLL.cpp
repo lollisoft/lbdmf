@@ -2175,12 +2175,6 @@ BEGIN_EVENT_TABLE(lb_wxFrame, wxFrame)
     EVT_SIZE(lb_wxFrame::OnSize)
 END_EVENT_TABLE()
 
-// Zeile 2181:
-_CL_LOG << "OnEraseBackground() called for " << (const char*)wxString(event.GetEventObject()->GetClassInfo()->GetClassName()).mb_str() << "." LOG_
-
-// Zeile 2187:
-_CL_LOG << "OnSize() called for " << (const char*)wxString(event.GetEventObject()->GetClassInfo()->GetClassName()).mb_str() << "." LOG_
-
 void lb_wxFrame::OnEraseBackground(wxEraseEvent& event)
 {
     _CL_LOG << "OnEraseBackground() called for " << (const char*)wxString(event.GetEventObject()->GetClassInfo()->GetClassName()).mb_str() << "." LOG_
