@@ -60,7 +60,6 @@ export OSVERSION=$(uname -r)
 
 export PATH=$(pwd)/bin:%{_bindir}:/usr/local/bin:$PATH
 export LD_LIBRARY_PATH=$(pwd)/lib:$LD_LIBRARY_PATH
-export LDFLAGS=-Wl,--no-as-needed
 
 export CFLAGS="%{optflags}"
 export CXXFLAGS="%{optflags}"
@@ -74,7 +73,7 @@ mkdir -p bin lib plugins
 
 # Run your custom configure wrapper to generate the top-level makefile with RPMBUILD=yes
 ./configure --prefix=%{buildroot}%{_prefix}
-make -j1 
+make -j1 LD="cc -s -Wl,--no-as-needed" 
 
 %install
 export DEVROOT=$(pwd)
