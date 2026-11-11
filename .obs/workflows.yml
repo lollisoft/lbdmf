@@ -2,7 +2,7 @@ workflow:
   steps:
     - trigger_services:
         project: home:lollisoft
-        package: lbdmf-obs
+        package: lbdmf
   filters:
     event: push
     branches:
