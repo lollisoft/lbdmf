@@ -32,6 +32,14 @@ This is a framework to develop software. It's origin goal was to make me indepen
 (commercial) frameworks and development tools.
 
 %prep
+echo "=== DIAGNOSE START ==="
+echo "Aktuelles Verzeichnis:"
+pwd
+ls -la
+echo "Inhalt von SOURCES:"
+ls -la %{_sourcedir}
+echo "=== DIAGNOSE ENDE ==="
+
 # Unpack the .obscpio archive from SOURCES directly into Projects/lbdmf
 %setup -q -c -n Projects/lbdmf
 
