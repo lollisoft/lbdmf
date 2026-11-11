@@ -1,0 +1,11 @@
+workflow:
+  steps:
+    - trigger_services:
+        project: home:lollisoft
+        package: lbdmf
+  filters:
+    event: push
+    branches:
+      only:
+        - main
+
