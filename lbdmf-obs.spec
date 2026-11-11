@@ -40,11 +40,6 @@ echo "Inhalt von SOURCES:"
 ls -la %{_sourcedir}
 echo "=== DIAGNOSE ENDE ==="
 
-# Unpack the .obscpio archive from SOURCES directly into Projects/lbdmf
-%setup -q -c -n Projects/lbdmf
-
-cd ..
-cp -p Projects/lbdmf/configure ./configure
 chmod +x ./configure
 
 %build
