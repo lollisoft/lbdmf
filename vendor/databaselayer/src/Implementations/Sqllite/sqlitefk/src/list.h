@@ -1,6 +1,10 @@
 #ifndef LIST_H
 #define LIST_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define TYPE_COLUMN 1
 #define TYPE_FOREIGNKEY 2
 #define TYPE_PRIMARYKEY 3
@@ -36,5 +40,9 @@ extern ListItem *list_tail(List *list);
 extern ListItem *list_next(ListItem *item);
 
 extern void *list_data(ListItem *item);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
