@@ -12,10 +12,16 @@ extern "C" {
 #endif
 
 #ifndef __WATCOMC__
+#ifdef LINUX
+extern "C" {
+#endif
 #ifdef __MINGW32__
 extern "C" {
 #endif
 #include <sqlitefk/src/sql.h>
+#ifdef LINUX
+}
+#endif
 #ifdef __MINGW32__
 }
 #endif
