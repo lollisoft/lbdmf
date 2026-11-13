@@ -4,6 +4,8 @@ Copyright (C)  Lothar Behrens 2000-2026
 
 This readme replaces the original readme file and is intended for Github. It should be as short as possible.
 
+Test
+
 ### Build Status (openSUSE Build Service)
 
 [![build result](https://build.opensuse.org/projects/home:lollisoft/packages/lbdmf-obs/badge.svg?type=default)](https://build.opensuse.org/package/show/home:lollisoft/lbdmf-obs)
