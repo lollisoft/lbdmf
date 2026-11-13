@@ -11,8 +11,6 @@ SET PODMANSPACE=PodmanMachine
 
 if not exist "%DRIVE%\%PODMANSPACE%" mkdir "%DRIVE%\%PODMANSPACE%"
 
-start "" /MAX "C:\Program Files\VcXsrv\vcxsrv.exe" :2 -ac -wgl -noreset
-
 podman machine init
 wsl --export podman-machine-default %DRIVE%\%PODMANSPACE%\podman.tar
 wsl --unregister podman-machine-default
@@ -22,6 +20,15 @@ del %DRIVE%\%PODMANSPACE%\podman.tar
 echo [INFO] Stelle sicher, dass die Podman-Maschine laeuft ...
 podman machine start 2>nul
 
+start "" /MAX "C:\Program Files\VcXsrv\vcxsrv.exe" :2 -ac -wgl -noreset
+
 echo [INFO] Starte frischen Tumbleweed-Container und installiere lbdmf ...
-podman run --rm -it registry.opensuse.org/opensuse/tumbleweed bash -c ^
-  "zypper addrepo -f https://download.opensuse.org/repositories/home:/lollisoft/openSUSE_Tumbleweed lbdmf-obs && zypper --gpg-auto-import-keys refresh && zypper install -y icewm fontconfig liberation-fonts dejavu-fonts lbdmf && export DISPLAY=172.23.144.1:2.0 && export GDK_BACKEND=x11 && (icewm &) && sleep 1 && wxWrapper; exec bash"
+SET CMD=zypper addrepo -f https://download.opensuse.org/repositories/home:/lollisoft/openSUSE_Tumbleweed lbdmf-obs ^&^& ^
+zypper --gpg-auto-import-keys refresh ^&^& ^
+zypper install -y icewm fontconfig liberation-fonts dejavu-fonts lbdmf ^&^& ^
+gw=$(grep -m1 $'\t00000000\t' /proc/net/route ^| cut -f3) ^&^& ^
+export DISPLAY=$(printf '%%d.%%d.%%d.%%d:2.0' 0x${gw:6:2} 0x${gw:4:2} 0x${gw:2:2} 0x${gw:0:2}) ^&^& ^
+export GDK_BACKEND=x11 ^&^& ^
+(icewm ^&) ^&^& sleep 1 ^&^& wxWrapper; exec bash
+
+podman run --rm -it registry.opensuse.org/opensuse/tumbleweed bash -c "%CMD%"
