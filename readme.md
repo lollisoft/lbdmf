@@ -12,7 +12,10 @@ On Windows, you should use the source code installer. Download that from sourcef
 the instructions. If you never have installed it, and you need a painless compiling experience,
 then tick the checkmark for either:
 
-Get MinGW, wxWidgets (and ACE when flagged) and build it with debug or
+Get MinGW, wxWidgets (and ACE when flagged) and build it with debug
+
+or
+
 Get MinGW64, wxWidgets (and ACE when flagged) and build it with debug
 
 You should avoid ticking both as that will break things and I made it simple. After ticking one of
@@ -24,7 +27,7 @@ wxWrapper.
 # Installing on Linux
 You either can clone the code from Github, or install any prepared rpm. Actually openSuSE Tumbleweed
 is tested by a local Podman instance on my Windows 10 machine by the batch files within Podman.
-You could therefore always help in testing and reporting bugs this way with a dropable Podman image. 
+You could therefore always help in testing and reporting bugs this way with a dropable Podman image.
 Podman is required with a standard installation and it assumes, you have a drive D: to place the images to.
 The batch files take care to move the omage to a specific location on drive D:.
 
