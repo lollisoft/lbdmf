@@ -8,12 +8,18 @@ as short as possible.
 # Installation in a nutshell
 
 # Installing on Windows
-On windows, you should use the source code installer. Download that from sourceforge and follow
+On Windows, you should use the source code installer. Download that from sourceforge and follow
 the instructions. If you never have installed it, and you need a painless compiling experience,
 then tick the checkmark for either:
 
 Get MinGW, wxWidgets (and ACE when flagged) and build it with debug or
 Get MinGW64, wxWidgets (and ACE when flagged) and build it with debug
+
+You should avoid ticking both as that will break things and I made it simple. After ticking one of
+these options, if the installer finishes, it starts a batch file that will install the compiler and
+stuff that is needed in building the code. If wxWidgets has been built, close the command window and
+open the main desktop symbol named 'lbDMF Develop' and therein type make. After make is ready, type
+wxWrapper.
 
 # Installing on Linux
 You either can clone the code from Github, or install any prepared rpm. Actually openSuSE Tumbleweed
@@ -30,11 +36,12 @@ for a naked machine. That is InitialSetup.bat and DropSetup.bat drops thet as we
 
 # Installing on Mac OS X
 The Mac OS X build works the same than that in Linux. Basically only difference would be the shell variables within
-the environment.
+the environment. When building from a cloned Github repo, the clone has to be put into ~/develop/Projects as DEVROOT
+points there as of the .profile settings below. Leave that as is as that is tested.
 
 Within the /etc/.profile I have made my settings as follows:
 
-# System-wide .profile for sh(1)
+# System-wide .profile for sh(1) on Mac OS X
 
 if [ -x /usr/libexec/path_helper ]; then
         eval `/usr/libexec/path_helper -s`
