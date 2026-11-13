@@ -11,6 +11,8 @@ SET PODMANSPACE=PodmanMachine
 
 if not exist "%DRIVE%\%PODMANSPACE%" mkdir "%DRIVE%\%PODMANSPACE%"
 
+start "" /MAX "C:\Program Files\VcXsrv\vcxsrv.exe" :2 -ac -wgl -noreset
+
 podman machine init
 wsl --export podman-machine-default %DRIVE%\%PODMANSPACE%\podman.tar
 wsl --unregister podman-machine-default
@@ -26,4 +28,4 @@ podman run --rm -it ^
   -e XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir ^
   -v /mnt/wslg:/mnt/wslg ^
   registry.opensuse.org/opensuse/tumbleweed bash -c ^
-  "zypper addrepo -f https://download.opensuse.org/repositories/home:/lollisoft/openSUSE_Tumbleweed lbdmf-obs && zypper --gpg-auto-import-keys refresh && zypper install -y fontconfig liberation-fonts dejavu-fonts && fc-cache -f -v && zypper install -y lbdmf && exec bash"
+  "zypper addrepo -f https://download.opensuse.org/repositories/home:/lollisoft/openSUSE_Tumbleweed lbdmf-obs && zypper --gpg-auto-import-keys refresh && zypper install -y icewm fontconfig liberation-fonts dejavu-fonts && fc-cache -f -v && zypper install -y lbdmf && export DISPLAY=172.23.144.1:2.0 && unset WAYLAND_DISPLAY && export GDK_BACKEND=x11 && exec icewm & exec wxWrapper"
