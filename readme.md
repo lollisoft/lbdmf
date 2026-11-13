@@ -4,7 +4,11 @@ Copyright (C)  Lothar Behrens 2000-2026
 
 This readme replaces the original readme file and is intended for Github. It should be as short as possible.
 
-Test
+# Important note
+
+This git repository is fed by a CVS repository incrementally and sometimes fully resynced if things fail.
+Thus forks will then lose their parent. The old CVS is still required by me due to an old Jenkins installation
+and a build agend (jenkins slave) running on Windows XP. That has a reason and will be done a while his way.
 
 ### Build Status (openSUSE Build Service)
 
