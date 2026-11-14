@@ -4,11 +4,16 @@ Copyright (C)  Lothar Behrens 2000-2026
 
 This readme replaces the original readme file and is intended for Github. It should be as short as possible.
 
-# Important note
+# Important Note
 
-This git repository is fed by a CVS repository incrementally and sometimes fully resynced if things fail.
-Thus forks will then lose their parent. The old CVS is still required by me due to an old Jenkins installation
-and a build agend (jenkins slave) running on Windows XP. That has a reason and will be done a while his way.
+This Git repository is fed incrementally from a legacy CVS repository and may occasionally be fully resynced if an incremental update fails. During a full resync, existing forks can lose their upstream parent relationship (though future resyncs aim to avoid recreating the repository).
+
+The legacy CVS setup is still actively required because it drives an older Jenkins installation with a build agent running on Windows XP. This is intentional and will remain in place for the foreseeable future:
+
+- **Legacy production & 16-bit software:** Several older software components are still in production and either should not interfere with modern systems or cannot run on them at all (such as 16-bit applications), requiring a dedicated Windows XP environment.
+- **Ongoing porting efforts:** Porting these legacy codebases to modern platforms is a major milestone of this project, even where that roadmap is not yet fully documented.
+
+**Contributing & Pull Requests:** If you plan to submit fixes or open a pull request after a full resync has occurred, you may need to reparent your fork (or re-fork the repository) beforehand.
 
 ### Build Status (openSUSE Build Service)
 
