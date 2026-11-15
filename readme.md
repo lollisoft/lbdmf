@@ -1,105 +1,74 @@
-# DMF - Distributed Multiplatform Framework
+# lbDMF — Distributed Multiplatform Framework
 
-Copyright (C)  Lothar Behrens 2000-2026
-
-This readme replaces the original readme file and is intended for Github. It should be as short as possible.
-
-# Important Note
-
-This Git repository is fed incrementally from a legacy CVS repository and may occasionally be fully resynced if an incremental update fails. During a full resync, existing forks can lose their upstream parent relationship (though future resyncs aim to avoid recreating the repository).
-
-The legacy CVS setup is still actively required because it drives an older Jenkins installation with a build agent running on Windows XP. This is intentional and will remain in place for the foreseeable future:
-
-- **Legacy production & 16-bit software:** Several older software components are still in production and either should not interfere with modern systems or cannot run on them at all (such as 16-bit applications), requiring a dedicated Windows XP environment.
-- **Ongoing porting efforts:** Porting these legacy codebases to modern platforms is a major milestone of this project, even where that roadmap is not yet fully documented.
-
-**Contributing & Pull Requests:** If you plan to submit fixes or open a pull request after a full resync has occurred, you may need to reparent your fork (or re-fork the repository) beforehand.
-
-### Build Status (openSUSE Build Service)
+**Copyright © 2000–2026 Lothar Behrens**
 
 [![build result](https://build.opensuse.org/projects/home:lollisoft/packages/lbdmf-obs/badge.svg?type=default)](https://build.opensuse.org/package/show/home:lollisoft/lbdmf-obs)
 
-# Installation in a nutshell
+> **Overview:** lbDMF is a cross-platform C++ framework built on wxWidgets. This concise README is tailored for GitHub to help you build, test, and contribute quickly.
 
-# Installing on Windows
-On Windows, you should use the source code installer. Download that from sourceforge and follow
-the instructions. If you never have installed it, and you need a painless compiling experience,
-then tick the checkmark for either:
+---
 
-Get MinGW, wxWidgets (and ACE when flagged) and build it with debug
+## ⚠️ Repository & Sync Notice
 
-or
+This Git repository is incrementally synced from a legacy **CVS repository** and may occasionally undergo a full resync if an incremental update fails.
 
-Get MinGW64, wxWidgets (and ACE when flagged) and build it with debug
+* **Why CVS is still used:** The legacy CVS setup drives an older Jenkins instance with a **Windows XP build agent** to maintain production 16-bit and legacy components for the sake of porting effords.
+* **Project Roadmap:** Porting these legacy codebases to modern platforms is an ongoing primary goal.
+* **Pull Requests & Forks:** A full resync may disconnect existing forks; please re-fork or reparent your fork before submitting a pull request.
 
-You should avoid ticking both as that will break things and I made it simple. After ticking one of
-these options, if the installer finishes, it starts a batch file that will install the compiler and
-stuff that is needed in building the code. If wxWidgets has been built, close the command window and
-open the main desktop symbol named 'lbDMF Develop' and therein type make. After make is ready, type
-wxWrapper.
+---
 
-# Installing on Linux
-You either can clone the code from Github, or install any prepared rpm. Actually openSuSE Tumbleweed
-is tested by a local Podman instance on my Windows 10 machine by the batch files within Podman.
-You could therefore always help in testing and reporting bugs this way with a dropable Podman image.
-Podman is required with a standard installation and it assumes, you have a drive D: to place the images to.
-The batch files take care to move the omage to a specific location on drive D:.
+## 🚀 Quick Installation & Setup
 
-Test-lbdmf-Tumbleweed.bat will create a minimal Tumbleweed image and install the rpm for testing. If installed,
-just test by starting wxWrapper.
+### Windows
+1. Download the source code installer from [Sourceforge](https://sourceforge.net/projects/lbdmf/files/lbdmf/lbDMF-1.3.5/lbDMF-Source-1.3.5.exe/download).
+2. Run the installer and select **only one** of the following build environments to avoid conflicts:
+   * `Get MinGW, wxWidgets (and ACE when flagged) and build it with debug`
+   * `Get MinGW64, wxWidgets (and ACE when flagged) and build it with debug`
+4. Follow the automated batch script prompts to install compiler and build dependencies.
+5. After `wxWidgets` finishes compiling, close the command prompt and open the **`lbDMF Develop`** desktop shortcut, then run:
+   ```cmd
+   make
+   wxWrapper
+   ```
+   *(Type `make` in the build directory, and then type `wxWrapper` once ready).*
 
-To cleanup, use DropSetup.bat and it will remove the specific folder on drive D:. Also a minimal setup is available
-for a naked machine. That is InitialSetup.bat and DropSetup.bat drops thet as well.
+---
 
-# Installing on Mac OS X
-The Mac OS X build works the same than that in Linux. Basically only difference would be the shell variables within
-the environment. When building from a cloned Github repo, the clone has to be put into ~/develop/Projects as DEVROOT
-points there as of the .profile settings below. Leave that as is as that is tested.
+### Linux
 
-Within the /etc/.profile I have made my settings as follows:
+You can either build `lbDMF` directly from the GitHub source code or test pre-built `.rpm` packages using Podman.
 
-# System-wide .profile for sh(1) on Mac OS X
+#### 1. Building from Source (GitHub)
+1. Clone the repository into your development workspace:
+   ```bash
+   git clone https://github.com/lollisoft/lbdmf.git ~/develop/Projects/lbdmf
+   ```
+2. Configure the required environment variables *(TBD — exact Linux profile variables to be documented)*:
+   ```bash
+   # Placeholder: Add required DEVROOT, LD_LIBRARY_PATH, and PLUGIN_DIR exports here
+   ```
+3. Compile and launch the framework:
+   ```bash
+   cd ~/develop/Projects/lbdmf/BaseDevelopment
+   make
+   wxWrapper
+   ```
 
-if [ -x /usr/libexec/path_helper ]; then
-        eval `/usr/libexec/path_helper -s`
-fi
+#### 2. Testing on openSUSE Tumbleweed via Podman (Windows 10 Host)
+If you are on a Windows 10 host, you can test `.rpm` installations using the provided helper batch scripts (requires a standard Podman setup and a `D:` drive for image storage):
+* **`InitialSetup.bat`** — Configures a minimal environment on a clean machine.
+* **`Test-lbdmf-Tumbleweed.bat`** — Spins up a minimal openSUSE Tumbleweed image, installs the `.rpm` package, and lets you test by running `wxWrapper`.
+* **`DropSetup.bat`** — Cleans up and removes temporary Podman image folders from your `D:` drive.
 
-if [ "${BASH-no}" != "no" ]; then
-        [ -r /etc/bashrc ] && . /etc/bashrc
-fi
+---
 
-CVS_RSH=ssh
-MODULELIB=lbModule.so
-LBXMLFUNCTOR=getlbDOMConfigInstance
-LBMODULEFUNCTOR=getlb_ModuleInstance
-DEVROOT=~/develop
-LD_LIBRARY_PATH=~/lib:
-PLUGIN_DIR=~/plugins
-OSTYPE=osx
-PATH="/usr/local/bin:/sw/bin:/sw/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:~/bin:/usr/local/bin:/usr/brlcad/bin:/opt/local/bin"
+### macOS (OS X)
+1. Clone the repository into `~/develop/Projects` so `DEVROOT` resolves properly.
+2. Add the environment configuration to your user profile (`~/.zshrc` or `~/.bash_profile`), ensuring proper path and shell expansions for `DEVROOT`, `OSVERSION` (`uname -r`), and `OSPLATFORM` (`uname -p`).
 
-##On older OSX
-#DEVELOPER_TOOLS_PATH=/Developer/Tools
-#export DEVELOPER_TOOLS_PATH
-# On newer OSX
-DEVELOPER_TOOLS_PATH=/Library/Developer/CommandLineTools/usr/bin
-export DEVELOPER_TOOLS_PATH
+---
 
-OSVERSION=`uname -r`
-export OSVERSION
-OSPLATFORM=`uname -p`
-export OSPLATFORM
+## 🤝 Contributing
 
-export CVS_RSH
-export MODULELIB
-export LBXMLFUNCTOR
-export LBMODULEFUNCTOR
-export DEVROOT
-export LD_LIBRARY_PATH
-export OSTYPE
-export PATH
-export PLUGIN_DIR
-REPO_NAME=lbdmf
-export REPO_NAME
-
-So you may make a similar setup but not systemwide.
+Bug reports, testing feedback (via Tumbleweed Podman scripts), and porting assistance are welcome. Review the **Repository & Sync Notice** prior to opening pull requests.
