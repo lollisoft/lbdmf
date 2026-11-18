@@ -244,10 +244,10 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	// this will wait until the user connects to the internet. It is important in case of dialup (or ADSL) connections
 	wxString connectString = 
 #ifdef LBWXVERSION_OLD
-	_T("www.lollisoft.de");
+	_T("https://www.lollisoft.de");
 #endif
 #ifdef LBWXVERSION_CURRENT
-	"www.lollisoft.de";
+	"https://www.lollisoft.de";
 #endif
 
 	while (!get.Connect(connectString))  // only the server, no pages here yet ...
