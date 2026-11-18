@@ -64,6 +64,10 @@
 #include "wx/jsonreader.h"
 #include "wx/jsonval.h"
 
+#ifdef LBWXVERSION_CURRENT
+#include <wx/webrequest.h>
+#endif
+
 /*...e*/
 /*...sLB_DATABASE_DLL scope:0:*/
 #define LB_LOGINWIZARD_DLL
@@ -216,6 +220,276 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunSilentUpdateCheck(lb_I_Unknown* u
 }
 
 /// Run update check per week.
+#ifdef LBWXVERSION_CURRENT
+lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+
+	// Do not check twice per application start.
+	if (updateCheckRan) return ERR_NONE;
+	updateCheckRan = true;
+
+	int timeout = 10;
+	int retry = 5;
+
+	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds ."));
+
+	UAP_REQUEST(getModuleInstance(), lb_I_String, durationPoints)
+	*durationPoints = "Checking for software update. Connection failed. Do a retry ";
+
+	wxString wxUri;
+#ifdef LBWXVERSION_OLD
+	wxUri = wxString::Format(_T("https://www.lollisoft.de/updates/lbdmf.json?ostype=%s&version=%s"), getOsType(), VERSIONINFO);
+#endif
+#ifdef LBWXVERSION_CURRENT
+	wxUri = wxString::Format("https://www.lollisoft.de/updates/lbdmf.json?ostype=%s&version=%s", getOsType(), VERSIONINFO);
+#endif
+
+	// C++98 local event handler class (no lambdas or auto needed)
+	struct LocalWebHandler : public wxEvtHandler {
+		bool finished;
+		bool succeeded;
+		wxString responseText;
+
+		LocalWebHandler() : finished(false), succeeded(false) {}
+
+		void OnWebRequestState(wxWebRequestEvent& evt) {
+			if (evt.GetState() == wxWebRequest::State_Completed) {
+				if (evt.GetResponse().GetStatus() == 200) {
+					responseText = evt.GetResponse().AsString();
+					succeeded = true;
+				}
+				finished = true;
+			} else if (evt.GetState() == wxWebRequest::State_Failed ||
+			           evt.GetState() == wxWebRequest::State_Cancelled) {
+				finished = true;
+			}
+		}
+	};
+
+	wxString res;
+	bool requestSucceeded = false;
+
+	while (retry >= 0) {
+		LocalWebHandler localHandler;
+		localHandler.Connect(
+			wxEVT_WEBREQUEST_STATE,
+			(wxObjectEventFunction)(wxEventFunction)&LocalWebHandler::OnWebRequestState,
+			NULL,
+			&localHandler
+		);
+
+		wxWebRequest request = wxWebSession::GetDefault().CreateRequest(&localHandler, wxUri);
+		if (!request.IsOk()) {
+			return ERR_WEBSITE_UNREACHABLE;
+		}
+
+#ifdef LBWXVERSION_OLD
+		request.SetHeader(_T("Content-type"), _T("text/html; charset=utf-8"));
+#endif
+#ifdef LBWXVERSION_CURRENT
+		request.SetHeader("Content-type", "text/html; charset=utf-8");
+#endif
+
+		request.Start();
+
+		int elapsedMs = 0;
+		while (!localHandler.finished && elapsedMs < (timeout * 1000)) {
+			wxMilliSleep(50);
+			elapsedMs += 50;
+			if (wxTheApp) wxTheApp->Yield(true);
+		}
+
+		localHandler.Disconnect(
+			wxEVT_WEBREQUEST_STATE,
+			(wxObjectEventFunction)(wxEventFunction)&LocalWebHandler::OnWebRequestState,
+			NULL,
+			&localHandler
+		);
+
+		if (!localHandler.finished) {
+			request.Cancel();
+		}
+
+		if (localHandler.succeeded) {
+			res = localHandler.responseText;
+			requestSucceeded = true;
+			break;
+		}
+
+		timeout++;
+		meta->setStatusText("Info", _trans(durationPoints->charrep()));
+		*durationPoints += ".";
+		if (!silent) wxSleep(1);
+
+		if (retry-- == 0) {
+			return ERR_WEBSITE_UNREACHABLE;
+		}
+	}
+
+	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds .."));
+
+	wxApp::IsMainLoopRunning(); // should return true
+
+	UAP(lb_I_Parameter, UpdateSettings)
+
+	meta->setStatusText("Info", _trans("Checking for software update. Please be patient for some seconds ..."));
+
+	if (requestSucceeded)
+	{
+		wxJSONValue lastReleaseInfo;
+
+		// construct a JSON parser
+		wxJSONReader reader;
+
+		bool updateAvailable = false;
+		bool possibleUpdateAvailable = false;
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, msg_version)
+		UAP_REQUEST(getModuleInstance(), lb_I_String, possible_msg_versions)
+
+		_LOGALWAYS << res.c_str() LOG_
+
+		int numErrors = reader.Parse(res, &lastReleaseInfo);
+
+		if (numErrors > 0) {
+#ifdef LBWXVERSION_OLD
+			wxMessageBox(_T("Unable to read update information!"));
+#endif
+#ifdef LBWXVERSION_CURRENT
+			wxMessageBox("Unable to read update information!");
+#endif
+		} else {
+			//wxMessageBox(res);
+
+			meta->setStatusText("Info", _trans("Got release information. Parsing ..."));
+
+			// now retrive the array of supported languages
+#ifdef LBWXVERSION_OLD
+			wxJSONValue releases = lastReleaseInfo[_T("releases")];
+#endif
+#ifdef LBWXVERSION_CURRENT
+			wxJSONValue releases = lastReleaseInfo["releases"];
+#endif
+
+			bool isArray = releases.IsArray();
+
+			UpdateSettings = meta->getPropertySet("UpdateSettings");
+			//UpdateSettings->getUAPContainer(*&name, *&KnownVersions);
+
+			*msg = "There are new versions available. Go to the product page and download the following version: ";
+
+			if (isArray) {
+				for (int i = 0; i < releases.Size(); i++) {
+					UAP_REQUEST(getModuleInstance(), lb_I_String, version)
+#ifdef LBWXVERSION_OLD
+					wxString release = releases[i][_T("version")].AsString();
+#endif
+#ifdef LBWXVERSION_CURRENT
+					wxString release = releases[i]["version"].AsString();
+#endif
+					*version = release.c_str();
+
+					wxString release_uri = releases[0]["download"].AsString();
+					*lastReleaseUri = release_uri.c_str();
+
+					UAP(lb_I_KeyBase, key)
+					UAP(lb_I_Unknown, uk)
+					QI(version, lb_I_KeyBase, key)
+					QI(version, lb_I_Unknown, uk)
+
+					// Save version check at position 0
+					if (i == 0 && release != VERSIONINFO) {
+						updateAvailable = true;
+
+						if (!(*msg_version == ""))
+							*msg_version += ", ";
+						*msg_version += version->charrep();
+					}
+
+					// There is a missing visitor implementation for containers. Feature not yet possible.
+
+					// Only detect any changes when silent is false. Thus sync only at first run, or when storage has been gone.
+					/*
+					if (KnownVersions->exists(&key) == 0 && !silent) {
+						// Any new entry indicates possible version change
+						possibleUpdateAvailable = true;
+
+						_LOG << "Insert known version " << version->charrep() << " at position " << i LOG_
+						KnownVersions->insert(&uk, &key);
+
+						if (!(*possible_msg_versions == ""))
+							*possible_msg_versions += ", ";
+						*possible_msg_versions += version->charrep();
+					}
+					*/
+				}
+				//UpdateSettings->setUAPContainer(*&name, *&KnownVersions);
+			}
+		}
+
+		if (updateAvailable || possibleUpdateAvailable) {
+			meta->addPropertySet(*&UpdateSettings, "UpdateSettings");
+
+			if (possibleUpdateAvailable) {
+				*msg = "The version information has been changed or is initially synchronized. Go to the product page and download the most recent version. Available are: ";
+				*msg += possible_msg_versions->charrep();
+			}
+			else {
+				*msg += msg_version->charrep();
+			}
+
+#ifdef LBWXVERSION_OLD
+			if (!silent) wxMessageBox(_T(msg->charrep()));
+#endif
+#ifdef LBWXVERSION_CURRENT
+			if (!silent) wxMessageBox(msg->charrep());
+#endif
+
+			if (!updateDetected) {
+				int temp;
+				updateDetected = true;
+				UAP_REQUEST(getModuleInstance(), lb_I_EventManager, eman)
+				UAP_REQUEST(getModuleInstance(), lb_I_Dispatcher, disp)
+				eman->registerEvent("openReleasePage", temp);
+				disp->addEventHandlerFn(this, (lbEvHandler)&UpdateCheckerHandler::openReleasePage, "openReleasePage");
+
+				char* updatemenu = strdup(_trans("Updates available"));
+
+				UAP_REQUEST(getModuleInstance(), lb_I_String, menText)
+
+				*menText = _trans("This version (");
+				*menText += VERSIONINFO;
+				*menText += _trans(") is old. Check out for new releases. Detected version: ");
+				*menText += msg_version->charrep();
+
+				char* menutext = strdup(menText->charrep());
+
+				if (possibleUpdateAvailable) {
+					free(menutext);
+					menutext = strdup(_trans("A version change has been detected. Please check your version against found ones..."));
+				}
+
+				meta->addMenuEntry(updatemenu, "Go to release page...", "openReleasePage", "");
+
+				meta->addToolBar("Update Toolbar");
+				meta->addToolBarButton("Update Toolbar", menutext, "openReleasePage", "bell.png");
+
+				free(updatemenu);
+				free(menutext);
+			}
+		} else {
+			meta->setStatusText("Info", _trans("Your software is up to date."));
+			wxSleep(1);
+		}
+	} else {
+		return ERR_WEBSITE_UNREACHABLE;
+	}
+
+	return ERR_NONE;
+}
+#endif
+
+#ifdef LBWXVERSION_OLD
 lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
 
@@ -446,6 +720,8 @@ lbErrCodes LB_STDCALL UpdateCheckerHandler::RunUpdateCheck(lb_I_Unknown* uk) {
 	
 	return ERR_NONE;
 }
+#endif
+
 
 lb_I_String* LB_STDCALL UpdateCheckerHandler::getReleaseUri() {
 	UAP_REQUEST(getModuleInstance(), lb_I_String, releaseUri)
