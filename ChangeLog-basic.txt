@@ -1,3 +1,35 @@
+2026-11-19 04:37  lothar
+
+	* AppDevelopmentDemo/DynamicApp/Doc/:
+	  ApplicationprototypingDokumentation.odt,
+	  ApplicationprototypingDokumentation.pdf: Changed version within
+	  the document
+
+2026-11-19 04:12  lothar
+
+	* AppDevelopmentDemo/DynamicApp/Doc/StsManagement Shell Password
+	  Leak.png: Missing file added
+
+2026-11-18 18:05  lothar
+
+	* Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Added
+	  update check for the current 3.2.2.1 wxWidgets version to
+	  wxWebRequest
+
+2026-11-18 16:19  lothar
+
+	* Plugins/wxWidgets/wxUpdateChecker/wxUpdateChecker.cpp: Changed
+	  http uris to use https
+
+2026-11-18 08:29  lothar
+
+	* Plugins/UserFeedback/lbUserFeedback.cpp, bindist.iss: Changed
+	  links to the user feedback webpages
+
+2026-11-17 17:03  lothar
+
+	* ChangeLog-basic.txt: Updated history
+
 2026-11-15 08:10  lothar
 
 	* readme.md: Reworked the readme.md for more clarity and better
@@ -258,10 +290,10 @@
 
 2026-10-05 16:17  lothar
 
-	* bindist.iss, collect_releases.sh, dist.iss, docdist.iss,
-	  jenkinsrelease.sh, license-bindist.txt, license-doc.txt,
-	  license-templatedist.txt, license.txt, lbdmf-jenkins.spec,
-	  lbdmf.spec, include/lbVersionInfo.h, interfaces/lbInterfaces.h,
+	* collect_releases.sh, dist.iss, docdist.iss, jenkinsrelease.sh,
+	  license-bindist.txt, license-doc.txt, license-templatedist.txt,
+	  license.txt, lbdmf-jenkins.spec, lbdmf.spec, bindist.iss,
+	  include/lbVersionInfo.h, interfaces/lbInterfaces.h,
 	  Test/GUI/wxWrapper/Info.plist,
 	  Test/GUI/wxWrapper/notarize_dmg.sh,
 	  Test/GUI/wxWrapper/postlink-mac-arm.sh,
