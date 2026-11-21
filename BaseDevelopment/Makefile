@@ -26,11 +26,14 @@
 # Global makefile to build all sub modules
 # **************************************************************
 # * $Locker:  $
-# * $Revision: 1.229.2.148 $
+# * $Revision: 1.229.2.149 $
 # * $Name:  $
-# * $Id: Makefile,v 1.229.2.148 2026/11/05 08:23:10 lothar Exp $
+# * $Id: Makefile,v 1.229.2.149 2026/11/21 04:02:04 lothar Exp $
 # *
 # * $Log: Makefile,v $
+# * Revision 1.229.2.149  2026/11/21 04:02:04  lothar
+# * Do no longer ignore errors on building lbDB ODBC wrapper
+# *
 # * Revision 1.229.2.148  2026/11/05 08:23:10  lothar
 # * Added deletion of mkmk folder on Linux
 # *
@@ -3086,7 +3089,7 @@ endif
 
 lbDB: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -f $(MAKE_CONFIG_FILE)
-	-$(MAKE) -s -C $@
+	$(MAKE) -s -C $@
 
 lbPluginManager: dummy
 	$(MAKE) -s -C $@ -e MODULE=$@ -e TARGET=$(TARGETDLL) -e USEGDB=no -f $(MAKE_CONFIG_FILE)
