@@ -4785,10 +4785,10 @@ lbErrCodes LB_STDCALL lbBoundColumn::getAsString(lb_I_String* result, int asPara
 			bool b = *(bool*) buffer;
 			if (b == true) {
 #endif
-				result->setData("true");
+				result->setString("true");
 			}
 			else {
-				result->setData("false");
+				result->setString("false");
 			}
 		}
 		break;
