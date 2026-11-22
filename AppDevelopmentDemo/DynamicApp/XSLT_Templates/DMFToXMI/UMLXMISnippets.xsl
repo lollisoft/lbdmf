@@ -573,6 +573,11 @@
 				&lt;type xmi:idref="BOUML_datatype_String"/&gt;
 				&lt;/ownedAttribute&gt;
 			</xsl:when>
+			<xsl:when test="@typ='char'">
+				&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$FormularID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+				&lt;type xmi:idref="BOUML_datatype_String"/&gt;
+				&lt;/ownedAttribute&gt;
+			</xsl:when>
 		</xsl:choose>
 </xsl:for-each>
 
@@ -1379,6 +1384,16 @@
 
 			</xsl:when>
 			<xsl:when test="@typ='varchar'">
+			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
+			&lt;type xmi:idref="BOUML_datatype_String"/&gt;
+			<xsl:if test="//formularfields/formular[@fktable=$TName][@fkname=$FieldName]/@isfk=1">
+				&lt;xmi:Extension extender="Bouml"&gt;
+				&lt;stereotype name="visible"/&gt;
+				&lt;/xmi:Extension&gt;
+			</xsl:if>
+			&lt;/ownedAttribute&gt;
+			</xsl:when>
+			<xsl:when test="@typ='char'">
 			&lt;ownedAttribute xmi:type="uml:Property" name="<xsl:value-of select="$FieldName"/>" xmi:id="<xsl:value-of select="$FieldName"/>_<xsl:value-of select="$TName"/>_<xsl:value-of select="$TableID"/>_<xsl:value-of select="@ID"/>" visibility="protected"&gt;
 			&lt;type xmi:idref="BOUML_datatype_String"/&gt;
 			<xsl:if test="//formularfields/formular[@fktable=$TName][@fkname=$FieldName]/@isfk=1">
