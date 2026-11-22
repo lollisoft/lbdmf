@@ -31,11 +31,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.188.2.19 $
+ * $Revision: 1.188.2.20 $
  * $Name:  $
- * $Id: lbMetaApplication.cpp,v 1.188.2.19 2026/08/09 15:29:48 lothar Exp $
+ * $Id: lbMetaApplication.cpp,v 1.188.2.20 2026/11/22 12:22:21 lothar Exp $
  *
  * $Log: lbMetaApplication.cpp,v $
+ * Revision 1.188.2.20  2026/11/22 12:22:21  lothar
+ * Added again support for reverse engineering databases.
+ * Fixed id enumbering errors and other XMI format issues.
+ * Added menu entry point to activate reverse engineering
+ * mode. Repeated switch and export takes effect.
+ *
  * Revision 1.188.2.19  2026/08/09 15:29:48  lothar
  * Modifications that let me finally mix Watcom 11 and Visual C++ 6.0 compilers.
  * Demonstrates integration attempts for the ApplicationBus to be provided by
@@ -833,6 +839,7 @@ lb_MetaApplication::lb_MetaApplication() {
 
 	_use_application_database_backend = false;
 	_use_system_database_backend = false;
+	_setReverseEngineeringMode = false;
 	_application_database_backend = strdup("");
 	_system_database_backend = strdup("");
 	_dirloc = strdup(".");
@@ -1012,6 +1019,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::lbButtonTestHandler(lb_I_Unknown* uk) 
         return ERR_NONE;
 }
 /*...e*/
+
 /*...slbErrCodes LB_STDCALL lb_MetaApplication\58\\58\getLoginData\40\lb_I_Unknown\42\ uk\41\:0:*/
 lbErrCodes LB_STDCALL lb_MetaApplication::getLoginData(lb_I_Unknown* uk) {
 
@@ -1502,6 +1510,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	 */
 	int getBasicApplicationInfo;
 	int getMainModuleInfo;
+	int setReverseEngineeringModeHandlerInfo;
 	int testPressed;
 	int enterDebugger;
 	int getLoginData;
@@ -1525,6 +1534,7 @@ lbErrCodes LB_STDCALL lb_MetaApplication::initialize(const char* user, const cha
 	eman->registerEvent("getMainModuleInfo", getMainModuleInfo);
 	eman->registerEvent("Button Test pressed", testPressed);
 	eman->registerEvent("timerEvent", timerEvent);
+	eman->registerEvent("setReverseEngineeringModeHandlerInfo", setReverseEngineeringModeHandlerInfo);
 
 	if (getenv("TARGET_APPLICATION") == NULL) {
 		// Need a database configuration based authentication
@@ -1914,6 +1924,14 @@ bool LB_STDCALL lb_MetaApplication::usingSystemDatabaseBackend() {
 
 bool LB_STDCALL lb_MetaApplication::usingApplicationDatabaseBackend() {
 	return _use_application_database_backend;
+}
+
+void LB_STDCALL lb_MetaApplication::setReverseEngineeringMode(bool mode) {
+	_setReverseEngineeringMode = mode;
+}
+
+bool LB_STDCALL lb_MetaApplication::getReverseEngineeringMode() {
+	return _setReverseEngineeringMode;
 }
 
 

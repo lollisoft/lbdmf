@@ -30,11 +30,17 @@
 /*...sRevision history:0:*/
 /**************************************************************
  * $Locker:  $
- * $Revision: 1.77.2.6 $
+ * $Revision: 1.77.2.7 $
  * $Name:  $
- * $Id: lbMetaApplication.h,v 1.77.2.6 2025/04/12 10:54:06 lothar Exp $
+ * $Id: lbMetaApplication.h,v 1.77.2.7 2026/11/22 12:22:21 lothar Exp $
  *
  * $Log: lbMetaApplication.h,v $
+ * Revision 1.77.2.7  2026/11/22 12:22:21  lothar
+ * Added again support for reverse engineering databases.
+ * Fixed id enumbering errors and other XMI format issues.
+ * Added menu entry point to activate reverse engineering
+ * mode. Repeated switch and export takes effect.
+ *
  * Revision 1.77.2.6  2025/04/12 10:54:06  lothar
  * Changed my address and copyright start and ending year to reflect
  * my upcoming new home and timeframe of development.
@@ -461,6 +467,8 @@ public:
 	void					LB_STDCALL useApplicationDatabaseBackend(bool backend);
 	bool					LB_STDCALL usingSystemDatabaseBackend();
 	bool					LB_STDCALL usingApplicationDatabaseBackend();
+	void					LB_STDCALL setReverseEngineeringMode(bool mode);
+	bool					LB_STDCALL getReverseEngineeringMode();
 	void					LB_STDCALL firePropertyChangeEvent(const char* name, const char* value);
 	void					LB_STDCALL fireEvent(const char* name);
 	void					LB_STDCALL setProcessName(const char* name);
@@ -488,7 +496,7 @@ public:
 	lbErrCodes				LB_STDCALL lbEvHandler1(lb_I_Unknown* uk);
 	lbErrCodes				LB_STDCALL lbEvHandler2(lb_I_Unknown* uk);
 	void					LB_STDCALL getBasicApplicationInfo(lb_I_Unknown** info);
-	lbErrCodes				LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);	
+	lbErrCodes				LB_STDCALL lbButtonTestHandler(lb_I_Unknown* uk);
 	
 	/// \brief New Timed events handling
 	lbErrCodes				LB_STDCALL timerEvent(lb_I_Unknown* uk);
@@ -551,8 +559,9 @@ protected:
 	// Internal (ODBC) is an empty string. Not empty is a plugin namespace.
 	bool _use_system_database_backend;
 	bool _use_application_database_backend;
+	bool _setReverseEngineeringMode;
 	char* _system_database_backend;
-	char* _application_database_backend;
+	char* _application_database_backend;	
 	//char* _system_database_backend_temp;
 	//char* _application_database_backend_temp;
 	char* _dirloc;

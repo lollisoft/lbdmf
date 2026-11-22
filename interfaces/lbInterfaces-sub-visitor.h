@@ -230,6 +230,14 @@ public:
          */
         virtual bool LB_STDCALL begin(const char* connectionname, lb_I_Database* _db) = 0;
         
+        /** \brief Add the system database to enable non reverse engineering export.
+         *
+         * The database schema is not stored in the application database given to the begin operation.
+		 * It is stored in the system database. If reengineering mode is off, the system database is needed.
+		 * Otherwise the data could not be retrieved within the running application other than lbDMF.
+         */
+		virtual bool LB_STDCALL addSystemDatabase(const char* connectionname, lb_I_Database* _db) = 0;
+		
         /** \brief End the operation.
          *
          * This closes the file and disables the operation.

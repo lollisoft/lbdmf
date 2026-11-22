@@ -3458,6 +3458,27 @@ public:
          */
         virtual bool                    LB_STDCALL usingApplicationDatabaseBackend() = 0;
 
+		/** \brief Activate or deactivate reverse engineering from database.
+		 * A running application has the option to be exported via two menu entries to either
+		 * the internal XML format (dax) or the XMI 2.1 format (xmi). Usually the database schema
+		 * gets written out from the stored information within the system database that has been
+		 * created manually or imported prior to this point.
+		 *
+		 * Given the case, that the application modelled is not up to date with the database, or you
+		 * want to reverse engineer an existing application, it is the point where the existing
+		 * database schema could be read and added into the written file as part of the model.
+		 *
+		 * Until now, this feature was not working well and thus was disabled. Now the code has changed to
+		 * switch reading database schema from system database model to the database of the currently running
+		 * application. The changes were minimal and thus got into the release 1.3.6 after a long absense.
+		 */
+		virtual void					LB_STDCALL setReverseEngineeringMode(bool mode) = 0;
+
+		/** \brief Activate or deactivate reverse engineering from database.
+		 * See #setReverseEngineeringMode for description.
+		 */
+		virtual bool					LB_STDCALL getReverseEngineeringMode() = 0;
+
         /** \brief Change a property value.
          *
          * This function is used to change property values from within source code.

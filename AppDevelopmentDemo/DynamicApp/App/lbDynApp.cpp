@@ -181,6 +181,8 @@ public:
 
         lbErrCodes LB_STDCALL overwriteDatabase(lb_I_Unknown* uk);
         lbErrCodes LB_STDCALL writeXMISettings(lb_I_Unknown* uk);
+		lbErrCodes LB_STDCALL setReverseEngineeringModeHandler(lb_I_Unknown* uk);
+
 protected:
 
         /** \brief Load the database forms.
@@ -465,6 +467,12 @@ lbErrCodes LB_STDCALL lbDynamicApplication::writeXMISettings(lb_I_Unknown* uk) {
         
         return err;
 }
+
+lbErrCodes LB_STDCALL lbDynamicApplication::setReverseEngineeringModeHandler(lb_I_Unknown* uk) {
+	UAP_REQUEST(getModuleInstance(), lb_I_MetaApplication, meta)
+	meta->setReverseEngineeringMode(!meta->getReverseEngineeringMode());
+}
+
 
 lbErrCodes LB_STDCALL lbDynamicApplication::executeQueryFromFile(lb_I_Unknown* uk) {
         lbErrCodes err = ERR_NONE;
@@ -1031,11 +1039,11 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 		if (dbbackend != NULL && strcmp(dbbackend, "") != 0) {
 			UAP_REQUEST(getModuleInstance(), lb_I_PluginManager, PM)
 			AQUIRE_PLUGIN_NAMESPACE_BYSTRING(lb_I_Database, dbbackend, applicationdatabase, "'database plugin'")
-			_LOG << "Using plugin database backend for system database..." LOG_
+			_LOG << "Using plugin database backend for application database..." LOG_
 		} else {
 			// Use built in
 			REQUEST(getModuleInstance(), lb_I_Database, applicationdatabase)
-			_LOG << "Using built in database backend for system database..." LOG_
+			_LOG << "Using built in database backend for application database..." LOG_
 		}
 		
 		if (applicationdatabase == NULL) {
@@ -1170,6 +1178,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
                                 if (fOpCustomDB != NULL) {
                                         _LOG << "Reading custom configuration from " << dbname->charrep() << "." LOG_
                                         fOpCustomDB->begin(dbname->charrep(), customDB.getPtr());
+										fOpCustomDB->addSystemDatabase("lbDMF", systemdatabase.getPtr());
 
                                         /************/
                                         char* dbbackend = metaapp->getSystemDatabaseBackend();
@@ -1201,6 +1210,7 @@ lbErrCodes LB_STDCALL lbDynamicApplication::loadDatabaseSchema(lb_I_Unknown* uk)
 
                                         if (fOpCustomformularfieldsDB != NULL) {
                                                 fOpCustomformularfieldsDB->begin(dbname->charrep(), custom_formularfieldsDB.getPtr());
+												fOpCustomDB->addSystemDatabase("lbDMF", systemdatabase.getPtr());
                                                 formularfields->accept(*&fOpCustomformularfieldsDB);
                                         }
                                         metaapp->setStatusText("Info", "Reading primary keys ...");
@@ -1682,6 +1692,9 @@ lbErrCodes LB_STDCALL lbDynamicApplication::exportApplicationToXMLBuffer(lb_I_Un
                                 param->setUAPString(*&name, *&filename);
                         }
         }
+		
+		haveLoadedDBModel = false;
+
         return err;
 }
 
@@ -3120,15 +3133,26 @@ lbErrCodes LB_STDCALL lbDynamicApplication::load() {
                 if (plDynamicAppStorageXMLFormat != NULL) {
                         ukPlDynamicAppStorageXMLFormat = plDynamicAppStorageXMLFormat->getImplementation();
 
+                        if (eman->resolveEvent("setReverseEngineeringMode", unused) == ERR_EVENT_NOTREGISTERED) {
+                                eman->registerEvent("setReverseEngineeringMode", unused);
+
+								dispatcher->addEventHandlerFn(this, 
+								(lbEvHandler) &lbDynamicApplication::setReverseEngineeringModeHandler, "setReverseEngineeringMode");
+
+                                metaapp->addMenuEntryCheckable(_trans("&File"), "Reverse Engineering Mode", "setReverseEngineeringMode", "");
+                        }
+
                         if (eman->resolveEvent("evtExportApplicationToXML", unused) == ERR_EVENT_NOTREGISTERED) {
                                 eman->registerEvent("evtExportApplicationToXML", unused);
 
                                 dispatcher->addEventHandlerFn(this,
-                                                                                          (lbEvHandler) &lbDynamicApplication::exportApplicationToXML, "evtExportApplicationToXML");
+								(lbEvHandler) &lbDynamicApplication::exportApplicationToXML, "evtExportApplicationToXML");
 
                                 metaapp->addMenuEntry(_trans("&File"), "export Application to XML", "evtExportApplicationToXML", "");
                         }
                 }
+
+
 
                 UAP_REQUEST(getModuleInstance(), lb_I_String, appname)
 
