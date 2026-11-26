@@ -1,3 +1,39 @@
+2026-11-26 10:16  lothar
+
+	* readme.md: Activating funding
+
+2026-11-22 21:22  lothar
+
+	*
+	  AppDevelopmentDemo/DynamicApp/XSLT_Templates/DMFToXMI/UMLXMISnippets.xsl:
+	  Added char to be created within xmi
+
+2026-11-22 13:22  lothar
+
+	* AppDevelopmentDemo/DynamicApp/App/lbDynApp.cpp,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.cpp,
+	  BaseDevelopment/lbMetaApplication/lbMetaApplication.h,
+	  interfaces/lbInterfaces-sub-visitor.h, interfaces/lbInterfaces.h,
+	  Plugins/VisitorOperations/pluginDBInputStream.cpp: Added again
+	  support for reverse engineering databases.  Fixed id enumbering
+	  errors and other XMI format issues.  Added menu entry point to
+	  activate reverse engineering mode. Repeated switch and export takes
+	  effect.
+
+2026-11-21 05:02  lothar
+
+	* BaseDevelopment/Makefile: Do no longer ignore errors on building
+	  lbDB ODBC wrapper
+
+2026-11-21 04:58  lothar
+
+	* BaseDevelopment/lbDB/lbDB.cpp: Missed a setData to setString
+	  renaming
+
+2026-11-19 04:41  lothar
+
+	* ChangeLog-basic.txt: Updated history
+
 2026-11-19 04:37  lothar
 
 	* AppDevelopmentDemo/DynamicApp/Doc/:
