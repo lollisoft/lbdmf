@@ -8,6 +8,19 @@
 
 ---
 
+## Need support for Code Signing
+
+DMF has been free and open source since 2003. To renew the annual Code Signing certificate (~30 €) to avoid SmartScreen warnings, small contributions via PayPal https://www.paypal.me/LotharBehrens63150 are greatly appreciated!
+
+Currently I cannot afford the signing, so only the Mac OS X release and the openSuSE Tumbleweed releases are signed for now.
+
+For the OBS build, the public key could be imported at https://download.opensuse.org/repositories/home:/lollisoft/openSUSE_Tumbleweed/repodata/repomd.xml.key
+
+Thank you very much!  
+Lothar Behrens
+
+---
+
 ## ⚠️ Repository & Sync Notice
 
 This Git repository is incrementally synced from a legacy **CVS repository** and may occasionally undergo a full resync if an incremental update fails.
