@@ -25,7 +25,7 @@ Lothar Behrens
 
 This Git repository is incrementally synced from a legacy **CVS repository** and may occasionally undergo a full resync if an incremental update fails.
 
-* **Why CVS is still used:** The legacy CVS setup drives an older Jenkins instance with a **Windows XP build agent** to maintain production 16-bit and legacy components for the sake of porting effords.
+* **Why CVS is still used:** The legacy CVS setup drives an older Jenkins instance with a **Windows XP build agent** to maintain production 16-bit and legacy components for the sake of porting effords. It also still exists a working Mac mini G4 and thus still a PPC Leopard based release and respectively a jenkins job. That is supported as long as the box is working. That is also a reason for sticking to Jenkins ver. 1.576 as a version that slaves can support that old G4.
 * **Project Roadmap:** Porting these legacy codebases to modern platforms is an ongoing primary goal.
 * **Pull Requests & Forks:** A full resync may disconnect existing forks; please re-fork or reparent your fork before submitting a pull request.
 
