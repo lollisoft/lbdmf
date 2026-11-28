@@ -21,7 +21,13 @@ Lothar Behrens
 
 ---
 
-## ⚠️ Repository & Sync Notice
+## 💬 Contact & Community
+
+For a chat beside a bugreport or issues, you also can contact me on [Discord](https://discord.gg/JbN4zTf3am). There I provide some direct chat option that I may notice on my mobile phone.
+
+---
+
+## ⚠️  Repository & Sync Notice
 
 This Git repository is incrementally synced from a legacy **CVS repository** and may occasionally undergo a full resync if an incremental update fails.
 
@@ -84,4 +90,4 @@ If you are on a Windows 10 host, you can test `.rpm` installations using the pro
 
 ## 🤝 Contributing
 
-Bug reports, testing feedback (via Tumbleweed Podman scripts), and porting assistance are welcome. Review the **Repository & Sync Notice** prior to opening pull requests.
+Bug reports, testing feedback (via Tumbleweed Podman scripts), and porting assistance are welcome. Review the **Repository & Sync Notice** prior to opening pull requests. I would appreciate any help beside code suggestions or patches. If you fork and provide a pull request, I have to learn to cope with that but also need some extra work to take that over to my internal master CVS repository. Any contribution will mention it's contributor. Btw, please do not try to suggest code modernization. I need strictly a backward compatibility down to Watcom 11 or Power++ 2.1 Enterprise and Visual C++ 6.0. My porting effords need a working code base I can use on an old XP VM installation - see above (Repository & Sync Notice).
